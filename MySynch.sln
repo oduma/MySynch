@@ -1,7 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySynch.Core", "MySynch.Core\MySynch.Core.csproj", "{EB0395B1-04DE-4402-AB45-4AE7693326A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySynch.Tests", "MySynch.Tests\MySynch.Tests.csproj", "{A4A79F41-DFE8-4878-8B81-E71EC2364A3E}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EB0395B1-04DE-4402-AB45-4AE7693326A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB0395B1-04DE-4402-AB45-4AE7693326A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB0395B1-04DE-4402-AB45-4AE7693326A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB0395B1-04DE-4402-AB45-4AE7693326A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4A79F41-DFE8-4878-8B81-E71EC2364A3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4A79F41-DFE8-4878-8B81-E71EC2364A3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4A79F41-DFE8-4878-8B81-E71EC2364A3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4A79F41-DFE8-4878-8B81-E71EC2364A3E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
