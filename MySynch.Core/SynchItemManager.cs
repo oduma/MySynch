@@ -36,28 +36,48 @@ namespace MySynch.Core
                 throw new ArgumentNullException("parentItemId");
             if (_items == null)
                 return new List<SynchItem>();
-            return ListItems(_items, parentItemId);
+
+            SynchItem parentItem = GetParentItem(parentItemId);
+            if (parentItem == null)
+                return null;
+            return (parentItem.Items)??new List<SynchItem>();
         }
 
-        private List<SynchItem> ListItems(List<SynchItem> list, string parentItemId)
+        private SynchItem GetParentItem(string parentItemId)
         {
-            SynchItem parentItem = list.FirstOrDefault(l => l.Identifier == parentItemId);
-            if (parentItem != null)
-                return parentItem.Items;
-            foreach (SynchItem si in list)
+            string[] levels = parentItemId.Split(new char[] { '\\' });
+
+            SynchItem parentItem = null;
+            string currentLevel = string.Empty;
+            List<SynchItem> list = _items;
+            foreach (string level in levels)
             {
-                List<SynchItem> sItems=ListItems(si.Items,parentItemId);
-                if (sItems != null)
-                    return sItems;
-                else
+                if (list == null)
                     return null;
+                currentLevel = (string.IsNullOrEmpty(currentLevel)) ? level : string.Format("{0}\\{1}", currentLevel, level);
+                parentItem = list.FirstOrDefault(i => i.Identifier == currentLevel);
+                if (parentItem == null)
+                    return null;
+                list = parentItem.Items;
             }
-            return null;
+            return parentItem;
         }
 
         public int InsertItems(string parentItemId, List<SynchItem> Items)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(parentItemId))
+                throw new ArgumentNullException("parentItemId");
+            if (_items == null)
+                return 0;
+            if (Items == null || Items.Count == 0)
+                return 0;
+            SynchItem parentItem = GetParentItem(parentItemId);
+            if (parentItem.Items.FirstOrDefault(i=>Items.Contains(i,new SynchItemEqualityComparer()))!=null)
+            {
+                parentItem.Items.AddRange(Items);
+                return Items.Count;
+            }
+            return 0;
         }
 
         public void UpdateItem(string Identifier, string Name)

@@ -95,14 +95,30 @@ namespace MySynch.Tests
             Assert.AreEqual(_initialLoad[0].Items[2].Items[2].Items[0].Items, actualItems);
         }
 
+        [Test]
         public void ListItems_NoItems_UnderParent()
         {
-            Assert.Fail();
+            SynchItemManager sim = new SynchItemManager(_initialLoad);
+
+            var actualItems = sim.ListItems(@"root\200");
+
+            Assert.AreEqual(0,actualItems.Count);
+
+            actualItems = sim.ListItems(@"root\300\330\331\331");
+            Assert.AreEqual(0, actualItems.Count);
         }
 
+        [Test]
         public void ListItems_NoParentItem()
         {
-            Assert.Fail();
+            SynchItemManager sim = new SynchItemManager(_initialLoad);
+
+            var actualItems = sim.ListItems(@"root\210");
+
+            Assert.IsNull(actualItems);
+
+            actualItems = sim.ListItems(@"root\300\330\331\331\331");
+            Assert.IsNull(actualItems);
         }
 
         public void InsertItems_Parent_Empty()
