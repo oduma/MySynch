@@ -260,35 +260,79 @@ namespace MySynch.Tests
 
         }
 
-
+        [Test]
         public void RemoveItem_Ok()
         {
-            Assert.Fail();
+            SynchItemManager sim = new SynchItemManager(_initialLoad);
+
+            var result = sim.RemoveItem(@"root\300\330\331");
+
+            Assert.True(result);
+
+            var actualItems = sim.ListItems(@"root\300\330");
+            Assert.AreEqual(1, actualItems.Count);
+
+            sim.RemoveItem(@"root");
+
+            actualItems = sim.ListAllItems();
+            Assert.AreEqual(0, actualItems.Count);
+            
         }
 
-        public void RemoveItem_NoItem()
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void RemoveItem_NoItem_Sent()
         {
-            Assert.Fail();
+            SynchItemManager sim = new SynchItemManager(_initialLoad);
+
+            sim.RemoveItem("");
+
         }
 
-        public void RemoveItem_Item_Has_SubItems()
+        [Test]
+        [ExpectedException(typeof(ArgumentException))]
+        public void RemoveItem_Item_NoItem()
         {
-            Assert.Fail();
+            SynchItemManager sim = new SynchItemManager(_initialLoad);
+
+            sim.RemoveItem(@"root\400");
         }
 
+        [Test]
         public void RemoveItems_Ok()
         {
-            Assert.Fail();
+            SynchItemManager sim = new SynchItemManager(_initialLoad);
+
+            var result = sim.RemoveItems(@"root\300\330");
+
+            Assert.AreEqual(2,result);
+
+            var actualItems = sim.ListItems(@"root\300\330");
+            Assert.AreEqual(0, actualItems.Count);
+
+            sim.RemoveItems(@"root");
+
+            actualItems = sim.ListAllItems();
+            Assert.AreEqual(1, actualItems.Count);
+
         }
 
-        public void RemoveItems_NoParent()
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void RemoveItems_NoParent_Sent()
         {
-            Assert.Fail();
+            SynchItemManager sim = new SynchItemManager(_initialLoad);
+
+            var result = sim.RemoveItems(null);
         }
 
+        [Test]
+        [ExpectedException(typeof(ArgumentException))]
         public void RemoveItems_ParentEmpty()
         {
-            Assert.Fail();
+            SynchItemManager sim = new SynchItemManager(_initialLoad);
+
+            var result = sim.RemoveItems(@"root\400");
         }
     }
 }

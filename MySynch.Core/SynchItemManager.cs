@@ -104,12 +104,47 @@ namespace MySynch.Core
 
         public bool RemoveItem(string Identifier)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(Identifier))
+                throw new ArgumentNullException("Identifier");
+            if (_items == null)
+                return false;
+            var item=GetItem(Identifier);
+            if (item == null)
+                throw new ArgumentException("Item not found", "Identifier");
+            var parentItem = GetParentItem(Identifier);
+            if (parentItem == null)
+            {
+                _items = new List<SynchItem>();
+                return true;
+            }
+            parentItem.Items.Remove(item);
+            return true;
+        }
+
+        private SynchItem GetParentItem(string Identifier)
+        {
+            string[] levels = Identifier.Split(new char[] { '\\' });
+            if (levels.Count() <= 1)
+                return null;
+            string parentIdentifier=string.Empty;
+            for(int i=0;i<levels.Count()-1;i++)
+                parentIdentifier= (string.IsNullOrEmpty(parentIdentifier)) ? levels[i] : string.Format("{0}\\{1}", parentIdentifier, levels[i]);
+
+            return GetItem(parentIdentifier);
         }
 
         public int RemoveItems(string parentItemId)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(parentItemId))
+                throw new ArgumentNullException("parentItemId");
+            if (_items == null)
+                return 0;
+            var item = GetItem(parentItemId);
+            if (item == null)
+                throw new ArgumentException("Item not found", "parentItemId");
+            var itemsCount = item.Items.Count;
+            item.Items.Clear();
+            return itemsCount;
         }
     }
 }
