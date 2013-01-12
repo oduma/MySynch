@@ -36,7 +36,16 @@ namespace MySynch.Tests
         /// </summary>
         private List<SynchItem> _initialLoad;
 
-        
+        /// <summary>
+        /// root\200\
+        ///     210
+        ///         211
+        ///         212
+        ///     220
+        ///         220
+        ///             221
+        /// </summary>
+        private List<SynchItem> _additionalLoad;
 
         [SetUp]
         public void SetUp()
@@ -61,6 +70,16 @@ namespace MySynch.Tests
                             new SynchItem{Name="332", Identifier=@"root\300\330\332", Items= new List<SynchItem>{
                                 new SynchItem{Name="332", Identifier=@"root\300\330\332\332"},
                                 new SynchItem{Name="333", Identifier=@"root\300\330\332\333"}}}}}}}}}};
+
+            _additionalLoad = new List<SynchItem>{
+                new SynchItem{Identifier=@"root\200\210", Name="210",Items=new List<SynchItem>{
+                    new SynchItem{Identifier=@"root\200\210\211",Name="211"},
+                    new SynchItem {Identifier=@"root\200\210\212",Name="212"}}},
+                new SynchItem{Identifier=@"root\200\220", Name="220",Items=new List<SynchItem>{
+                    new SynchItem{Identifier=@"root\200\220\220",Name="220",Items= new List<SynchItem>{
+                        new SynchItem{Identifier=@"root\200\220\220\221", Name="221"}
+                    }}
+                }}};
         }
 
         [Test]
@@ -121,40 +140,126 @@ namespace MySynch.Tests
             Assert.IsNull(actualItems);
         }
 
+        [Test]
         public void InsertItems_Parent_Empty()
         {
-            Assert.Fail();
+            SynchItemManager sim = new SynchItemManager(_initialLoad);
+            var result = sim.InsertItems(@"root\200", _additionalLoad);
+
+            Assert.AreEqual(2, result);
+            var actualItems = sim.ListItems(@"root\200");
+
+            Assert.IsNotNull(actualItems);
+
+            Assert.AreEqual(actualItems, _additionalLoad);
+            
         }
 
-        public void InsertItems_Parent_NotEmpty()
+        [Test]
+        public void InsertItems_Parent_NotEmpty_DuplicateItems()
         {
-            Assert.Fail();
+            SynchItemManager sim = new SynchItemManager(_initialLoad);
+            sim.InsertItems(@"root\200", _additionalLoad);
+            var result = sim.InsertItems(@"root\200", _additionalLoad);
+
+            Assert.AreEqual(0, result);
+            var actualItems = sim.ListItems(@"root\200");
+
+            Assert.IsNotNull(actualItems);
+
+            Assert.AreEqual(actualItems, _additionalLoad);
+
         }
 
+        [Test]
+        public void InsertItems_Parent_NotEmpty_NoDuplicateItems()
+        {
+            SynchItemManager sim = new SynchItemManager(_initialLoad);
+            sim.InsertItems(@"root\200", _additionalLoad);
+            List<SynchItem> otherItems = new List<SynchItem> { new SynchItem { Identifier = @"root\200\230", Name = "230" }, new SynchItem { Identifier = @"root\200\240", Name = "240" } };
+
+            var result = sim.InsertItems(@"root\200", otherItems);
+
+            Assert.AreEqual(2, result);
+            var actualItems = sim.ListItems(@"root\200");
+
+            Assert.IsNotNull(actualItems);
+
+            Assert.AreEqual(4, actualItems.Count);
+
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentException))]
         public void InsertItems_Parent_NotPresent()
         {
-            Assert.Fail();
+
+            SynchItemManager sim = new SynchItemManager(_initialLoad);
+            sim.InsertItems(@"root\400", _additionalLoad);
         }
 
+        [Test]
         public void InsertItems_NoItems()
         {
-            Assert.Fail();
+            SynchItemManager sim = new SynchItemManager(_initialLoad);
+            var result = sim.InsertItems(@"root\200", null);
+            Assert.AreEqual(0, result);
+            result=sim.InsertItems(@"root\200", new List<SynchItem>());
+
+            Assert.AreEqual(0, result);
+            var actualItems = sim.ListItems(@"root\200");
+
+            Assert.IsNotNull(actualItems);
+
+            Assert.AreEqual(0, actualItems.Count);
         }
 
+        [Test]
         public void UpdateItem_Ok()
         {
-            Assert.Fail();
+            SynchItemManager sim = new SynchItemManager(_initialLoad);
+
+            sim.UpdateItem(@"root\300\330\331\331","item update 1");
+
+            sim.UpdateItem(@"root\300\330\331", "item update 2");
+
+            var actualItems = sim.ListItems(@"root\300\330");
+            Assert.AreEqual("item update 2", actualItems[0].Name);
+
+            Assert.AreEqual("item update 1", actualItems[0].Items[0].Name);
+
         }
 
-        public void UpdateItem_NoParent()
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void UpdateItem_NoItem_Sent()
         {
-            Assert.Fail();
+            SynchItemManager sim = new SynchItemManager(_initialLoad);
+
+            sim.UpdateItem(null, "item update 1");
+
         }
 
+        [Test]
+        [ExpectedException(typeof(ArgumentException))]
         public void UpdateItem_NoItem()
         {
-            Assert.Fail();
+            SynchItemManager sim = new SynchItemManager(_initialLoad);
+
+            sim.UpdateItem(@"root\400", "item update 1");
+
         }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void UpdateItem_NoUpdate_Sent()
+        {
+            SynchItemManager sim = new SynchItemManager(_initialLoad);
+
+            sim.UpdateItem(@"root", null);
+
+        }
+
 
         public void RemoveItem_Ok()
         {

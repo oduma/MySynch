@@ -37,15 +37,15 @@ namespace MySynch.Core
             if (_items == null)
                 return new List<SynchItem>();
 
-            SynchItem parentItem = GetParentItem(parentItemId);
+            SynchItem parentItem = GetItem(parentItemId);
             if (parentItem == null)
                 return null;
             return (parentItem.Items)??new List<SynchItem>();
         }
 
-        private SynchItem GetParentItem(string parentItemId)
+        private SynchItem GetItem(string itemId)
         {
-            string[] levels = parentItemId.Split(new char[] { '\\' });
+            string[] levels = itemId.Split(new char[] { '\\' });
 
             SynchItem parentItem = null;
             string currentLevel = string.Empty;
@@ -71,8 +71,16 @@ namespace MySynch.Core
                 return 0;
             if (Items == null || Items.Count == 0)
                 return 0;
-            SynchItem parentItem = GetParentItem(parentItemId);
-            if (parentItem.Items.FirstOrDefault(i=>Items.Contains(i,new SynchItemEqualityComparer()))!=null)
+            SynchItem parentItem = GetItem(parentItemId);
+            if (parentItem == null)
+                throw new ArgumentException("Item not found", parentItemId);
+
+            if (parentItem.Items == null)
+            {
+                parentItem.Items = Items;
+                return Items.Count;
+            }
+            if (parentItem.Items.FirstOrDefault(i=>Items.Contains(i,new SynchItemEqualityComparer()))==null)
             {
                 parentItem.Items.AddRange(Items);
                 return Items.Count;
@@ -82,7 +90,16 @@ namespace MySynch.Core
 
         public void UpdateItem(string Identifier, string Name)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(Identifier))
+                throw new ArgumentNullException("Identifier");
+            if (string.IsNullOrEmpty(Name))
+                throw new ArgumentNullException("Name");
+            if (_items == null)
+                return;
+            var item = GetItem(Identifier);
+            if (item == null)
+                throw new ArgumentException("Item not found", "Identifier");
+            item.Name = Name;
         }
 
         public bool RemoveItem(string Identifier)
