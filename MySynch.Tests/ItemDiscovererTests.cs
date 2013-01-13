@@ -15,6 +15,7 @@ namespace MySynch.Tests
         {
             var item = ItemDiscoverer.DiscoverFromFolder(@"Data\Test");
             Assert.IsNotNull(item);
+            Assert.AreEqual("Test",item.Name);
             Assert.AreEqual(3,item.Items.Count);
             Assert.AreEqual(1,item.Items[0].Items.Count);
         }

@@ -15,27 +15,6 @@ namespace MySynch.Utils
     {
         internal static readonly HeadingInfo headingInfo = new HeadingInfo(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name, System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
 
-        public class Options
-        {
-
-            [Option("t", "test", DefaultValue = true, HelpText = "Generates a xml file based on data from memory.", MutuallyExclusiveSet = "action")]
-            public bool BuildTestXml { get; set; }
-
-            [Option("i", "inFolder", DefaultValue = "", HelpText = "Generates a xml file based on data from the folder structure.", MutuallyExclusiveSet = "action")]
-            public string StartFromFolder { get; set; }
-
-            [Option("o", "outputFile", DefaultValue = "items.xml", HelpText = "The name of the xml file  to be generated.", Required = true)]
-            public string OutputFile { get; set; }
-
-            [HelpOption("?", null, HelpText = "Display this help on the screen.")]
-            public string GetUssage()
-            {
-                HelpText help = new HelpText(Program.headingInfo);
-                help.AddOptions(this);
-                return help.ToString();
-            }
-        }
-
         static void Main(string[] args)
         {
 
@@ -43,7 +22,7 @@ namespace MySynch.Utils
             var options = new Options();
 
             ICommandLineParser parser= new CommandLineParser();
-            if (parser.ParseArguments(args, options))
+            if (parser.ParseArguments(args, options,Console.Error))
             {
                 if (options.BuildTestXml)
                 {
@@ -62,7 +41,7 @@ namespace MySynch.Utils
 
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(SynchItem));
 
-            using (FileStream fs = new FileStream(outputFile, FileMode.CreateNew))
+            using (FileStream fs = new FileStream(outputFile, FileMode.Create))
                 xmlSerializer.Serialize(fs, synchItem);
 
         }

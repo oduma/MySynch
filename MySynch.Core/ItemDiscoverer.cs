@@ -19,8 +19,8 @@ namespace MySynch.Core
                                              {
                                                  Identifier = path,
                                                  Name =
-                                                     path.Substring(path.LastIndexOf(@"\"),
-                                                                    path.Length - path.LastIndexOf(@"\")),
+                                                     path.Substring(path.LastIndexOf(@"\") + 1,
+                                                                    path.Length - path.LastIndexOf(@"\")-1),
                                                  Items = GetSubFoldersOrFiles(path)
                                              };
         }
@@ -35,8 +35,8 @@ namespace MySynch.Core
                     {
                         Identifier = file,
                         Name =
-                            file.Substring(path.LastIndexOf(@"\"),
-                                 file.Length - file.LastIndexOf(@"\"))
+                            file.Substring(file.LastIndexOf(@"\") + 1,
+                                 file.Length - file.LastIndexOf(@"\") - 1)
                     });
             var folders = Directory.GetDirectories(path);
             if(folders.Length !=0)
