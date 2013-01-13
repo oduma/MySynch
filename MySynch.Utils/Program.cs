@@ -37,13 +37,21 @@ namespace MySynch.Utils
 
         private static void BuildFromFolder(string startFromFolder, string outputFile)
         {
-            var synchItem = ItemDiscoverer.DiscoverFromFolder(startFromFolder);
+            var itemDiscoverer = new ItemDiscoverer();
+
+            itemDiscoverer.DiscoveringFolder += new EventHandler<FolderDiscoveredArg>(itemDiscoverer_DiscoveringFolder);
+            var synchItem = itemDiscoverer.DiscoverFromFolder(startFromFolder);
 
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(SynchItem));
 
             using (FileStream fs = new FileStream(outputFile, FileMode.Create))
                 xmlSerializer.Serialize(fs, synchItem);
 
+        }
+
+        static void itemDiscoverer_DiscoveringFolder(object sender, FolderDiscoveredArg e)
+        {
+            Console.WriteLine(e.Folder);
         }
 
         private static void BuildTestXml(string outputFile)

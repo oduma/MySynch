@@ -4,17 +4,20 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using MySynch.Core.DataTypes;
+using MySynch.Core.Interfaces;
 
 namespace MySynch.Core
 {
-    public static class ItemDiscoverer
+    public class ItemDiscoverer:IItemDiscoverer
     {
-        public static SynchItem DiscoverFromFolder(string path)
+        public SynchItem DiscoverFromFolder(string path)
         {
             if(string.IsNullOrEmpty(path))
                 throw new ArgumentNullException("path");
             if(!Directory.Exists(path))
                 throw new ArgumentException("Directory does not exist", "path");
+            if(DiscoveringFolder!=null)
+                DiscoveringFolder(this,new FolderDiscoveredArg(path));
             return new SynchItem
                                              {
                                                  Identifier = path,
@@ -25,7 +28,9 @@ namespace MySynch.Core
                                              };
         }
 
-        private static List<SynchItem> GetSubFoldersOrFiles(string path)
+        public event EventHandler<FolderDiscoveredArg> DiscoveringFolder;
+
+        private List<SynchItem> GetSubFoldersOrFiles(string path)
         {
             List<SynchItem> list= new List<SynchItem>();
             var files = Directory.GetFiles(path);

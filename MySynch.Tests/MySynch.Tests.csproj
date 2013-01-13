@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Data\items.xml" />
+    <Content Include="Data\test.xml" />
     <Content Include="Data\Test\F1\F11\F12\F12.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

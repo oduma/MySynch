@@ -19,6 +19,7 @@ namespace MySynch.Core.DataTypes
             set;
         }
 
+        public string RelativeName { get; set; }
         public List<SynchItem> Items
         {
             get;
