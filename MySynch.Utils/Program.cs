@@ -4,13 +4,70 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
+using CommandLine;
+using CommandLine.Text;
+using MySynch.Core;
 using MySynch.Core.DataTypes;
 
 namespace MySynch.Utils
 {
     class Program
     {
+        internal static readonly HeadingInfo headingInfo = new HeadingInfo(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name, System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
+
+        public class Options
+        {
+
+            [Option("t", "test", DefaultValue = true, HelpText = "Generates a xml file based on data from memory.", MutuallyExclusiveSet = "action")]
+            public bool BuildTestXml { get; set; }
+
+            [Option("i", "inFolder", DefaultValue = "", HelpText = "Generates a xml file based on data from the folder structure.", MutuallyExclusiveSet = "action")]
+            public string StartFromFolder { get; set; }
+
+            [Option("o", "outputFile", DefaultValue = "items.xml", HelpText = "The name of the xml file  to be generated.", Required = true)]
+            public string OutputFile { get; set; }
+
+            [HelpOption("?", null, HelpText = "Display this help on the screen.")]
+            public string GetUssage()
+            {
+                HelpText help = new HelpText(Program.headingInfo);
+                help.AddOptions(this);
+                return help.ToString();
+            }
+        }
+
         static void Main(string[] args)
+        {
+
+
+            var options = new Options();
+
+            ICommandLineParser parser= new CommandLineParser();
+            if (parser.ParseArguments(args, options))
+            {
+                if (options.BuildTestXml)
+                {
+                    BuildTestXml(options.OutputFile);
+                }
+                else if (!string.IsNullOrEmpty(options.StartFromFolder))
+                {
+                    BuildFromFolder(options.StartFromFolder, options.OutputFile);
+                }
+            }
+        }
+
+        private static void BuildFromFolder(string startFromFolder, string outputFile)
+        {
+            var synchItem = ItemDiscoverer.DiscoverFromFolder(startFromFolder);
+
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(SynchItem));
+
+            using (FileStream fs = new FileStream(outputFile, FileMode.CreateNew))
+                xmlSerializer.Serialize(fs, synchItem);
+
+        }
+
+        private static void BuildTestXml(string outputFile)
         {
             List<SynchItem> _initialLoad = new List<SynchItem> {
                 new SynchItem{Name="root",Identifier="root",Items=new List<SynchItem>{
@@ -33,10 +90,10 @@ namespace MySynch.Utils
                                 new SynchItem{Name="332", Identifier=@"root\300\330\332\332"},
                                 new SynchItem{Name="333", Identifier=@"root\300\330\332\333"}}}}}}}}}};
 
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof (SynchItem));
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(SynchItem));
 
-            using (FileStream fs = new FileStream("items.xml", FileMode.CreateNew))
-                xmlSerializer.Serialize(fs,_initialLoad[0]);
+            using (FileStream fs = new FileStream(outputFile, FileMode.CreateNew))
+                xmlSerializer.Serialize(fs, _initialLoad[0]);
         }
     }
 }
