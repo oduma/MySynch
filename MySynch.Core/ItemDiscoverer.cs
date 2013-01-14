@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using MySynch.Core.DataTypes;
 using MySynch.Core.Interfaces;
 
@@ -10,6 +8,15 @@ namespace MySynch.Core
 {
     public class ItemDiscoverer:IItemDiscoverer
     {
+        private string _rootPath;
+
+        private readonly static string _rootPlaceHolder="root";
+
+        public ItemDiscoverer(string rootPath)
+        {
+            _rootPath = rootPath;
+        }
+
         public SynchItem DiscoverFromFolder(string path)
         {
             if(string.IsNullOrEmpty(path))
@@ -20,7 +27,7 @@ namespace MySynch.Core
                 DiscoveringFolder(this,new FolderDiscoveredArg(path));
             return new SynchItem
                                              {
-                                                 Identifier = path,
+                                                 Identifier = path.Replace(_rootPath,_rootPlaceHolder),
                                                  Name =
                                                      path.Substring(path.LastIndexOf(@"\") + 1,
                                                                     path.Length - path.LastIndexOf(@"\")-1),
@@ -38,7 +45,7 @@ namespace MySynch.Core
                 foreach (string file in files)
                     list.Add(new SynchItem
                     {
-                        Identifier = file,
+                        Identifier = file.Replace(_rootPath,_rootPlaceHolder),
                         Name =
                             file.Substring(file.LastIndexOf(@"\") + 1,
                                  file.Length - file.LastIndexOf(@"\") - 1)

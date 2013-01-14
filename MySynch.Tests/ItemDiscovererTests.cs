@@ -14,7 +14,7 @@ namespace MySynch.Tests
         [Test]
         public void DiscoverFromFolder_Ok()
         {
-            var itemDiscoverer = new ItemDiscoverer();
+            var itemDiscoverer = new ItemDiscoverer(@"Data\Test");
             itemDiscoverer.DiscoveringFolder += new EventHandler<Core.DataTypes.FolderDiscoveredArg>(itemDiscoverer_DiscoveringFolder);
             var item = itemDiscoverer.DiscoverFromFolder(@"Data\Test");
             Assert.IsNotNull(item);
@@ -32,7 +32,7 @@ namespace MySynch.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public void DiscoverFromFolder_NoFolder_Sent()
         {
-            var itemDiscoverer = new ItemDiscoverer();
+            var itemDiscoverer = new ItemDiscoverer(@"Data\Test");
             var item = itemDiscoverer.DiscoverFromFolder(null);
         }
 
@@ -40,7 +40,7 @@ namespace MySynch.Tests
         [ExpectedException(typeof(ArgumentException))]
         public void DiscoverFromFolder_NoFolder_Exists()
         {
-            var itemDiscoverer = new ItemDiscoverer();
+            var itemDiscoverer = new ItemDiscoverer(@"Data\Test1");
             var item = itemDiscoverer.DiscoverFromFolder(@"Data\Test1");
         }
 

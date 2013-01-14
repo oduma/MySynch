@@ -37,7 +37,7 @@ namespace MySynch.Utils
 
         private static void BuildFromFolder(string startFromFolder, string outputFile)
         {
-            var itemDiscoverer = new ItemDiscoverer();
+            var itemDiscoverer = new ItemDiscoverer(startFromFolder);
 
             itemDiscoverer.DiscoveringFolder += new EventHandler<FolderDiscoveredArg>(itemDiscoverer_DiscoveringFolder);
             var synchItem = itemDiscoverer.DiscoverFromFolder(startFromFolder);
