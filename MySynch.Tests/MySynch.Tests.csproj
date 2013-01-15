@@ -46,6 +46,7 @@
     <Compile Include="ChangeApplyerTests.cs" />
     <Compile Include="ItemDiscovererTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SameSystemCopierTests.cs" />
     <Compile Include="SynchItemManagerTests.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -63,6 +64,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\Output\Test\F1\F12\F121.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Output\Test\F1\F13\F131.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\test.xml" />
