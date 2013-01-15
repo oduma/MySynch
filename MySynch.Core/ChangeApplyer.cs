@@ -18,8 +18,6 @@ namespace MySynch.Core
                 throw new ArgumentNullException("changePushPackage");
             if(string.IsNullOrEmpty(targetRootFolder))
                 throw new ArgumentNullException("targetRootFolder");
-            if(!Directory.Exists(targetRootFolder))
-                throw new ArgumentException("Folder does not exist.","targetRootFolder");
             if(copyMethod==null)
                 throw new ArgumentNullException("copyMethod");
             _copyMethod = copyMethod;
@@ -47,11 +45,15 @@ namespace MySynch.Core
             return result;
         }
 
-        private bool ApplyUpserts(IEnumerable<ChangePushItem> inserts, string targetRootFolder, string sourceRootName)
+        private bool ApplyUpserts(IEnumerable<ChangePushItem> upserts, string targetRootFolder, string sourceRootName)
         {
             bool result = true;
-            foreach (ChangePushItem insert in inserts)
-                result = result && _copyMethod(insert.AbsolutePath, insert.AbsolutePath.Replace(sourceRootName, targetRootFolder));
+            foreach (ChangePushItem upsert in upserts)
+            {
+                var tempResult = _copyMethod(upsert.AbsolutePath,
+                                             upsert.AbsolutePath.Replace(sourceRootName, targetRootFolder));
+                result = result && tempResult;
+            }
             return result;
         }
     }

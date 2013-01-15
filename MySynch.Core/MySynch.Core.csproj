@@ -73,12 +73,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChangeApplyer.cs" />
+    <Compile Include="DataTypes\ChangePushItem.cs" />
     <Compile Include="DataTypes\FolderDiscoveredArg.cs" />
+    <Compile Include="DataTypes\ChangePushPackage.cs" />
+    <Compile Include="DataTypes\OperationType.cs" />
+    <Compile Include="Interfaces\IChangeApplyer.cs" />
+    <Compile Include="Interfaces\IChangeDiscoverer.cs" />
     <Compile Include="Interfaces\IItemDiscoverer.cs" />
     <Compile Include="Interfaces\ISynchItemManager.cs" />
     <Compile Include="ItemDiscoverer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DataTypes\SynchItem.cs" />
+    <Compile Include="SameSystemCopier.cs" />
     <Compile Include="SynchItemEqualityComparer.cs" />
     <Compile Include="SynchItemManager.cs" />
   </ItemGroup>
