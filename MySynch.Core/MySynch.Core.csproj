@@ -80,6 +80,7 @@
     <Compile Include="DataTypes\OperationType.cs" />
     <Compile Include="Interfaces\IChangeApplyer.cs" />
     <Compile Include="Interfaces\IChangeDiscoverer.cs" />
+    <Compile Include="Interfaces\IChangePublisher.cs" />
     <Compile Include="Interfaces\IItemDiscoverer.cs" />
     <Compile Include="Interfaces\ISynchItemManager.cs" />
     <Compile Include="ItemDiscoverer.cs" />
