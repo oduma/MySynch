@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using MySynch.Core;
 
 namespace MySynch.ClientConsole
 {
@@ -10,42 +11,12 @@ namespace MySynch.ClientConsole
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Monitoring... (press enter to stop it)");
+            Console.WriteLine("Monitoring... (close this window to stop it)");
             //Start monitoring the queue and respond to a number of situations
-            string sourceRootFolder;
-            FileSystemWatcher fsWatcher= new FileSystemWatcher(sourceRootFolder);
-            fsWatcher.Created += new FileSystemEventHandler(fsWatcher_Created);
-            fsWatcher.Changed += new FileSystemEventHandler(fsWatcher_Changed);
-            fsWatcher.Deleted += new FileSystemEventHandler(fsWatcher_Deleted);
-            fsWatcher.Renamed += new RenamedEventHandler(fsWatcher_Renamed);
-            
-            do
-            {
-                
-            } while (Console.ReadLine()!=string.Empty);
-
+            string sourceRootFolder=@"C:\Code\Sciendo\MySynch\MySynch.ClientConsole\bin\Debug";
+            FSWatcher fsWatcher= new FSWatcher(sourceRootFolder,Environment.MachineName);
+            Console.WriteLine("Monitoring path: " + fsWatcher.Path);
+            System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);
         }
-
-        static void fsWatcher_Renamed(object sender, RenamedEventArgs e)
-        {
-            //queue a delete
-            //queue an insert
-        }
-
-        static void fsWatcher_Deleted(object sender, FileSystemEventArgs e)
-        {
-            //queue a delete
-        }
-
-        static void fsWatcher_Changed(object sender, FileSystemEventArgs e)
-        {
-            //queue an update;
-        }
-
-        static void fsWatcher_Created(object sender, FileSystemEventArgs e)
-        {
-            //queue an insert;
-        }
-
     }
 }
