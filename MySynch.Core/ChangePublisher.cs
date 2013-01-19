@@ -19,6 +19,8 @@ namespace MySynch.Core
             _sourceRootName = sourceRootName;
         }
 
+        public event EventHandler<ItemsQueuedEventArgs> ItemsQueued;
+
         public void QueueInsert(string absolutePath)
         {
             if (string.IsNullOrEmpty(absolutePath))
@@ -35,6 +37,8 @@ namespace MySynch.Core
                 _temporaryStore[absolutePath] = operationType;
             else
                 _temporaryStore.Add(absolutePath, operationType);
+            if(ItemsQueued!=null)
+                ItemsQueued(this,new ItemsQueuedEventArgs(_temporaryStore));
         }
 
         public void QueueUpdate(string absolutePath)

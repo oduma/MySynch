@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using MySynch.Core.DataTypes;
+using MySynch.Core.Interfaces;
 
 namespace MySynch.Core
 {
@@ -9,8 +9,14 @@ namespace MySynch.Core
     {
         public string Path { get; private set; }
 
+        public event EventHandler<ItemsQueuedEventArgs> ItemsQueued;
+
+        private IChangePublisher _changePublisher;
+
         public FSWatcher(string _folderToWatch,string sourceName)
         {
+            _changePublisher = new ChangePublisher(sourceName, _folderToWatch);
+            _changePublisher.ItemsQueued += _changePublisher_ItemsQueued;
 
             FileSystemWatcher fsWatcher = new FileSystemWatcher(_folderToWatch);
 
@@ -23,46 +29,36 @@ namespace MySynch.Core
             fsWatcher.EnableRaisingEvents = true;
         }
 
+        void _changePublisher_ItemsQueued(object sender, ItemsQueuedEventArgs e)
+        {
+            if (ItemsQueued != null)
+                ItemsQueued(this, e);
+        }
+
         private void fsWatcher_Renamed(object sender, RenamedEventArgs e)
         {
             //queue a delete
             //queue an insert
-            PushADelete(e.OldFullPath);
-            PushAnInsert(e.FullPath);
-
-        }
-
-        private void PushAnInsert(string fullPath)
-        {
-            Console.WriteLine("Pushing an insert for " +fullPath);
-        }
-
-        private void PushADelete(string fullPath)
-        {
-            Console.WriteLine("Pushing an delete for " + fullPath);
+            _changePublisher.QueueDelete(e.OldFullPath);
+            _changePublisher.QueueInsert(e.FullPath);
         }
 
         private void fsWatcher_Deleted(object sender, FileSystemEventArgs e)
         {
             //queue a delete
-            PushADelete(e.FullPath);
+            _changePublisher.QueueDelete(e.FullPath);
         }
 
         private void fsWatcher_Changed(object sender, FileSystemEventArgs e)
         {
             //queue an update;
-            PushAnUpdate(e.FullPath);
-        }
-
-        private void PushAnUpdate(string fullPath)
-        {
-            Console.WriteLine("Pushing an update for " + fullPath);
+            _changePublisher.QueueUpdate(e.FullPath);
         }
 
         private void fsWatcher_Created(object sender, FileSystemEventArgs e)
         {
             //queue an insert;
-            PushAnInsert(e.FullPath);
+            _changePublisher.QueueInsert(e.FullPath);
         }
 
     }

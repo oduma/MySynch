@@ -78,6 +78,7 @@
     <Compile Include="DataTypes\ChangePushItem.cs" />
     <Compile Include="DataTypes\FolderDiscoveredArg.cs" />
     <Compile Include="DataTypes\ChangePushPackage.cs" />
+    <Compile Include="DataTypes\ItemsQueuedEventArgs.cs" />
     <Compile Include="DataTypes\OperationType.cs" />
     <Compile Include="FSWatcher.cs" />
     <Compile Include="Interfaces\IChangeApplyer.cs" />
