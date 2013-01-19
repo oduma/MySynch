@@ -9,7 +9,6 @@ namespace MySynch.Core
     {
         public string Path { get; private set; }
 
-        private ChangePushPackage _changePackage;
         public FSWatcher(string _folderToWatch,string sourceName)
         {
 
@@ -22,14 +21,6 @@ namespace MySynch.Core
             fsWatcher.Deleted += fsWatcher_Deleted;
             fsWatcher.Renamed += fsWatcher_Renamed;
             fsWatcher.EnableRaisingEvents = true;
-
-            _changePackage = new ChangePushPackage
-                                 {
-                                     Source = sourceName,
-                                     SourceRootName = _folderToWatch,
-                                     ChangePushItems = new List<ChangePushItem>()
-                                 };
-
         }
 
         private void fsWatcher_Renamed(object sender, RenamedEventArgs e)

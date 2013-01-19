@@ -1,12 +1,15 @@
-﻿using MySynch.Core.DataTypes;
+﻿using System.Collections.Generic;
+using MySynch.Core.DataTypes;
 
 namespace MySynch.Core.Interfaces
 {
     public interface IChangePublisher
     {
-        int MaxItemsPerPackage { get; set; }
+        void QueueInsert(string absolutePath);
 
-        void QueueChange(ChangePushItem item);
+        void QueueUpdate(string absolutePath);
+
+        void QueueDelete(string absolutePath);
 
         ChangePushPackage PublishPackage();
     }
