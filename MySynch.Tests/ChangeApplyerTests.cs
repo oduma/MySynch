@@ -143,7 +143,7 @@ namespace MySynch.Tests
                                                               {
                                                                   new ChangePushItem
                                                                       {
-                                                                          AbsolutePath = @"Data\Test\F1\F12\F12.xml",
+                                                                          AbsolutePath = @"Data\Test\F1\F12\F122.xml",
                                                                           OperationType = OperationType.Delete
                                                                       },
                                                                   new ChangePushItem
@@ -158,12 +158,10 @@ namespace MySynch.Tests
                                                                       }
                                                               }
             };
-            Assert.True(File.Exists(@"Data\Output\Test\F1\F12\F12.xml"));
+            Assert.True(File.Exists(@"Data\Output\Test\F1\F12\F122.xml"));
             Assert.False(File.Exists(@"Data\Output\Test\F12\F13.xml"));
-            Assert.True(File.Exists(@"Data\Output\Test\F1\F12\F121.xml"));
             Assert.False(changeApplyer.ApplyChangePackage(deletePackage, @"Data\Output\Test", fakeMethod));
-            Assert.False(File.Exists(@"Data\Output\Test\F1\F12\F12.xml"));
-            Assert.False(File.Exists(@"Data\Output\Test\F1\F12\F121.xml"));
+            Assert.False(File.Exists(@"Data\Output\Test\F1\F12\F122.xml"));
             Assert.False(File.Exists(@"Data\Output\Test\F12\F13.xml"));
 
         }

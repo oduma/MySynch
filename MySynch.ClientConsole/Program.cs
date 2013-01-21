@@ -11,7 +11,7 @@ namespace MySynch.ClientConsole
             Console.WriteLine("Monitoring... (close this window to stop it)");
             //Start monitoring the queue and respond to a number of situations
             string sourceRootFolder=@"C:\Code\Sciendo\MySynch\MySynch.ClientConsole\bin\Debug";
-            FSWatcher fsWatcher= new FSWatcher(sourceRootFolder,Environment.MachineName);
+            FSWatcher fsWatcher= new FSWatcher(sourceRootFolder);
             fsWatcher.ItemsQueued += fsWatcher_ItemsQueued;
             Console.WriteLine("Monitoring path: " + fsWatcher.Path);
             System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);

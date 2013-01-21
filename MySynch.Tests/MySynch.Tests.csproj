@@ -31,6 +31,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core">
+      <HintPath>..\..\..\CW3.1\net40\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor">
+      <HintPath>..\..\..\CW3.1\net40\Castle.Windsor.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.1\lib\nunit.framework.dll</HintPath>
     </Reference>
@@ -45,10 +51,17 @@
   <ItemGroup>
     <Compile Include="ChangeApplyerTests.cs" />
     <Compile Include="ChangePublisherTests.cs" />
+    <Compile Include="ComponentResolverTests.cs" />
+    <Compile Include="DistributorTests.cs" />
+    <Compile Include="GenerateADistributorMapFile.cs" />
     <Compile Include="ItemDiscovererTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SameSystemCopierTests.cs" />
+    <Compile Include="Stubs\ChangeApplyerNotPresent.cs" />
+    <Compile Include="Stubs\ChangePublisherNotPresent.cs" />
+    <Compile Include="Stubs\SameSystemCopierNotPresent.cs" />
     <Compile Include="SynchItemManagerTests.cs" />
+    <Compile Include="Stubs\TestInstaller.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -60,11 +73,24 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Data\distributormap.xml" />
+    <Content Include="Data\distributormap1.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\distributormap2.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Data\items.xml" />
     <Content Include="Data\Output\Test\F1\F12\F12.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\Output\Test\F1\F12\F121.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Output\Test\F1\F12\F122.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Output\Test\F1\F12\F123.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\Output\Test\F1\F13\F131.xml">

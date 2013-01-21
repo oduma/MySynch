@@ -64,6 +64,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core">
+      <HintPath>..\..\..\CW3.1\net40\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor">
+      <HintPath>..\..\..\CW3.1\net40\Castle.Windsor.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -75,29 +81,45 @@
   <ItemGroup>
     <Compile Include="ChangeApplyer.cs" />
     <Compile Include="ChangePublisher.cs" />
+    <Compile Include="ComponentResolver.cs" />
     <Compile Include="DataTypes\ChangePushItem.cs" />
     <Compile Include="DataTypes\FolderDiscoveredArg.cs" />
     <Compile Include="DataTypes\ChangePushPackage.cs" />
     <Compile Include="DataTypes\ItemsQueuedEventArgs.cs" />
     <Compile Include="DataTypes\OperationType.cs" />
+    <Compile Include="DataTypes\PublisherInfo.cs" />
+    <Compile Include="DataTypes\Status.cs" />
+    <Compile Include="DataTypes\SubscriberInfo.cs" />
+    <Compile Include="Distributor.cs" />
     <Compile Include="FSWatcher.cs" />
+    <Compile Include="DataTypes\HeartbeatResponse.cs" />
+    <Compile Include="DataTypes\AvailableChannel.cs" />
     <Compile Include="Interfaces\IChangeApplyer.cs" />
     <Compile Include="Interfaces\IChangeDiscoverer.cs" />
     <Compile Include="Interfaces\IChangePublisher.cs" />
+    <Compile Include="Interfaces\ICommunicationCopmonent.cs" />
+    <Compile Include="Interfaces\ICopyStrategy.cs" />
+    <Compile Include="Interfaces\IDistributor.cs" />
     <Compile Include="Interfaces\IItemDiscoverer.cs" />
+    <Compile Include="Interfaces\IPublisher.cs" />
     <Compile Include="Interfaces\ISynchItemManager.cs" />
     <Compile Include="ItemDiscoverer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DataTypes\SynchItem.cs" />
     <Compile Include="PublisherSetupException.cs" />
+    <Compile Include="MySynchInstaller.cs" />
     <Compile Include="SameSystemCopier.cs" />
     <Compile Include="SynchItemEqualityComparer.cs" />
     <Compile Include="SynchItemManager.cs" />
+    <Compile Include="Utilities\Serializer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="Core.cd" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="distributionmapfile.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

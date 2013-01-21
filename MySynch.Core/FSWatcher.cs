@@ -13,9 +13,10 @@ namespace MySynch.Core
 
         private IChangePublisher _changePublisher;
 
-        public FSWatcher(string _folderToWatch,string sourceName)
+        public FSWatcher(string _folderToWatch)
         {
-            _changePublisher = new ChangePublisher(sourceName, _folderToWatch);
+            _changePublisher = new ChangePublisher();
+            _changePublisher.Initialize(_folderToWatch);
             _changePublisher.ItemsQueued += _changePublisher_ItemsQueued;
 
             FileSystemWatcher fsWatcher = new FileSystemWatcher(_folderToWatch);

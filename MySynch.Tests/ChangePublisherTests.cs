@@ -19,14 +19,16 @@ namespace MySynch.Tests
         [SetUp]
         public void SetUp()
         {
-            _expectedPackage = new ChangePushPackage { Source = "source1", SourceRootName = "source root name 1" };
-            _changePublisherForThreads= new ChangePublisher("source1", "source root name 1");
+            _expectedPackage = new ChangePushPackage { Source = Environment.MachineName, SourceRootName = "source root name 1" };
+            _changePublisherForThreads= new ChangePublisher();
+            _changePublisherForThreads.Initialize("source root name 1");
         }
 
         [Test]
         public void QueueOneOperationAtATime_Ok()
         {
-            ChangePublisher changePublisher = new ChangePublisher("source1","source root name 1");
+            ChangePublisher changePublisher = new ChangePublisher();
+            changePublisher.Initialize("source root name 1");
 
             changePublisher.QueueInsert("item one");
 
@@ -82,7 +84,8 @@ namespace MySynch.Tests
         [Test]
         public void QueueOperationsSomeDuplicates_NonThreaded_Ok()
         {
-            ChangePublisher changePublisher = new ChangePublisher("source1", "source root name 1");
+            ChangePublisher changePublisher = new ChangePublisher();
+            changePublisher.Initialize("source root name 1");
 
             changePublisher.QueueInsert("item one");
 
@@ -144,7 +147,8 @@ namespace MySynch.Tests
         [Test]
         public void QueueInsert_Nothing_Sent()
         {
-            ChangePublisher changePublisher = new ChangePublisher("source1", "source root name 1");
+            ChangePublisher changePublisher = new ChangePublisher();
+            changePublisher.Initialize("source root name 1");
 
             changePublisher.QueueInsert("");
 
@@ -156,7 +160,8 @@ namespace MySynch.Tests
         [Test]
         public void QueueUpdate_Nothing_Sent()
         {
-            ChangePublisher changePublisher = new ChangePublisher("source1", "source root name 1");
+            ChangePublisher changePublisher = new ChangePublisher( );
+            changePublisher.Initialize("source root name 1");
 
             changePublisher.QueueUpdate(null);
 
@@ -168,7 +173,9 @@ namespace MySynch.Tests
         [Test]
         public void QueueDelete_Nothing_Sent()
         {
-            ChangePublisher changePublisher = new ChangePublisher("source1", "source root name 1");
+            ChangePublisher changePublisher = new ChangePublisher( );
+
+            changePublisher.Initialize("source root name 1");
 
             changePublisher.QueueDelete(string.Empty);
 
@@ -182,7 +189,7 @@ namespace MySynch.Tests
         [ExpectedException(typeof(PublisherSetupException))]
         public void PublishPackage_Not_Enough_Info()
         {
-            ChangePublisher changePublisher = new ChangePublisher("", null);
+            ChangePublisher changePublisher = new ChangePublisher();
 
             changePublisher.QueueDelete(string.Empty);
 

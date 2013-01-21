@@ -3,7 +3,7 @@ using MySynch.Core.DataTypes;
 
 namespace MySynch.Core.Interfaces
 {
-    public interface IChangePublisher
+    public interface IChangePublisher:IPublisher
     {
         event EventHandler<ItemsQueuedEventArgs> ItemsQueued;
         
@@ -13,6 +13,6 @@ namespace MySynch.Core.Interfaces
 
         void QueueDelete(string absolutePath);
 
-        ChangePushPackage PublishPackage();
+        void Initialize(string rootFolder);
     }
 }

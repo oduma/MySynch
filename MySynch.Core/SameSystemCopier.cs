@@ -1,11 +1,12 @@
 ﻿using System;
 using System.IO;
+using MySynch.Core.Interfaces;
 
 namespace MySynch.Core
 {
-    public static class SameSystemCopier
+    public class SameSystemCopier:ICopyStrategy
     {
-        public static bool Copy(string source, string target)
+        public bool Copy(string source, string target)
         {
             if(string.IsNullOrEmpty(source))
                 throw new ArgumentNullException("source");

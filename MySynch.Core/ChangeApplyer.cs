@@ -56,5 +56,15 @@ namespace MySynch.Core
             }
             return result;
         }
+
+        public string MachineName
+        {
+            get { return Environment.MachineName; }
+        }
+
+        public HeartbeatResponse GetHeartbeat()
+        {
+            return new HeartbeatResponse {Status = true};
+        }
     }
 }
