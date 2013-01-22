@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MySynch.Core.DataTypes;
-using MySynch.Core.Interfaces;
+using MySynch.Contracts;
+using MySynch.Contracts.Messages;
 
 namespace MySynch.Tests.Stubs
 {

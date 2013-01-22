@@ -1,16 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
-namespace MySynch.Core.DataTypes
+namespace MySynch.Contracts.Messages
 {
+    [DataContract]
     public class ChangePushPackage
     {
+        [DataMember]
         public string Source { get; set; }
 
+        [DataMember]
         public string SourceRootName { get; set; }
 
+        [DataMember]
         public List<ChangePushItem> ChangePushItems { get; set; }
     }
 }

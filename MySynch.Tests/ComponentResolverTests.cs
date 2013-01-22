@@ -1,4 +1,5 @@
-﻿using MySynch.Core;
+﻿using MySynch.Contracts;
+using MySynch.Core;
 using MySynch.Core.Interfaces;
 using NUnit.Framework;
 

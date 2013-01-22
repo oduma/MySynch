@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Castle.MicroKernel.Registration;
+using MySynch.Contracts;
 using MySynch.Core.DataTypes;
 using MySynch.Core.Interfaces;
 using MySynch.Core.Utilities;

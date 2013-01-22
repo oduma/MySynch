@@ -1,4 +1,5 @@
 ﻿using System;
+using MySynch.Contracts;
 using MySynch.Core.DataTypes;
 
 namespace MySynch.Core.Interfaces

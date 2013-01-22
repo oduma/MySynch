@@ -67,6 +67,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MySynch.Contracts\MySynch.Contracts.csproj">
+      <Project>{EE4C1C53-0F1E-40D1-ACAB-0BF493593424}</Project>
+      <Name>MySynch.Contracts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MySynch.Core\MySynch.Core.csproj">
       <Project>{EB0395B1-04DE-4402-AB45-4AE7693326A8}</Project>
       <Name>MySynch.Core</Name>
@@ -79,6 +83,7 @@
     </Content>
     <Content Include="Data\distributormap2.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Data\items.xml" />
     <Content Include="Data\Output\Test\F1\F12\F12.xml">
