@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using MySynch.Core.WCF.Clients;
+using MySynch.Tests.Stubs;
+using NUnit.Framework;
 
 namespace MySynch.Tests
 {
@@ -8,19 +10,12 @@ namespace MySynch.Tests
         [Test]
         public void GetChannel_NoChannels_Cached()
         {
-            Assert.Fail();
+            ChannelFactoryPool channelFactoryPool = ChannelFactoryPool.Instance;
+            var channelFactory = channelFactoryPool.GetChannelFactory<ITest1>("test1");
+            Assert.IsNotNull(channelFactory);
+            Assert.AreEqual("http://localhost:8000/test1",channelFactory.Endpoint.Address.Uri.ToString());
+
         }
 
-        [Test]
-        public void GetChannel_ChannelReturnedFromCache()
-        {
-            Assert.Fail();
-        }
-
-        [Test]
-        public void GetChannel_TwoChannelsForTheSameType()
-        {
-            Assert.Fail();
-        }
     }
 }
