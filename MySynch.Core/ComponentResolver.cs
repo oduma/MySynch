@@ -1,6 +1,7 @@
 ﻿using System;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
+using MySynch.Core.WCF.Clients;
 
 namespace MySynch.Core
 {
@@ -24,5 +25,19 @@ namespace MySynch.Core
                 throw new NotImplementedException();
             }
         }
+        public T Resolve<T>(string name,string endpointName)
+        {
+            try
+            {
+                T result = _container.Resolve<T>(name);
+                ((IInitiateClient)result).InitiateUsingEndpoint(endpointName);
+                return result;
+            }
+            catch
+            {
+                throw new NotImplementedException();
+            }
+        }
+
     }
 }

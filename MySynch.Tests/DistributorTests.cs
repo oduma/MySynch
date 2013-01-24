@@ -38,7 +38,7 @@ namespace MySynch.Tests
         }
 
         [Test]
-        public void ChannelGoesDownPermanently_Ok()
+        public void ChannelGoesDownPermanentlyOnlyOneChanelLocal_Ok()
         {
             Distributor distributor = new Distributor();
             distributor.InitiateDistributionMap(@"Data\distributormap2.xml", new TestInstaller());

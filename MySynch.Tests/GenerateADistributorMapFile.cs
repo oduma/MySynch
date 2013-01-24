@@ -20,14 +20,14 @@ namespace MySynch.Tests
             AvailableChannel availableChannel= new AvailableChannel();
             availableChannel.CopyStartegyName = "ICopyStrategy.Local";
             availableChannel.PublisherInfo= new PublisherInfo();
-            availableChannel.PublisherInfo.MachineName = Environment.MachineName;
+            availableChannel.PublisherInfo.EndpointName = Environment.MachineName;
             availableChannel.PublisherInfo.PublisherInstanceName = "IPublisher.Local";
             availableChannel.Status = Status.NotChecked;
             availableChannel.SubscriberInfo= new SubscriberInfo();
-            availableChannel.SubscriberInfo.MachineName = Environment.MachineName;
+            availableChannel.SubscriberInfo.EndpointName = Environment.MachineName;
             availableChannel.SubscriberInfo.SubScriberName = "ISubscriber.Local";
-            availableChannel.UniqueKey = availableChannel.PublisherInfo.MachineName + "to" +
-                                         availableChannel.SubscriberInfo.MachineName;
+            availableChannel.UniqueKey = availableChannel.PublisherInfo.EndpointName + "to" +
+                                         availableChannel.SubscriberInfo.EndpointName;
             availableChannels.Add(availableChannel);
 
             XmlSerializer xmlSerializer= new XmlSerializer(typeof(List<AvailableChannel>));

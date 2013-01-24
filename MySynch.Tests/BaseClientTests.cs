@@ -10,7 +10,7 @@ namespace MySynch.Tests
         [Test]
         public void CreateABaseClient_Ok()
         {
-            BaseClient<ITest1> baseClient= new BaseClient<ITest1>("test2");
+            ITest1Proxy baseClient= new ClientImplementation();
             Assert.IsNotNull(baseClient);
         }
 

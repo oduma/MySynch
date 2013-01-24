@@ -3,11 +3,11 @@
   <AvailableChannel>
     <PublisherInfo>
       <PublisherInstanceName>IPublisher.Local</PublisherInstanceName>
-      <MachineName>SCIENDO-LAPTOP</MachineName>
+      <EndpointName></EndpointName>
     </PublisherInfo>
     <SubscriberInfo>
       <SubScriberName>ISubscriber.NotPresent</SubScriberName>
-      <MachineName>SCIENDO-LAPTOP</MachineName>
+      <EndpointName></EndpointName>
     </SubscriberInfo>
     <CopyStartegyName>ICopyStrategy.Local</CopyStartegyName>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>

@@ -14,6 +14,8 @@ namespace MySynch.Tests
         [Test]
         public void Copy_Ok()
         {
+            if (File.Exists(@"Data\Output\Test\F1\F13\F13.xml"))
+                File.Delete(@"Data\Output\Test\F1\F13\F13.xml");
             Assert.False(File.Exists(@"Data\Output\Test\F1\F13\F13.xml"));
             Assert.True(new SameSystemCopier().Copy(@"Data\Test\F1\F11\F13\F13.xml", @"Data\Output\Test\F1\F13\F13.xml"));
             Assert.True(File.Exists(@"Data\Output\Test\F1\F13\F13.xml"));
@@ -22,6 +24,8 @@ namespace MySynch.Tests
         [Test]
         public void Copy_TargetParentFolder_Doesnt_Exist()
         {
+            if (File.Exists(@"Data\Output\Test\F1\F11\F13\F13.xml"))
+                File.Delete(@"Data\Output\Test\F1\F11\F13\F13.xml");
             Assert.False(File.Exists(@"Data\Output\Test\F1\F11\F13\F13.xml"));
             Assert.True(new SameSystemCopier().Copy(@"Data\Test\F1\F11\F13\F13.xml", @"Data\Output\Test\F1\F11\F13\F13.xml"));
             Assert.True(File.Exists(@"Data\Output\Test\F1\F11\F13\F13.xml"));

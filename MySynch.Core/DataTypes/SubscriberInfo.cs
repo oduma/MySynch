@@ -4,6 +4,6 @@
     {
         public string SubScriberName { get; set; }
 
-        public string MachineName { get; set; }
+        public string EndpointName { get; set; }
     }
 }

@@ -3,12 +3,12 @@ using System.ServiceModel;
 
 namespace MySynch.Core.WCF.Clients
 {
-    public class BaseClient<T> : IDisposable
+    public abstract class BaseClient<T> : IDisposable,IInitiateClient
     {
         private ICommunicationObject _channel;
-        protected T Proxy;
+        public T Proxy;
 
-        public BaseClient(string endpointName)
+        public void InitiateUsingEndpoint(string endpointName)
         {
             ChannelFactory<T> channelFactory;
             try

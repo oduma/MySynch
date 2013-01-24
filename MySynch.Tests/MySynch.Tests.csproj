@@ -63,7 +63,9 @@
     <Compile Include="SameSystemCopierTests.cs" />
     <Compile Include="Stubs\ChangeApplyerNotPresent.cs" />
     <Compile Include="Stubs\ChangePublisherNotPresent.cs" />
+    <Compile Include="Stubs\ClientImplementation.cs" />
     <Compile Include="Stubs\ITest1.cs" />
+    <Compile Include="Stubs\ITest1Proxy.cs" />
     <Compile Include="Stubs\SameSystemCopierNotPresent.cs" />
     <Compile Include="SynchItemManagerTests.cs" />
     <Compile Include="Stubs\TestInstaller.cs" />
@@ -87,7 +89,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Data\distributormap.xml" />
+    <Content Include="Data\distributormap.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Data\distributormap1.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

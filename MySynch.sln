@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySynch.WindowsService", "M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySynch.Core.WCF.Clients", "MySynch.Core.WCF.Clients\MySynch.Core.WCF.Clients.csproj", "{39D279A7-FAF1-4801-A847-F4BD472C5002}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySynch.Proxies", "MySynch.Proxies\MySynch.Proxies.csproj", "{9C0061E1-9FF4-4BEC-A050-C2D21908354B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,6 +97,16 @@ Global
 		{39D279A7-FAF1-4801-A847-F4BD472C5002}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{39D279A7-FAF1-4801-A847-F4BD472C5002}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{39D279A7-FAF1-4801-A847-F4BD472C5002}.Release|x86.ActiveCfg = Release|Any CPU
+		{9C0061E1-9FF4-4BEC-A050-C2D21908354B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C0061E1-9FF4-4BEC-A050-C2D21908354B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C0061E1-9FF4-4BEC-A050-C2D21908354B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{9C0061E1-9FF4-4BEC-A050-C2D21908354B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{9C0061E1-9FF4-4BEC-A050-C2D21908354B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9C0061E1-9FF4-4BEC-A050-C2D21908354B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C0061E1-9FF4-4BEC-A050-C2D21908354B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C0061E1-9FF4-4BEC-A050-C2D21908354B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{9C0061E1-9FF4-4BEC-A050-C2D21908354B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{9C0061E1-9FF4-4BEC-A050-C2D21908354B}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

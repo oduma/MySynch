@@ -6,6 +6,7 @@ using MySynch.Contracts;
 using MySynch.Core.DataTypes;
 using MySynch.Core.Interfaces;
 using MySynch.Core.Utilities;
+using MySynch.Proxies;
 
 namespace MySynch.Core
 {
@@ -37,31 +38,86 @@ namespace MySynch.Core
 
         private void CheckChannel(AvailableChannel availableChannel)
         {
-            var publisher = _componentResolver.Resolve<IPublisher>(availableChannel.PublisherInfo.PublisherInstanceName);
-            if(!publisher.GetHeartbeat().Status)
-            {
-                if (availableChannel.NoOfFailedAttempts < _maxNoOfFailedAttempts)
-                {
-                    availableChannel.Status = Status.OfflineTemporary;
-                    availableChannel.NoOfFailedAttempts++;
-                }
-                else
-                    availableChannel.Status = Status.OfflinePermanent;
+            if (!PublisherAlive(availableChannel))
                 return;
-            }
-            var subscriber = _componentResolver.Resolve<IChangeApplyer>(availableChannel.SubscriberInfo.SubScriberName);
-            if (!subscriber.GetHeartbeat().Status)
-            {
-                if (availableChannel.NoOfFailedAttempts < _maxNoOfFailedAttempts)
-                {
-                    availableChannel.Status = Status.OfflineTemporary;
-                    availableChannel.NoOfFailedAttempts++;
-                }
-                else
-                    availableChannel.Status = Status.OfflinePermanent;
+
+            ;
+            if (!SubscriberAlive(availableChannel))
                 return;
-            }
             availableChannel.Status = Status.Ok;
+        }
+
+        private bool SubscriberAlive(AvailableChannel availableChannel)
+        {
+            if (string.IsNullOrEmpty(availableChannel.SubscriberInfo.EndpointName))
+            {
+                //the publisher has to be local
+                var subscriberLocal = _componentResolver.Resolve<IChangeApplyer>(availableChannel.SubscriberInfo.SubScriberName);
+                if (!subscriberLocal.GetHeartbeat().Status)
+                {
+                    if (availableChannel.NoOfFailedAttempts < _maxNoOfFailedAttempts)
+                    {
+                        availableChannel.Status = Status.OfflineTemporary;
+                        availableChannel.NoOfFailedAttempts++;
+                    }
+                    else
+                        availableChannel.Status = Status.OfflinePermanent;
+                    return false;
+                }
+                return true;
+            }
+            //the publisher has to be remote
+            var subscriberRemote =
+                _componentResolver.Resolve<ISubscriberProxy>(availableChannel.SubscriberInfo.SubScriberName,
+                                                                availableChannel.SubscriberInfo.EndpointName);
+            if (!subscriberRemote.GetHeartbeat().Status)
+            {
+                if (availableChannel.NoOfFailedAttempts < _maxNoOfFailedAttempts)
+                {
+                    availableChannel.Status = Status.OfflineTemporary;
+                    availableChannel.NoOfFailedAttempts++;
+                }
+                else
+                    availableChannel.Status = Status.OfflinePermanent;
+                return false;
+            }
+            return true;
+        }
+
+        private bool PublisherAlive(AvailableChannel availableChannel)
+        {
+            if (string.IsNullOrEmpty(availableChannel.PublisherInfo.EndpointName))
+            {
+                //the publisher has to be local
+                var localPublisher = _componentResolver.Resolve<IPublisher>(availableChannel.PublisherInfo.PublisherInstanceName);
+                if (!localPublisher.GetHeartbeat().Status)
+                {
+                    if (availableChannel.NoOfFailedAttempts < _maxNoOfFailedAttempts)
+                    {
+                        availableChannel.Status = Status.OfflineTemporary;
+                        availableChannel.NoOfFailedAttempts++;
+                    }
+                    else
+                        availableChannel.Status = Status.OfflinePermanent;
+                    return false;
+                }
+                return true;
+            }
+            //the publisher has to be remote
+            var remotePublisher = _componentResolver.Resolve<IPublisherProxy>(availableChannel.PublisherInfo.PublisherInstanceName, 
+                                                                                availableChannel.PublisherInfo.EndpointName);
+            if (!remotePublisher.GetHeartbeat().Status)
+            {
+                if (availableChannel.NoOfFailedAttempts < _maxNoOfFailedAttempts)
+                {
+                    availableChannel.Status = Status.OfflineTemporary;
+                    availableChannel.NoOfFailedAttempts++;
+                }
+                else
+                    availableChannel.Status = Status.OfflinePermanent;
+                return false;
+            }
+            return true;
         }
     }
 }

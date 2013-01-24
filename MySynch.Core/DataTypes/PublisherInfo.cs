@@ -4,6 +4,6 @@
     {
         public string PublisherInstanceName { get; set; }
 
-        public string MachineName { get; set; }
+        public string EndpointName { get; set; }
     }
 }

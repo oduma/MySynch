@@ -118,6 +118,14 @@
       <Project>{EE4C1C53-0F1E-40D1-ACAB-0BF493593424}</Project>
       <Name>MySynch.Contracts</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MySynch.Core.WCF.Clients\MySynch.Core.WCF.Clients.csproj">
+      <Project>{39D279A7-FAF1-4801-A847-F4BD472C5002}</Project>
+      <Name>MySynch.Core.WCF.Clients</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MySynch.Proxies\MySynch.Proxies.csproj">
+      <Project>{9C0061E1-9FF4-4BEC-A050-C2D21908354B}</Project>
+      <Name>MySynch.Proxies</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
