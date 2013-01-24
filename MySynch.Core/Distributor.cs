@@ -25,6 +25,8 @@ namespace MySynch.Core
 
         public void InitiateDistributionMap(string mapFile,IWindsorInstaller installer)
         {
+            if(installer==null)
+                throw new ArgumentNullException("installer");
             _componentResolver.RegisterAll(installer);
             if(string.IsNullOrEmpty(mapFile))
                 throw new ArgumentNullException();

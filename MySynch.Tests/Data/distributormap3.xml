@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<ArrayOfAvailableChannel xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <AvailableChannel>
+    <PublisherInfo>
+      <PublisherInstanceName>IPublisher.Remote.NotPresent</PublisherInstanceName>
+      <EndpointName>endpoint1</EndpointName>
+    </PublisherInfo>
+    <SubscriberInfo>
+      <SubScriberName>ISubscriber.Local</SubScriberName>
+      <EndpointName></EndpointName>
+    </SubscriberInfo>
+    <CopyStartegyName>ICopyStrategy.Local</CopyStartegyName>
+    <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
+    <Status>NotChecked</Status>
+    <NoOfFailedAttempts>0</NoOfFailedAttempts>
+  </AvailableChannel>
+</ArrayOfAvailableChannel>
