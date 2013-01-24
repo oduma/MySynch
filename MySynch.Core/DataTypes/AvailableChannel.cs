@@ -1,4 +1,6 @@
-﻿namespace MySynch.Core.DataTypes
+﻿using MySynch.Core.Interfaces;
+
+namespace MySynch.Core.DataTypes
 {
     public class AvailableChannel
     {
@@ -7,6 +9,8 @@
         public SubscriberInfo SubscriberInfo { get; set; }
 
         public string CopyStartegyName { get; set; }
+
+        public ICopyStrategy CopyStrategy { get; set; }
 
         public string UniqueKey { get; set; }
 

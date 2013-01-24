@@ -83,6 +83,11 @@ namespace MySynch.Core
             }
         }
 
+        public void RemovePackage(ChangePushPackage packagePublished)
+        {
+            throw new NotImplementedException();
+        }
+
         public string MachineName
         {
             get { return Environment.MachineName; }

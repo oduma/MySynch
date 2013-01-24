@@ -63,5 +63,30 @@ namespace MySynch.Proxies
             return response;
 
         }
+
+        public void RemovePackage(ChangePushPackage packagePublished)
+        {
+            try
+            {
+                using (new OperationContextScope((IContextChannel)Proxy))
+                {
+                    Proxy.RemovePackage(packagePublished);
+
+                }
+            }
+            catch (CommunicationException e)
+            {
+                OnCommunicationException(e);
+            }
+            catch (TimeoutException e)
+            {
+                OnTimeoutException(e);
+            }
+            catch (Exception e)
+            {
+                OnException(e);
+            }
+
+        }
     }
 }

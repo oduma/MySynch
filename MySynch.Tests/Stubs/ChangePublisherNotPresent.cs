@@ -20,5 +20,10 @@ namespace MySynch.Tests.Stubs
         {
             throw new NotImplementedException();
         }
+
+        public void RemovePackage(ChangePushPackage packagePublished)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

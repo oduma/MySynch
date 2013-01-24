@@ -8,5 +8,8 @@ namespace MySynch.Contracts
     {
         [OperationContract]
         ChangePushPackage PublishPackage();
+
+        [OperationContract]
+        void RemovePackage(ChangePushPackage packagePublished);
     }
 }
