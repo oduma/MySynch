@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MySynch.Contracts.Messages;
 using MySynch.Core.DataTypes;
 using MySynch.Core.Interfaces;
@@ -73,19 +74,32 @@ namespace MySynch.Core
             lock (_lock)
             {
                 ChangePushPackage changePushPackage = new ChangePushPackage
-                                                          {Source = Environment.MachineName, SourceRootName = _sourceRootName};
+                                                          {Source = Environment.MachineName,
+                                                              SourceRootName = _sourceRootName,PackageId=Guid.NewGuid()};
                 List<ChangePushItem> _pushItems= new List<ChangePushItem>();
                 foreach(string key in _temporaryStore.Keys)
                     _pushItems.Add(new ChangePushItem{AbsolutePath = key,OperationType = _temporaryStore[key]});
                 _temporaryStore.Clear();
                 changePushPackage.ChangePushItems = _pushItems;
+                if(PublishedPackageNotDistributed==null)
+                    PublishedPackageNotDistributed= new List<ChangePushPackage>();
+                PublishedPackageNotDistributed.Add(changePushPackage);
                 return changePushPackage;
             }
         }
 
         public void RemovePackage(ChangePushPackage packagePublished)
         {
-            throw new NotImplementedException();
+            if(packagePublished==null)
+                throw new ArgumentNullException("publishedPackage");
+            lock (_lock)
+            {
+                var identifiedPackage =
+                    PublishedPackageNotDistributed.FirstOrDefault(p => p.PackageId == packagePublished.PackageId);
+                if (identifiedPackage == null)
+                    return;
+                PublishedPackageNotDistributed.Remove(identifiedPackage);
+            }
         }
 
         public string MachineName
@@ -97,5 +111,7 @@ namespace MySynch.Core
         {
             return new HeartbeatResponse {Status = true};
         }
+
+        internal List<ChangePushPackage> PublishedPackageNotDistributed { get; set; }
     }
 }

@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using MySynch.Contracts.Messages;
 using MySynch.Core;
-using MySynch.Core.DataTypes;
 using NUnit.Framework;
 
 namespace MySynch.Tests
@@ -196,6 +194,99 @@ namespace MySynch.Tests
             changePublisher.QueueDelete(string.Empty);
 
             changePublisher.PublishPackage();
+        }
+
+        [Test]
+        public void RemovePackage_Ok()
+        {
+            ChangePublisher changePublisher = new ChangePublisher();
+            changePublisher.Initialize("source root name 1");
+
+            changePublisher.QueueInsert("item one");
+
+            changePublisher.QueueUpdate("item one");
+
+            _expectedPackage.ChangePushItems = new List<ChangePushItem>
+                                                   {
+                                                       new ChangePushItem
+                                                           {
+                                                               AbsolutePath = "item one",
+                                                               OperationType = OperationType.Update
+                                                           }
+                                                   };
+            var publishedPackage = changePublisher.PublishPackage();
+
+            CompareTwoPackages(_expectedPackage,publishedPackage);
+
+            Assert.AreEqual(1, changePublisher.PublishedPackageNotDistributed.Count);
+            Assert.AreEqual(1,changePublisher.PublishedPackageNotDistributed[0].ChangePushItems.Count);
+            Assert.AreEqual(publishedPackage.PackageId,changePublisher.PublishedPackageNotDistributed[0].PackageId);
+            changePublisher.RemovePackage(publishedPackage);
+            Assert.AreEqual(0,changePublisher.PublishedPackageNotDistributed.Count);
+        }
+
+        [Test]
+        public void RemovePackage_AfterPackage_Changed()
+        {
+            ChangePublisher changePublisher = new ChangePublisher();
+            changePublisher.Initialize("source root name 1");
+
+            changePublisher.QueueInsert("item one");
+
+            changePublisher.QueueUpdate("item one");
+
+            _expectedPackage.ChangePushItems = new List<ChangePushItem>
+                                                   {
+                                                       new ChangePushItem
+                                                           {
+                                                               AbsolutePath = "item one",
+                                                               OperationType = OperationType.Update
+                                                           }
+                                                   };
+            var firstPublishedPackage = changePublisher.PublishPackage();
+
+            CompareTwoPackages(_expectedPackage, firstPublishedPackage);
+
+            Assert.AreEqual(1, changePublisher.PublishedPackageNotDistributed.Count);
+            Assert.AreEqual(1, changePublisher.PublishedPackageNotDistributed[0].ChangePushItems.Count);
+
+            changePublisher.QueueDelete("item one");
+            changePublisher.QueueInsert("item two");
+
+            _expectedPackage.ChangePushItems = new List<ChangePushItem>
+                                                   {
+                                                       new ChangePushItem
+                                                           {
+                                                               AbsolutePath = "item one",
+                                                               OperationType = OperationType.Delete
+                                                           },
+                                                       new ChangePushItem
+                                                           {
+                                                               AbsolutePath = "item two",
+                                                               OperationType = OperationType.Insert
+                                                           }
+                                                   };
+
+            var scndPublishedPackage = changePublisher.PublishPackage();
+
+            CompareTwoPackages(_expectedPackage, scndPublishedPackage);
+            Assert.AreEqual(2, changePublisher.PublishedPackageNotDistributed.Count);
+            Assert.AreEqual(2, changePublisher.PublishedPackageNotDistributed[1].ChangePushItems.Count);
+            Assert.AreEqual(firstPublishedPackage.PackageId, changePublisher.PublishedPackageNotDistributed[0].PackageId);
+            Assert.AreEqual(scndPublishedPackage.PackageId, changePublisher.PublishedPackageNotDistributed[1].PackageId);
+
+            changePublisher.RemovePackage(firstPublishedPackage);
+            Assert.AreEqual(1, changePublisher.PublishedPackageNotDistributed.Count);
+            Assert.AreEqual(scndPublishedPackage.PackageId, changePublisher.PublishedPackageNotDistributed[0].PackageId);
+        }
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void RemovePackage_NoPackageSent()
+        {
+            ChangePublisher changePublisher = new ChangePublisher();
+            changePublisher.Initialize("source root name 1");
+
+            changePublisher.RemovePackage(null);
         }
     }
 }

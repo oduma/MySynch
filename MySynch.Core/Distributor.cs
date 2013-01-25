@@ -33,12 +33,13 @@ namespace MySynch.Core
                     c => c.PublisherInfo.PublisherInstanceName + "-" + c.PublisherInfo.EndpointName);
             foreach (var publisherGroup in publisherGroups)
             {
-                var packagePublished = publisherGroup.Select(g => g).First().PublisherInfo.Publisher.PublishPackage();
+                var currentPublisher = publisherGroup.Select(g => g).First().PublisherInfo.Publisher;
+                var packagePublished = currentPublisher.PublishPackage();
                 if(packagePublished==null)
                     continue;
                 if (DistributeMessages(publisherGroup.Select(g => g), packagePublished))
                     //Publisher's messages not needed anymore
-                    publisherGroup.Select(g => g).First().PublisherInfo.Publisher.RemovePackage(packagePublished);
+                    currentPublisher.RemovePackage(packagePublished);
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace MySynch.Contracts.Messages
@@ -14,5 +15,8 @@ namespace MySynch.Contracts.Messages
 
         [DataMember]
         public List<ChangePushItem> ChangePushItems { get; set; }
+
+        [DataMember]
+        public Guid PackageId { get; set; }
     }
 }
