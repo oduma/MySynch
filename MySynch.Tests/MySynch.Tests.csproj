@@ -70,6 +70,7 @@
     <Compile Include="Stubs\MockRemotePublisherNotPresent.cs" />
     <Compile Include="Stubs\MockRemoteSubscriber.cs" />
     <Compile Include="Stubs\MockRemoteSubscriberNotPresent.cs" />
+    <Compile Include="Stubs\NoCopyCopyStrategy.cs" />
     <Compile Include="Stubs\SameSystemCopierNotPresent.cs" />
     <Compile Include="SynchItemManagerTests.cs" />
     <Compile Include="Stubs\TestInstaller.cs" />
@@ -113,6 +114,15 @@
     <Content Include="Data\distributormap4.xml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\distributormaplocal2local.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\distributormaplocal2localandremote.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\distributormaplocal2localandremoteNP.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\items.xml" />
     <Content Include="Data\Output\Test\F1\F12\F12.xml">

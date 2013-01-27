@@ -10,6 +10,6 @@ namespace MySynch.Core.Interfaces
 
         void DistributeMessages();
 
-        void InitiateDistributionMap(string mapFile,IWindsorInstaller installer);
+        void InitiateDistributionMap(string mapFile,ComponentResolver componentResolver);
     }
 }

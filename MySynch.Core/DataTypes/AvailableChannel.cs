@@ -1,4 +1,5 @@
-﻿using MySynch.Core.Interfaces;
+﻿using System.Xml.Serialization;
+using MySynch.Core.Interfaces;
 
 namespace MySynch.Core.DataTypes
 {
@@ -10,6 +11,7 @@ namespace MySynch.Core.DataTypes
 
         public string CopyStartegyName { get; set; }
 
+        [XmlIgnore]
         public ICopyStrategy CopyStrategy { get; set; }
 
         public string UniqueKey { get; set; }

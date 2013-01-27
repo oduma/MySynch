@@ -14,6 +14,7 @@ namespace MySynch.Core
             _container=(new WindsorContainer())
                 .Install(installer);
         }
+
         public T Resolve<T>(string name)
         {
             try
@@ -25,6 +26,7 @@ namespace MySynch.Core
                 throw new NotImplementedException();
             }
         }
+
         public T Resolve<T>(string name,string endpointName)
         {
             try
@@ -35,9 +37,21 @@ namespace MySynch.Core
             }
             catch
             {
-                throw new NotImplementedException();
+                throw new ComponentNotRegieteredException(typeof (T).FullName,
+                                                          "A component with the name: " + name + " not registered");
             }
         }
 
+        public T[] ResolveAll<T>()
+        {
+            try
+            {
+                return _container.ResolveAll<T>();
+            }
+            catch
+            {
+                throw new ComponentNotRegieteredException(typeof (T).FullName, "No components of this type registered.");
+            }
+        }
     }
 }

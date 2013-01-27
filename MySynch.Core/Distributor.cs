@@ -24,20 +24,27 @@ namespace MySynch.Core
         {
             //Recheck the AvailableChannels
             AvailableChannels.ForEach(CheckChannel);
-            
-            if(AvailableChannels.FirstOrDefault(c=>c.Status!=Status.Ok)!=null)
+
+            var availableChannels = AvailableChannels.Where(c => c.Status == Status.Ok);
+            if(availableChannels==null || availableChannels.Count()==0)
                 return;
             //the channels have to be processed in the order of the publisher
             var publisherGroups =
-                AvailableChannels.GroupBy(
+                availableChannels.GroupBy(
                     c => c.PublisherInfo.PublisherInstanceName + "-" + c.PublisherInfo.EndpointName);
             foreach (var publisherGroup in publisherGroups)
             {
+                var publisherChannelsNotAvailable =
+                    AvailableChannels.Count(
+                        c =>
+                        ((c.PublisherInfo.PublisherInstanceName + "-" + c.PublisherInfo.EndpointName) ==
+                         publisherGroup.Key) && c.Status != Status.Ok);
+
                 var currentPublisher = publisherGroup.Select(g => g).First().PublisherInfo.Publisher;
                 var packagePublished = currentPublisher.PublishPackage();
                 if(packagePublished==null)
                     continue;
-                if (DistributeMessages(publisherGroup.Select(g => g), packagePublished))
+                if (DistributeMessages(publisherGroup.Select(g => g), packagePublished) && publisherChannelsNotAvailable==0)
                     //Publisher's messages not needed anymore
                     currentPublisher.RemovePackage(packagePublished);
             }
@@ -51,19 +58,27 @@ namespace MySynch.Core
                 CheckChannel(channel);
                 if (channel.Status != Status.Ok)
                     return false;
-
-                if (!channel.SubscriberInfo.Subscriber.ApplyChangePackage(package, channel.SubscriberInfo.TargetRootFolder,
-                                                                     channel.CopyStrategy.Copy))
-                    result = false;
+                try
+                {
+                    if (!channel.SubscriberInfo.Subscriber.ApplyChangePackage(package, channel.SubscriberInfo.TargetRootFolder,
+                                                                         channel.CopyStrategy.Copy))
+                        result = false;
+                }
+                catch (Exception)
+                {
+                    result = false;                    
+                }
             }
             return result;
         }
 
-        public void InitiateDistributionMap(string mapFile,IWindsorInstaller installer)
+        public void InitiateDistributionMap(string mapFile,ComponentResolver componentResolver)
         {
-            if(installer==null)
-                throw new ArgumentNullException("installer");
-            _componentResolver.RegisterAll(installer);
+            if(componentResolver==null)
+                throw new ArgumentNullException("componentResolver");
+            CheckRegistration(componentResolver);
+            _componentResolver = componentResolver;
+           
             if(string.IsNullOrEmpty(mapFile))
                 throw new ArgumentNullException();
             if(!File.Exists(mapFile))
@@ -74,6 +89,16 @@ namespace MySynch.Core
             AvailableChannels.ForEach(CheckChannel);
             //Initialize all the active channels
             AvailableChannels.Where(c=>c.Status==Status.Ok).ForEach(InitializeChannel);
+        }
+
+        private static void CheckRegistration(ComponentResolver componentResolver)
+        {
+            componentResolver.ResolveAll<IPublisher>();
+            componentResolver.ResolveAll<IPublisherProxy>();
+            componentResolver.ResolveAll<ICopyStrategy>();
+            componentResolver.ResolveAll<IChangeApplyer>();
+            componentResolver.ResolveAll<ISubscriberProxy>();
+
         }
 
         private void InitializeChannel(AvailableChannel channel)
