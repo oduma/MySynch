@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DistributorMonitorClient.cs" />
+    <Compile Include="IDistributorMonitorProxy.cs" />
     <Compile Include="IPublisherProxy.cs" />
     <Compile Include="ISubscriberProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

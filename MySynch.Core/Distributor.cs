@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.ServiceModel;
 using Castle.Core.Internal;
-using Castle.MicroKernel.Registration;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
 using MySynch.Core.DataTypes;
@@ -42,8 +42,13 @@ namespace MySynch.Core
 
                 var currentPublisher = publisherGroup.Select(g => g).First().PublisherInfo.Publisher;
                 var packagePublished = currentPublisher.PublishPackage();
+
                 if(packagePublished==null)
                     continue;
+                IDistributorCallbacks callbacks = OperationContext.Current.GetCallbackChannel<IDistributorCallbacks>();
+
+                callbacks.PackagePublished(packagePublished);
+
                 if (DistributeMessages(publisherGroup.Select(g => g), packagePublished) && publisherChannelsNotAvailable==0)
                     //Publisher's messages not needed anymore
                     currentPublisher.RemovePackage(packagePublished);
@@ -60,8 +65,16 @@ namespace MySynch.Core
                     return false;
                 try
                 {
-                    if (!channel.SubscriberInfo.Subscriber.ApplyChangePackage(package, channel.SubscriberInfo.TargetRootFolder,
+                    if (channel.SubscriberInfo.Subscriber.ApplyChangePackage(package, channel.SubscriberInfo.TargetRootFolder,
                                                                          channel.CopyStrategy.Copy))
+                    {
+                        result = true;
+                        IDistributorCallbacks callbacks = OperationContext.Current.GetCallbackChannel<IDistributorCallbacks>();
+
+                        callbacks.PackageApplyed(package);
+
+                    }
+                    else
                         result = false;
                 }
                 catch (Exception)
