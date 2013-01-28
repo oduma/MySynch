@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using Castle.MicroKernel.Registration;
+using MySynch.Contracts;
 using MySynch.Core.DataTypes;
 
 namespace MySynch.Core.Interfaces
 {
-    public interface IDistributor
+    public interface IDistributor:IDistributorMonitor
     {
         List<AvailableChannel> AvailableChannels { get; }
 

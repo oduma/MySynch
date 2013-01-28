@@ -42,6 +42,21 @@ namespace MySynch.Core
             }
         }
 
+        public T Resolve<T, TCallBack>(TCallBack callbackInstance, string name, string endpointName) where TCallBack : class
+        {
+            try
+            {
+                T result = _container.Resolve<T>(name);
+                ((MySynch.Core.WCF.Clients.Duplex.IInitiateClient<TCallBack>)result).InitiateUsingEndpoint(callbackInstance, endpointName);
+                return result;
+            }
+            catch
+            {
+                throw new ComponentNotRegieteredException(typeof(T).FullName,
+                                                          "A component with the name: " + name + " not registered");
+            }
+        }
+
         public T[] ResolveAll<T>()
         {
             try
