@@ -1,9 +1,7 @@
 ﻿using System;
 using MySynch.Contracts;
+using MySynch.Contracts.Messages;
 using MySynch.Core;
-using MySynch.Core.DataTypes;
-using MySynch.Core.Interfaces;
-using MySynch.Proxies;
 using MySynch.Tests.Stubs;
 using NUnit.Framework;
 using System.Linq;
@@ -171,6 +169,17 @@ namespace MySynch.Tests
             distributor.DistributeMessages();
             Assert.AreEqual(1, changePublisher.PublishedPackageNotDistributed.Count);
             Assert.AreEqual(2, changePublisher.PublishedPackageNotDistributed[0].ChangePushItems.Count);
+        }
+
+        [Test]
+        public void ListAllComponents_Ok()
+        {
+            Distributor distributor = new Distributor();
+            distributor.InitiateDistributionMap(@"Data\distributormap.xml", _componentResolver);
+            var compo = distributor.ListAvailableComponentsTree();
+            Assert.IsNotNull(compo);
+            Assert.AreEqual(2,compo.AvailablePublishers.Count);
+
         }
 
     }

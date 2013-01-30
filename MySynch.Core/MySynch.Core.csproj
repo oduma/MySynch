@@ -84,14 +84,13 @@
     <Compile Include="ChangePublisher.cs" />
     <Compile Include="ComponentNotRegieteredException.cs" />
     <Compile Include="ComponentResolver.cs" />
+    <Compile Include="DataTypes\AvailableChannel.cs" />
     <Compile Include="DataTypes\FolderDiscoveredArg.cs" />
     <Compile Include="DataTypes\ItemsQueuedEventArgs.cs" />
     <Compile Include="DataTypes\PublisherInfo.cs" />
-    <Compile Include="DataTypes\Status.cs" />
     <Compile Include="DataTypes\SubscriberInfo.cs" />
     <Compile Include="Distributor.cs" />
     <Compile Include="FSWatcher.cs" />
-    <Compile Include="DataTypes\AvailableChannel.cs" />
     <Compile Include="Interfaces\IChangeDiscoverer.cs" />
     <Compile Include="Interfaces\IChangePublisher.cs" />
     <Compile Include="Interfaces\ICopyStrategy.cs" />

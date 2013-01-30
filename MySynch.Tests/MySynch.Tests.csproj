@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseClientTests.cs" />
+    <Compile Include="BugsProof.cs" />
     <Compile Include="ChangeApplyerTests.cs" />
     <Compile Include="ChangePublisherTests.cs" />
     <Compile Include="ComponentResolverTests.cs" />

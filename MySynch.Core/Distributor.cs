@@ -13,10 +13,12 @@ using MySynch.Proxies;
 
 namespace MySynch.Core
 {
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class Distributor:IDistributor
     {
         private ComponentResolver _componentResolver = new ComponentResolver();
         private readonly int _maxNoOfFailedAttempts = 3;
+        private List<AvailablePublisher> _allComponents;
 
         public List<AvailableChannel> AvailableChannels { get; private set; }
 
@@ -97,6 +99,8 @@ namespace MySynch.Core
             if(!File.Exists(mapFile))
                 throw new ArgumentException();
             AvailableChannels = Serializer.DeserializeFromFile<AvailableChannel>(mapFile);
+            _allComponents=new List<AvailablePublisher>();
+
             if(AvailableChannels==null || AvailableChannels.Count<=0)
                 throw new Exception("No channels in the map file");
             AvailableChannels.ForEach(CheckChannel);
@@ -200,8 +204,25 @@ namespace MySynch.Core
 
         private bool PublisherAlive(AvailableChannel availableChannel)
         {
+            AvailablePublisher availableComponent=new AvailablePublisher
+                                                      {
+                                                          Name =
+                                                              string.Format("{0}{1}",
+                                                                            availableChannel.PublisherInfo.
+                                                                                PublisherInstanceName,
+                                                                            (string.IsNullOrEmpty(
+                                                                                availableChannel.PublisherInfo.
+                                                                                    EndpointName))
+                                                                                ? ""
+                                                                                : "." +
+                                                                                  availableChannel.PublisherInfo.
+                                                                                      EndpointName),
+                                                          Status = Status.NotChecked
+                                                      };
+
             if (string.IsNullOrEmpty(availableChannel.PublisherInfo.EndpointName))
             {
+                availableComponent.IsLocal = true;
                 //the publisher has to be local
                 var localPublisher = _componentResolver.Resolve<IPublisher>(availableChannel.PublisherInfo.PublisherInstanceName);
                 if (!localPublisher.GetHeartbeat().Status)
@@ -210,14 +231,23 @@ namespace MySynch.Core
                     {
                         availableChannel.Status = Status.OfflineTemporary;
                         availableChannel.NoOfFailedAttempts++;
+                        availableComponent.Status = Status.OfflineTemporary;
                     }
                     else
+                    {
                         availableChannel.Status = Status.OfflinePermanent;
+                        availableComponent.Status = Status.OfflinePermanent;
+                    }
+                    UpsertComponent(availableComponent);
                     return false;
                 }
+                availableComponent.Status = Status.Ok;
+                UpsertComponent(availableComponent);
                 return true;
             }
             //the publisher has to be remote
+            availableComponent.IsLocal = false;
+
             var remotePublisher = _componentResolver.Resolve<IPublisherProxy>(availableChannel.PublisherInfo.PublisherInstanceName, 
                                                                                 availableChannel.PublisherInfo.EndpointName);
             if (!remotePublisher.GetHeartbeat().Status)
@@ -226,12 +256,40 @@ namespace MySynch.Core
                 {
                     availableChannel.Status = Status.OfflineTemporary;
                     availableChannel.NoOfFailedAttempts++;
+                    availableComponent.Status = Status.OfflineTemporary;
                 }
                 else
+                {
+                    availableComponent.Status = Status.OfflinePermanent;
                     availableChannel.Status = Status.OfflinePermanent;
+                }
+                UpsertComponent(availableComponent);
                 return false;
             }
+            availableComponent.Status = Status.Ok;
+            UpsertComponent(availableComponent);
             return true;
+        }
+
+        private void UpsertComponent(AvailablePublisher availableComponent)
+        {
+            var existingComponent = _allComponents.FirstOrDefault(p => p.Name == availableComponent.Name);
+            if(existingComponent==null)
+                _allComponents.Add(availableComponent);
+            else
+            {
+                existingComponent.Status = availableComponent.Status;
+            }
+        }
+
+        public DistributorComponent ListAvailableComponentsTree()
+        {
+            return new DistributorComponent {Name = Environment.MachineName, AvailablePublishers = _allComponents};
+        }
+
+        public HeartbeatResponse GetHeartbeat()
+        {
+            return new HeartbeatResponse {Status = true};
         }
     }
 }
