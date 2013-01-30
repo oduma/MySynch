@@ -1,9 +1,10 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace MySynch.Contracts.Messages
 {
     [DataContract]
-    public class AvailablePublisher
+    public class AvailableComponent
     {
         [DataMember]
         public string Name { get; set; }
@@ -13,5 +14,8 @@ namespace MySynch.Contracts.Messages
 
         [DataMember]
         public Status Status { get; set; }
+
+        [DataMember]
+        public List<AvailableComponent> DependentComponents { get; set; }
     }
 }

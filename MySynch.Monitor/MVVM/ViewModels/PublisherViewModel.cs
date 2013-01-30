@@ -5,7 +5,7 @@ namespace MySynch.Monitor.MVVM.ViewModels
 {
     internal class PublisherViewModel:ViewModelBase
     {
-        public PublisherViewModel(AvailablePublisher availablePublisher)
+        public PublisherViewModel(AvailableComponent availablePublisher)
         {
             PublisherName = availablePublisher.Name;
             IsLocal = availablePublisher.IsLocal;

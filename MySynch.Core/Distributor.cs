@@ -18,7 +18,7 @@ namespace MySynch.Core
     {
         private ComponentResolver _componentResolver = new ComponentResolver();
         private readonly int _maxNoOfFailedAttempts = 3;
-        private List<AvailablePublisher> _allComponents;
+        private List<AvailableComponent> _allComponents;
 
         public List<AvailableChannel> AvailableChannels { get; private set; }
 
@@ -99,7 +99,7 @@ namespace MySynch.Core
             if(!File.Exists(mapFile))
                 throw new ArgumentException();
             AvailableChannels = Serializer.DeserializeFromFile<AvailableChannel>(mapFile);
-            _allComponents=new List<AvailablePublisher>();
+            _allComponents=new List<AvailableComponent>();
 
             if(AvailableChannels==null || AvailableChannels.Count<=0)
                 throw new Exception("No channels in the map file");
@@ -167,6 +167,33 @@ namespace MySynch.Core
 
         private bool SubscriberAlive(AvailableChannel availableChannel)
         {
+            var publisherName = string.Format("{0}{1}",
+                                              availableChannel.PublisherInfo.
+                                                  PublisherInstanceName,
+                                              (string.IsNullOrEmpty(
+                                                  availableChannel.PublisherInfo.
+                                                      EndpointName))
+                                                  ? ""
+                                                  : "." +
+                                                    availableChannel.PublisherInfo.
+                                                        EndpointName);
+            AvailableComponent availableComponent = new AvailableComponent
+            {
+                Name =
+                    string.Format("{0}{1}",
+                                  availableChannel.SubscriberInfo.
+                                      SubScriberName,
+                                  (string.IsNullOrEmpty(
+                                      availableChannel.SubscriberInfo.
+                                          EndpointName))
+                                      ? ""
+                                      : "." +
+                                        availableChannel.SubscriberInfo.
+                                            EndpointName),
+                Status = Status.NotChecked
+            };
+
+
             if (string.IsNullOrEmpty(availableChannel.SubscriberInfo.EndpointName))
             {
                 //the publisher has to be local
@@ -177,11 +204,17 @@ namespace MySynch.Core
                     {
                         availableChannel.Status = Status.OfflineTemporary;
                         availableChannel.NoOfFailedAttempts++;
+                        availableComponent.Status = Status.OfflineTemporary;
                     }
                     else
+                    {
                         availableChannel.Status = Status.OfflinePermanent;
+                        availableComponent.Status = Status.OfflinePermanent;
+                    }
+                    UpsertComponent(availableComponent,publisherName);
                     return false;
                 }
+                UpsertComponent(availableComponent,publisherName);
                 return true;
             }
             //the publisher has to be remote
@@ -194,17 +227,43 @@ namespace MySynch.Core
                 {
                     availableChannel.Status = Status.OfflineTemporary;
                     availableChannel.NoOfFailedAttempts++;
+                    availableComponent.Status = Status.OfflineTemporary;
                 }
                 else
+                {
                     availableChannel.Status = Status.OfflinePermanent;
+                    availableComponent.Status = Status.OfflinePermanent;
+
+                }
+                UpsertComponent(availableComponent, publisherName);
                 return false;
             }
+            availableComponent.Status = Status.Ok;
+            UpsertComponent(availableComponent, publisherName);
             return true;
+        }
+
+        private void UpsertComponent(AvailableComponent availableComponent, string publisherName)
+        {
+            var existingPublisher = _allComponents.FirstOrDefault(c => c.Name == publisherName);
+            if (existingPublisher == null)
+                return;
+            if(existingPublisher.DependentComponents==null)
+                existingPublisher.DependentComponents=new List<AvailableComponent>();
+            var existingComponent =
+                existingPublisher.DependentComponents.FirstOrDefault(c => c.Name == availableComponent.Name);
+            if(existingComponent==null)
+                existingPublisher.DependentComponents.Add(availableComponent);
+            else
+            {
+                existingComponent.Status = availableComponent.Status;
+                existingComponent.IsLocal = availableComponent.IsLocal;
+            }
         }
 
         private bool PublisherAlive(AvailableChannel availableChannel)
         {
-            AvailablePublisher availableComponent=new AvailablePublisher
+            AvailableComponent availableComponent=new AvailableComponent
                                                       {
                                                           Name =
                                                               string.Format("{0}{1}",
@@ -271,7 +330,7 @@ namespace MySynch.Core
             return true;
         }
 
-        private void UpsertComponent(AvailablePublisher availableComponent)
+        private void UpsertComponent(AvailableComponent availableComponent)
         {
             var existingComponent = _allComponents.FirstOrDefault(p => p.Name == availableComponent.Name);
             if(existingComponent==null)

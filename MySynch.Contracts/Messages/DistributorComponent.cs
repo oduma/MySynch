@@ -10,6 +10,6 @@ namespace MySynch.Contracts.Messages
         public string Name { get; set; }
 
         [DataMember]
-        public List<AvailablePublisher> AvailablePublishers { get; set; }
+        public List<AvailableComponent> AvailablePublishers { get; set; }
     }
 }

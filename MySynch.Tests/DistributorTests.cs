@@ -179,6 +179,8 @@ namespace MySynch.Tests
             var compo = distributor.ListAvailableComponentsTree();
             Assert.IsNotNull(compo);
             Assert.AreEqual(2,compo.AvailablePublishers.Count);
+            Assert.IsNotNull(compo.AvailablePublishers[0].DependentComponents);
+            Assert.IsNotNull(compo.AvailablePublishers[1].DependentComponents);
 
         }
 

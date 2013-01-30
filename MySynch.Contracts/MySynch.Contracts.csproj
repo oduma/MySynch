@@ -42,7 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Messages\AvailablePublisher.cs" />
+    <Compile Include="Messages\AvailableComponent.cs" />
     <Compile Include="IChangeApplyer.cs" />
     <Compile Include="ICommunicationCopmonent.cs" />
     <Compile Include="IDistributorCallbacks.cs" />
