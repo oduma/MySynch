@@ -18,5 +18,10 @@ namespace MySynch.Monitor.MVVM.ViewModels
         {
             throw new NotImplementedException();
         }
+
+        public void ChannelsChecked(DistributorComponent distributorComponent)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -156,12 +156,21 @@ namespace MySynch.Core
 
         private void CheckChannel(AvailableChannel availableChannel)
         {
-            if (!PublisherAlive(availableChannel))
-                return;
+            IDistributorCallbacks callbacks = OperationContext.Current.GetCallbackChannel<IDistributorCallbacks>();
 
-            ;
-            if (!SubscriberAlive(availableChannel))
+            if (!PublisherAlive(availableChannel))
+            {
+                callbacks.ChannelsChecked(new DistributorComponent{Name=Environment.MachineName,AvailablePublishers=_allComponents});
                 return;
+            }
+            if (!SubscriberAlive(availableChannel))
+            {
+                callbacks.ChannelsChecked(new DistributorComponent { Name = Environment.MachineName, AvailablePublishers = _allComponents });
+
+                return;
+            }
+            callbacks.ChannelsChecked(new DistributorComponent { Name = Environment.MachineName, AvailablePublishers = _allComponents });
+
             availableChannel.Status = Status.Ok;
         }
 

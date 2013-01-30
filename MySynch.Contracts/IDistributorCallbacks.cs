@@ -10,5 +10,8 @@ namespace MySynch.Contracts
 
         [OperationContract(IsOneWay = true)]
         void PackageApplyed(ChangePushPackage changePushPackage);
+
+        [OperationContract(IsOneWay = true)]
+        void ChannelsChecked(DistributorComponent distributorComponent);
     }
 }
