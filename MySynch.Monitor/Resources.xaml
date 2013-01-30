@@ -7,13 +7,21 @@
 				  IconSource="Icons/refresh.ico"
 				  ToolTipText="hello world" />
 
-    <DataTemplate x:Key="PublisherTemplate">
+    <DataTemplate x:Key="SubscriberTemplate">
         <StackPanel Orientation="Horizontal">
-            <TextBlock Text="{Binding PublisherName}"
+            <TextBlock Text="{Binding SubscriberName}"
                        VerticalAlignment="Center" Margin="5" Foreground="{Binding Status}"/>
         </StackPanel>
     </DataTemplate>
 
+    <HierarchicalDataTemplate x:Key="PublisherTemplate"
+                              ItemsSource="{Binding SubscriberCollection}"
+                              ItemTemplate="{StaticResource SubscriberTemplate}">
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="{Binding PublisherName}"
+                       Margin="5 5 10 10" Foreground="{Binding Status}"/>
+        </StackPanel>
+    </HierarchicalDataTemplate>
     <Style x:Key="TreeViewItemStyle"
 		   TargetType="{x:Type TreeViewItem}">
         <Setter Property="IsExpanded"

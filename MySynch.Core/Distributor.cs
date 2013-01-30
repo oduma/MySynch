@@ -214,6 +214,7 @@ namespace MySynch.Core
                     UpsertComponent(availableComponent,publisherName);
                     return false;
                 }
+                availableComponent.Status = Status.Ok;
                 UpsertComponent(availableComponent,publisherName);
                 return true;
             }

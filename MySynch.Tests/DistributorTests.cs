@@ -181,6 +181,10 @@ namespace MySynch.Tests
             Assert.AreEqual(2,compo.AvailablePublishers.Count);
             Assert.IsNotNull(compo.AvailablePublishers[0].DependentComponents);
             Assert.IsNotNull(compo.AvailablePublishers[1].DependentComponents);
+            Assert.AreEqual(2,compo.AvailablePublishers[0].DependentComponents.Count);
+            foreach(var c1 in compo.AvailablePublishers[0].DependentComponents)
+                Assert.AreEqual(Status.Ok,c1.Status);
+            Assert.AreEqual(1, compo.AvailablePublishers[1].DependentComponents.Count);
 
         }
 
