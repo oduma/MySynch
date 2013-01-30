@@ -6,6 +6,7 @@ namespace MySynch.Contracts.Messages
     [DataContract]
     public class DistributorComponent
     {
+
         [DataMember]
         public string Name { get; set; }
 
