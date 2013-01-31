@@ -14,11 +14,10 @@ namespace MySynch.Monitor
         public Window1()
         {
             InitializeComponent();
-            IDistributorCallbacks distributorCallbacks = new DistributorCallbacks();
             IDistributorMonitorProxy distributorMonitorProxy = new DistributorMonitorClient();
-            distributorMonitorProxy.InitiateUsingEndpoint(distributorCallbacks, "distributor");
+            distributorMonitorProxy.InitiateUsingEndpoint("distributor");
 
-            this.DataContext = new DistributorDetailsViewModel(distributorCallbacks,distributorMonitorProxy);
+            this.DataContext = new DistributorDetailsViewModel(distributorMonitorProxy);
         }
     }
 }

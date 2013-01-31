@@ -45,7 +45,6 @@
     <Compile Include="Messages\AvailableComponent.cs" />
     <Compile Include="IChangeApplyer.cs" />
     <Compile Include="ICommunicationCopmonent.cs" />
-    <Compile Include="IDistributorCallbacks.cs" />
     <Compile Include="IDistributorMonitor.cs" />
     <Compile Include="IPublisher.cs" />
     <Compile Include="Messages\ChangePushItem.cs" />

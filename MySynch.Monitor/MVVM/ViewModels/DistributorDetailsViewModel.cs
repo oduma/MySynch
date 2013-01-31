@@ -26,12 +26,14 @@ namespace MySynch.Monitor.MVVM.ViewModels
             }
         }
 
-        public DistributorDetailsViewModel(IDistributorCallbacks distributorCallbacks, IDistributorMonitorProxy distributorMonitorProxy)
+        public DistributorDetailsViewModel(IDistributorMonitorProxy distributorMonitorProxy)
         {
-            //DistributorName = distributorInformation.Name;
-            //PublisherCollection = new ObservableCollection<PublisherViewModel>();
-            //foreach (var availablePublisher in distributorInformation.AvailablePublishers)
-            //    PublisherCollection.Add(new PublisherViewModel(availablePublisher));
+            var distributorInformation = distributorMonitorProxy.ListAvailableComponentsTree();
+
+            DistributorName = distributorInformation.Name;
+            PublisherCollection = new ObservableCollection<PublisherViewModel>();
+            foreach (var availablePublisher in distributorInformation.AvailablePublishers)
+                PublisherCollection.Add(new PublisherViewModel(availablePublisher));
         }
     }
 }

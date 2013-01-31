@@ -3,7 +3,7 @@ using MySynch.Contracts.Messages;
 
 namespace MySynch.Contracts
 {
-    [ServiceContract(SessionMode = SessionMode.Required, CallbackContract = typeof(IDistributorCallbacks))]
+    [ServiceContract]
     public interface IDistributorMonitor:ICommunicationCopmonent
     {
         [OperationContract]

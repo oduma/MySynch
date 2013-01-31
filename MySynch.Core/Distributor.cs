@@ -47,9 +47,6 @@ namespace MySynch.Core
 
                 if(packagePublished==null)
                     continue;
-                IDistributorCallbacks callbacks = OperationContext.Current.GetCallbackChannel<IDistributorCallbacks>();
-
-                callbacks.PackagePublished(packagePublished);
 
                 if (DistributeMessages(publisherGroup.Select(g => g), packagePublished) && publisherChannelsNotAvailable==0)
                     //Publisher's messages not needed anymore
@@ -69,13 +66,7 @@ namespace MySynch.Core
                 {
                     if (channel.SubscriberInfo.Subscriber.ApplyChangePackage(package, channel.SubscriberInfo.TargetRootFolder,
                                                                          channel.CopyStrategy.Copy))
-                    {
                         result = true;
-                        IDistributorCallbacks callbacks = OperationContext.Current.GetCallbackChannel<IDistributorCallbacks>();
-
-                        callbacks.PackageApplyed(package);
-
-                    }
                     else
                         result = false;
                 }
@@ -156,21 +147,10 @@ namespace MySynch.Core
 
         private void CheckChannel(AvailableChannel availableChannel)
         {
-            IDistributorCallbacks callbacks = OperationContext.Current.GetCallbackChannel<IDistributorCallbacks>();
-
             if (!PublisherAlive(availableChannel))
-            {
-                callbacks.ChannelsChecked(new DistributorComponent{Name=Environment.MachineName,AvailablePublishers=_allComponents});
                 return;
-            }
             if (!SubscriberAlive(availableChannel))
-            {
-                callbacks.ChannelsChecked(new DistributorComponent { Name = Environment.MachineName, AvailablePublishers = _allComponents });
-
                 return;
-            }
-            callbacks.ChannelsChecked(new DistributorComponent { Name = Environment.MachineName, AvailablePublishers = _allComponents });
-
             availableChannel.Status = Status.Ok;
         }
 

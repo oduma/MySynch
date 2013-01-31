@@ -2,11 +2,11 @@
 using System.ServiceModel;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
-using MySynch.Core.WCF.Clients.Duplex;
+using MySynch.Core.WCF.Clients;
 
 namespace MySynch.Proxies
 {
-    public class DistributorMonitorClient:BaseClient<IDistributorMonitor,IDistributorCallbacks>, IDistributorMonitorProxy
+    public class DistributorMonitorClient:BaseClient<IDistributorMonitor>, IDistributorMonitorProxy
     {
         public HeartbeatResponse GetHeartbeat()
         {
