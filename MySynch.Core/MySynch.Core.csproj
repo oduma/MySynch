@@ -70,6 +70,9 @@
     <Reference Include="Castle.Windsor">
       <HintPath>..\..\..\CW3.1\net40\Castle.Windsor.dll</HintPath>
     </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\Lib\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.ServiceModel" />
@@ -105,11 +108,16 @@
     <Compile Include="SameSystemCopier.cs" />
     <Compile Include="SynchItemEqualityComparer.cs" />
     <Compile Include="SynchItemManager.cs" />
+    <Compile Include="Utilities\Log4NetExtensions.cs" />
+    <Compile Include="Utilities\LoggingManager.cs" />
     <Compile Include="Utilities\Serializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="Core.cd" />
+    <None Include="log4net.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="distributionmapfile.xml" />

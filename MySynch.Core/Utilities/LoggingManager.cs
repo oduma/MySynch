@@ -19,24 +19,24 @@ namespace MySynch.Core.Utilities
     public class LoggingManager : IDisposable
     {
 
-        private static readonly ILog ACInvestPerformanceLog = LogManager.GetLogger("MySynch.PerformanceLog");
+        private static readonly ILog MySynchPerformanceLog = LogManager.GetLogger("MySynch.PerformanceLog");
 
-        private static readonly ILog ACInvestSystemErrorLog = LogManager.GetLogger("MySynch.SystemError");
+        private static readonly ILog MySynchSystemErrorLog = LogManager.GetLogger("MySynch.SystemError");
 
         public static Logger Get(string name)
         {
             switch (name)
             {
                 case "MySynch.PerformanceLog":
-                    return new Logger() { _implementation = ACInvestPerformanceLog.InfoFormat };
+                    return new Logger() { _implementation = MySynchPerformanceLog.InfoFormat };
                 case "MySynch.SystemError":
-                    return new Logger() { _implementation = ACInvestSystemErrorLog.ErrorFormat };
+                    return new Logger() { _implementation = MySynchSystemErrorLog.ErrorFormat };
                 default:
                     return default(Logger);
             }
         }
 
-        private static readonly ILog ACInvestDebugLog = LogManager.GetLogger("MySynch.Debug");
+        private static readonly ILog MySynchDebugLog = LogManager.GetLogger("MySynch.Debug");
 
         public ILog Log { get; internal set; }
 
@@ -61,31 +61,29 @@ namespace MySynch.Core.Utilities
         {
             _EndTime = DateTime.Now;
             _ProcessTimeSpan = _EndTime.Subtract(_StartTime);
-            ACInvestPerformanceLog.Info(() => string.Format("{0} ({1}) - Finished: {2}", _CallerDetails, _performanceExtraInfo, _ProcessTimeSpan));
+            MySynchPerformanceLog.Info(() => string.Format("{0} ({1}) - Finished: {2}", _CallerDetails, _performanceExtraInfo, _ProcessTimeSpan));
         }
 
         #endregion
 
         #region Methods
 
-        #region Log ACInvest Process
-
-        public static LoggingManager LogACInvestPerformance()
+        public static LoggingManager LogMySynchPerformance()
         {
             LoggingManager result;
 
             result = new LoggingManager()
             {
                 _CallerDetails = GetCallerDetails().ToString(),
-                Log = ACInvestPerformanceLog
+                Log = MySynchPerformanceLog
             };
 
-            ACInvestPerformanceLog.Info(() => string.Format("{0} - Started", result._CallerDetails));
+            MySynchPerformanceLog.Info(() => string.Format("{0} - Started", result._CallerDetails));
 
             return result;
         }
 
-        public static LoggingManager LogACInvestPerformance(object info)
+        public static LoggingManager LogMySynchPerformance(object info)
         {
             LoggingManager result;
 
@@ -93,30 +91,30 @@ namespace MySynch.Core.Utilities
             {
                 _CallerDetails = GetCallerDetails().ToString(),
                 _performanceExtraInfo = info,
-                Log = ACInvestPerformanceLog
+                Log = MySynchPerformanceLog
             };
 
-            ACInvestPerformanceLog.Info(() => string.Format("{0} ({1})- Started", result._CallerDetails, result._performanceExtraInfo));
+            MySynchPerformanceLog.Info(() => string.Format("{0} ({1})- Started", result._CallerDetails, result._performanceExtraInfo));
 
             return result;
         }
 
        #endregion
 
-        public static void LogACInvestSystemError(Exception exception)
+        public static void LogMySynchSystemError(Exception exception)
         {
-            LogACInvestSystemError(null, exception);
+            LogMySynchSystemError(null, exception);
         }
 
-        public static void LogACInvestSystemError(object message, Exception exception)
+        public static void LogMySynchSystemError(object message, Exception exception)
         {
-            ACInvestSystemErrorLog.Error(message, exception);
+            MySynchSystemErrorLog.Error(message, exception);
         }
         public static void Debug(object message)
         {
-            using (PushContext("ACInvestDebug", GetCallerDetails().ToString()))
+            using (PushContext("MySynchDebug", GetCallerDetails().ToString()))
             {
-                ACInvestDebugLog.Debug(message);
+                MySynchDebugLog.Debug(message);
             }
         }
 
@@ -162,6 +160,5 @@ namespace MySynch.Core.Utilities
             return result;
         }
 
-        #endregion
     }
 }
