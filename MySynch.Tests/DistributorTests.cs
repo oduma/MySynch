@@ -119,12 +119,11 @@ namespace MySynch.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(ComponentNotRegieteredException))]
         public void LoadDistributorNoRegisteredPublishers()
         {
             Distributor distributor = new Distributor();
             distributor.InitiateDistributionMap(@"Data\distributormap.xml", new ComponentResolver());
-            
+            Assert.AreEqual(0, distributor.AvailableChannels.Count(c => c.Status == Status.Ok));
         }
         [Test]
         public void DistributeMessages_OneChannel_Ok()

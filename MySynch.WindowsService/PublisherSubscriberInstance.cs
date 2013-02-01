@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.ServiceModel;
 using System.ServiceProcess;
+using MySynch.Contracts.Messages;
 using MySynch.Core;
 using MySynch.Core.Interfaces;
 using MySynch.Core.Utilities;
@@ -15,6 +16,8 @@ namespace MySynch.WindowsService
         public List<ServiceHost> serviceHosts = new List<ServiceHost>();
         private IDistributor _distributor;
         private string _distributorMapFile;
+        private ChangePublisher _changePublisher;
+        private string _rootFolder;
 
         public PublisherSubscriberInstance()
         {
@@ -27,6 +30,12 @@ namespace MySynch.WindowsService
                 _distributorMapFile = string.Empty;
             else
                 _distributorMapFile = ConfigurationManager.AppSettings[key];
+            key = ConfigurationManager.AppSettings.AllKeys.FirstOrDefault(k => k == "LocalPublisherRootFolder");
+            if (key == null)
+                _rootFolder = string.Empty;
+            else
+                _rootFolder = ConfigurationManager.AppSettings[key];
+
             LoggingManager.Debug("Initializion Ok with distribution Map: "+ _distributorMapFile);
         }
 
@@ -48,8 +57,20 @@ namespace MySynch.WindowsService
 
                 ComponentResolver componentResolver = new ComponentResolver();
                 componentResolver.RegisterAll(new MySynchInstaller());
-                //[TODO]: for the local publisher we need to start the filesystem watcher
+
                 _distributor.InitiateDistributionMap(_distributorMapFile, componentResolver);
+                
+                var publishers = _distributor.AvailableChannels.Where(
+                    c => c.Status == Status.Ok && string.IsNullOrEmpty(c.PublisherInfo.EndpointName)).Select(
+                        c => c.PublisherInfo.Publisher);
+                if (publishers.Count() != 0 && !string.IsNullOrEmpty(_rootFolder))
+                {
+                    _changePublisher = (ChangePublisher)publishers.First();
+                    _changePublisher.Initialize(_rootFolder);
+                    FSWatcher fsWatcher = new FSWatcher(_changePublisher);
+                    
+                }
+                //otherwise this is a node that only distributes messages no messages are published from here
                 LoggingManager.Debug("Service started.");
                 
             }
