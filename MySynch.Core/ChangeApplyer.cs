@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using MySynch.Common;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
-using MySynch.Core.Utilities;
 
 namespace MySynch.Core
 {

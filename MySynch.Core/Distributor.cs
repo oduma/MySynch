@@ -4,11 +4,11 @@ using System.IO;
 using System.Linq;
 using System.ServiceModel;
 using Castle.Core.Internal;
+using MySynch.Common;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
 using MySynch.Core.DataTypes;
 using MySynch.Core.Interfaces;
-using MySynch.Core.Utilities;
 using MySynch.Proxies;
 
 namespace MySynch.Core

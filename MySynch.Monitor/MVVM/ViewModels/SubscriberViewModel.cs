@@ -1,6 +1,6 @@
 ﻿using System.Windows.Media;
+using MySynch.Common;
 using MySynch.Contracts.Messages;
-using MySynch.Core.Utilities;
 
 namespace MySynch.Monitor.MVVM.ViewModels
 {

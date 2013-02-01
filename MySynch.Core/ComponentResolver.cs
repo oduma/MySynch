@@ -1,7 +1,7 @@
 ﻿using System;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
-using MySynch.Core.Utilities;
+using MySynch.Common;
 using MySynch.Core.WCF.Clients;
 
 namespace MySynch.Core

@@ -84,6 +84,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MySynch.Common\MySynch.Common.csproj">
+      <Project>{9E007CA9-F233-4DF1-8A18-A4E3411FDD32}</Project>
+      <Name>MySynch.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MySynch.Contracts\MySynch.Contracts.csproj">
       <Project>{EE4C1C53-0F1E-40D1-ACAB-0BF493593424}</Project>
       <Name>MySynch.Contracts</Name>

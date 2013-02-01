@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
+using MySynch.Common;
 using MySynch.Core.Interfaces;
-using MySynch.Core.Utilities;
 
 namespace MySynch.Core
 {

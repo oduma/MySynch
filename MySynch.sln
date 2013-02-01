@@ -25,6 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{46E72DF2-DF4
 		Lib\log4net.xml = Lib\log4net.xml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySynch.Common", "MySynch.Common\MySynch.Common.csproj", "{9E007CA9-F233-4DF1-8A18-A4E3411FDD32}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -125,6 +127,16 @@ Global
 		{F8F55F65-CAA1-44C6-96AC-BB7E9A85DFD0}.Release|Mixed Platforms.Build.0 = Release|x86
 		{F8F55F65-CAA1-44C6-96AC-BB7E9A85DFD0}.Release|x86.ActiveCfg = Release|x86
 		{F8F55F65-CAA1-44C6-96AC-BB7E9A85DFD0}.Release|x86.Build.0 = Release|x86
+		{9E007CA9-F233-4DF1-8A18-A4E3411FDD32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E007CA9-F233-4DF1-8A18-A4E3411FDD32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E007CA9-F233-4DF1-8A18-A4E3411FDD32}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{9E007CA9-F233-4DF1-8A18-A4E3411FDD32}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{9E007CA9-F233-4DF1-8A18-A4E3411FDD32}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9E007CA9-F233-4DF1-8A18-A4E3411FDD32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E007CA9-F233-4DF1-8A18-A4E3411FDD32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E007CA9-F233-4DF1-8A18-A4E3411FDD32}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{9E007CA9-F233-4DF1-8A18-A4E3411FDD32}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{9E007CA9-F233-4DF1-8A18-A4E3411FDD32}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

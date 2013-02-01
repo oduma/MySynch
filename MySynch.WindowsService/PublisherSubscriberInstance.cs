@@ -4,10 +4,10 @@ using System.Configuration;
 using System.Linq;
 using System.ServiceModel;
 using System.ServiceProcess;
+using MySynch.Common;
 using MySynch.Contracts.Messages;
 using MySynch.Core;
 using MySynch.Core.Interfaces;
-using MySynch.Core.Utilities;
 
 namespace MySynch.WindowsService
 {

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MySynch.Common;
 using MySynch.Contracts.Messages;
 using MySynch.Core.DataTypes;
 using MySynch.Core.Interfaces;
-using MySynch.Core.Utilities;
 
 namespace MySynch.Core
 {
