@@ -54,6 +54,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ClientEndpoint.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MySynch.Common\MySynch.Common.csproj">
+      <Project>{9E007CA9-F233-4DF1-8A18-A4E3411FDD32}</Project>
+      <Name>MySynch.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
