@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
-using MySynch.Core.DataTypes;
 using MySynch.Core.Interfaces;
+using MySynch.Core.Utilities;
 
 namespace MySynch.Core
 {
@@ -9,17 +9,16 @@ namespace MySynch.Core
     {
         public string Path { get; private set; }
 
-        public event EventHandler<ItemsQueuedEventArgs> ItemsQueued;
-
         private IChangePublisher _changePublisher;
 
-        public FSWatcher(string _folderToWatch)
+        public FSWatcher(IChangePublisher changePublisher)
         {
-            _changePublisher = new ChangePublisher();
-            _changePublisher.Initialize(_folderToWatch);
-            _changePublisher.ItemsQueued += _changePublisher_ItemsQueued;
+            LoggingManager.Debug("Initializing the FS Watcher with publisher: " + changePublisher.RootFolder);
+            if(changePublisher==null || string.IsNullOrEmpty(changePublisher.RootFolder))
+                throw new ArgumentNullException("changePublisher");
+            _changePublisher = changePublisher;
 
-            FileSystemWatcher fsWatcher = new FileSystemWatcher(_folderToWatch);
+            FileSystemWatcher fsWatcher = new FileSystemWatcher(changePublisher.RootFolder);
 
             Path = fsWatcher.Path;
 
@@ -28,36 +27,36 @@ namespace MySynch.Core
             fsWatcher.Deleted += fsWatcher_Deleted;
             fsWatcher.Renamed += fsWatcher_Renamed;
             fsWatcher.EnableRaisingEvents = true;
-        }
-
-        void _changePublisher_ItemsQueued(object sender, ItemsQueuedEventArgs e)
-        {
-            if (ItemsQueued != null)
-                ItemsQueued(this, e);
+            LoggingManager.Debug("Initilization done waiting for changes in the FS.");
         }
 
         private void fsWatcher_Renamed(object sender, RenamedEventArgs e)
         {
+            LoggingManager.Debug("A File renamed from " + e.OldFullPath + " to " + e.FullPath);
             //queue a delete
             //queue an insert
             _changePublisher.QueueDelete(e.OldFullPath);
             _changePublisher.QueueInsert(e.FullPath);
+
         }
 
         private void fsWatcher_Deleted(object sender, FileSystemEventArgs e)
         {
+            LoggingManager.Debug("A file deleted: " + e.FullPath);
             //queue a delete
             _changePublisher.QueueDelete(e.FullPath);
         }
 
         private void fsWatcher_Changed(object sender, FileSystemEventArgs e)
         {
+            LoggingManager.Debug("A file changed: " + e.FullPath);
             //queue an update;
             _changePublisher.QueueUpdate(e.FullPath);
         }
 
         private void fsWatcher_Created(object sender, FileSystemEventArgs e)
         {
+            LoggingManager.Debug("A new file created: " + e.FullPath);
             //queue an insert;
             _changePublisher.QueueInsert(e.FullPath);
         }

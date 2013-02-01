@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Media;
 using MySynch.Contracts.Messages;
+using MySynch.Core.Utilities;
 
 namespace MySynch.Monitor.MVVM.ViewModels
 {
@@ -22,12 +23,15 @@ namespace MySynch.Monitor.MVVM.ViewModels
 
         public PublisherViewModel(AvailableComponent availablePublisher)
         {
-            PublisherName = availablePublisher.Name;
-            IsLocal = availablePublisher.IsLocal;
-            Status = (availablePublisher.Status==Contracts.Messages.Status.Ok) ? Brushes.Green : Brushes.Red;
-            SubscriberCollection = new ObservableCollection<SubscriberViewModel>();
-            foreach (var availableSubscriber in availablePublisher.DependentComponents)
-                SubscriberCollection.Add(new SubscriberViewModel(availableSubscriber));
+            using (LoggingManager.LogMySynchPerformance())
+            {
+                PublisherName = availablePublisher.Name;
+                IsLocal = availablePublisher.IsLocal;
+                Status = (availablePublisher.Status == Contracts.Messages.Status.Ok) ? Brushes.Green : Brushes.Red;
+                SubscriberCollection = new ObservableCollection<SubscriberViewModel>();
+                foreach (var availableSubscriber in availablePublisher.DependentComponents)
+                    SubscriberCollection.Add(new SubscriberViewModel(availableSubscriber));
+            }
 
         }
 

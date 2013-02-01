@@ -1,5 +1,6 @@
 ﻿using System.Windows.Media;
 using MySynch.Contracts.Messages;
+using MySynch.Core.Utilities;
 
 namespace MySynch.Monitor.MVVM.ViewModels
 {
@@ -7,9 +8,12 @@ namespace MySynch.Monitor.MVVM.ViewModels
     {
         public SubscriberViewModel(AvailableComponent availableSubscriber)
         {
-            SubscriberName = availableSubscriber.Name;
-            IsLocal = availableSubscriber.IsLocal;
-            Status = (availableSubscriber.Status == Contracts.Messages.Status.Ok) ? Brushes.Green : Brushes.Red;
+            using (LoggingManager.LogMySynchPerformance())
+            {
+                SubscriberName = availableSubscriber.Name;
+                IsLocal = availableSubscriber.IsLocal;
+                Status = (availableSubscriber.Status == Contracts.Messages.Status.Ok) ? Brushes.Green : Brushes.Red;
+            }
         }
 
         public string SubscriberName { get; set; }

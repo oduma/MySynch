@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
+using MySynch.Core.Utilities;
 using MySynch.Proxies;
 
 namespace MySynch.Monitor.MVVM.ViewModels
@@ -28,12 +29,15 @@ namespace MySynch.Monitor.MVVM.ViewModels
 
         public DistributorDetailsViewModel(IDistributorMonitorProxy distributorMonitorProxy)
         {
-            var distributorInformation = distributorMonitorProxy.ListAvailableComponentsTree();
+            using (LoggingManager.LogMySynchPerformance())
+            {
+                var distributorInformation = distributorMonitorProxy.ListAvailableComponentsTree();
 
-            DistributorName = distributorInformation.Name;
-            PublisherCollection = new ObservableCollection<PublisherViewModel>();
-            foreach (var availablePublisher in distributorInformation.AvailablePublishers)
-                PublisherCollection.Add(new PublisherViewModel(availablePublisher));
+                DistributorName = distributorInformation.Name;
+                PublisherCollection = new ObservableCollection<PublisherViewModel>();
+                foreach (var availablePublisher in distributorInformation.AvailablePublishers)
+                    PublisherCollection.Add(new PublisherViewModel(availablePublisher));
+            }
         }
     }
 }

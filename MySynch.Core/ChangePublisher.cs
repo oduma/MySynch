@@ -4,6 +4,7 @@ using System.Linq;
 using MySynch.Contracts.Messages;
 using MySynch.Core.DataTypes;
 using MySynch.Core.Interfaces;
+using MySynch.Core.Utilities;
 
 namespace MySynch.Core
 {
@@ -15,6 +16,7 @@ namespace MySynch.Core
 
         public ChangePublisher()
         {
+            LoggingManager.Debug("");
             _temporaryStore=new SortedList<string, OperationType>();
         }
 
@@ -26,12 +28,14 @@ namespace MySynch.Core
                 return;
             lock (_lock)
             {
+                LoggingManager.Debug("Will queue an insert for: " + absolutePath);
                 WriteIfNew(absolutePath, OperationType.Insert);
             }
         }
 
         private void WriteIfNew(string absolutePath, OperationType operationType)
         {
+            LoggingManager.Debug("Adding to the temporary store of the queue");
             if (_temporaryStore.ContainsKey(absolutePath))
                 _temporaryStore[absolutePath] = operationType;
             else
@@ -46,6 +50,7 @@ namespace MySynch.Core
                 return;
             lock (_lock)
             {
+                LoggingManager.Debug("Will queue an update for: " + absolutePath);
                 WriteIfNew(absolutePath, OperationType.Update);
             }
         }
@@ -56,6 +61,7 @@ namespace MySynch.Core
                 return;
             lock (_lock)
             {
+                LoggingManager.Debug("Will queue a delete for: " + absolutePath);
                 WriteIfNew(absolutePath, OperationType.Delete);
             }
         }
@@ -67,12 +73,18 @@ namespace MySynch.Core
             _sourceRootName = rootFolder;
         }
 
+        public string RootFolder
+        {
+            get { return _sourceRootName; }
+        }
+
         public ChangePushPackage PublishPackage()
         {
             if(string.IsNullOrEmpty(_sourceRootName) || _temporaryStore==null)
                 throw new PublisherSetupException(_sourceRootName,"Publisher Information incomplete");
             lock (_lock)
             {
+                LoggingManager.Debug("Starting publishing package");
                 ChangePushPackage changePushPackage = new ChangePushPackage
                                                           {Source = Environment.MachineName,
                                                               SourceRootName = _sourceRootName,PackageId=Guid.NewGuid()};
@@ -84,6 +96,7 @@ namespace MySynch.Core
                 if(PublishedPackageNotDistributed==null)
                     PublishedPackageNotDistributed= new List<ChangePushPackage>();
                 PublishedPackageNotDistributed.Add(changePushPackage);
+                LoggingManager.Debug("Published package: " +changePushPackage.PackageId);
                 return changePushPackage;
             }
         }
@@ -94,11 +107,13 @@ namespace MySynch.Core
                 throw new ArgumentNullException("publishedPackage");
             lock (_lock)
             {
+                LoggingManager.Debug("Removing package after publishing: " + packagePublished.PackageId);
                 var identifiedPackage =
                     PublishedPackageNotDistributed.FirstOrDefault(p => p.PackageId == packagePublished.PackageId);
                 if (identifiedPackage == null)
                     return;
                 PublishedPackageNotDistributed.Remove(identifiedPackage);
+                LoggingManager.Debug("Removed package after publishing: " + packagePublished.PackageId);
             }
         }
 
@@ -109,6 +124,7 @@ namespace MySynch.Core
 
         public HeartbeatResponse GetHeartbeat()
         {
+            LoggingManager.Debug("GetHeartbeat will return true.");
             return new HeartbeatResponse {Status = true};
         }
 
