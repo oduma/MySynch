@@ -8,6 +8,7 @@
     <SubscriberInfo>
       <SubScriberName>ISubscriber.Local</SubScriberName>
       <EndpointName></EndpointName>
+      <TargetRootFolder>C:\MySynch.Dest.Test.Root\</TargetRootFolder>
     </SubscriberInfo>
     <CopyStartegyName>ICopyStrategy.Local</CopyStartegyName>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
