@@ -54,7 +54,15 @@ namespace MySynch.Core
 
                     if (DistributeMessages(publisherGroup.Select(g => g), packagePublished) && publisherChannelsNotAvailable == 0)
                         //Publisher's messages not needed anymore
+                    {
                         currentPublisher.RemovePackage(packagePublished);
+                        LoggingManager.Debug("Dsitributed all available messages.");
+
+                    }
+                    else
+                    {
+                        LoggingManager.Debug("Some messages were not distributed.");
+                    }
                 }
 
             }
@@ -63,7 +71,6 @@ namespace MySynch.Core
                 LoggingManager.LogMySynchSystemError(ex);
                 throw;
             }
-            LoggingManager.Debug("Dsitributed all available messages.");
         }
 
         private bool DistributeMessages(IEnumerable<AvailableChannel> channelsFromAPublisher,ChangePushPackage package)
@@ -90,7 +97,7 @@ namespace MySynch.Core
                     result = false;                    
                 }
             }
-            LoggingManager.Debug("Message distributed: " +package.PackageId);
+            LoggingManager.Debug(((result)?"Message distributed: ":"Message not distributed: ") +package.PackageId);
             return result;
         }
 

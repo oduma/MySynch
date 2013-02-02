@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.ServiceModel;
 using System.ServiceProcess;
+using System.Timers;
 using MySynch.Common;
 using MySynch.Contracts.Messages;
 using MySynch.Core;
@@ -18,12 +19,15 @@ namespace MySynch.WindowsService
         private string _distributorMapFile;
         private ChangePublisher _changePublisher;
         private string _rootFolder;
+        private Timer _timer;
 
         public PublisherSubscriberInstance()
         {
             LoggingManager.Debug("Initialize the service");
             ServiceName = "MySynch.PublisherSubscriberIstance";
             _distributor = new Distributor();
+            _timer = new Timer();
+            _timer.Interval = 60000;
             InitializeComponent();
             var key = ConfigurationManager.AppSettings.AllKeys.FirstOrDefault(k => k == "DistributorMap");
             if (key == null)
@@ -44,6 +48,7 @@ namespace MySynch.WindowsService
             try
             {
                 LoggingManager.Debug("Starting the service...");
+
                 if (serviceHosts != null)
                 {
                     serviceHosts.ForEach(CloseServiceHost);
@@ -70,6 +75,9 @@ namespace MySynch.WindowsService
                     FSWatcher fsWatcher = new FSWatcher(_changePublisher);
                     
                 }
+                _timer.Elapsed += timer_Elapsed;
+                _timer.Enabled = true;
+                _timer.Start();
                 //otherwise this is a node that only distributes messages no messages are published from here
                 LoggingManager.Debug("Service started.");
                 
@@ -79,6 +87,12 @@ namespace MySynch.WindowsService
                 LoggingManager.LogMySynchSystemError(ex);
                 throw;
             }
+        }
+
+        void timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            LoggingManager.Debug("Timer kicked in again.");
+            _distributor.DistributeMessages();
         }
 
         private void OpenServiceHost(ServiceHost serviceHost)

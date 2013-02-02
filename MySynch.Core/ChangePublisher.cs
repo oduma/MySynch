@@ -85,6 +85,16 @@ namespace MySynch.Core
             lock (_lock)
             {
                 LoggingManager.Debug("Starting publishing package");
+                if (PublishedPackageNotDistributed != null && PublishedPackageNotDistributed.Count > 0)
+                {
+                    LoggingManager.Debug("Republish package: " + PublishedPackageNotDistributed[0].PackageId);
+                    return PublishedPackageNotDistributed[0];
+                }
+                if (_temporaryStore.Keys.Count == 0)
+                {
+                    LoggingManager.Debug("Nothing to publish");
+                    return null;
+                }
                 ChangePushPackage changePushPackage = new ChangePushPackage
                                                           {Source = Environment.MachineName,
                                                               SourceRootName = _sourceRootName,PackageId=Guid.NewGuid()};

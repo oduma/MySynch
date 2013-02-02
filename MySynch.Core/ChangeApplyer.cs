@@ -16,7 +16,10 @@ namespace MySynch.Core
         {
             LoggingManager.Debug("Trying to apply some changes to: " + targetRootFolder);
             if(changePushPackage==null || changePushPackage.ChangePushItems==null || changePushPackage.ChangePushItems.Count<=0)
-                throw new ArgumentNullException("changePushPackage");
+            {
+                LoggingManager.Debug("Nothing to apply.");
+                return false;
+            }
             if(string.IsNullOrEmpty(targetRootFolder))
                 throw new ArgumentNullException("targetRootFolder");
             if(copyMethod==null)
