@@ -17,5 +17,8 @@ namespace MySynch.Contracts.Messages
 
         [DataMember]
         public List<AvailableComponent> DependentComponents { get; set; }
+
+        [DataMember]
+        public List<Package> Packages { get; set; }
     }
 }

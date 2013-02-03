@@ -49,9 +49,11 @@
     <Compile Include="IPublisher.cs" />
     <Compile Include="Messages\ChangePushItem.cs" />
     <Compile Include="Messages\ChangePushPackage.cs" />
+    <Compile Include="Messages\Package.cs" />
     <Compile Include="Messages\DistributorComponent.cs" />
     <Compile Include="Messages\HeartbeatResponse.cs" />
     <Compile Include="Messages\OperationType.cs" />
+    <Compile Include="Messages\State.cs" />
     <Compile Include="Messages\Status.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

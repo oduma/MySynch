@@ -27,6 +27,7 @@ namespace MySynch.Core
             try
             {
                 LoggingManager.Debug("Starting to distribute messages ...");
+                UnRegisterOldPackages(_allComponents);
                 //Recheck the AvailableChannels
                 AvailableChannels.ForEach(CheckChannel);
 
@@ -51,11 +52,18 @@ namespace MySynch.Core
 
                     if (packagePublished == null)
                         continue;
+                    RegisterPublisherPackage(publisherGroup.Select(g => g).First(), packagePublished, State.Published);
 
                     if (DistributeMessages(publisherGroup.Select(g => g), packagePublished) && publisherChannelsNotAvailable == 0)
                         //Publisher's messages not needed anymore
                     {
+                        RegisterPublisherPackage(publisherGroup.Select(g => g).First(), packagePublished,
+                                        State.Distributed);
                         currentPublisher.RemovePackage(packagePublished);
+                        RegisterPublisherPackage(publisherGroup.Select(g => g).First(), packagePublished,
+                State.Removed);
+                        foreach (var channel in publisherGroup.Select(g => g))
+                            RegisterSubscriberPackage(channel,packagePublished,State.Removed);
                         LoggingManager.Debug("Dsitributed all available messages.");
 
                     }
@@ -73,9 +81,65 @@ namespace MySynch.Core
             }
         }
 
+        private void RegisterPublisherPackage(AvailableChannel channel, ChangePushPackage package, State state)
+        {
+            var publisherName = string.Format("{0}{1}",
+                                              channel.PublisherInfo.
+                                                  PublisherInstanceName,
+                                              (string.IsNullOrEmpty(
+                                                  channel.PublisherInfo.
+                                                      EndpointName))
+                                                  ? ""
+                                                  : "." +
+                                                    channel.PublisherInfo.
+                                                        EndpointName);
+            LoggingManager.Debug("Register package: " + package.PackageId + " with publisher: " + publisherName);
+
+            var existingcomponent = _allComponents.FirstOrDefault(c => c.Name == publisherName);
+            if (existingcomponent == null)
+            {
+                LoggingManager.Debug("Publisher doesn't exist:" + publisherName);
+                return;
+            }
+            if(existingcomponent.Packages==null)
+                existingcomponent.Packages=new List<Package>();
+            var existingPackage = existingcomponent.Packages.FirstOrDefault(p => p.Id == package.PackageId);
+            if (existingPackage != null)
+            {
+                existingPackage.State = state;
+                LoggingManager.Debug("Package exists updating state to: " + state);
+                return;
+            }
+            existingcomponent.Packages.Add(new Package { Id = package.PackageId, State = state });
+            LoggingManager.Debug("Registered new package: " + package.PackageId + " on publisher: " + publisherName +
+                                    " with state: " + state);
+        }
+
+        private void UnRegisterOldPackages(List<AvailableComponent> components)
+        {
+            LoggingManager.Debug("Trying to unregister packages from components");
+            foreach (var component in components)
+            {
+                LoggingManager.Debug("Trying to unregister packages from component:" +component.Name);
+                if (component.Packages != null && component.Packages.Count(p => p.State == State.Removed) > 0)
+                {
+                    foreach (var removedPackage in component.Packages.Where(p => p.State == State.Removed).ToList())
+                    {
+                        LoggingManager.Debug("Trying to remove package:" +removedPackage.Id + " from component: " +component.Name);
+                        component.Packages.Remove(removedPackage);
+                    }
+                }
+                if (component.DependentComponents != null)
+                    UnRegisterOldPackages(component.DependentComponents);
+                LoggingManager.Debug("Unregistered packages from component:" + component.Name);
+            }
+            LoggingManager.Debug("Unregistered all packages");
+        }
+
         private bool DistributeMessages(IEnumerable<AvailableChannel> channelsFromAPublisher,ChangePushPackage package)
         {
             LoggingManager.Debug("Distribute messages from package:" + package.PackageId);
+            RegisterPublisherPackage(channelsFromAPublisher.First(), package,State.InProgress);
             bool result = true;
             foreach (var channel in channelsFromAPublisher)
             {
@@ -87,8 +151,13 @@ namespace MySynch.Core
                 }
                 try
                 {
-                    if (!channel.SubscriberInfo.Subscriber.ApplyChangePackage(package, channel.SubscriberInfo.TargetRootFolder,
+                    RegisterSubscriberPackage(channel, package, State.InProgress);
+                    if (channel.SubscriberInfo.Subscriber.ApplyChangePackage(package, channel.SubscriberInfo.TargetRootFolder,
                                                                          channel.CopyStrategy.Copy))
+                    {
+                        RegisterSubscriberPackage(channel, package, State.Distributed);
+                    }
+                    else
                         result = false;
                 }
                 catch (Exception ex)
@@ -99,6 +168,60 @@ namespace MySynch.Core
             }
             LoggingManager.Debug(((result)?"Message distributed: ":"Message not distributed: ") +package.PackageId);
             return result;
+        }
+
+        private void RegisterSubscriberPackage(AvailableChannel channel, ChangePushPackage package, State state)
+        {
+            var publisherName = string.Format("{0}{1}",
+                                  channel.PublisherInfo.
+                                      PublisherInstanceName,
+                                  (string.IsNullOrEmpty(
+                                      channel.PublisherInfo.
+                                          EndpointName))
+                                      ? ""
+                                      : "." +
+                                        channel.PublisherInfo.
+                                            EndpointName);
+            var subscriberName = string.Format("{0}{1}",
+                                  channel.SubscriberInfo.
+                                      SubScriberName,
+                                  (string.IsNullOrEmpty(
+                                      channel.SubscriberInfo.
+                                          EndpointName))
+                                      ? ""
+                                      : "." +
+                                        channel.SubscriberInfo.
+                                            EndpointName);
+
+            LoggingManager.Debug("Register package: " + package.PackageId + " with subscriber: " + subscriberName);
+
+            var existingpublisher = _allComponents.FirstOrDefault(c => c.Name == publisherName);
+            if (existingpublisher == null)
+            {
+                LoggingManager.Debug("Publisher doesn't exist:" + publisherName);
+                return;
+            }
+            var existingcomponent = existingpublisher.DependentComponents.FirstOrDefault(c => c.Name == subscriberName);
+            if (existingcomponent == null)
+            {
+                LoggingManager.Debug("Subscriber doesn't exist:" + subscriberName);
+                return;
+            }
+
+            if(existingcomponent.Packages==null)
+                existingcomponent.Packages= new List<Package>();
+
+            var existingPackage = existingcomponent.Packages.FirstOrDefault(p => p.Id == package.PackageId);
+            if (existingPackage != null)
+            {
+                existingPackage.State = state;
+                LoggingManager.Debug("Package exists updating state to: " + state);
+                return;
+            }
+            existingcomponent.Packages.Add(new Package { Id = package.PackageId, State = state });
+            LoggingManager.Debug("Registered new package: " + package.PackageId + " on subscriber: " + subscriberName +
+                                    " with state: " + state);
+
         }
 
         public void InitiateDistributionMap(string mapFile,ComponentResolver componentResolver)
