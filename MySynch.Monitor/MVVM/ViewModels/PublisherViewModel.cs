@@ -29,8 +29,12 @@ namespace MySynch.Monitor.MVVM.ViewModels
                 IsLocal = availablePublisher.IsLocal;
                 Status = (availablePublisher.Status == Contracts.Messages.Status.Ok) ? Brushes.Green : Brushes.Red;
                 SubscriberCollection = new ObservableCollection<SubscriberViewModel>();
-                foreach (var availableSubscriber in availablePublisher.DependentComponents)
-                    SubscriberCollection.Add(new SubscriberViewModel(availableSubscriber));
+                if(availablePublisher.DependentComponents!=null)
+                    foreach (var availableSubscriber in availablePublisher.DependentComponents)
+                        SubscriberCollection.Add(new SubscriberViewModel(availableSubscriber));
+                if (availablePublisher.Packages != null)
+                    foreach (var publisherPackage in availablePublisher.Packages)
+                        PublisherPackagesCollection.Add(new PackageViewModel(publisherPackage));
             }
 
         }

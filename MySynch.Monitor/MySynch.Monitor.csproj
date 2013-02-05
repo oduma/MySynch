@@ -72,6 +72,8 @@
     <Compile Include="MVVM\ViewModels\PublisherViewModel.cs" />
     <Compile Include="MVVM\ViewModels\SubscriberViewModel.cs" />
     <Compile Include="MVVM\ViewModels\ViewModelBase.cs" />
+    <Compile Include="Utils\ThreadSafeObservableCollection.cs" />
+    <Compile Include="Utils\WPFControlThreadingExtensions.cs" />
     <Compile Include="Window1.xaml.cs">
       <DependentUpon>Window1.xaml</DependentUpon>
     </Compile>
