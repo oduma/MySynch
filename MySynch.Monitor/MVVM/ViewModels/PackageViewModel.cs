@@ -12,16 +12,8 @@ namespace MySynch.Monitor.MVVM.ViewModels
             State = package.State;
         }
 
-        protected string PackageId
-        {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
-        }
+        public string PackageId { get; set; }
 
-        protected State State
-        {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
-        }
+        public State State { get; set; }
     }
 }

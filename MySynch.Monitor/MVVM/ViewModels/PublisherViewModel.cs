@@ -1,4 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections;
+using System.Collections.ObjectModel;
+using System.Windows.Data;
 using System.Windows.Media;
 using MySynch.Common;
 using MySynch.Contracts.Messages;
@@ -21,6 +24,32 @@ namespace MySynch.Monitor.MVVM.ViewModels
             }
         }
 
+        private ObservableCollection<PackageViewModel> _publisherPackagesCollection;
+        public ObservableCollection<PackageViewModel> PublisherPackagesCollection
+        {
+            get { return _publisherPackagesCollection; }
+            set
+            {
+                if (_publisherPackagesCollection != value)
+                {
+                    _publisherPackagesCollection = value;
+                    RaisePropertyChanged(() => PublisherPackagesCollection);
+                }
+            }
+        }
+
+        public CompositeCollection Children
+        {
+            get
+            {
+                return new CompositeCollection
+                           {
+                               new CollectionContainer() {Collection = PublisherPackagesCollection},
+                               new CollectionContainer() {Collection = SubscriberCollection}
+                           };
+            }
+        }
+
         public PublisherViewModel(AvailableComponent availablePublisher)
         {
             using (LoggingManager.LogMySynchPerformance())
@@ -32,9 +61,12 @@ namespace MySynch.Monitor.MVVM.ViewModels
                 if(availablePublisher.DependentComponents!=null)
                     foreach (var availableSubscriber in availablePublisher.DependentComponents)
                         SubscriberCollection.Add(new SubscriberViewModel(availableSubscriber));
-                if (availablePublisher.Packages != null)
-                    foreach (var publisherPackage in availablePublisher.Packages)
-                        PublisherPackagesCollection.Add(new PackageViewModel(publisherPackage));
+                //if (availablePublisher.Packages != null)
+                //    foreach (var publisherPackage in availablePublisher.Packages)
+                //        PublisherPackagesCollection.Add(new PackageViewModel(publisherPackage));
+                PublisherPackagesCollection= new ObservableCollection<PackageViewModel>();
+                PublisherPackagesCollection.Add(new PackageViewModel(new Package{Id=Guid.NewGuid(),State=State.Published}));
+                PublisherPackagesCollection.Add(new PackageViewModel(new Package { Id = Guid.NewGuid(), State = State.Published }));
             }
 
         }

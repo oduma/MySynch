@@ -7,16 +7,23 @@
 				  IconSource="Icons/refresh.ico"
 				  ToolTipText="hello world" />
 
-    <DataTemplate x:Key="SubscriberTemplate">
+    <DataTemplate DataType="x:Type local:SubscriberViewModel" >
         <StackPanel Orientation="Horizontal">
             <TextBlock Text="{Binding SubscriberName}"
                        VerticalAlignment="Center" Margin="5" Foreground="{Binding Status}"/>
         </StackPanel>
     </DataTemplate>
 
+    <DataTemplate DataType="x:Type localPackageViewModel" >
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="{Binding PackageId}"
+                       VerticalAlignment="Center" Margin="5"/>
+            <TextBlock Text="{Binding State}"
+                       VerticalAlignment="Center" Margin="5"/>
+        </StackPanel>
+    </DataTemplate>
     <HierarchicalDataTemplate x:Key="PublisherTemplate"
-                              ItemsSource="{Binding SubscriberCollection}"
-                              ItemTemplate="{StaticResource SubscriberTemplate}">
+                              ItemsSource="{Binding Children}">
         <StackPanel Orientation="Horizontal">
             <TextBlock Text="{Binding PublisherName}"
                        Margin="5 5 10 10" Foreground="{Binding Status}"/>
