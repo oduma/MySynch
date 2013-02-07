@@ -14,8 +14,8 @@
                           BorderThickness="0"
                           Background="#FFF"
                           ItemContainerStyle="{DynamicResource TreeViewItemStyle}"
-                          ItemsSource="{Binding PublisherCollection}"
-                          ItemTemplate="{DynamicResource PublisherTemplate}" Visibility="{Binding TreeReady}">
+                          ItemsSource="{Binding NotificationDetailsCollection}"
+                          ItemTemplate="{DynamicResource NotificationTemplate}" Visibility="{Binding TreeReady}">
         </TreeView>
         <Label Visibility="{Binding TreeNotReady}" Content="Loading tree ... please wait."/>
     </Grid>

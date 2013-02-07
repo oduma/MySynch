@@ -68,7 +68,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MVVM\ViewModels\DistributorDetailsViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\DistributorDetailsViewModel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MVVM\ViewModels\NotificationDetailsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\PackageViewModel.cs" />
     <Compile Include="MVVM\ViewModels\PublisherViewModel.cs" />
     <Compile Include="MVVM\ViewModels\SubscriberViewModel.cs" />

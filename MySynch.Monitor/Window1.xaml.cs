@@ -23,7 +23,7 @@ namespace MySynch.Monitor
                     IDistributorMonitorProxy distributorMonitorProxy = new DistributorMonitorClient();
                     distributorMonitorProxy.InitiateUsingEndpoint("distributor");
 
-                    this.DataContext = new DistributorDetailsViewModel(distributorMonitorProxy);
+                    this.DataContext = new NotificationDetailsViewModel(distributorMonitorProxy);
 
                 }
                 catch (Exception ex)

@@ -7,26 +7,16 @@
 				  IconSource="Icons/refresh.ico"
 				  ToolTipText="hello world" />
 
-    <DataTemplate DataType="x:Type local:SubscriberViewModel" >
+    <HierarchicalDataTemplate x:Key="NotificationTemplate"
+                              ItemsSource="{Binding NotificationDetailsCollection}">
         <StackPanel Orientation="Horizontal">
-            <TextBlock Text="{Binding SubscriberName}"
-                       VerticalAlignment="Center" Margin="5" Foreground="{Binding Status}"/>
-        </StackPanel>
-    </DataTemplate>
-
-    <DataTemplate DataType="x:Type localPackageViewModel" >
-        <StackPanel Orientation="Horizontal">
-            <TextBlock Text="{Binding PackageId}"
-                       VerticalAlignment="Center" Margin="5"/>
+            <TextBlock Text="{Binding Name}"
+                       Margin="5 5 10 10"/>
+            <TextBlock Text="{Binding Type}"
+                       Margin="5 5 10 10"/>
             <TextBlock Text="{Binding State}"
-                       VerticalAlignment="Center" Margin="5"/>
-        </StackPanel>
-    </DataTemplate>
-    <HierarchicalDataTemplate x:Key="PublisherTemplate"
-                              ItemsSource="{Binding Children}">
-        <StackPanel Orientation="Horizontal">
-            <TextBlock Text="{Binding PublisherName}"
-                       Margin="5 5 10 10" Foreground="{Binding Status}"/>
+                       Margin="5 5 10 10"/>
+
         </StackPanel>
     </HierarchicalDataTemplate>
     <Style x:Key="TreeViewItemStyle"
