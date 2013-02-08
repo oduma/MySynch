@@ -27,7 +27,8 @@ namespace MySynch.Core
             try
             {
                 LoggingManager.Debug("Starting to distribute messages ...");
-                UnRegisterOldPackages(_allComponents);
+                //For test only keep old trace
+                //UnRegisterOldPackages(_allComponents);
                 //Recheck the AvailableChannels
                 AvailableChannels.ForEach(CheckChannel);
 

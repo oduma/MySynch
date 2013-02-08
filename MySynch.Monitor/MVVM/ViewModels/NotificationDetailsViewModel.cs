@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Timers;
 using System.Windows;
+using System.Windows.Media;
 using MySynch.Common;
 using MySynch.Contracts.Messages;
 using MySynch.Proxies;
@@ -49,7 +50,9 @@ namespace MySynch.Monitor.MVVM.ViewModels
 
         public string Name { get; set; }
 
-        public string Type { get; set; }
+        public ComponentType Type { get; set; }
+
+        public Status Status { get; set; }
 
         public string State { get; set; }
 
@@ -67,6 +70,40 @@ namespace MySynch.Monitor.MVVM.ViewModels
             }
         }
 
+        private bool _isExpanded;
+        /// <summary>
+        /// Gets/sets whether the TreeViewItem 
+        /// associated with this object is expanded.
+        /// </summary>
+        public bool IsExpanded
+        {
+            get { return _isExpanded; }
+            set
+            {
+                if (value != _isExpanded)
+                {
+                    _isExpanded = value;
+                    RaisePropertyChanged(()=>IsExpanded);
+                }
+            }
+        }
+        private Brush _typeColor;
+        /// <summary>
+        /// Gets/sets whether the TreeViewItem 
+        /// associated with this object is expanded.
+        /// </summary>
+        public Brush TypeColor
+        {
+            get { return _typeColor; }
+            set
+            {
+                if (value != _typeColor)
+                {
+                    _typeColor = value;
+                    RaisePropertyChanged(() => TypeColor);
+                }
+            }
+        }
         private IDistributorMonitorProxy _distributorMonitorProxy;
         private Timer _timer;
 
@@ -118,17 +155,17 @@ namespace MySynch.Monitor.MVVM.ViewModels
         {
             var distributorInformation = _distributorMonitorProxy.ListAvailableComponentsTree();
 
-            //a bit of test for the packages
-            distributorInformation.AvailablePublishers[0].Packages= new List<Package>();
-            distributorInformation.AvailablePublishers[0].Packages.Add(new Package{Id=Guid.NewGuid(),State=Contracts.Messages.State.Published});
-            distributorInformation.AvailablePublishers[0].Packages.Add(new Package { Id = Guid.NewGuid(), State = Contracts.Messages.State.Published });
-            distributorInformation.AvailablePublishers[0].Packages.Add(new Package { Id = Guid.NewGuid(), State = Contracts.Messages.State.Published });
+            ////a bit of test for the packages
+            //distributorInformation.AvailablePublishers[0].Packages= new List<Package>();
+            //distributorInformation.AvailablePublishers[0].Packages.Add(new Package{Id=Guid.NewGuid(),State=Contracts.Messages.State.Published});
+            //distributorInformation.AvailablePublishers[0].Packages.Add(new Package { Id = Guid.NewGuid(), State = Contracts.Messages.State.Published });
+            //distributorInformation.AvailablePublishers[0].Packages.Add(new Package { Id = Guid.NewGuid(), State = Contracts.Messages.State.Published });
 
-            //a bit of test for the packages
-            distributorInformation.AvailablePublishers[0].DependentComponents[0].Packages = new List<Package>();
-            distributorInformation.AvailablePublishers[0].DependentComponents[0].Packages.Add(new Package { Id = Guid.NewGuid(), State = Contracts.Messages.State.Published });
-            distributorInformation.AvailablePublishers[0].DependentComponents[0].Packages.Add(new Package { Id = Guid.NewGuid(), State = Contracts.Messages.State.Published });
-            distributorInformation.AvailablePublishers[0].DependentComponents[0].Packages.Add(new Package { Id = Guid.NewGuid(), State = Contracts.Messages.State.Published });
+            ////a bit of test for the packages
+            //distributorInformation.AvailablePublishers[0].DependentComponents[0].Packages = new List<Package>();
+            //distributorInformation.AvailablePublishers[0].DependentComponents[0].Packages.Add(new Package { Id = Guid.NewGuid(), State = Contracts.Messages.State.Published });
+            //distributorInformation.AvailablePublishers[0].DependentComponents[0].Packages.Add(new Package { Id = Guid.NewGuid(), State = Contracts.Messages.State.Published });
+            //distributorInformation.AvailablePublishers[0].DependentComponents[0].Packages.Add(new Package { Id = Guid.NewGuid(), State = Contracts.Messages.State.Published });
 
             NotificationDetailsCollection = new ObservableCollection<NotificationDetailsViewModel>();
             System.Windows.Application.Current.Dispatcher.Invoke((Action)(() =>
@@ -140,7 +177,7 @@ namespace MySynch.Monitor.MVVM.ViewModels
         private void ParseDistributorInformation(DistributorComponent distributorInformation)
         {
             var currentNode = new NotificationDetailsViewModel
-                                  {Name = distributorInformation.Name, Type = "Distributor", State = "Online"};
+                                  {Name = distributorInformation.Name, Type = ComponentType.Distributor,IsExpanded=true,TypeColor=Brushes.Peru};
             NotificationDetailsCollection.Add(currentNode);
             ParsePublishersInformation(currentNode, distributorInformation.AvailablePublishers);
         }
@@ -153,12 +190,14 @@ namespace MySynch.Monitor.MVVM.ViewModels
                 var currentPublisherNode = new NotificationDetailsViewModel
                                                {
                                                    Name = publisher.Name,
-                                                   Type = "Publisher",
-                                                   State = Enum.GetName(typeof (Status), publisher.Status)
+                                                   Type = ComponentType.Publisher,
+                                                   IsExpanded=true,
+                                                   TypeColor=Brushes.SeaGreen,
+                                                   Status=publisher.Status
                                                };
                 currentNode.NotificationDetailsCollection.Add(currentPublisherNode);
                 currentPublisherNode.NotificationDetailsCollection= new ObservableCollection<NotificationDetailsViewModel>();
-                ParsePackagesInformation(currentPublisherNode.NotificationDetailsCollection, publisher.Packages);
+                ParsePackagesInformation(currentPublisherNode.NotificationDetailsCollection, publisher.Packages,ComponentType.PublisherPackage);
                 ParseSubscriberInformation(currentPublisherNode.NotificationDetailsCollection, publisher.DependentComponents);
             }
         }
@@ -170,17 +209,19 @@ namespace MySynch.Monitor.MVVM.ViewModels
                 var currentSubscriberNode = new NotificationDetailsViewModel
                                                 {
                                                     Name = subscriber.Name,
-                                                    Type = "Subscriber",
-                                                    State = Enum.GetName(typeof (Status), subscriber.Status)
+                                                    Type = ComponentType.Subscriber,
+                                                    IsExpanded=true,
+                                                    TypeColor=Brushes.SkyBlue,
+                                                    Status=subscriber.Status
                                                 };
                 notificationDetailsCollection.Add(currentSubscriberNode);
                 currentSubscriberNode.NotificationDetailsCollection= new ObservableCollection<NotificationDetailsViewModel>();
-                ParsePackagesInformation(currentSubscriberNode.NotificationDetailsCollection,subscriber.Packages);
+                ParsePackagesInformation(currentSubscriberNode.NotificationDetailsCollection,subscriber.Packages,ComponentType.SubscriberPackage);
             }
         }
 
         private void ParsePackagesInformation(ObservableCollection<NotificationDetailsViewModel> notificationDetailsCollection,
-            List<Package> packages)
+            List<Package> packages,ComponentType packageType)
         {
             if (packages != null)
             {
@@ -189,8 +230,9 @@ namespace MySynch.Monitor.MVVM.ViewModels
                     notificationDetailsCollection.Add(new NotificationDetailsViewModel
                                                           {
                                                               Name = package.Id.ToString(),
-                                                              Type = "Package",
-                                                              State = Enum.GetName(typeof (State), package.State)
+                                                              Type = packageType,
+                                                              State = Enum.GetName(typeof (State), package.State),
+                                                              TypeColor=Brushes.YellowGreen
                                                           });
                 }
             }

@@ -68,13 +68,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MVVM\ViewModels\DistributorDetailsViewModel.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="MVVM\ViewModels\ComponentType.cs" />
+    <Compile Include="MVVM\ViewModels\ComponentTypeToIconFileNameConverter.cs" />
     <Compile Include="MVVM\ViewModels\NotificationDetailsViewModel.cs" />
-    <Compile Include="MVVM\ViewModels\PackageViewModel.cs" />
-    <Compile Include="MVVM\ViewModels\PublisherViewModel.cs" />
-    <Compile Include="MVVM\ViewModels\SubscriberViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\StatusToIconFileNameConverter.cs" />
     <Compile Include="MVVM\ViewModels\ViewModelBase.cs" />
     <Compile Include="Utils\ThreadSafeObservableCollection.cs" />
     <Compile Include="Utils\WPFControlThreadingExtensions.cs" />
@@ -127,6 +124,22 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\Distributor.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\Publisher.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\PublisherPackage.png" />
+    <Resource Include="Icons\Subscriber.png" />
+    <Resource Include="Icons\SubscriberPackage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\Ok.png" />
+    <Resource Include="Icons\PermanentOffline.png" />
+    <Resource Include="Icons\TemporaryOffline.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
