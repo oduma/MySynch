@@ -227,13 +227,34 @@ namespace MySynch.Monitor.MVVM.ViewModels
             {
                 foreach (var package in packages)
                 {
-                    notificationDetailsCollection.Add(new NotificationDetailsViewModel
-                                                          {
-                                                              Name = package.Id.ToString(),
-                                                              Type = packageType,
-                                                              State = Enum.GetName(typeof (State), package.State),
-                                                              TypeColor=Brushes.YellowGreen
-                                                          });
+                    var currentPackageNode = new NotificationDetailsViewModel
+                                                 {
+                                                     Name = package.Id.ToString(),
+                                                     Type = packageType,
+                                                     State = Enum.GetName(typeof (State), package.State),
+                                                     TypeColor = Brushes.YellowGreen,
+                                                     IsExpanded=true
+                                                 };
+                    notificationDetailsCollection.Add(currentPackageNode);
+                    currentPackageNode.NotificationDetailsCollection= new ObservableCollection<NotificationDetailsViewModel>();
+                    ParseMessagesInformation(currentPackageNode.NotificationDetailsCollection, package.PackageMessages);
+                }
+            }
+        }
+
+        private void ParseMessagesInformation(ObservableCollection<NotificationDetailsViewModel> notificationDetailsCollection, List<ChangePushItem> packageMessages)
+        {
+            if (packageMessages != null)
+            {
+                foreach (var packageMessage in packageMessages)
+                {
+                    var currentPackageMessageNode = new NotificationDetailsViewModel
+                    {
+                        Name = packageMessage.AbsolutePath,
+                        State = Enum.GetName(typeof(OperationType), packageMessage.OperationType),
+                        TypeColor = Brushes.YellowGreen
+                    };
+                    notificationDetailsCollection.Add(currentPackageMessageNode);
                 }
             }
         }
