@@ -203,7 +203,12 @@ namespace MySynch.Tests
             Assert.IsNotNull(compo.AvailablePublishers[0].DependentComponents);
             Assert.AreEqual(1, compo.AvailablePublishers[0].DependentComponents.Count);
             Assert.AreEqual(1,compo.AvailablePublishers[0].Packages.Count(p=>p.State==State.Removed));
-            Assert.AreEqual(1, compo.AvailablePublishers[0].DependentComponents[0].Packages.Count(p=>p.State==State.Removed));
+            Assert.AreEqual(1, compo.AvailablePublishers[0].Packages[0].PackageMessages.Count(m => m.AbsolutePath == @"root folder\Item One"));
+            Assert.AreEqual(2, compo.AvailablePublishers[0].Packages[0].PackageMessages.Count(m => m.OperationType==OperationType.Insert));
+            Assert.AreEqual(1, compo.AvailablePublishers[0].DependentComponents[0].Packages.Count(p => p.State == State.Removed));
+            Assert.AreEqual(1, compo.AvailablePublishers[0].DependentComponents[0].Packages[0].PackageMessages.Count(m => m.AbsolutePath == @"destination root folder\Item One"));
+            Assert.AreEqual(2, compo.AvailablePublishers[0].DependentComponents[0].Packages[0].PackageMessages.Count(m => m.OperationType==OperationType.Insert));
+
         }
 
         [Test]

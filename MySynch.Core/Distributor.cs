@@ -111,7 +111,7 @@ namespace MySynch.Core
                 LoggingManager.Debug("Package exists updating state to: " + state);
                 return;
             }
-            existingcomponent.Packages.Add(new Package { Id = package.PackageId, State = state });
+            existingcomponent.Packages.Add(new Package { Id = package.PackageId, State = state ,PackageMessages = package.ChangePushItems});
             LoggingManager.Debug("Registered new package: " + package.PackageId + " on publisher: " + publisherName +
                                     " with state: " + state);
         }
@@ -219,10 +219,21 @@ namespace MySynch.Core
                 LoggingManager.Debug("Package exists updating state to: " + state);
                 return;
             }
-            existingcomponent.Packages.Add(new Package { Id = package.PackageId, State = state });
+            existingcomponent.Packages.Add(new Package { Id = package.PackageId, State = state ,PackageMessages = GetMessagesForSubscriber(package.ChangePushItems,existingcomponent.RootPath,package.SourceRootName)});
             LoggingManager.Debug("Registered new package: " + package.PackageId + " on subscriber: " + subscriberName +
                                     " with state: " + state);
 
+        }
+
+        private List<ChangePushItem> GetMessagesForSubscriber(List<ChangePushItem> changePushItems, string targetRootPath, string sourceRootPath)
+        {
+            var resultPushItems = new List<ChangePushItem>();
+            changePushItems.ForEach((c) => resultPushItems.Add(new ChangePushItem
+                                                                   {
+                                                                       AbsolutePath = c.AbsolutePath.Replace(sourceRootPath,targetRootPath),
+                                                                       OperationType = c.OperationType
+                                                                   }));
+            return resultPushItems;
         }
 
         public void InitiateDistributionMap(string mapFile,ComponentResolver componentResolver)
@@ -302,7 +313,8 @@ namespace MySynch.Core
                                       : "." +
                                         availableChannel.SubscriberInfo.
                                             EndpointName),
-                Status = Status.NotChecked
+                Status = Status.NotChecked,
+                RootPath=availableChannel.SubscriberInfo.TargetRootFolder
             };
 
 
@@ -424,7 +436,7 @@ namespace MySynch.Core
                                                                                 : "." +
                                                                                   availableChannel.PublisherInfo.
                                                                                       EndpointName),
-                                                          Status = Status.NotChecked
+                                                          Status = Status.NotChecked,
                                                       };
 
             if (string.IsNullOrEmpty(availableChannel.PublisherInfo.EndpointName))

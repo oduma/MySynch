@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace MySynch.Contracts.Messages
@@ -11,5 +12,8 @@ namespace MySynch.Contracts.Messages
 
         [DataMember]
         public State State { get; set; }
+
+        [DataMember]
+        public List<ChangePushItem> PackageMessages { get; set; }
     }
 }
