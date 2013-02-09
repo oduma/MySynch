@@ -168,11 +168,10 @@ namespace MySynch.Tests
         }
         
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ApplyChanges_NoChangePackage()
         {
             ChangeApplyer changeApplyer = new ChangeApplyer();
-            changeApplyer.ApplyChangePackage(null, "some folder", fakeMethod);
+            Assert.False( changeApplyer.ApplyChangePackage(null, "some folder", fakeMethod));
         }
         
         [Test]
@@ -180,7 +179,32 @@ namespace MySynch.Tests
         public void ApplyChanges_Target_NotSent()
         {
             ChangeApplyer changeApplyer = new ChangeApplyer();
-            changeApplyer.ApplyChangePackage(new ChangePushPackage(), string.Empty, fakeMethod);
+            ChangePushPackage deletePackage = new ChangePushPackage
+            {
+                Source = "Source1",
+                SourceRootName = @"Data\Test",
+                ChangePushItems =
+                    new List<ChangePushItem>
+                                                              {
+                                                                  new ChangePushItem
+                                                                      {
+                                                                          AbsolutePath = @"Data\Test\F1\F12\F122.xml",
+                                                                          OperationType = OperationType.Delete
+                                                                      },
+                                                                  new ChangePushItem
+                                                                      {
+                                                                          AbsolutePath = @"Data\Test\F12\F13.xml",
+                                                                          OperationType = OperationType.Delete
+                                                                      },
+                                                                  new ChangePushItem
+                                                                      {
+                                                                          AbsolutePath = @"Data\Test\F1\F12\F121.xml",
+                                                                          OperationType = OperationType.Delete
+                                                                      }
+                                                              }
+            };
+
+            changeApplyer.ApplyChangePackage(deletePackage, string.Empty, fakeMethod);
         }
 
     }

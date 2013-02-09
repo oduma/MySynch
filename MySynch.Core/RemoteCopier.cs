@@ -3,15 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using MySynch.Contracts;
+using MySynch.Contracts.Messages;
 using MySynch.Core.Interfaces;
 
-namespace MySynch.Tests.Stubs
+namespace MySynch.Core
 {
-    public class SameSystemCopierNotPresent:ICopyStrategy
+    public class RemoteCopier:ICopyStrategy
     {
+        private ISourceOfData _sourceOfData;
         public bool Copy(string source, string target)
         {
-            throw new NotImplementedException();
+            //using (RemoteResponse remoteResponse = _sourceOfData.GetData(new RemoteRequest{FileName=source}))
+            //{
+                
+            //}
+            return false;
         }
 
         public void Initialize(ISourceOfData sourceOfData)

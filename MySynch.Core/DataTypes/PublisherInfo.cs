@@ -1,4 +1,5 @@
-﻿using System.Xml.Serialization;
+﻿using System;
+using System.Xml.Serialization;
 using MySynch.Contracts;
 
 namespace MySynch.Core.DataTypes
@@ -11,5 +12,8 @@ namespace MySynch.Core.DataTypes
         public string PublisherInstanceName { get; set; }
 
         public string EndpointName { get; set; }
+
+        [XmlIgnore]
+        public ISourceOfData SourceOfData { get; set; }
     }
 }

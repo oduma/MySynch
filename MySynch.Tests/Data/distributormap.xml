@@ -8,6 +8,7 @@
     <SubscriberInfo>
       <SubScriberName>ISubscriber.Local</SubScriberName>
       <EndpointName></EndpointName>
+      <TargetRootFolder></TargetRootFolder>
     </SubscriberInfo>
     <CopyStartegyName>ICopyStrategy.Local</CopyStartegyName>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
@@ -22,6 +23,7 @@
     <SubscriberInfo>
       <SubScriberName>ISubscriber.Remote</SubScriberName>
       <EndpointName>endpoint2</EndpointName>
+      <TargetRootFolder></TargetRootFolder>
     </SubscriberInfo>
     <CopyStartegyName>ICopyStrategy.Local</CopyStartegyName>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
@@ -36,6 +38,7 @@
     <SubscriberInfo>
       <SubScriberName>ISubscriber.Remote</SubScriberName>
       <EndpointName>endpoint1</EndpointName>
+      <TargetRootFolder></TargetRootFolder>
     </SubscriberInfo>
     <CopyStartegyName>ICopyStrategy.Local</CopyStartegyName>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>

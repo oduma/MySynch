@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ISourceOfData.cs" />
     <Compile Include="Messages\AvailableComponent.cs" />
     <Compile Include="IChangeApplyer.cs" />
     <Compile Include="ICommunicationCopmonent.cs" />
@@ -53,6 +54,8 @@
     <Compile Include="Messages\DistributorComponent.cs" />
     <Compile Include="Messages\HeartbeatResponse.cs" />
     <Compile Include="Messages\OperationType.cs" />
+    <Compile Include="Messages\RemoteRequest.cs" />
+    <Compile Include="Messages\RemoteResponse.cs" />
     <Compile Include="Messages\State.cs" />
     <Compile Include="Messages\Status.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

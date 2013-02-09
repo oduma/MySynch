@@ -28,7 +28,7 @@ namespace MySynch.Core
             {
                 LoggingManager.Debug("Starting to distribute messages ...");
                 //For test only keep old trace
-                //UnRegisterOldPackages(_allComponents);
+                UnRegisterOldPackages(_allComponents);
                 //Recheck the AvailableChannels
                 AvailableChannels.ForEach(CheckChannel);
 
@@ -153,6 +153,7 @@ namespace MySynch.Core
                 try
                 {
                     RegisterSubscriberPackage(channel, package, State.InProgress);
+                    channel.CopyStrategy.Initialize(channel.PublisherInfo.SourceOfData);
                     if (channel.SubscriberInfo.Subscriber.ApplyChangePackage(package, channel.SubscriberInfo.TargetRootFolder,
                                                                          channel.CopyStrategy.Copy))
                     {

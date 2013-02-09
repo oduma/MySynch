@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using MySynch.Common;
+using MySynch.Contracts;
 using MySynch.Core.Interfaces;
 
 namespace MySynch.Core
@@ -29,6 +30,11 @@ namespace MySynch.Core
                 LoggingManager.Debug("Copy Failed.");
                 return false;
             }
+        }
+
+        public void Initialize(ISourceOfData sourceOfData)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -139,5 +139,6 @@ namespace MySynch.Core
         }
 
         internal List<ChangePushPackage> PublishedPackageNotDistributed { get; set; }
+
     }
 }

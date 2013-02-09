@@ -105,6 +105,7 @@
     <Compile Include="DataTypes\SynchItem.cs" />
     <Compile Include="PublisherSetupException.cs" />
     <Compile Include="MySynchInstaller.cs" />
+    <Compile Include="RemoteCopier.cs" />
     <Compile Include="SameSystemCopier.cs" />
     <Compile Include="SynchItemEqualityComparer.cs" />
     <Compile Include="SynchItemManager.cs" />

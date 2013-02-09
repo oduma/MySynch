@@ -1,5 +1,4 @@
-﻿using System;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 using MySynch.Contracts;
 
 namespace MySynch.Core.DataTypes
