@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using MySynch.Core;
 using NUnit.Framework;
 
@@ -17,7 +14,9 @@ namespace MySynch.Tests
             if (File.Exists(@"Data\Output\Test\F1\F13\F13.xml"))
                 File.Delete(@"Data\Output\Test\F1\F13\F13.xml");
             Assert.False(File.Exists(@"Data\Output\Test\F1\F13\F13.xml"));
-            Assert.True(new SameSystemCopier().Copy(@"Data\Test\F1\F11\F13\F13.xml", @"Data\Output\Test\F1\F13\F13.xml"));
+            CopyStrategy sameSystemCopier = new CopyStrategy();
+            sameSystemCopier.Initialize(null);
+            Assert.True(sameSystemCopier.Copy(@"Data\Test\F1\F11\F13\F13.xml", @"Data\Output\Test\F1\F13\F13.xml"));
             Assert.True(File.Exists(@"Data\Output\Test\F1\F13\F13.xml"));
         }
 
@@ -27,14 +26,14 @@ namespace MySynch.Tests
             if (File.Exists(@"Data\Output\Test\F1\F11\F13\F13.xml"))
                 File.Delete(@"Data\Output\Test\F1\F11\F13\F13.xml");
             Assert.False(File.Exists(@"Data\Output\Test\F1\F11\F13\F13.xml"));
-            Assert.True(new SameSystemCopier().Copy(@"Data\Test\F1\F11\F13\F13.xml", @"Data\Output\Test\F1\F11\F13\F13.xml"));
+            Assert.True(new CopyStrategy().Copy(@"Data\Test\F1\F11\F13\F13.xml", @"Data\Output\Test\F1\F11\F13\F13.xml"));
             Assert.True(File.Exists(@"Data\Output\Test\F1\F11\F13\F13.xml"));
         }
 
         [Test]
         public void Copy_Source_Does_Not_Exist()
         {
-            Assert.False(new SameSystemCopier().Copy(@"Data\Test\F2\F11\F13\F13.xml", @"Data\Output\Test\F1\F11\F13\F13.xml"));
+            Assert.False(new CopyStrategy().Copy(@"Data\Test\F2\F11\F13\F13.xml", @"Data\Output\Test\F1\F11\F13\F13.xml"));
         }
 
         [Test]
@@ -43,7 +42,7 @@ namespace MySynch.Tests
             Assert.True(File.Exists(@"Data\Output\Test\F1\F12\F123.xml"));
             FileInfo fInfo = new FileInfo(@"Data\Output\Test\F1\F12\F123.xml");
             var initial = fInfo.Length;
-            Assert.True(new SameSystemCopier().Copy(@"Data\Test\F1\F11\F12\F12.xml", @"Data\Output\Test\F1\F12\F123.xml"));
+            Assert.True(new CopyStrategy().Copy(@"Data\Test\F1\F11\F12\F12.xml", @"Data\Output\Test\F1\F12\F123.xml"));
             Assert.True(File.Exists(@"Data\Output\Test\F1\F12\F123.xml"));
             fInfo = new FileInfo(@"Data\Output\Test\F1\F12\F123.xml");
             var final = fInfo.Length;
@@ -55,14 +54,14 @@ namespace MySynch.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public void Copy_Source_NotSend()
         {
-            new SameSystemCopier().Copy(null, @"Data\Output\Test\F1\F12\F12.xml");
+            new CopyStrategy().Copy(null, @"Data\Output\Test\F1\F12\F12.xml");
         }
 
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
         public void Copy_Target_NotSend()
         {
-            new SameSystemCopier().Copy(@"Data\Test\F1\F11\F12\F12.xml", string.Empty);
+            new CopyStrategy().Copy(@"Data\Test\F1\F11\F12\F12.xml", string.Empty);
         }
     }
 }

@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using Moq;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
 using MySynch.Core;
+using MySynch.Core.DataTypes;
+using MySynch.Core.Interfaces;
 using MySynch.Tests.Stubs;
 using NUnit.Framework;
 using System.Linq;
@@ -131,7 +135,7 @@ namespace MySynch.Tests
 
             Distributor distributor = new Distributor();
             distributor.InitiateDistributionMap(@"Data\distributormaplocal2local.xml", _componentResolver);
-            
+            MockAllTheCopiers(distributor.AvailableChannels);
             ChangePublisher changePublisher = InitiateLocalPublisher();
             distributor.DistributeMessages();
             Assert.AreEqual(0, changePublisher.PublishedPackageNotDistributed.Count);
@@ -152,7 +156,7 @@ namespace MySynch.Tests
         {
             Distributor distributor = new Distributor();
             distributor.InitiateDistributionMap(@"Data\distributormaplocal2localandremote.xml", _componentResolver);
-
+            MockAllTheCopiers(distributor.AvailableChannels);
             ChangePublisher changePublisher = InitiateLocalPublisher();
             distributor.DistributeMessages();
             Assert.AreEqual(0, changePublisher.PublishedPackageNotDistributed.Count);
@@ -192,6 +196,7 @@ namespace MySynch.Tests
         {
             Distributor distributor = new Distributor();
             distributor.InitiateDistributionMap(@"Data\distributormap5.xml", _componentResolver);
+            MockAllTheCopiers(distributor.AvailableChannels);
             ChangePublisher changePublisher = (ChangePublisher)distributor.AvailableChannels.FirstOrDefault(c => string.IsNullOrEmpty(c.PublisherInfo.EndpointName)).PublisherInfo.Publisher;
             changePublisher.Initialize("root folder");
             changePublisher.QueueInsert(@"root folder\Item One");
@@ -216,6 +221,7 @@ namespace MySynch.Tests
         {
             Distributor distributor = new Distributor();
             distributor.InitiateDistributionMap(@"Data\distributormap5.xml", _componentResolver);
+            MockAllTheCopiers(distributor.AvailableChannels);
             ChangePublisher changePublisher = (ChangePublisher)distributor.AvailableChannels.FirstOrDefault(c => string.IsNullOrEmpty(c.PublisherInfo.EndpointName)).PublisherInfo.Publisher;
             changePublisher.Initialize("root folder");
             changePublisher.QueueInsert(@"root folder\Item One");
@@ -231,5 +237,22 @@ namespace MySynch.Tests
             Assert.AreEqual(0, compo.AvailablePublishers[0].DependentComponents[0].Packages.Count);
         }
 
+        private void MockAllTheCopiers(List<AvailableChannel> availableChannels)
+        {
+            availableChannels.ForEach(MockTheCopier);
+        }
+
+        private void MockTheCopier(AvailableChannel channel)
+        {
+            var mockCopyStrategy = new Mock<ICopyStrategy>();
+            mockCopyStrategy.Setup(m => m.Initialize(channel.DataSourceInfo.DataSource));
+            mockCopyStrategy.Setup(m => m.Copy(@"local source root folder\item one",@"local target root folder\item one")).Returns(true);
+            mockCopyStrategy.Setup(m => m.Copy(@"local source root folder\item two", @"local target root folder\item two")).Returns(true);
+            mockCopyStrategy.Setup(m => m.Copy(@"local source root folder\item one", @"remote target root folder\item one")).Returns(true);
+            mockCopyStrategy.Setup(m => m.Copy(@"local source root folder\item two", @"remote target root folder\item two")).Returns(true);
+            mockCopyStrategy.Setup(m => m.Copy(@"root folder\Item One", @"destination root folder\Item One")).Returns(true);
+            mockCopyStrategy.Setup(m => m.Copy(@"root folder\ItemTwo", @"destination root folder\ItemTwo")).Returns(true);
+            channel.DataSourceInfo.CopyStrategy = mockCopyStrategy.Object;
+        }
     }
 }

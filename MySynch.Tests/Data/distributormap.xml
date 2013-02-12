@@ -11,7 +11,6 @@
       <TargetRootFolder></TargetRootFolder>
     </SubscriberInfo>
     <DataSourceInfo>
-      <CopyStartegyName>ICopyStrategy.Local</CopyStartegyName>
       <DataSourceName>ISourceOfData.Local</DataSourceName>
     </DataSourceInfo>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
@@ -29,7 +28,6 @@
       <TargetRootFolder></TargetRootFolder>
     </SubscriberInfo>
     <DataSourceInfo>
-      <CopyStartegyName>ICopyStrategy.Local</CopyStartegyName>
       <DataSourceName>ISourceOfData.Local</DataSourceName>
     </DataSourceInfo>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
@@ -47,7 +45,6 @@
       <TargetRootFolder></TargetRootFolder>
     </SubscriberInfo>
     <DataSourceInfo>
-      <CopyStartegyName>ICopyStrategy.Local</CopyStartegyName>
       <DataSourceName>ISourceOfData.Local</DataSourceName>
     </DataSourceInfo>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>

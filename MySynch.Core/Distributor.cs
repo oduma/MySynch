@@ -286,10 +286,7 @@ namespace MySynch.Core
 
         private void InitializeChannel(AvailableChannel availableChannel)
         {
-            availableChannel.DataSourceInfo.CopyStrategy =
-                _componentResolver.Resolve
-                    <ICopyStrategy>(
-                        availableChannel.DataSourceInfo.CopyStartegyName);
+            availableChannel.DataSourceInfo.CopyStrategy =new CopyStrategy();
             if (string.IsNullOrEmpty(availableChannel.DataSourceInfo.EndpointName))
             {
                 availableChannel.DataSourceInfo.DataSource =

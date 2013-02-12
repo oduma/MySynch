@@ -13,11 +13,7 @@ namespace MySynch.Core.DataTypes
 
         public string EndpointName { get; set; }
 
-        public string CopyStartegyName { get; set; }
-
         [XmlIgnore]
         public ICopyStrategy CopyStrategy { get; set; }
-
-
     }
 }

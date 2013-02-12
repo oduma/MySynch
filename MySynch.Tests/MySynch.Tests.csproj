@@ -37,6 +37,9 @@
     <Reference Include="Castle.Windsor">
       <HintPath>..\..\..\CW3.1\net40\Castle.Windsor.dll</HintPath>
     </Reference>
+    <Reference Include="Moq">
+      <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.1\lib\nunit.framework.dll</HintPath>
     </Reference>
@@ -63,6 +66,7 @@
     <Compile Include="LoggingManagerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SameSystemCopierTests.cs" />
+    <Compile Include="SourceOfDataTests.cs" />
     <Compile Include="Stubs\ChangeApplyerNotPresent.cs" />
     <Compile Include="Stubs\ChangePublisherNotPresent.cs" />
     <Compile Include="Stubs\ClientImplementation.cs" />
@@ -72,8 +76,6 @@
     <Compile Include="Stubs\MockRemotePublisherNotPresent.cs" />
     <Compile Include="Stubs\MockRemoteSubscriber.cs" />
     <Compile Include="Stubs\MockRemoteSubscriberNotPresent.cs" />
-    <Compile Include="Stubs\NoCopyCopyStrategy.cs" />
-    <Compile Include="Stubs\SameSystemCopierNotPresent.cs" />
     <Compile Include="SynchItemManagerTests.cs" />
     <Compile Include="Stubs\TestInstaller.cs" />
   </ItemGroup>
