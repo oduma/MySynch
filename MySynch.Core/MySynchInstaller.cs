@@ -21,8 +21,14 @@ namespace MySynch.Core
                     Component.For<IChangeApplyer>().ImplementedBy<ChangeApplyer>().Named("ISubScriber.Local"),
                     Component.For<ICopyStrategy>().ImplementedBy<SameSystemCopier>().Named(
                         "ICopyStrategy.Local"),
+                    Component.For<ISourceOfData>().ImplementedBy<LocalSourceOfData>().Named(
+                        "ISourceOfData.Local"),
                     Component.For<IPublisherProxy>().ImplementedBy<PublisherClient>().Named("IPublisher.Remote"),
-                    Component.For<ISubscriberProxy>().ImplementedBy<SubscriberClient>().Named("ISubscriber.Remote")
+                    Component.For<ISubscriberProxy>().ImplementedBy<SubscriberClient>().Named("ISubscriber.Remote"),
+                    Component.For<ICopyStrategy>().ImplementedBy<RemoteSystemCopier>().Named(
+                        "ICopyStrategy.Remote"),
+                    Component.For<ISourceOfDataProxy>().ImplementedBy<SourceOfDataClient>().Named(
+                        "ISourceOfData.Remote")
                     );
             }
         }

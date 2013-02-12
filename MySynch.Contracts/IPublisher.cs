@@ -4,7 +4,7 @@ using MySynch.Contracts.Messages;
 namespace MySynch.Contracts
 {
     [ServiceContract]
-    public interface IPublisher:ICommunicationCopmonent
+    public interface IPublisher:ICommunicationComponent
     {
         [OperationContract]
         ChangePushPackage PublishPackage();

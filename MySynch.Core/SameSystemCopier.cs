@@ -34,7 +34,7 @@ namespace MySynch.Core
 
         public void Initialize(ISourceOfData sourceOfData)
         {
-            throw new NotImplementedException();
+            return;
         }
     }
 }

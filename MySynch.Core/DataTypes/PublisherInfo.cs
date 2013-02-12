@@ -12,8 +12,5 @@ namespace MySynch.Core.DataTypes
         public string PublisherInstanceName { get; set; }
 
         public string EndpointName { get; set; }
-
-        [XmlIgnore]
-        public ISourceOfData SourceOfData { get; set; }
     }
 }

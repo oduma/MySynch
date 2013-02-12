@@ -45,7 +45,7 @@
     <Compile Include="ISourceOfData.cs" />
     <Compile Include="Messages\AvailableComponent.cs" />
     <Compile Include="IChangeApplyer.cs" />
-    <Compile Include="ICommunicationCopmonent.cs" />
+    <Compile Include="ICommunicationComponent.cs" />
     <Compile Include="IDistributorMonitor.cs" />
     <Compile Include="IPublisher.cs" />
     <Compile Include="Messages\ChangePushItem.cs" />

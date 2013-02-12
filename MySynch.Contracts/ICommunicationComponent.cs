@@ -4,7 +4,7 @@ using MySynch.Contracts.Messages;
 namespace MySynch.Contracts
 {
     [ServiceContract]
-    public interface ICommunicationCopmonent
+    public interface ICommunicationComponent
     {
         [OperationContract]
         HeartbeatResponse GetHeartbeat();

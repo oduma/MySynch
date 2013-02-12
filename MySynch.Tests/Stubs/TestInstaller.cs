@@ -17,6 +17,8 @@ namespace MySynch.Tests.Stubs
                                Component.For<IChangeApplyer>().ImplementedBy<ChangeApplyer>().Named("ISubScriber.Local"),
                                Component.For<ICopyStrategy>().ImplementedBy<NoCopyCopyStrategy>().Named(
                                    "ICopyStrategy.Local"),
+                               Component.For<ISourceOfData>().ImplementedBy<LocalSourceOfData>().Named(
+                                   "ISourceOfData.Local"),
                                Component.For<IPublisher>().ImplementedBy<ChangePublisherNotPresent>().Named("IPublisher.NotPresent"),
                                Component.For<IChangeApplyer>().ImplementedBy<ChangeApplyerNotPresent>().Named("ISubScriber.NotPresent"),
                                Component.For<ICopyStrategy>().ImplementedBy<SameSystemCopierNotPresent>().Named(

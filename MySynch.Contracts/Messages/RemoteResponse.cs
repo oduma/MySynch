@@ -6,6 +6,7 @@ namespace MySynch.Contracts.Messages
     public class RemoteResponse
     {
         [MessageBodyMember]
-        private byte[] Data { get; set; }
+        public byte[] Data { get; set; }
+
     }
 }

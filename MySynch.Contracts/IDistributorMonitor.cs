@@ -4,7 +4,7 @@ using MySynch.Contracts.Messages;
 namespace MySynch.Contracts
 {
     [ServiceContract]
-    public interface IDistributorMonitor:ICommunicationCopmonent
+    public interface IDistributorMonitor:ICommunicationComponent
     {
         [OperationContract]
         DistributorComponent ListAvailableComponentsTree();

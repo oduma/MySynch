@@ -19,6 +19,9 @@ namespace MySynch.Contracts.Messages
         public string RootPath { get; set; }
 
         [DataMember]
+        public Status DataSourceStatus { get; set; }
+
+        [DataMember]
         public List<AvailableComponent> DependentComponents { get; set; }
 
         [DataMember]

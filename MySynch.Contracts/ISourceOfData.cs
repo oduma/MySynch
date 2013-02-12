@@ -4,7 +4,7 @@ using MySynch.Contracts.Messages;
 namespace MySynch.Contracts
 {
     [ServiceContract]
-    public interface ISourceOfData
+    public interface ISourceOfData:ICommunicationComponent
     {
         [OperationContract]
         RemoteResponse GetData(RemoteRequest remoteRequest);
