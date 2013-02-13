@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Configuration.Install;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.ServiceProcess;
 
 
@@ -22,7 +17,7 @@ namespace MySynch.WindowsService
         process = new ServiceProcessInstaller();
         process.Account = ServiceAccount.LocalSystem;
         service = new ServiceInstaller();
-        service.ServiceName = "MySynch.PublisherSubscriberIstance";
+        service.ServiceName = "MySynch.PeerNode";
         Installers.Add(process);
         Installers.Add(service);
     }

@@ -44,6 +44,7 @@
       <HintPath>..\packages\NUnit.2.6.1\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
@@ -62,6 +63,7 @@
     <Compile Include="DistributorTests.cs" />
     <Compile Include="EndpointFactoryTests.cs" />
     <Compile Include="GenerateADistributorMapFile.cs" />
+    <Compile Include="InitiateServiceTests.cs" />
     <Compile Include="ItemDiscovererTests.cs" />
     <Compile Include="LoggingManagerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -103,6 +105,10 @@
     <ProjectReference Include="..\MySynch.Proxies\MySynch.Proxies.csproj">
       <Project>{9C0061E1-9FF4-4BEC-A050-C2D21908354B}</Project>
       <Name>MySynch.Proxies</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MySynch.WindowsService\MySynch.WindowsService.csproj">
+      <Project>{75577435-62B9-43A7-BCE8-935C0EC95F80}</Project>
+      <Name>MySynch.WindowsService</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

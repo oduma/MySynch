@@ -16,7 +16,7 @@ namespace MySynch.WindowsService
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[] 
 			{ 
-				new PublisherSubscriberInstance() 
+				new MySynchNodeInstance() 
 			};
             ServiceBase.Run(ServicesToRun);
         }

@@ -8,11 +8,12 @@ using System.Timers;
 using MySynch.Common;
 using MySynch.Contracts.Messages;
 using MySynch.Core;
+using MySynch.Core.DataTypes;
 using MySynch.Core.Interfaces;
 
 namespace MySynch.WindowsService
 {
-    public partial class PublisherSubscriberInstance : ServiceBase
+    public partial class MySynchNodeInstance : ServiceBase
     {
         public List<ServiceHost> serviceHosts = new List<ServiceHost>();
         private IDistributor _distributor;
@@ -20,11 +21,17 @@ namespace MySynch.WindowsService
         private ChangePublisher _changePublisher;
         private string _rootFolder;
         private Timer _timer;
-
-        public PublisherSubscriberInstance()
+        internal static string NodeRolesConfigKeyName = "NodeRoles";
+        public MySynchNodeInstance()
         {
             LoggingManager.Debug("Initialize the service");
-            ServiceName = "MySynch.PublisherSubscriberIstance";
+            List<RoleOfNode> rolesOfNode = ServiceHelper.DetermineRolesOfNode(NodeRolesConfigKeyName);
+            if (rolesOfNode.Contains(RoleOfNode.Distributor))
+                InitiateDistributor();
+            if (rolesOfNode.Contains(RoleOfNode.Publisher))
+                InitiatePublisher();
+            if (rolesOfNode.Contains(RoleOfNode.Subscriber))
+                InitiateSubscriber();
             _distributor = new Distributor();
             _timer = new Timer();
             _timer.Interval = 60000;
@@ -43,6 +50,20 @@ namespace MySynch.WindowsService
             LoggingManager.Debug("Initializion Ok with distribution Map: "+ _distributorMapFile);
         }
 
+        internal void InitiateSubscriber()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void InitiatePublisher()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void InitiateDistributor()
+        {
+            throw new NotImplementedException();
+        }
         protected override void OnStart(string[] args)
         {
             try
@@ -56,6 +77,7 @@ namespace MySynch.WindowsService
 
                 serviceHosts.Add(new ServiceHost(typeof(ChangePublisher)));
                 serviceHosts.Add(new ServiceHost(typeof(ChangeApplyer)));
+                serviceHosts.Add(new ServiceHost(typeof(RemoteSourceOfData)));
                 serviceHosts.Add(new ServiceHost(_distributor));
 
                 serviceHosts.ForEach(OpenServiceHost);

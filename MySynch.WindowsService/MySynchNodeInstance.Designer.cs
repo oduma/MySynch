@@ -1,6 +1,6 @@
 ﻿namespace MySynch.WindowsService
 {
-    partial class PublisherSubscriberInstance
+    partial class MySynchNodeInstance
     {
         /// <summary> 
         /// Required designer variable.

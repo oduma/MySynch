@@ -74,6 +74,7 @@
       <HintPath>..\Lib\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
@@ -92,6 +93,7 @@
     <Compile Include="DataTypes\FolderDiscoveredArg.cs" />
     <Compile Include="DataTypes\ItemsQueuedEventArgs.cs" />
     <Compile Include="DataTypes\PublisherInfo.cs" />
+    <Compile Include="DataTypes\RoleOfNode.cs" />
     <Compile Include="DataTypes\SubscriberInfo.cs" />
     <Compile Include="Distributor.cs" />
     <Compile Include="FSWatcher.cs" />
@@ -109,6 +111,7 @@
     <Compile Include="MySynchInstaller.cs" />
     <Compile Include="RemoteSourceOfData.cs" />
     <Compile Include="CopyStrategy.cs" />
+    <Compile Include="ServiceHelper.cs" />
     <Compile Include="SourceOfDataSetupException.cs" />
     <Compile Include="SynchItemEqualityComparer.cs" />
     <Compile Include="SynchItemManager.cs" />

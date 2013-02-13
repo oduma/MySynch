@@ -10,6 +10,9 @@
       <EndpointName></EndpointName>
       <TargetRootFolder>C:\MySynch.Dest.Test.Root\</TargetRootFolder>
     </SubscriberInfo>
+    <DataSourceInfo>
+      <DataSourceName>ISourceOfData.Local</DataSourceName>
+    </DataSourceInfo>
     <CopyStartegyName>ICopyStrategy.Local</CopyStartegyName>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
     <Status>NotChecked</Status>
