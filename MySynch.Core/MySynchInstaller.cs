@@ -18,7 +18,7 @@ namespace MySynch.Core
             {
                 container.Register(
                     Component.For<IPublisher>().ImplementedBy<ChangePublisher>().Named("IPublisher.Local"),
-                    Component.For<IChangeApplyer>().ImplementedBy<ChangeApplyer>().Named("ISubScriber.Local"),
+                    Component.For<ISubscriber>().ImplementedBy<Subscriber>().Named("ISubScriber.Local"),
                     Component.For<ISourceOfData>().ImplementedBy<LocalSourceOfData>().Named(
                         "ISourceOfData.Local"),
                     Component.For<IPublisherProxy>().ImplementedBy<PublisherClient>().Named("IPublisher.Remote"),

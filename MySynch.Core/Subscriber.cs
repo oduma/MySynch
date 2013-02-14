@@ -2,36 +2,46 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.ServiceModel;
 using MySynch.Common;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
+using MySynch.Core.Interfaces;
 
 namespace MySynch.Core
 {
-    public class ChangeApplyer:IChangeApplyer
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
+    public class Subscriber:IChangeSubscriber
     {
         private Func<string, string, bool> _copyMethod;
+        private string _targetRootFolder;
 
-        public bool ApplyChangePackage(ChangePushPackage changePushPackage, string targetRootFolder,Func<string, string, bool> copyMethod)
+
+        public bool ApplyChangePackage(ChangePushPackage changePushPackage,Func<string, string, bool> copyMethod)
         {
-            LoggingManager.Debug("Trying to apply some changes to: " + targetRootFolder);
+            LoggingManager.Debug("Trying to apply some changes to: " + _targetRootFolder);
             if(changePushPackage==null || changePushPackage.ChangePushItems==null || changePushPackage.ChangePushItems.Count<=0)
             {
                 LoggingManager.Debug("Nothing to apply.");
                 return false;
             }
-            if(string.IsNullOrEmpty(targetRootFolder))
-                throw new ArgumentNullException("targetRootFolder");
             if(copyMethod==null)
                 throw new ArgumentNullException("copyMethod");
             _copyMethod = copyMethod;
             var response=ApplyUpserts(changePushPackage.ChangePushItems.Where(i => i.OperationType == OperationType.Insert || i.OperationType==OperationType.Update),
-                             targetRootFolder, changePushPackage.SourceRootName) &&
+                             _targetRootFolder, changePushPackage.SourceRootName) &&
                 ApplyDeletes(changePushPackage.ChangePushItems.Where(i => i.OperationType == OperationType.Delete),
-                             targetRootFolder, changePushPackage.SourceRootName);
+                             _targetRootFolder, changePushPackage.SourceRootName);
             LoggingManager.Debug("Result of applying changes is: " +response);
             return response;
 
+        }
+
+        public void Initialize(string targetRootFolder)
+        {
+            if (string.IsNullOrEmpty(targetRootFolder))
+                throw new ArgumentNullException("targetRootFolder");
+            _targetRootFolder = targetRootFolder;
         }
 
         private bool ApplyDeletes(IEnumerable<ChangePushItem> deletes, string targetRootFolder, string sourceRootName)

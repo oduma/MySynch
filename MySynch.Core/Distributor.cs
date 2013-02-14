@@ -160,7 +160,6 @@ namespace MySynch.Core
                     RegisterSubscriberPackage(channel, package, State.InProgress);
                     channel.DataSourceInfo.CopyStrategy.Initialize(channel.DataSourceInfo.DataSource);
                     if (channel.SubscriberInfo.Subscriber.ApplyChangePackage(package,
-                                                                             channel.SubscriberInfo.TargetRootFolder,
                                                                              channel.DataSourceInfo.CopyStrategy.Copy))
                     {
                         RegisterSubscriberPackage(channel, package, State.Distributed);
@@ -309,7 +308,7 @@ namespace MySynch.Core
             componentResolver.ResolveAll<IPublisher>();
             componentResolver.ResolveAll<IPublisherProxy>();
             componentResolver.ResolveAll<ICopyStrategy>();
-            componentResolver.ResolveAll<IChangeApplyer>();
+            componentResolver.ResolveAll<ISubscriber>();
             componentResolver.ResolveAll<ISubscriberProxy>();
         }
 
@@ -456,13 +455,13 @@ namespace MySynch.Core
 
             if (string.IsNullOrEmpty(availableChannel.SubscriberInfo.EndpointName))
             {
-                IChangeApplyer subscriberLocal;
+                ISubscriber subscriberLocal;
                 //the publisher has to be local
                 try
                 {
                     subscriberLocal = (availableChannel.SubscriberInfo.Subscriber) ??
                                       (availableChannel.SubscriberInfo.Subscriber =
-                                       _componentResolver.Resolve<IChangeApplyer>(
+                                       _componentResolver.Resolve<ISubscriber>(
                                            availableChannel.SubscriberInfo.SubScriberName));
                 }
                 catch (Exception ex)
@@ -494,7 +493,7 @@ namespace MySynch.Core
                 return true;
             }
 
-            IChangeApplyer subscriberRemote;
+            ISubscriber subscriberRemote;
             //the publisher has to be local
             try
             {

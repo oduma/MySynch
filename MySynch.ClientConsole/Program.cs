@@ -1,7 +1,9 @@
 ﻿using System;
+using MySynch.Contracts.Messages;
 using MySynch.Core;
 using MySynch.Core.DataTypes;
 using MySynch.Core.Interfaces;
+using MySynch.Proxies;
 
 namespace MySynch.ClientConsole
 {
@@ -9,24 +11,19 @@ namespace MySynch.ClientConsole
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Monitoring... (close this window to stop it)");
-            //Start monitoring the queue and respond to a number of situations
-            string sourceRootFolder=@"C:\Code\Sciendo\MySynch\MySynch.ClientConsole\bin\Debug";
-            IChangePublisher changePublisher = new ChangePublisher();
-            changePublisher.Initialize(sourceRootFolder);
+            //IPublisherProxy publisherProxy = new PublisherClient();
+            //publisherProxy.InitiateUsingEndpoint("PublisherSciendoLaptop");
+            //publisherProxy.PublishPackage();
 
-            FSWatcher fsWatcher= new FSWatcher(changePublisher);
-            changePublisher.ItemsQueued += fsWatcher_ItemsQueued;
-            Console.WriteLine("Monitoring path: " + fsWatcher.Path);
-            System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);
-        }
+            ISourceOfDataProxy sourceOfDataProxy = new SourceOfDataClient();
+            sourceOfDataProxy.InitiateUsingEndpoint("SourceOfDataSciendoLaptop");
+            //var data = sourceOfDataProxy.GetData(new RemoteRequest {FileName = @"C:\MySynch.Source.Test.Root\img001.jpg"});
 
-        static void fsWatcher_ItemsQueued(object sender, ItemsQueuedEventArgs e)
-        {
-            foreach(var key in e.NonPublishedItems.Keys)
-                Console.WriteLine("{0} recorded on path {1}",e.NonPublishedItems[key],key);
-            Console.WriteLine();
-            Console.WriteLine();
+            ISubscriberProxy subscriberProxy = new SubscriberClient();
+            subscriberProxy.InitiateUsingEndpoint("SubscriberSciendoLaptop");
+            CopyStrategy copyStrategy= new CopyStrategy();
+            copyStrategy.Initialize(sourceOfDataProxy);
+            subscriberProxy.ApplyChangePackage(new ChangePushPackage(), copyStrategy.Copy);
         }
     }
 }

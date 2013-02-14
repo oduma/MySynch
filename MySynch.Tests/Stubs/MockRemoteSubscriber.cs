@@ -6,12 +6,14 @@ namespace MySynch.Tests.Stubs
 {
     public class MockRemoteSubscriber:ISubscriberProxy
     {
+        private string targetRootFolder;
+
         public HeartbeatResponse GetHeartbeat()
         {
             return new HeartbeatResponse {Status = true};
         }
 
-        public bool ApplyChangePackage(ChangePushPackage changePushPackage, string targetRootFolder, Func<string, string, bool> copyMethod)
+        public bool ApplyChangePackage(ChangePushPackage changePushPackage, Func<string, string, bool> copyMethod)
         {
             if(targetRootFolder=="wrong folder")
                 throw new Exception();

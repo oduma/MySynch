@@ -11,7 +11,7 @@ namespace MySynch.Tests.Stubs
             return new HeartbeatResponse {Status = false};
         }
 
-        public bool ApplyChangePackage(ChangePushPackage changePushPackage, string targetRootFolder, Func<string, string, bool> copyMethod)
+        public bool ApplyChangePackage(ChangePushPackage changePushPackage, Func<string, string, bool> copyMethod)
         {
             throw new NotImplementedException();
         }

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ArrayOfAvailableChannel xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <AvailableChannel>
+    <PublisherInfo>
+      <PublisherInstanceName>IPublisher.Local</PublisherInstanceName>
+      <EndpointName></EndpointName>
+    </PublisherInfo>
+    <SubscriberInfo>
+      <SubScriberName>ISubscriber.Local</SubScriberName>
+      <EndpointName></EndpointName>
+      <TargetRootFolder>C:\MySynch.Dest.Test.Root\</TargetRootFolder>
+    </SubscriberInfo>
+    <DataSourceInfo>
+      <DataSourceName>ISourceOfData.Local</DataSourceName>
+    </DataSourceInfo>
+    <CopyStartegyName>ICopyStrategy.Local</CopyStartegyName>
+    <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
+    <Status>NotChecked</Status>
+    <NoOfFailedAttempts>0</NoOfFailedAttempts>
+  </AvailableChannel>
+</ArrayOfAvailableChannel> 

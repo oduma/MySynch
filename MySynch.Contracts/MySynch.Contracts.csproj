@@ -44,7 +44,7 @@
   <ItemGroup>
     <Compile Include="ISourceOfData.cs" />
     <Compile Include="Messages\AvailableComponent.cs" />
-    <Compile Include="IChangeApplyer.cs" />
+    <Compile Include="ISubscriber.cs" />
     <Compile Include="ICommunicationComponent.cs" />
     <Compile Include="IDistributorMonitor.cs" />
     <Compile Include="IPublisher.cs" />

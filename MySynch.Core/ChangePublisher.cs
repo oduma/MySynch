@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel;
 using MySynch.Common;
 using MySynch.Contracts.Messages;
 using MySynch.Core.DataTypes;
@@ -8,6 +9,7 @@ using MySynch.Core.Interfaces;
 
 namespace MySynch.Core
 {
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class ChangePublisher: IChangePublisher
     {
         private SortedList<string,OperationType> _temporaryStore;

@@ -84,7 +84,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChangeApplyer.cs" />
+    <Compile Include="Interfaces\IChangeSubscriber.cs" />
+    <Compile Include="Subscriber.cs" />
     <Compile Include="ChangePublisher.cs" />
     <Compile Include="ComponentNotRegieteredException.cs" />
     <Compile Include="ComponentResolver.cs" />

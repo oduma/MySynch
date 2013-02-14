@@ -21,7 +21,7 @@ namespace MySynch.Tests
         [Test]
         public void ApplyChanges_Upserts_Ok()
         {
-            ChangeApplyer changeApplyer= new ChangeApplyer();
+            Subscriber changeApplyer= new Subscriber();
 
             ChangePushPackage insertPackage = new ChangePushPackage
                                                   {
@@ -48,7 +48,8 @@ namespace MySynch.Tests
 
                                                               }
                                                   };
-            Assert.True(changeApplyer.ApplyChangePackage(insertPackage, @"Data\Output\Test", fakeMethod));
+            changeApplyer.Initialize(@"Data\Output\Test");
+            Assert.True(changeApplyer.ApplyChangePackage(insertPackage,  fakeMethod));
             Assert.AreEqual(3,_noOfUpserts);
         }
 
@@ -61,7 +62,7 @@ namespace MySynch.Tests
         [Test]
         public void ApplyChanges_Upserts_SomeFail()
         {
-            ChangeApplyer changeApplyer = new ChangeApplyer();
+            Subscriber changeApplyer = new Subscriber();
 
             ChangePushPackage insertPackage = new ChangePushPackage
             {
@@ -88,7 +89,8 @@ namespace MySynch.Tests
 
                                                               }
             };
-            Assert.False(changeApplyer.ApplyChangePackage(insertPackage, @"Data\Output\Test", fakeMethodFail1));
+            changeApplyer.Initialize(@"Data\Output\Test");
+            Assert.False(changeApplyer.ApplyChangePackage(insertPackage,  fakeMethodFail1));
             Assert.AreEqual(3, _noOfUpserts);
         }
 
@@ -101,7 +103,7 @@ namespace MySynch.Tests
         [Test]
         public void ApplyChanges_Deletes_Ok()
         {
-            ChangeApplyer changeApplyer = new ChangeApplyer();
+            Subscriber changeApplyer = new Subscriber();
 
             ChangePushPackage deletePackage = new ChangePushPackage
             {
@@ -122,9 +124,10 @@ namespace MySynch.Tests
                                                                       }
                                                               }
             };
+            changeApplyer.Initialize(@"Data\Output\Test");
             Assert.True(File.Exists(@"Data\Output\Test\F1\F12\F12.xml"));
             Assert.True(File.Exists(@"Data\Output\Test\F1\F12\F121.xml"));
-            Assert.True(changeApplyer.ApplyChangePackage(deletePackage, @"Data\Output\Test", fakeMethod));
+            Assert.True(changeApplyer.ApplyChangePackage(deletePackage,  fakeMethod));
             Assert.False(File.Exists(@"Data\Output\Test\F1\F12\F12.xml"));
             Assert.False(File.Exists(@"Data\Output\Test\F1\F12\F121.xml"));
 
@@ -133,7 +136,7 @@ namespace MySynch.Tests
         [Test]
         public void ApplyChanges_Deletes_SomeNotExist()
         {
-            ChangeApplyer changeApplyer = new ChangeApplyer();
+            Subscriber changeApplyer = new Subscriber();
 
             ChangePushPackage deletePackage = new ChangePushPackage
             {
@@ -159,9 +162,10 @@ namespace MySynch.Tests
                                                                       }
                                                               }
             };
+            changeApplyer.Initialize(@"Data\Output\Test");
             Assert.True(File.Exists(@"Data\Output\Test\F1\F12\F122.xml"));
             Assert.False(File.Exists(@"Data\Output\Test\F12\F13.xml"));
-            Assert.False(changeApplyer.ApplyChangePackage(deletePackage, @"Data\Output\Test", fakeMethod));
+            Assert.False(changeApplyer.ApplyChangePackage(deletePackage,  fakeMethod));
             Assert.False(File.Exists(@"Data\Output\Test\F1\F12\F122.xml"));
             Assert.False(File.Exists(@"Data\Output\Test\F12\F13.xml"));
 
@@ -170,41 +174,16 @@ namespace MySynch.Tests
         [Test]
         public void ApplyChanges_NoChangePackage()
         {
-            ChangeApplyer changeApplyer = new ChangeApplyer();
-            Assert.False( changeApplyer.ApplyChangePackage(null, "some folder", fakeMethod));
+            Subscriber changeApplyer = new Subscriber();
+            Assert.False( changeApplyer.ApplyChangePackage(null, fakeMethod));
         }
         
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void ApplyChanges_Target_NotSent()
+        public void Initialize_Target_NotSent()
         {
-            ChangeApplyer changeApplyer = new ChangeApplyer();
-            ChangePushPackage deletePackage = new ChangePushPackage
-            {
-                Source = "Source1",
-                SourceRootName = @"Data\Test",
-                ChangePushItems =
-                    new List<ChangePushItem>
-                                                              {
-                                                                  new ChangePushItem
-                                                                      {
-                                                                          AbsolutePath = @"Data\Test\F1\F12\F122.xml",
-                                                                          OperationType = OperationType.Delete
-                                                                      },
-                                                                  new ChangePushItem
-                                                                      {
-                                                                          AbsolutePath = @"Data\Test\F12\F13.xml",
-                                                                          OperationType = OperationType.Delete
-                                                                      },
-                                                                  new ChangePushItem
-                                                                      {
-                                                                          AbsolutePath = @"Data\Test\F1\F12\F121.xml",
-                                                                          OperationType = OperationType.Delete
-                                                                      }
-                                                              }
-            };
-
-            changeApplyer.ApplyChangePackage(deletePackage, string.Empty, fakeMethod);
+            Subscriber changeApplyer = new Subscriber();
+            changeApplyer.Initialize(string.Empty);
         }
 
     }

@@ -21,21 +21,20 @@ namespace MySynch.WindowsService
         private ChangePublisher _changePublisher;
         private string _rootFolder;
         private Timer _timer;
-        internal static string NodeRolesConfigKeyName = "NodeRoles";
         public MySynchNodeInstance()
         {
             LoggingManager.Debug("Initialize the service");
-            List<RoleOfNode> rolesOfNode = ServiceHelper.DetermineRolesOfNode(NodeRolesConfigKeyName);
-            if (rolesOfNode.Contains(RoleOfNode.Distributor))
-                InitiateDistributor();
-            if (rolesOfNode.Contains(RoleOfNode.Publisher))
-                InitiatePublisher();
-            if (rolesOfNode.Contains(RoleOfNode.Subscriber))
-                InitiateSubscriber();
             _distributor = new Distributor();
             _timer = new Timer();
             _timer.Interval = 60000;
             InitializeComponent();
+            ReadTheNodeConfiguration();
+
+            LoggingManager.Debug("Initializion Ok with distribution Map: "+ _distributorMapFile);
+        }
+
+        private void ReadTheNodeConfiguration()
+        {
             var key = ConfigurationManager.AppSettings.AllKeys.FirstOrDefault(k => k == "DistributorMap");
             if (key == null)
                 _distributorMapFile = string.Empty;
@@ -46,24 +45,8 @@ namespace MySynch.WindowsService
                 _rootFolder = string.Empty;
             else
                 _rootFolder = ConfigurationManager.AppSettings[key];
-
-            LoggingManager.Debug("Initializion Ok with distribution Map: "+ _distributorMapFile);
         }
 
-        internal void InitiateSubscriber()
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void InitiatePublisher()
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void InitiateDistributor()
-        {
-            throw new NotImplementedException();
-        }
         protected override void OnStart(string[] args)
         {
             try
@@ -75,28 +58,15 @@ namespace MySynch.WindowsService
                     serviceHosts.ForEach(CloseServiceHost);
                 }
 
-                serviceHosts.Add(new ServiceHost(typeof(ChangePublisher)));
-                serviceHosts.Add(new ServiceHost(typeof(ChangeApplyer)));
+                InitializeDistributor();
+
+                serviceHosts.Add(new ServiceHost(typeof(Subscriber)));
                 serviceHosts.Add(new ServiceHost(typeof(RemoteSourceOfData)));
-                serviceHosts.Add(new ServiceHost(_distributor));
 
                 serviceHosts.ForEach(OpenServiceHost);
 
-                ComponentResolver componentResolver = new ComponentResolver();
-                componentResolver.RegisterAll(new MySynchInstaller());
-
-                _distributor.InitiateDistributionMap(_distributorMapFile, componentResolver);
                 
-                var publishers = _distributor.AvailableChannels.Where(
-                    c => c.Status == Status.Ok && string.IsNullOrEmpty(c.PublisherInfo.EndpointName)).Select(
-                        c => c.PublisherInfo.Publisher);
-                if (publishers.Count() != 0 && !string.IsNullOrEmpty(_rootFolder))
-                {
-                    _changePublisher = (ChangePublisher)publishers.First();
-                    _changePublisher.Initialize(_rootFolder);
-                    FSWatcher fsWatcher = new FSWatcher(_changePublisher);
-                    
-                }
+                InitializeLocalPublisher();
                 _timer.Elapsed += timer_Elapsed;
                 _timer.Enabled = true;
                 _timer.Start();
@@ -109,6 +79,29 @@ namespace MySynch.WindowsService
                 LoggingManager.LogMySynchSystemError(ex);
                 throw;
             }
+        }
+
+        private void InitializeLocalPublisher()
+        {
+            var publisher = _distributor.AvailableChannels.FirstOrDefault(
+                c => c.Status == Status.Ok && string.IsNullOrEmpty(c.PublisherInfo.EndpointName)).PublisherInfo.Publisher;
+
+            if (publisher != null && !string.IsNullOrEmpty(_rootFolder))
+            {
+                _changePublisher = (ChangePublisher)publisher;
+                _changePublisher.Initialize(_rootFolder);
+                FSWatcher fsWatcher = new FSWatcher(_changePublisher);
+                serviceHosts.Add(new ServiceHost(_changePublisher));
+            }
+        }
+
+        private void InitializeDistributor()
+        {
+            ComponentResolver componentResolver = new ComponentResolver();
+            componentResolver.RegisterAll(new MySynchInstaller());
+
+            _distributor.InitiateDistributionMap(_distributorMapFile, componentResolver);
+            serviceHosts.Add(new ServiceHost(_distributor));
         }
 
         void timer_Elapsed(object sender, ElapsedEventArgs e)

@@ -6,7 +6,7 @@ using MySynch.Core.WCF.Clients;
 
 namespace MySynch.Proxies
 {
-    public class SubscriberClient:BaseClient<IChangeApplyer>,ISubscriberProxy
+    public class SubscriberClient:BaseClient<ISubscriber>,ISubscriberProxy
     {
         public HeartbeatResponse GetHeartbeat()
         {
@@ -36,14 +36,14 @@ namespace MySynch.Proxies
 
         }
 
-        public bool ApplyChangePackage(ChangePushPackage changePushPackage, string targetRootFolder, Func<string, string, bool> copyMethod)
+        public bool ApplyChangePackage(ChangePushPackage changePushPackage, Func<string, string, bool> copyMethod)
         {
             bool response = false;
             try
             {
                 using (new OperationContextScope((IContextChannel)Proxy))
                 {
-                    response = Proxy.ApplyChangePackage(changePushPackage,targetRootFolder,copyMethod);
+                    response = Proxy.ApplyChangePackage(changePushPackage,copyMethod);
 
                 }
             }

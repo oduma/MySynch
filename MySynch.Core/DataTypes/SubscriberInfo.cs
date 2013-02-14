@@ -6,7 +6,7 @@ namespace MySynch.Core.DataTypes
     public class SubscriberInfo
     {
         [XmlIgnore]
-        public IChangeApplyer Subscriber { get; set; }
+        public ISubscriber Subscriber { get; set; }
 
         public string SubScriberName { get; set; }
 
