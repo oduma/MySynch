@@ -76,6 +76,7 @@
     <Compile Include="Stubs\ITest1Proxy.cs" />
     <Compile Include="Stubs\MockRemotePublisher.cs" />
     <Compile Include="Stubs\MockRemotePublisherNotPresent.cs" />
+    <Compile Include="Stubs\MockRemoteSourceOfData.cs" />
     <Compile Include="Stubs\MockRemoteSubscriber.cs" />
     <Compile Include="Stubs\MockRemoteSubscriberNotPresent.cs" />
     <Compile Include="SynchItemManagerTests.cs" />

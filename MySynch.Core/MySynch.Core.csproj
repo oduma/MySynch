@@ -90,7 +90,6 @@
     <Compile Include="ComponentNotRegieteredException.cs" />
     <Compile Include="ComponentResolver.cs" />
     <Compile Include="DataTypes\AvailableChannel.cs" />
-    <Compile Include="DataTypes\DataSourceInfo.cs" />
     <Compile Include="DataTypes\FolderDiscoveredArg.cs" />
     <Compile Include="DataTypes\ItemsQueuedEventArgs.cs" />
     <Compile Include="DataTypes\PublisherInfo.cs" />

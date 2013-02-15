@@ -19,8 +19,7 @@ namespace MySynch.Tests
         {
             List<AvailableChannel> availableChannels=new List<AvailableChannel>();
             AvailableChannel availableChannel= new AvailableChannel();
-            availableChannel.DataSourceInfo=new DataSourceInfo();
-            availableChannel.DataSourceInfo.DataSourceName = "ISourceOfData.Local";
+            availableChannel.DataSourceEndpointName = "";
             availableChannel.PublisherInfo= new PublisherInfo();
             availableChannel.PublisherInfo.EndpointName = Environment.MachineName;
             availableChannel.PublisherInfo.PublisherInstanceName = "IPublisher.Local";

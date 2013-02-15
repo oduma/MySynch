@@ -30,7 +30,7 @@ namespace MySynch.Core
                     File.Delete(target);
                 if (File.Exists(temporaryTarget))
                 {
-                    File.Copy(temporaryTarget, target);
+                    File.Copy(temporaryTarget, target,true);
                     File.Delete(temporaryTarget);
                     return true;
                 }
@@ -40,7 +40,7 @@ namespace MySynch.Core
             {
                 LoggingManager.LogMySynchSystemError(ex);
                 if(File.Exists(backupFileName))
-                    File.Copy(backupFileName, target);
+                    File.Copy(backupFileName, target,true);
                 return false;
             }
             finally
@@ -55,19 +55,17 @@ namespace MySynch.Core
             if (!Directory.Exists(Path.GetDirectoryName(temporaryTarget)))
                 Directory.CreateDirectory(Path.GetDirectoryName(temporaryTarget));
 
-            if (_sourceOfData != null)
-            {
-                var response = _sourceOfData.GetData(new RemoteRequest { FileName = source });
-                using (var stream = File.Create(temporaryTarget))
-                {
-                    stream.Write(response.Data, 0, response.Data.Length);
-                    stream.Flush();
-                }
-            }
-            else
-            {
+            if (_sourceOfData==null || _sourceOfData.GetType().ToString()=="MySynch.Core.LocalSourceOfData")
                 if(File.Exists(source))
+                {
                     File.Copy(source, temporaryTarget);
+                    return;
+                }
+            var response = _sourceOfData.GetData(new RemoteRequest { FileName = source });
+            using (var stream = File.Create(temporaryTarget))
+            {
+                stream.Write(response.Data, 0, response.Data.Length);
+                stream.Flush();
             }
         }
 

@@ -10,9 +10,6 @@
       <EndpointName></EndpointName>
       <TargetRootFolder>destination root folder</TargetRootFolder>
     </SubscriberInfo>
-    <DataSourceInfo>
-      <DataSourceName>ISourceOfData.Local</DataSourceName>
-    </DataSourceInfo>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
     <Status>NotChecked</Status>
     <NoOfFailedAttempts>0</NoOfFailedAttempts>

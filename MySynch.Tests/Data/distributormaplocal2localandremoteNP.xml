@@ -10,10 +10,6 @@
       <EndpointName></EndpointName>
       <TargetRootFolder>local target root folder</TargetRootFolder>
     </SubscriberInfo>
-    <DataSourceInfo>
-      <CopyStartegyName>ICopyStrategy.Local</CopyStartegyName>
-      <DataSourceName>ISourceOfData.Local</DataSourceName>
-    </DataSourceInfo>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
     <Status>NotChecked</Status>
     <NoOfFailedAttempts>0</NoOfFailedAttempts>
@@ -28,10 +24,6 @@
       <EndpointName>endpoint1</EndpointName>
       <TargetRootFolder>remote target root folder</TargetRootFolder>
     </SubscriberInfo>
-    <DataSourceInfo>
-      <CopyStartegyName>ICopyStrategy.Local</CopyStartegyName>
-      <DataSourceName>ISourceOfData.Local</DataSourceName>
-    </DataSourceInfo>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
     <Status>NotChecked</Status>
     <NoOfFailedAttempts>0</NoOfFailedAttempts>
@@ -46,10 +38,6 @@
       <EndpointName>endpoint2</EndpointName>
       <TargetRootFolder>wrong folder</TargetRootFolder>
     </SubscriberInfo>
-    <DataSourceInfo>
-      <CopyStartegyName>ICopyStrategy.Local</CopyStartegyName>
-      <DataSourceName>ISourceOfData.Local</DataSourceName>
-    </DataSourceInfo>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
     <Status>NotChecked</Status>
     <NoOfFailedAttempts>0</NoOfFailedAttempts>

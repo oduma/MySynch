@@ -11,7 +11,5 @@ namespace MySynch.Core.DataTypes
         public string SubScriberName { get; set; }
 
         public string EndpointName { get; set; }
-
-        public string TargetRootFolder { get; set; }
     }
 }

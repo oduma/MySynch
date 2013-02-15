@@ -22,7 +22,9 @@ namespace MySynch.Tests.Stubs
                                Component.For<IPublisherProxy>().ImplementedBy<MockRemotePublisher>().Named("IPublisher.Remote"),
                                Component.For<ISubscriberProxy>().ImplementedBy<MockRemoteSubscriber>().Named("ISubScriber.Remote"),
                                Component.For<IPublisherProxy>().ImplementedBy<MockRemotePublisherNotPresent>().Named("IPublisher.Remote.NotPresent"),
-                               Component.For<ISubscriberProxy>().ImplementedBy<MockRemoteSubscriberNotPresent>().Named("ISubScriber.Remote.NotPresent"));
+                               Component.For<ISubscriberProxy>().ImplementedBy<MockRemoteSubscriberNotPresent>().Named("ISubScriber.Remote.NotPresent"),
+                               Component.For<ISourceOfDataProxy>().ImplementedBy<MockRemoteSourceOfData>().Named(
+                                   "ISourceOfData.Remote"));
         }
     }
 }
