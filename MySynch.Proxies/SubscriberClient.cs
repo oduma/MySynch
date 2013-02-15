@@ -36,14 +36,42 @@ namespace MySynch.Proxies
 
         }
 
-        public bool ApplyChangePackage(ChangePushPackage changePushPackage, Func<string, string, bool> copyMethod)
+        public bool ApplyChangePackage(ChangePushPackage changePushPackage, string sourceOfDataEnepointName = null)
         {
             bool response = false;
             try
             {
                 using (new OperationContextScope((IContextChannel)Proxy))
                 {
-                    response = Proxy.ApplyChangePackage(changePushPackage,copyMethod);
+                    response = Proxy.ApplyChangePackage(changePushPackage,sourceOfDataEnepointName);
+
+                }
+            }
+            catch (CommunicationException e)
+            {
+                OnCommunicationException(e);
+            }
+            catch (TimeoutException e)
+            {
+                OnTimeoutException(e);
+            }
+            catch (Exception e)
+            {
+                OnException(e);
+            }
+
+            return response;
+
+        }
+
+        public string GetTargetRootFolder()
+        {
+            string response=string.Empty;
+            try
+            {
+                using (new OperationContextScope((IContextChannel)Proxy))
+                {
+                    response = Proxy.GetTargetRootFolder();
 
                 }
             }

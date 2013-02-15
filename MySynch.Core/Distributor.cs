@@ -158,9 +158,8 @@ namespace MySynch.Core
                 try
                 {
                     RegisterSubscriberPackage(channel, package, State.InProgress);
-                    channel.DataSourceInfo.CopyStrategy.Initialize(channel.DataSourceInfo.DataSource);
                     if (channel.SubscriberInfo.Subscriber.ApplyChangePackage(package,
-                                                                             channel.DataSourceInfo.CopyStrategy.Copy))
+                                                                             channel.DataSourceEndpointName))
                     {
                         RegisterSubscriberPackage(channel, package, State.Distributed);
                     }
@@ -272,8 +271,6 @@ namespace MySynch.Core
             {
                 LoggingManager.Debug("Initiating distributor with map: " + mapFile);
                 AvailableChannels.ForEach(CheckChannel);
-                //Initialize all the active channels
-                AvailableChannels.Where(c => c.Status == Status.Ok).ForEach(InitializeChannel);
                 LoggingManager.Debug("Initiated Ok.");
             }
             catch (Exception ex)
@@ -281,35 +278,6 @@ namespace MySynch.Core
                 LoggingManager.LogMySynchSystemError(ex);
                 throw;
             }
-        }
-
-        private void InitializeChannel(AvailableChannel availableChannel)
-        {
-            availableChannel.DataSourceInfo.CopyStrategy =new CopyStrategy();
-            if (string.IsNullOrEmpty(availableChannel.DataSourceInfo.EndpointName))
-            {
-                availableChannel.DataSourceInfo.DataSource =
-                    _componentResolver.Resolve<ISourceOfData>(availableChannel.DataSourceInfo.DataSourceName);
-            }
-            else
-            {
-                {
-                    availableChannel.DataSourceInfo.DataSource =
-                        _componentResolver.Resolve<ISourceOfDataProxy>(availableChannel.DataSourceInfo.DataSourceName,
-                                                                       availableChannel.DataSourceInfo.EndpointName);
-                }
-            }
-        }
-
-
-        //[TODO] Check if it still needed
-        private static void CheckRegistration(ComponentResolver componentResolver)
-        {
-            componentResolver.ResolveAll<IPublisher>();
-            componentResolver.ResolveAll<IPublisherProxy>();
-            componentResolver.ResolveAll<ICopyStrategy>();
-            componentResolver.ResolveAll<ISubscriber>();
-            componentResolver.ResolveAll<ISubscriberProxy>();
         }
 
         private void CheckChannel(AvailableChannel availableChannel)
@@ -353,24 +321,17 @@ namespace MySynch.Core
 
             try
             {
-                if (string.IsNullOrEmpty(availableChannel.DataSourceInfo.EndpointName))
-                    dataSource = (availableChannel.DataSourceInfo.DataSource) ??
-                                 (availableChannel.DataSourceInfo.DataSource =
-                                  _componentResolver.Resolve<ISourceOfData>(
-                                      availableChannel.DataSourceInfo.DataSourceName));
-
+                if (string.IsNullOrEmpty(availableChannel.DataSourceEndpointName))
+                    dataSource = new LocalSourceOfData();
                 else
-                    dataSource = (availableChannel.DataSourceInfo.DataSource) ??
-                                 (availableChannel.DataSourceInfo.DataSource =
-                                  _componentResolver.Resolve<ISourceOfDataProxy>(
-                                      availableChannel.DataSourceInfo.DataSourceName,
-                                      availableChannel.DataSourceInfo.EndpointName));
+                    dataSource = _componentResolver.Resolve<ISourceOfDataProxy>(
+                        "ISourceOfData.Remote",
+                        availableChannel.DataSourceEndpointName);
             }
             catch (Exception ex)
             {
-                LoggingManager.LogMySynchSystemError(
-                    availableChannel.DataSourceInfo.DataSourceName + (availableChannel.DataSourceInfo.EndpointName) ??
-                    "", ex);
+                LoggingManager.LogMySynchSystemError((availableChannel.DataSourceEndpointName) ??
+                                                     "", ex);
                 availableChannel.Status = Status.OfflinePermanent;
                 dataSourceStatus = Status.OfflinePermanent;
                 UpdateDataSource(subscriberName, publisherName, dataSourceStatus);
@@ -448,60 +409,28 @@ namespace MySynch.Core
                                                                                   : "." +
                                                                                     availableChannel.SubscriberInfo.
                                                                                         EndpointName),
-                                                            Status = Status.NotChecked,
-                                                            RootPath = availableChannel.SubscriberInfo.TargetRootFolder
+                                                            Status = Status.NotChecked
                                                         };
 
+            ISubscriber subscriber;
 
-            if (string.IsNullOrEmpty(availableChannel.SubscriberInfo.EndpointName))
-            {
-                ISubscriber subscriberLocal;
-                //the publisher has to be local
-                try
-                {
-                    subscriberLocal = (availableChannel.SubscriberInfo.Subscriber) ??
-                                      (availableChannel.SubscriberInfo.Subscriber =
-                                       _componentResolver.Resolve<ISubscriber>(
-                                           availableChannel.SubscriberInfo.SubScriberName));
-                }
-                catch (Exception ex)
-                {
-                    LoggingManager.LogMySynchSystemError(availableChannel.SubscriberInfo.SubScriberName, ex);
-                    availableChannel.Status = Status.OfflinePermanent;
-                    availableComponent.Status = Status.OfflinePermanent;
-                    return false;
-                }
-
-                if (!subscriberLocal.GetHeartbeat().Status)
-                {
-                    if (availableChannel.NoOfFailedAttempts < _maxNoOfFailedAttempts)
-                    {
-                        availableChannel.Status = Status.OfflineTemporary;
-                        availableChannel.NoOfFailedAttempts++;
-                        availableComponent.Status = Status.OfflineTemporary;
-                    }
-                    else
-                    {
-                        availableChannel.Status = Status.OfflinePermanent;
-                        availableComponent.Status = Status.OfflinePermanent;
-                    }
-                    UpsertComponent(availableComponent, publisherName);
-                    return false;
-                }
-                availableComponent.Status = Status.Ok;
-                UpsertComponent(availableComponent, publisherName);
-                return true;
-            }
-
-            ISubscriber subscriberRemote;
-            //the publisher has to be local
             try
             {
-                subscriberRemote = (availableChannel.SubscriberInfo.Subscriber) ??
-                                   (availableChannel.SubscriberInfo.Subscriber =
-                                    _componentResolver.Resolve<ISubscriberProxy>(
-                                        availableChannel.SubscriberInfo.SubScriberName,
-                                        availableChannel.SubscriberInfo.EndpointName));
+                if (string.IsNullOrEmpty(availableChannel.SubscriberInfo.EndpointName))
+                {
+                    subscriber = (availableChannel.SubscriberInfo.Subscriber) ??
+                                 (availableChannel.SubscriberInfo.Subscriber =
+                                  _componentResolver.Resolve<ISubscriber>(
+                                      availableChannel.SubscriberInfo.SubScriberName));
+                }
+                else
+                {
+                    subscriber = (availableChannel.SubscriberInfo.Subscriber) ??
+                                 (availableChannel.SubscriberInfo.Subscriber =
+                                  _componentResolver.Resolve<ISubscriberProxy>(
+                                      availableChannel.SubscriberInfo.SubScriberName,
+                                      availableChannel.SubscriberInfo.EndpointName));
+                }
             }
             catch (Exception ex)
             {
@@ -511,7 +440,7 @@ namespace MySynch.Core
                 availableComponent.Status = Status.OfflinePermanent;
                 return false;
             }
-            if (!subscriberRemote.GetHeartbeat().Status)
+            if (!subscriber.GetHeartbeat().Status)
             {
                 if (availableChannel.NoOfFailedAttempts < _maxNoOfFailedAttempts)
                 {
@@ -528,6 +457,7 @@ namespace MySynch.Core
                 return false;
             }
             availableComponent.Status = Status.Ok;
+            availableComponent.RootPath = availableChannel.SubscriberInfo.Subscriber.GetTargetRootFolder();
             UpsertComponent(availableComponent, publisherName);
             return true;
         }

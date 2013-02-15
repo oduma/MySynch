@@ -8,6 +8,9 @@ namespace MySynch.Contracts
     public interface ISubscriber:ICommunicationComponent
     {
         [OperationContract]
-        bool ApplyChangePackage(ChangePushPackage changePushPackage,Func<string,string,bool> copyMethod);
+        bool ApplyChangePackage(ChangePushPackage changePushPackage,string sourceOfDataEndPointName=null);
+
+        [OperationContract]
+        string GetTargetRootFolder();
     }
 }

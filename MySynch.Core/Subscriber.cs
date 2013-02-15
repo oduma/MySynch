@@ -7,6 +7,7 @@ using MySynch.Common;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
 using MySynch.Core.Interfaces;
+using MySynch.Proxies;
 
 namespace MySynch.Core
 {
@@ -17,7 +18,7 @@ namespace MySynch.Core
         private string _targetRootFolder;
 
 
-        public bool ApplyChangePackage(ChangePushPackage changePushPackage,Func<string, string, bool> copyMethod)
+        public bool ApplyChangePackage(ChangePushPackage changePushPackage,string sourceOfDataEndpointName)
         {
             LoggingManager.Debug("Trying to apply some changes to: " + _targetRootFolder);
             if(changePushPackage==null || changePushPackage.ChangePushItems==null || changePushPackage.ChangePushItems.Count<=0)
@@ -25,16 +26,33 @@ namespace MySynch.Core
                 LoggingManager.Debug("Nothing to apply.");
                 return false;
             }
-            if(copyMethod==null)
-                throw new ArgumentNullException("copyMethod");
-            _copyMethod = copyMethod;
-            var response=ApplyUpserts(changePushPackage.ChangePushItems.Where(i => i.OperationType == OperationType.Insert || i.OperationType==OperationType.Update),
-                             _targetRootFolder, changePushPackage.SourceRootName) &&
-                ApplyDeletes(changePushPackage.ChangePushItems.Where(i => i.OperationType == OperationType.Delete),
-                             _targetRootFolder, changePushPackage.SourceRootName);
+            ISourceOfData sourceOfData;
+            if (string.IsNullOrEmpty(sourceOfDataEndpointName))
+                sourceOfData = new LocalSourceOfData();
+            else
+            {
+                sourceOfData = new SourceOfDataClient();
+                ((SourceOfDataClient)sourceOfData).InitiateUsingEndpoint(sourceOfDataEndpointName);
+            }
+            CopyStrategy copyStrategy= new CopyStrategy();
+            copyStrategy.Initialize(sourceOfData);
+            return TryApplyChanges(changePushPackage,copyStrategy);
+        }
+
+        public string GetTargetRootFolder()
+        {
+            return _targetRootFolder;
+        }
+
+        internal bool TryApplyChanges(ChangePushPackage changePushPackage, ICopyStrategy copyStrategy)
+        {
+            _copyMethod = copyStrategy.Copy;
+            var response = ApplyUpserts(changePushPackage.ChangePushItems.Where(i => i.OperationType == OperationType.Insert || i.OperationType == OperationType.Update),
+                                      _targetRootFolder, changePushPackage.SourceRootName) &&
+                         ApplyDeletes(changePushPackage.ChangePushItems.Where(i => i.OperationType == OperationType.Delete),
+                                      _targetRootFolder, changePushPackage.SourceRootName);
             LoggingManager.Debug("Result of applying changes is: " +response);
             return response;
-
         }
 
         public void Initialize(string targetRootFolder)

@@ -23,7 +23,7 @@ namespace MySynch.ClientConsole
             subscriberProxy.InitiateUsingEndpoint("SubscriberSciendoLaptop");
             CopyStrategy copyStrategy= new CopyStrategy();
             copyStrategy.Initialize(sourceOfDataProxy);
-            subscriberProxy.ApplyChangePackage(new ChangePushPackage(), copyStrategy.Copy);
+            subscriberProxy.ApplyChangePackage(new ChangePushPackage(), "SourceOfDataSciendoLaptop");
         }
     }
 }

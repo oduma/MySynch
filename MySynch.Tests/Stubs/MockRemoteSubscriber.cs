@@ -13,11 +13,12 @@ namespace MySynch.Tests.Stubs
             return new HeartbeatResponse {Status = true};
         }
 
-        public bool ApplyChangePackage(ChangePushPackage changePushPackage, Func<string, string, bool> copyMethod)
+        public bool ApplyChangePackage(ChangePushPackage changePushPackage, string dataSourceEndpointName)
         {
             if(targetRootFolder=="wrong folder")
                 throw new Exception();
             bool result = true;
+
             foreach (ChangePushItem upsert in changePushPackage.ChangePushItems)
             {
                 var tempResult = copyMethod(upsert.AbsolutePath,
@@ -25,6 +26,16 @@ namespace MySynch.Tests.Stubs
                 result = result && tempResult;
             }
             return result;
+        }
+
+        public string GetTargetRootFolder()
+        {
+            return targetRootFolder;
+        }
+
+        private bool copyMethod(string absolutePath, string replace)
+        {
+            return true;
         }
 
         public void InitiateUsingEndpoint(string endpointName)
