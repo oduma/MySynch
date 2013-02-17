@@ -15,7 +15,7 @@ namespace MySynch.Common
 
         protected void ReadTheNodeConfiguration()
         {
-            var key = ConfigurationManager.AppSettings.AllKeys.FirstOrDefault(k => k == "LocalPublisherRootFolder");
+            var key = ConfigurationManager.AppSettings.AllKeys.FirstOrDefault(k => k == "LocalRootFolder");
             if (key == null)
                 _rootFolder = string.Empty;
             else

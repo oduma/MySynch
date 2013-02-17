@@ -28,10 +28,11 @@ namespace MySynch.Subscriber
         {
             if (!string.IsNullOrEmpty(_rootFolder))
             {
+                LoggingManager.Debug("Initializing Subscriber with "+ _rootFolder);
                 var changeApplyer = new Core.Subscriber();
                 changeApplyer.Initialize(_rootFolder);
                 _serviceHosts.Add(new ServiceHost(changeApplyer));
-                                
+                LoggingManager.Debug("Subscriber Initialized.");
             }
         }
 

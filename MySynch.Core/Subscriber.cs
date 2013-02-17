@@ -88,8 +88,7 @@ namespace MySynch.Core
             bool result = true;
             foreach (ChangePushItem upsert in upserts)
             {
-                var tempResult = _copyMethod(upsert.AbsolutePath,
-                                             upsert.AbsolutePath.Replace(sourceRootName, targetRootFolder));
+                var tempResult = _copyMethod(upsert.AbsolutePath,Path.Combine(targetRootFolder,upsert.AbsolutePath.Replace(sourceRootName,"")));
                 result = result && tempResult;
             }
             LoggingManager.Debug("Apply upserts returns "+ result);
