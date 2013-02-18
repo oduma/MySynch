@@ -134,28 +134,5 @@ namespace MySynch.Tests.Integration
 
         }
 
-        [Test]
-        [Ignore(@"Requires Subscriber service to be defined on the root folder: C:\MySynch.Dest.Test.Root\ and publisher on C:\MySynch.Source.Test.Root\")]
-        public void DistributorUpAndAccessible()
-        {
-            IDistributorMonitorProxy distributorMonitorProxy = new DistributorMonitorClient();
-            distributorMonitorProxy.InitiateUsingEndpoint("DistributorSciendoLaptop");
-            var listOfComponents = distributorMonitorProxy.ListAvailableComponentsTree();
-            Assert.IsNotNull(listOfComponents);
-            Assert.AreEqual("SCIENDO-LAPTOP",listOfComponents.Name);
-            Assert.AreEqual(1,listOfComponents.AvailablePublishers.Count);
-            Assert.AreEqual("IPublisher.Remote.PublisherSciendoLaptop",listOfComponents.AvailablePublishers[0].Name);
-            Assert.AreEqual(Status.Ok, listOfComponents.AvailablePublishers[0].Status);
-            Assert.False(listOfComponents.AvailablePublishers[0].IsLocal);
-            Assert.IsNull(listOfComponents.AvailablePublishers[0].Packages);
-            Assert.AreEqual(1, listOfComponents.AvailablePublishers[0].DependentComponents.Count);
-            Assert.AreEqual("ISubscriber.Remote.SubscriberSciendoLaptop", listOfComponents.AvailablePublishers[0].DependentComponents[0].Name);
-            Assert.AreEqual(Status.Ok, listOfComponents.AvailablePublishers[0].DependentComponents[0].Status);
-            Assert.AreEqual(Status.Ok, listOfComponents.AvailablePublishers[0].DependentComponents[0].DataSourceStatus);
-            Assert.False(listOfComponents.AvailablePublishers[0].DependentComponents[0].IsLocal);
-            Assert.AreEqual(@"C:\MySynch.Dest.Test.Root\", listOfComponents.AvailablePublishers[0].DependentComponents[0].RootPath);
-            Assert.IsNull(listOfComponents.AvailablePublishers[0].DependentComponents[0].Packages);
-
-        }
     }
 }

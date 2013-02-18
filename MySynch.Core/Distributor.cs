@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.ServiceModel;
-using Castle.Core.Internal;
 using MySynch.Common;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
@@ -317,7 +316,7 @@ namespace MySynch.Core
             var dataSourceStatus = Status.NotChecked;
             if(CheckDataSourceFromTheSubscriberPointOfView(availableChannel))
             {
-                UpdateDataSource(subscriberName, publisherName, dataSourceStatus);
+                UpdateDataSource(subscriberName, publisherName, Status.Ok);
                 return true;
             }
             if (availableChannel.NoOfFailedAttempts < _maxNoOfFailedAttempts)
@@ -344,7 +343,7 @@ namespace MySynch.Core
 
         private void UpdateDataSource(string subscriberName, string publisherName, Status dataSourceStatus)
         {
-            LoggingManager.Debug("Updating datasource for subsriber: " + subscriberName);
+            LoggingManager.Debug("Updating datasource for subsriber: " + subscriberName + " to value: " + dataSourceStatus);
             var existingPublisher = _allComponents.FirstOrDefault(c => c.Name == publisherName);
             if (existingPublisher == null)
             {
