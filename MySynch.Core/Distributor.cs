@@ -7,13 +7,12 @@ using MySynch.Common;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
 using MySynch.Core.DataTypes;
-using MySynch.Core.Interfaces;
 using MySynch.Proxies;
 
 namespace MySynch.Core
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
-    public class Distributor : IDistributor
+    public class Distributor : IDistributorMonitor
     {
         private ComponentResolver _componentResolver = new ComponentResolver();
         private readonly int _maxNoOfFailedAttempts = 3;
@@ -68,9 +67,7 @@ namespace MySynch.Core
                         LoggingManager.Debug("Dsitributed all available messages.");
                     }
                     else
-                    {
                         LoggingManager.Debug("Some messages were not distributed.");
-                    }
                 }
             }
             catch (Exception ex)
@@ -314,24 +311,35 @@ namespace MySynch.Core
                                         EndpointName);
 
             var dataSourceStatus = Status.NotChecked;
-            if(CheckDataSourceFromTheSubscriberPointOfView(availableChannel))
+            try
             {
-                UpdateDataSource(subscriberName, publisherName, Status.Ok);
-                return true;
+                if (CheckDataSourceFromTheSubscriberPointOfView(availableChannel))
+                {
+                    UpdateDataSource(subscriberName, publisherName, Status.Ok);
+                    return true;
+                }
+                if (availableChannel.NoOfFailedAttempts < _maxNoOfFailedAttempts)
+                {
+                    availableChannel.Status = Status.OfflineTemporary;
+                    availableChannel.NoOfFailedAttempts++;
+                    dataSourceStatus = Status.OfflineTemporary;
+                }
+                else
+                {
+                    availableChannel.Status = Status.OfflinePermanent;
+                    dataSourceStatus = Status.OfflinePermanent;
+                }
+                UpdateDataSource(subscriberName, publisherName, dataSourceStatus);
+                return false;
+
             }
-            if (availableChannel.NoOfFailedAttempts < _maxNoOfFailedAttempts)
+            catch (Exception ex)
             {
-                availableChannel.Status = Status.OfflineTemporary;
-                availableChannel.NoOfFailedAttempts++;
-                dataSourceStatus = Status.OfflineTemporary;
-            }
-            else
-            {
+                LoggingManager.LogMySynchSystemError(availableChannel.DataSourceEndpointName, ex);
                 availableChannel.Status = Status.OfflinePermanent;
-                dataSourceStatus = Status.OfflinePermanent;
+                UpdateDataSource(subscriberName,publisherName,Status.OfflinePermanent);
+                return false;
             }
-            UpdateDataSource(subscriberName, publisherName, dataSourceStatus);
-            return false;
         }
 
         private bool CheckDataSourceFromTheSubscriberPointOfView(AvailableChannel availableChannel)
@@ -413,6 +421,26 @@ namespace MySynch.Core
                                       availableChannel.SubscriberInfo.SubScriberName,
                                       availableChannel.SubscriberInfo.EndpointName));
                 }
+                if (!subscriber.GetHeartbeat().Status)
+                {
+                    if (availableChannel.NoOfFailedAttempts < _maxNoOfFailedAttempts)
+                    {
+                        availableChannel.Status = Status.OfflineTemporary;
+                        availableChannel.NoOfFailedAttempts++;
+                        availableComponent.Status = Status.OfflineTemporary;
+                    }
+                    else
+                    {
+                        availableChannel.Status = Status.OfflinePermanent;
+                        availableComponent.Status = Status.OfflinePermanent;
+                    }
+                    UpsertComponent(availableComponent, publisherName);
+                    return false;
+                }
+                availableComponent.Status = Status.Ok;
+                availableComponent.RootPath = availableChannel.SubscriberInfo.Subscriber.GetTargetRootFolder();
+                UpsertComponent(availableComponent, publisherName);
+                return true;
             }
             catch (Exception ex)
             {
@@ -422,26 +450,6 @@ namespace MySynch.Core
                 availableComponent.Status = Status.OfflinePermanent;
                 return false;
             }
-            if (!subscriber.GetHeartbeat().Status)
-            {
-                if (availableChannel.NoOfFailedAttempts < _maxNoOfFailedAttempts)
-                {
-                    availableChannel.Status = Status.OfflineTemporary;
-                    availableChannel.NoOfFailedAttempts++;
-                    availableComponent.Status = Status.OfflineTemporary;
-                }
-                else
-                {
-                    availableChannel.Status = Status.OfflinePermanent;
-                    availableComponent.Status = Status.OfflinePermanent;
-                }
-                UpsertComponent(availableComponent, publisherName);
-                return false;
-            }
-            availableComponent.Status = Status.Ok;
-            availableComponent.RootPath = availableChannel.SubscriberInfo.Subscriber.GetTargetRootFolder();
-            UpsertComponent(availableComponent, publisherName);
-            return true;
         }
 
         private void UpsertComponent(AvailableComponent availableComponent, string publisherName)
@@ -507,6 +515,25 @@ namespace MySynch.Core
                                           availableChannel.PublisherInfo.PublisherInstanceName,
                                           availableChannel.PublisherInfo.EndpointName));
                 }
+                if (!localPublisher.GetHeartbeat().Status)
+                {
+                    if (availableChannel.NoOfFailedAttempts < _maxNoOfFailedAttempts)
+                    {
+                        availableChannel.Status = Status.OfflineTemporary;
+                        availableChannel.NoOfFailedAttempts++;
+                        availableComponent.Status = Status.OfflineTemporary;
+                    }
+                    else
+                    {
+                        availableChannel.Status = Status.OfflinePermanent;
+                        availableComponent.Status = Status.OfflinePermanent;
+                    }
+                    UpsertComponent(availableComponent);
+                    return false;
+                }
+                availableComponent.Status = Status.Ok;
+                UpsertComponent(availableComponent);
+                return true;
             }
             catch (Exception ex)
             {
@@ -518,25 +545,6 @@ namespace MySynch.Core
                 return false;
             }
 
-            if (!localPublisher.GetHeartbeat().Status)
-            {
-                if (availableChannel.NoOfFailedAttempts < _maxNoOfFailedAttempts)
-                {
-                    availableChannel.Status = Status.OfflineTemporary;
-                    availableChannel.NoOfFailedAttempts++;
-                    availableComponent.Status = Status.OfflineTemporary;
-                }
-                else
-                {
-                    availableChannel.Status = Status.OfflinePermanent;
-                    availableComponent.Status = Status.OfflinePermanent;
-                }
-                UpsertComponent(availableComponent);
-                return false;
-            }
-            availableComponent.Status = Status.Ok;
-            UpsertComponent(availableComponent);
-            return true;
         }
 
         private void UpsertComponent(AvailableComponent availableComponent)

@@ -100,7 +100,6 @@
     <Compile Include="Interfaces\IChangeDiscoverer.cs" />
     <Compile Include="Interfaces\IChangePublisher.cs" />
     <Compile Include="Interfaces\ICopyStrategy.cs" />
-    <Compile Include="Interfaces\IDistributor.cs" />
     <Compile Include="Interfaces\IItemDiscoverer.cs" />
     <Compile Include="Interfaces\ISynchItemManager.cs" />
     <Compile Include="ItemDiscoverer.cs" />

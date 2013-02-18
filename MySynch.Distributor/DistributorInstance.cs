@@ -2,6 +2,7 @@
 using System.Timers;
 using MySynch.Common;
 using MySynch.Core;
+using MySynch.Core.DataTypes;
 
 namespace MySynch.Distributor
 {
@@ -51,7 +52,11 @@ namespace MySynch.Distributor
         void timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             LoggingManager.Debug("Timer kicked in again.");
+            _timer.Enabled = false;
             _distributor.DistributeMessages();
+            LoggingManager.Debug("Finished distribution round.");
+            _timer.Enabled = true;
+            LoggingManager.Debug("Starting timer again.");
         }
 
         protected override void OnStop()
