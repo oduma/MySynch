@@ -158,8 +158,7 @@ namespace MySynch.Core
                 try
                 {
                     RegisterSubscriberPackage(channel, package, State.InProgress);
-                    if (channel.SubscriberInfo.Subscriber.ApplyChangePackage(package,
-                                                                             channel.DataSourceEndpointName))
+                    if (channel.SubscriberInfo.Subscriber.ApplyChangePackage(package))
                     {
                         RegisterSubscriberPackage(channel, package, State.Distributed);
                     }
@@ -316,47 +315,31 @@ namespace MySynch.Core
                                         EndpointName);
 
             var dataSourceStatus = Status.NotChecked;
-
-            ISourceOfData dataSource;
-
-            try
+            if(CheckDataSourceFromTheSubscriberPointOfView(availableChannel))
             {
-                if (string.IsNullOrEmpty(availableChannel.DataSourceEndpointName))
-                    dataSource = new LocalSourceOfData();
-                else
-                    dataSource = _componentResolver.Resolve<ISourceOfDataProxy>(
-                        "ISourceOfData.Remote",
-                        availableChannel.DataSourceEndpointName);
+                UpdateDataSource(subscriberName, publisherName, dataSourceStatus);
+                return true;
             }
-            catch (Exception ex)
+            if (availableChannel.NoOfFailedAttempts < _maxNoOfFailedAttempts)
             {
-                LoggingManager.LogMySynchSystemError((availableChannel.DataSourceEndpointName) ??
-                                                     "", ex);
+                availableChannel.Status = Status.OfflineTemporary;
+                availableChannel.NoOfFailedAttempts++;
+                dataSourceStatus = Status.OfflineTemporary;
+            }
+            else
+            {
                 availableChannel.Status = Status.OfflinePermanent;
                 dataSourceStatus = Status.OfflinePermanent;
-                UpdateDataSource(subscriberName, publisherName, dataSourceStatus);
-                return false;
             }
-
-            if (!dataSource.GetHeartbeat().Status)
-            {
-                if (availableChannel.NoOfFailedAttempts < _maxNoOfFailedAttempts)
-                {
-                    availableChannel.Status = Status.OfflineTemporary;
-                    availableChannel.NoOfFailedAttempts++;
-                    dataSourceStatus = Status.OfflineTemporary;
-                }
-                else
-                {
-                    availableChannel.Status = Status.OfflinePermanent;
-                    dataSourceStatus = Status.OfflinePermanent;
-                }
-                UpdateDataSource(subscriberName, publisherName, dataSourceStatus);
-                return false;
-            }
-            dataSourceStatus = Status.Ok;
             UpdateDataSource(subscriberName, publisherName, dataSourceStatus);
-            return true;
+            return false;
+        }
+
+        private bool CheckDataSourceFromTheSubscriberPointOfView(AvailableChannel availableChannel)
+        {
+            if (availableChannel.SubscriberInfo.Subscriber == null)
+                return false;
+            return availableChannel.SubscriberInfo.Subscriber.TryOpenChannel(availableChannel.DataSourceEndpointName);
         }
 
         private void UpdateDataSource(string subscriberName, string publisherName, Status dataSourceStatus)
@@ -503,59 +486,28 @@ namespace MySynch.Core
                                                             Status = Status.NotChecked,
                                                         };
 
-            if (string.IsNullOrEmpty(availableChannel.PublisherInfo.EndpointName))
+            IPublisher localPublisher;
+            try
             {
-                availableComponent.IsLocal = true;
-                IPublisher localPublisher;
-                //the publisher has to be local
-                try
+                if (string.IsNullOrEmpty(availableChannel.PublisherInfo.EndpointName))
                 {
+                    availableComponent.IsLocal = true;
+                    //the publisher has to be local
                     localPublisher = (availableChannel.PublisherInfo.Publisher) ??
                                      (availableChannel.PublisherInfo.Publisher =
                                       _componentResolver.Resolve<IPublisher>(
                                           availableChannel.PublisherInfo.PublisherInstanceName));
                 }
-                catch (Exception ex)
+                else
                 {
-                    LoggingManager.LogMySynchSystemError(availableChannel.PublisherInfo.PublisherInstanceName, ex);
-                    availableChannel.Status = Status.OfflinePermanent;
-                    availableComponent.Status = Status.OfflinePermanent;
-                    return false;
-                }
+                    availableComponent.IsLocal = false;
 
-                //the publisher has to be local
-                if (!localPublisher.GetHeartbeat().Status)
-                {
-                    if (availableChannel.NoOfFailedAttempts < _maxNoOfFailedAttempts)
-                    {
-                        availableChannel.Status = Status.OfflineTemporary;
-                        availableChannel.NoOfFailedAttempts++;
-                        availableComponent.Status = Status.OfflineTemporary;
-                    }
-                    else
-                    {
-                        availableChannel.Status = Status.OfflinePermanent;
-                        availableComponent.Status = Status.OfflinePermanent;
-                    }
-                    UpsertComponent(availableComponent);
-                    return false;
+                    localPublisher = (availableChannel.PublisherInfo.Publisher) ??
+                                     (availableChannel.PublisherInfo.Publisher =
+                                      _componentResolver.Resolve<IPublisherProxy>(
+                                          availableChannel.PublisherInfo.PublisherInstanceName,
+                                          availableChannel.PublisherInfo.EndpointName));
                 }
-                availableComponent.Status = Status.Ok;
-                UpsertComponent(availableComponent);
-                return true;
-            }
-            //the publisher has to be remote
-            availableComponent.IsLocal = false;
-
-            IPublisher remotePublisher;
-            //the publisher has to be local
-            try
-            {
-                remotePublisher = (availableChannel.PublisherInfo.Publisher) ??
-                                  (availableChannel.PublisherInfo.Publisher =
-                                   _componentResolver.Resolve<IPublisherProxy>(
-                                       availableChannel.PublisherInfo.PublisherInstanceName,
-                                       availableChannel.PublisherInfo.EndpointName));
             }
             catch (Exception ex)
             {
@@ -567,7 +519,7 @@ namespace MySynch.Core
                 return false;
             }
 
-            if (!remotePublisher.GetHeartbeat().Status)
+            if (!localPublisher.GetHeartbeat().Status)
             {
                 if (availableChannel.NoOfFailedAttempts < _maxNoOfFailedAttempts)
                 {
@@ -577,8 +529,8 @@ namespace MySynch.Core
                 }
                 else
                 {
-                    availableComponent.Status = Status.OfflinePermanent;
                     availableChannel.Status = Status.OfflinePermanent;
+                    availableComponent.Status = Status.OfflinePermanent;
                 }
                 UpsertComponent(availableComponent);
                 return false;

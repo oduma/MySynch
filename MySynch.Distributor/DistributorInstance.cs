@@ -31,6 +31,7 @@ namespace MySynch.Distributor
 
         private void InitializeDistributor()
         {
+            LoggingManager.Debug("Initializing distributor with map:" + _distributorMapFile);
             _distributor = new Core.Distributor();
             _timer = new Timer();
             _timer.Interval = 60000;
@@ -43,6 +44,7 @@ namespace MySynch.Distributor
             _timer.Start();
 
             _serviceHosts.Add(new ServiceHost(_distributor));
+            LoggingManager.Debug("Distributor initialized.");
 
         }
 

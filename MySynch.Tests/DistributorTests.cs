@@ -252,7 +252,8 @@ namespace MySynch.Tests
             var mockSubscriber = new Mock<ISubscriber>();
             mockSubscriber.Setup(m => m.GetHeartbeat()).Returns(new HeartbeatResponse {Status = true});
             mockSubscriber.Setup(m => m.GetTargetRootFolder()).Returns(@"destination root folder\Item One");
-            mockSubscriber.Setup(m => m.ApplyChangePackage(changePushPackage,null)).Returns(true);
+            mockSubscriber.Setup(m => m.TryOpenChannel(null)).Returns(true);
+            mockSubscriber.Setup(m => m.ApplyChangePackage(changePushPackage)).Returns(true);
             channel.SubscriberInfo.Subscriber = mockSubscriber.Object;
         }
     }

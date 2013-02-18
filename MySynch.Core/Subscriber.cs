@@ -14,11 +14,14 @@ namespace MySynch.Core
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class Subscriber:IChangeSubscriber
     {
-        private Func<string, string, bool> _copyMethod;
+        private ICopyStrategy _copyStrategy;
         private string _targetRootFolder;
 
-
-        public bool ApplyChangePackage(ChangePushPackage changePushPackage,string sourceOfDataEndpointName)
+        internal ICopyStrategy CopyStrategy
+        {
+            set { _copyStrategy = value; }
+        }
+        public bool ApplyChangePackage(ChangePushPackage changePushPackage)
         {
             LoggingManager.Debug("Trying to apply some changes to: " + _targetRootFolder);
             if(changePushPackage==null || changePushPackage.ChangePushItems==null || changePushPackage.ChangePushItems.Count<=0)
@@ -26,17 +29,11 @@ namespace MySynch.Core
                 LoggingManager.Debug("Nothing to apply.");
                 return false;
             }
-            ISourceOfData sourceOfData;
-            if (string.IsNullOrEmpty(sourceOfDataEndpointName))
-                sourceOfData = new LocalSourceOfData();
-            else
+            if (_copyStrategy == null)
             {
-                sourceOfData = new SourceOfDataClient();
-                ((SourceOfDataClient)sourceOfData).InitiateUsingEndpoint(sourceOfDataEndpointName);
+                throw new SourceOfDataSetupException("","No source of data established");
             }
-            CopyStrategy copyStrategy= new CopyStrategy();
-            copyStrategy.Initialize(sourceOfData);
-            return TryApplyChanges(changePushPackage,copyStrategy);
+            return TryApplyChanges(changePushPackage);
         }
 
         public string GetTargetRootFolder()
@@ -44,9 +41,39 @@ namespace MySynch.Core
             return _targetRootFolder;
         }
 
-        internal bool TryApplyChanges(ChangePushPackage changePushPackage, ICopyStrategy copyStrategy)
+        public bool TryOpenChannel(string sourceOfDataEndpointName)
         {
-            _copyMethod = copyStrategy.Copy;
+            LoggingManager.Debug("Trying to open channel to: " + sourceOfDataEndpointName);
+            if (_copyStrategy != null)
+            {
+                LoggingManager.Debug("Channel already opened.");
+                return true;
+            }
+            try
+            {
+                ISourceOfData sourceOfData;
+                if (string.IsNullOrEmpty(sourceOfDataEndpointName))
+                    sourceOfData = new LocalSourceOfData();
+                else
+                {
+                    sourceOfData = new SourceOfDataClient();
+                    ((SourceOfDataClient)sourceOfData).InitiateUsingEndpoint(sourceOfDataEndpointName);
+                }
+                _copyStrategy = new CopyStrategy();
+                _copyStrategy.Initialize(sourceOfData);
+                LoggingManager.Debug("Channel opened.");
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                LoggingManager.LogMySynchSystemError(ex);
+                return false;
+            }
+        }
+
+        internal bool TryApplyChanges(ChangePushPackage changePushPackage)
+        {
             var response = ApplyUpserts(changePushPackage.ChangePushItems.Where(i => i.OperationType == OperationType.Insert || i.OperationType == OperationType.Update),
                                       _targetRootFolder, changePushPackage.SourceRootName) &&
                          ApplyDeletes(changePushPackage.ChangePushItems.Where(i => i.OperationType == OperationType.Delete),
@@ -88,7 +115,7 @@ namespace MySynch.Core
             bool result = true;
             foreach (ChangePushItem upsert in upserts)
             {
-                var tempResult = _copyMethod(upsert.AbsolutePath,Path.Combine(targetRootFolder,upsert.AbsolutePath.Replace(sourceRootName,"")));
+                var tempResult = _copyStrategy.Copy(upsert.AbsolutePath,Path.Combine(targetRootFolder,upsert.AbsolutePath.Replace(sourceRootName,"")));
                 result = result && tempResult;
             }
             LoggingManager.Debug("Apply upserts returns "+ result);

@@ -67,7 +67,8 @@ namespace MySynch.Tests.Integration
         {
             ISubscriberProxy subscriberProxy = new SubscriberClient();
             subscriberProxy.InitiateUsingEndpoint("SubscriberSciendoLaptop");
-            var result = subscriberProxy.ApplyChangePackage(new ChangePushPackage(), "SourceOfDataSciendoLaptop");
+            Assert.True(subscriberProxy.TryOpenChannel("SourceOfDataSciendoLaptop"));
+            var result = subscriberProxy.ApplyChangePackage(new ChangePushPackage());
             Assert.False(result);
             
         }
@@ -96,7 +97,8 @@ namespace MySynch.Tests.Integration
                                                                          }
                                                                  }
             };
-            var result = subscriber.ApplyChangePackage(publishedPackage, "SourceOfDataSciendoLaptop");
+            Assert.True(subscriber.TryOpenChannel("SourceOfDataSciendoLaptop"));
+            var result = subscriber.ApplyChangePackage(publishedPackage);
             Assert.True(result);
             Assert.True(File.Exists(@"Data\Output\File1.xml"));
         }
@@ -125,19 +127,34 @@ namespace MySynch.Tests.Integration
                                                                          }
                                                                  }
                                                      };
-            var result = subscriberProxy.ApplyChangePackage(publishedPackage, "SourceOfDataSciendoLaptop");
+            Assert.True(subscriberProxy.TryOpenChannel("SourceOfDataSciendoLaptop"));
+            var result = subscriberProxy.ApplyChangePackage(publishedPackage);
             Assert.True(result);
             Assert.True(File.Exists(@"C:\MySynch.Dest.Test.Root\File1.xml"));
 
         }
 
         [Test]
+        [Ignore(@"Requires Subscriber service to be defined on the root folder: C:\MySynch.Dest.Test.Root\ and publisher on C:\MySynch.Source.Test.Root\")]
         public void DistributorUpAndAccessible()
         {
-            //IDistributorMonitorProxy distributorMonitorProxy = new DistributorMonitorClient();
-            //distributorMonitorProxy.InitiateUsingEndpoint("DistributorSciendoLaptop");
-            //var listOfComponents = distributorMonitorProxy.ListAvailableComponentsTree();
-            //Assert.IsNull(listOfComponents);
+            IDistributorMonitorProxy distributorMonitorProxy = new DistributorMonitorClient();
+            distributorMonitorProxy.InitiateUsingEndpoint("DistributorSciendoLaptop");
+            var listOfComponents = distributorMonitorProxy.ListAvailableComponentsTree();
+            Assert.IsNotNull(listOfComponents);
+            Assert.AreEqual("SCIENDO-LAPTOP",listOfComponents.Name);
+            Assert.AreEqual(1,listOfComponents.AvailablePublishers.Count);
+            Assert.AreEqual("IPublisher.Remote.PublisherSciendoLaptop",listOfComponents.AvailablePublishers[0].Name);
+            Assert.AreEqual(Status.Ok, listOfComponents.AvailablePublishers[0].Status);
+            Assert.False(listOfComponents.AvailablePublishers[0].IsLocal);
+            Assert.IsNull(listOfComponents.AvailablePublishers[0].Packages);
+            Assert.AreEqual(1, listOfComponents.AvailablePublishers[0].DependentComponents.Count);
+            Assert.AreEqual("ISubscriber.Remote.SubscriberSciendoLaptop", listOfComponents.AvailablePublishers[0].DependentComponents[0].Name);
+            Assert.AreEqual(Status.Ok, listOfComponents.AvailablePublishers[0].DependentComponents[0].Status);
+            Assert.AreEqual(Status.Ok, listOfComponents.AvailablePublishers[0].DependentComponents[0].DataSourceStatus);
+            Assert.False(listOfComponents.AvailablePublishers[0].DependentComponents[0].IsLocal);
+            Assert.AreEqual(@"C:\MySynch.Dest.Test.Root\", listOfComponents.AvailablePublishers[0].DependentComponents[0].RootPath);
+            Assert.IsNull(listOfComponents.AvailablePublishers[0].DependentComponents[0].Packages);
 
         }
     }

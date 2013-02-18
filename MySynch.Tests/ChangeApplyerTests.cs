@@ -28,7 +28,7 @@ namespace MySynch.Tests
             ChangePushPackage insertPackage = new ChangePushPackage
                                                   {
                                                       Source = "Source1",
-                                                      SourceRootName = @"Data\Test",
+                                                      SourceRootName = @"Data\Test\",
                                                       ChangePushItems =
                                                           new List<ChangePushItem>
                                                               {
@@ -50,9 +50,10 @@ namespace MySynch.Tests
 
                                                               }
                                                   };
-            changeApplyer.Initialize(@"Data\Output\Test");
+            changeApplyer.Initialize(@"Data\Output\Test\");
             var mockCopyStrategy = MockCopyStrategy();
-            Assert.True(changeApplyer.TryApplyChanges(insertPackage,mockCopyStrategy));
+            changeApplyer.CopyStrategy = mockCopyStrategy;
+            Assert.True(changeApplyer.TryApplyChanges(insertPackage));
             Assert.AreEqual(3,_noOfUpserts);
         }
 
@@ -70,7 +71,7 @@ namespace MySynch.Tests
             ChangePushPackage insertPackage = new ChangePushPackage
             {
                 Source = "Source1",
-                SourceRootName = @"Data\Test",
+                SourceRootName = @"Data\Test\",
                 ChangePushItems =
                     new List<ChangePushItem>
                                                               {
@@ -92,9 +93,10 @@ namespace MySynch.Tests
 
                                                               }
             };
-            changeApplyer.Initialize(@"Data\Output\Test");
+            changeApplyer.Initialize(@"Data\Output\Test\");
             var mockCopyStrategy= MockCopyStrategy();
-            Assert.False(changeApplyer.TryApplyChanges(insertPackage,  mockCopyStrategy));
+            changeApplyer.CopyStrategy = mockCopyStrategy;
+            Assert.False(changeApplyer.TryApplyChanges(insertPackage));
             Assert.AreEqual(2, _noOfUpserts);
         }
 
@@ -143,7 +145,8 @@ namespace MySynch.Tests
             Assert.True(File.Exists(@"Data\Output\Test\F1\F12\F12.xml"));
             Assert.True(File.Exists(@"Data\Output\Test\F1\F12\F121.xml"));
             var mockCopyStrategy = MockCopyStrategy();
-            Assert.True(changeApplyer.TryApplyChanges(deletePackage, mockCopyStrategy));
+            changeApplyer.CopyStrategy = mockCopyStrategy;
+            Assert.True(changeApplyer.TryApplyChanges(deletePackage));
             Assert.False(File.Exists(@"Data\Output\Test\F1\F12\F12.xml"));
             Assert.False(File.Exists(@"Data\Output\Test\F1\F12\F121.xml"));
 
@@ -182,7 +185,8 @@ namespace MySynch.Tests
             Assert.True(File.Exists(@"Data\Output\Test\F1\F12\F122.xml"));
             Assert.False(File.Exists(@"Data\Output\Test\F12\F13.xml"));
             var mockCopyStrategy = MockCopyStrategy();
-            Assert.False(changeApplyer.TryApplyChanges(deletePackage, mockCopyStrategy));
+            changeApplyer.CopyStrategy = mockCopyStrategy;
+            Assert.False(changeApplyer.TryApplyChanges(deletePackage));
             Assert.False(File.Exists(@"Data\Output\Test\F1\F12\F122.xml"));
             Assert.False(File.Exists(@"Data\Output\Test\F12\F13.xml"));
 
@@ -192,7 +196,8 @@ namespace MySynch.Tests
         public void ApplyChanges_NoChangePackage()
         {
             Subscriber changeApplyer = new Subscriber();
-            Assert.False( changeApplyer.ApplyChangePackage(null, null));
+            changeApplyer.TryOpenChannel(null);
+            Assert.False( changeApplyer.ApplyChangePackage(null));
         }
         
         [Test]
