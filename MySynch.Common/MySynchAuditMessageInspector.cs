@@ -1,4 +1,7 @@
-﻿using System.ServiceModel;
+﻿using System;
+using System.Configuration;
+using System.Linq;
+using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Dispatcher;
 
@@ -8,6 +11,8 @@ namespace MySynch.Common
         IClientMessageInspector,
         IDispatchMessageInspector
     {
+        private const string ConfigSwitch="CommunicationLogging";
+
         #region IClientMessageInspector Members
 
         /// <summary>
@@ -18,7 +23,8 @@ namespace MySynch.Common
         /// <returns></returns>
         public object BeforeSendRequest(ref Message request, IClientChannel channel)
         {
-            LoggingManager.Debug(request);
+            if(ConfigAllows())
+                LoggingManager.Debug(request);
             return null;
         }
 
@@ -29,7 +35,8 @@ namespace MySynch.Common
         /// <param name="correlationState"></param>
         public void AfterReceiveReply(ref Message reply, object correlationState)
         {
-            LoggingManager.Debug(reply);
+            if(ConfigAllows())
+                LoggingManager.Debug(reply);
         }
 
         #endregion
@@ -45,6 +52,7 @@ namespace MySynch.Common
         /// <returns></returns>
         public object AfterReceiveRequest(ref Message request, IClientChannel channel, InstanceContext instanceContext)
         {
+            if(ConfigAllows())
             LoggingManager.Debug(request);
             return null;
         }
@@ -58,6 +66,7 @@ namespace MySynch.Common
         {
             try
             {
+                if(ConfigAllows())
                 LoggingManager.Debug(reply);
 
             }
@@ -65,6 +74,18 @@ namespace MySynch.Common
             {
                 //swallow everything to return whatever comes from the server to client
             }
+        }
+
+        private bool ConfigAllows()
+        {
+            var configAllows = ConfigurationManager.AppSettings.AllKeys.FirstOrDefault(k => k == ConfigSwitch);
+            if (string.IsNullOrEmpty(configAllows))
+                return false;
+            if (string.IsNullOrEmpty(ConfigurationManager.AppSettings[ConfigSwitch]))
+                return false;
+            if (ConfigurationManager.AppSettings[ConfigSwitch].ToLower() != "verbose")
+                return false;
+            return true;
         }
 
         #endregion
