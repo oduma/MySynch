@@ -44,9 +44,11 @@
     <Compile Include="DistributorMonitorClient.cs" />
     <Compile Include="IDistributorMonitorProxy.cs" />
     <Compile Include="IPublisherProxy.cs" />
+    <Compile Include="ISourceOfDataProxy.cs" />
     <Compile Include="ISubscriberProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PublisherClient.cs" />
+    <Compile Include="SourceOfDataClient.cs" />
     <Compile Include="SubscriberClient.cs" />
   </ItemGroup>
   <ItemGroup>

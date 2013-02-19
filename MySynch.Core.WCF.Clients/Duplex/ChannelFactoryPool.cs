@@ -3,6 +3,7 @@ using System.Configuration;
 using System.ServiceModel;
 using System.ServiceModel.Configuration;
 using System.Threading;
+using MySynch.Common;
 
 namespace MySynch.Core.WCF.Clients.Duplex
 {
@@ -51,13 +52,14 @@ namespace MySynch.Core.WCF.Clients.Duplex
         /// <returns></returns>
         public DuplexChannelFactory<T> GetChannelFactory<TCallBack>(TCallBack callbackInstance, string endpointName)
         {
+            LoggingManager.Debug("Trying to get channelfactory for endpoint: " + endpointName);
             DuplexChannelFactory<T> channelFactory;
 
             if (!TryGetChannelFactory(endpointName, out channelFactory))
             {
-                channelFactory = CreateAndCache<TCallBack>(callbackInstance, endpointName);
+                channelFactory = CreateAndCache(callbackInstance, endpointName);
             }
-
+            LoggingManager.Debug("Got channel factory for:" +channelFactory.Endpoint.Address);
             return channelFactory;
         }
 
@@ -175,7 +177,7 @@ namespace MySynch.Core.WCF.Clients.Duplex
 
             //endpointChannelFactory.ChannelFactory.Endpoint.Behaviors.Add(new ErgoSecurityBehavior());
 
-            //endpointChannelFactory.ChannelFactory.Endpoint.Behaviors.Add(new ErgoAuditBehavior());
+            endpointChannelFactory.ChannelFactory.Endpoint.Behaviors.Add(new MySynchAuditBehavior());
 
             endpointChannelFactory.ChannelFactory.Open();
 

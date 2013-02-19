@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using Moq;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
 using MySynch.Core;
+using MySynch.Core.DataTypes;
+using MySynch.Core.Interfaces;
 using MySynch.Tests.Stubs;
 using NUnit.Framework;
 using System.Linq;
@@ -119,12 +123,11 @@ namespace MySynch.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(ComponentNotRegieteredException))]
         public void LoadDistributorNoRegisteredPublishers()
         {
             Distributor distributor = new Distributor();
             distributor.InitiateDistributionMap(@"Data\distributormap.xml", new ComponentResolver());
-            
+            Assert.AreEqual(0, distributor.AvailableChannels.Count(c => c.Status == Status.Ok));
         }
         [Test]
         public void DistributeMessages_OneChannel_Ok()
@@ -132,8 +135,9 @@ namespace MySynch.Tests
 
             Distributor distributor = new Distributor();
             distributor.InitiateDistributionMap(@"Data\distributormaplocal2local.xml", _componentResolver);
-            
             ChangePublisher changePublisher = InitiateLocalPublisher();
+            changePublisher.PublishPackage();
+            MockAllTheSubscribers(distributor.AvailableChannels,changePublisher.PublishedPackageNotDistributed[0]);
             distributor.DistributeMessages();
             Assert.AreEqual(0, changePublisher.PublishedPackageNotDistributed.Count);
         }
@@ -153,8 +157,9 @@ namespace MySynch.Tests
         {
             Distributor distributor = new Distributor();
             distributor.InitiateDistributionMap(@"Data\distributormaplocal2localandremote.xml", _componentResolver);
-
             ChangePublisher changePublisher = InitiateLocalPublisher();
+            changePublisher.PublishPackage();
+            MockAllTheSubscribers(distributor.AvailableChannels,changePublisher.PublishedPackageNotDistributed[0]);
             distributor.DistributeMessages();
             Assert.AreEqual(0, changePublisher.PublishedPackageNotDistributed.Count);
         }
@@ -188,5 +193,68 @@ namespace MySynch.Tests
 
         }
 
+        [Test]
+        public void ListAllComponents_AndRegisterMessages_Ok()
+        {
+            Distributor distributor = new Distributor();
+            distributor.InitiateDistributionMap(@"Data\distributormap5.xml", _componentResolver);
+            ChangePublisher changePublisher = (ChangePublisher)distributor.AvailableChannels.FirstOrDefault(c => string.IsNullOrEmpty(c.PublisherInfo.EndpointName)).PublisherInfo.Publisher;
+            changePublisher.Initialize("root folder");
+            changePublisher.QueueInsert(@"root folder\Item One");
+            changePublisher.QueueInsert(@"root folder\ItemTwo");
+            changePublisher.PublishPackage();
+            MockAllTheSubscribers(distributor.AvailableChannels,changePublisher.PublishedPackageNotDistributed[0]);
+            distributor.DistributeMessages();
+            var compo = distributor.ListAvailableComponentsTree();
+            Assert.IsNotNull(compo);
+            Assert.AreEqual(1, compo.AvailablePublishers.Count);
+            Assert.IsNotNull(compo.AvailablePublishers[0].DependentComponents);
+            Assert.AreEqual(1, compo.AvailablePublishers[0].DependentComponents.Count);
+            Assert.AreEqual(1,compo.AvailablePublishers[0].Packages.Count(p=>p.State==State.Removed));
+            Assert.AreEqual(1, compo.AvailablePublishers[0].Packages[0].PackageMessages.Count(m => m.AbsolutePath == @"root folder\Item One"));
+            Assert.AreEqual(2, compo.AvailablePublishers[0].Packages[0].PackageMessages.Count(m => m.OperationType==OperationType.Insert));
+            Assert.AreEqual(1, compo.AvailablePublishers[0].DependentComponents[0].Packages.Count(p => p.State == State.Removed));
+            //Assert.AreEqual(1, compo.AvailablePublishers[0].DependentComponents[0].Packages[0].PackageMessages.Count(m => m.AbsolutePath == @"destination root folder\Item One"));
+            //Assert.AreEqual(2, compo.AvailablePublishers[0].DependentComponents[0].Packages[0].PackageMessages.Count(m => m.OperationType==OperationType.Insert));
+
+        }
+
+        [Test]
+        public void ListAllComponents_RegisterAndUnRegisterMessages_Ok()
+        {
+            Distributor distributor = new Distributor();
+            distributor.InitiateDistributionMap(@"Data\distributormap5.xml", _componentResolver);
+            ChangePublisher changePublisher = (ChangePublisher)distributor.AvailableChannels.FirstOrDefault(c => string.IsNullOrEmpty(c.PublisherInfo.EndpointName)).PublisherInfo.Publisher;
+            changePublisher.Initialize("root folder");
+            changePublisher.QueueInsert(@"root folder\Item One");
+            changePublisher.QueueInsert(@"root folder\ItemTwo");
+            changePublisher.PublishPackage();
+            MockAllTheSubscribers(distributor.AvailableChannels,changePublisher.PublishedPackageNotDistributed[0]);
+            distributor.DistributeMessages();
+            var compo = distributor.ListAvailableComponentsTree();
+            distributor.DistributeMessages();
+            Assert.IsNotNull(compo);
+            Assert.AreEqual(1, compo.AvailablePublishers.Count);
+            Assert.IsNotNull(compo.AvailablePublishers[0].DependentComponents);
+            Assert.AreEqual(1, compo.AvailablePublishers[0].DependentComponents.Count);
+            Assert.AreEqual(0, compo.AvailablePublishers[0].Packages.Count);
+            Assert.AreEqual(0, compo.AvailablePublishers[0].DependentComponents[0].Packages.Count);
+        }
+
+        private void MockAllTheSubscribers(List<AvailableChannel> availableChannels, ChangePushPackage changePushPackage)
+        {
+            foreach (var availableChannel in availableChannels)
+                MockTheSubscriber(availableChannel,changePushPackage);
+        }
+
+        private void MockTheSubscriber(AvailableChannel channel, ChangePushPackage changePushPackage)
+        {
+            var mockSubscriber = new Mock<ISubscriber>();
+            mockSubscriber.Setup(m => m.GetHeartbeat()).Returns(new HeartbeatResponse {Status = true});
+            mockSubscriber.Setup(m => m.GetTargetRootFolder()).Returns(@"destination root folder\Item One");
+            mockSubscriber.Setup(m => m.TryOpenChannel(null)).Returns(true);
+            mockSubscriber.Setup(m => m.ApplyChangePackage(changePushPackage)).Returns(true);
+            channel.SubscriberInfo.Subscriber = mockSubscriber.Object;
+        }
     }
 }

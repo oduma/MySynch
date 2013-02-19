@@ -10,7 +10,6 @@
       <EndpointName></EndpointName>
       <TargetRootFolder>local target root folder</TargetRootFolder>
     </SubscriberInfo>
-    <CopyStartegyName>ICopyStrategy.Local</CopyStartegyName>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
     <Status>NotChecked</Status>
     <NoOfFailedAttempts>0</NoOfFailedAttempts>
@@ -25,7 +24,6 @@
       <EndpointName></EndpointName>
       <TargetRootFolder>remote target root folder</TargetRootFolder>
     </SubscriberInfo>
-    <CopyStartegyName>ICopyStrategy.Local</CopyStartegyName>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
     <Status>NotChecked</Status>
     <NoOfFailedAttempts>0</NoOfFailedAttempts>

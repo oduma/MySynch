@@ -39,8 +39,10 @@ namespace MySynch.Tests
                                                                OperationType = OperationType.Insert
                                                            }
                                                    };
-            CompareTwoPackages(_expectedPackage, changePublisher.PublishPackage());
-            Assert.AreEqual(0,changePublisher.PublishPackage().ChangePushItems.Count);
+            var actualPackage = changePublisher.PublishPackage();
+            CompareTwoPackages(_expectedPackage, actualPackage);
+            changePublisher.RemovePackage(actualPackage);
+            Assert.IsNull(changePublisher.PublishPackage());
 
             changePublisher.QueueUpdate("item one");
 
@@ -52,8 +54,10 @@ namespace MySynch.Tests
                                                                OperationType = OperationType.Update
                                                            }
                                                    };
-            CompareTwoPackages(_expectedPackage, changePublisher.PublishPackage());
-            Assert.AreEqual(0, changePublisher.PublishPackage().ChangePushItems.Count);
+            actualPackage = changePublisher.PublishPackage();
+            CompareTwoPackages(_expectedPackage, actualPackage);
+            changePublisher.RemovePackage(actualPackage); 
+            Assert.IsNull(changePublisher.PublishPackage());
 
             changePublisher.QueueDelete("item one");
             _expectedPackage.ChangePushItems = new List<ChangePushItem>
@@ -64,8 +68,10 @@ namespace MySynch.Tests
                                                                OperationType = OperationType.Delete
                                                            }
                                                    };
-            CompareTwoPackages(_expectedPackage, changePublisher.PublishPackage());
-            Assert.AreEqual(0, changePublisher.PublishPackage().ChangePushItems.Count);
+            actualPackage = changePublisher.PublishPackage();
+            CompareTwoPackages(_expectedPackage, actualPackage);
+            changePublisher.RemovePackage(actualPackage); 
+            Assert.IsNull(changePublisher.PublishPackage());
 
         }
 
@@ -99,7 +105,6 @@ namespace MySynch.Tests
                                                            }
                                                    };
             CompareTwoPackages(_expectedPackage, changePublisher.PublishPackage());
-            Assert.AreEqual(0, changePublisher.PublishPackage().ChangePushItems.Count);
         }
 
         [Test]
@@ -152,10 +157,7 @@ namespace MySynch.Tests
 
             changePublisher.QueueInsert("");
 
-            _expectedPackage.ChangePushItems = new List<ChangePushItem>();
-
-            CompareTwoPackages(_expectedPackage, changePublisher.PublishPackage());
-            Assert.AreEqual(0, changePublisher.PublishPackage().ChangePushItems.Count);
+            Assert.IsNull(changePublisher.PublishPackage());
         }
         [Test]
         public void QueueUpdate_Nothing_Sent()
@@ -167,8 +169,7 @@ namespace MySynch.Tests
 
             _expectedPackage.ChangePushItems = new List<ChangePushItem>();
 
-            CompareTwoPackages(_expectedPackage, changePublisher.PublishPackage());
-            Assert.AreEqual(0, changePublisher.PublishPackage().ChangePushItems.Count);
+            Assert.IsNull(changePublisher.PublishPackage());
         }
         [Test]
         public void QueueDelete_Nothing_Sent()
@@ -179,10 +180,7 @@ namespace MySynch.Tests
 
             changePublisher.QueueDelete(string.Empty);
 
-            _expectedPackage.ChangePushItems = new List<ChangePushItem>();
-
-            CompareTwoPackages(_expectedPackage, changePublisher.PublishPackage());
-            Assert.AreEqual(0, changePublisher.PublishPackage().ChangePushItems.Count);
+            Assert.IsNull(changePublisher.PublishPackage());
         }
 
         [Test]
@@ -267,16 +265,12 @@ namespace MySynch.Tests
                                                            }
                                                    };
 
+            changePublisher.RemovePackage(firstPublishedPackage);
             var scndPublishedPackage = changePublisher.PublishPackage();
 
             CompareTwoPackages(_expectedPackage, scndPublishedPackage);
-            Assert.AreEqual(2, changePublisher.PublishedPackageNotDistributed.Count);
-            Assert.AreEqual(2, changePublisher.PublishedPackageNotDistributed[1].ChangePushItems.Count);
-            Assert.AreEqual(firstPublishedPackage.PackageId, changePublisher.PublishedPackageNotDistributed[0].PackageId);
-            Assert.AreEqual(scndPublishedPackage.PackageId, changePublisher.PublishedPackageNotDistributed[1].PackageId);
-
-            changePublisher.RemovePackage(firstPublishedPackage);
             Assert.AreEqual(1, changePublisher.PublishedPackageNotDistributed.Count);
+            Assert.AreEqual(2, changePublisher.PublishedPackageNotDistributed[0].ChangePushItems.Count);
             Assert.AreEqual(scndPublishedPackage.PackageId, changePublisher.PublishedPackageNotDistributed[0].PackageId);
         }
         [Test]

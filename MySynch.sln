@@ -16,6 +16,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySynch.Monitor", "MySynch.Monitor\MySynch.Monitor.csproj", "{F8F55F65-CAA1-44C6-96AC-BB7E9A85DFD0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{46E72DF2-DF4F-4E6D-9607-97D9F2347FCD}"
+	ProjectSection(SolutionItems) = preProject
+		Lib\log4net.dll = Lib\log4net.dll
+		Lib\log4net.xml = Lib\log4net.xml
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySynch.Common", "MySynch.Common\MySynch.Common.csproj", "{9E007CA9-F233-4DF1-8A18-A4E3411FDD32}"
 EndProject

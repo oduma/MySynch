@@ -11,7 +11,8 @@
     <RootNamespace>MySynch.Monitor</RootNamespace>
     <AssemblyName>MySynch.Monitor</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -39,6 +40,9 @@
     <Reference Include="Hardcodet.Wpf.TaskbarNotification">
       <HintPath>..\packages\Hardcodet.Wpf.TaskbarNotification.1.0.4.0\lib\net40\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
     </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\Lib\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization" />
@@ -64,11 +68,13 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MVVM\ViewModels\DistributorCallbacks.cs" />
-    <Compile Include="MVVM\ViewModels\DistributorDetailsViewModel.cs" />
-    <Compile Include="MVVM\ViewModels\PublisherViewModel.cs" />
-    <Compile Include="MVVM\ViewModels\SubscriberViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\ComponentType.cs" />
+    <Compile Include="MVVM\ViewModels\ComponentTypeToIconFileNameConverter.cs" />
+    <Compile Include="MVVM\ViewModels\NotificationDetailsViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\StatusToIconFileNameConverter.cs" />
     <Compile Include="MVVM\ViewModels\ViewModelBase.cs" />
+    <Compile Include="Utils\ThreadSafeObservableCollection.cs" />
+    <Compile Include="Utils\WPFControlThreadingExtensions.cs" />
     <Compile Include="Window1.xaml.cs">
       <DependentUpon>Window1.xaml</DependentUpon>
     </Compile>
@@ -95,6 +101,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MySynch.Common\MySynch.Common.csproj">
+      <Project>{9E007CA9-F233-4DF1-8A18-A4E3411FDD32}</Project>
+      <Name>MySynch.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MySynch.Contracts\MySynch.Contracts.csproj">
       <Project>{EE4C1C53-0F1E-40D1-ACAB-0BF493593424}</Project>
       <Name>MySynch.Contracts</Name>
@@ -103,6 +113,10 @@
       <Project>{39D279A7-FAF1-4801-A847-F4BD472C5002}</Project>
       <Name>MySynch.Core.WCF.Clients</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MySynch.Core\MySynch.Core.csproj">
+      <Project>{EB0395B1-04DE-4402-AB45-4AE7693326A8}</Project>
+      <Name>MySynch.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MySynch.Proxies\MySynch.Proxies.csproj">
       <Project>{9C0061E1-9FF4-4BEC-A050-C2D21908354B}</Project>
       <Name>MySynch.Proxies</Name>
@@ -110,6 +124,22 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\Distributor.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\Publisher.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\PublisherPackage.png" />
+    <Resource Include="Icons\Subscriber.png" />
+    <Resource Include="Icons\SubscriberPackage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\Ok.png" />
+    <Resource Include="Icons\PermanentOffline.png" />
+    <Resource Include="Icons\TemporaryOffline.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

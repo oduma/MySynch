@@ -1,6 +1,7 @@
 ﻿<Window x:Class="MySynch.Monitor.Window1"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:converters="clr-namespace:MySynch.Monitor.MVVM.ViewModels"
         Title="Window1" Height="300" Width="300">
     <Window.Resources>
         <ResourceDictionary>
@@ -9,14 +10,25 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <Grid Grid.Row="1">
-        <TreeView ScrollViewer.VerticalScrollBarVisibility="Auto"
+    <Grid Background="PaleGoldenrod">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <TreeView x:Name="tree" Grid.Row="0" Grid.Column="0"
+                  HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Stretch"
+                  Margin="10 10 10 10"
+                  ScrollViewer.VerticalScrollBarVisibility="Auto"
                           BorderThickness="0"
                           Background="#FFF"
                           ItemContainerStyle="{DynamicResource TreeViewItemStyle}"
-                          ItemsSource="{Binding PublisherCollection}"
-                          ItemTemplate="{DynamicResource PublisherTemplate}" />
-
+                          ItemsSource="{Binding NotificationDetailsCollection}"
+                          ItemTemplate="{DynamicResource NotificationTemplate}"
+                          Visibility="{Binding TreeReady}">
+        </TreeView>
+        <Label Visibility="{Binding TreeNotReady}" Content="Loading tree ... please wait."/>
     </Grid>
-    
 </Window>

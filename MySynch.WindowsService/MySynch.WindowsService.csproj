@@ -74,16 +74,20 @@
     <Compile Include="Installer1.Designer.cs">
       <DependentUpon>Installer1.cs</DependentUpon>
     </Compile>
-    <Compile Include="PublisherSubscriberInstance.cs">
+    <Compile Include="MySynchNodeInstance.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="PublisherSubscriberInstance.Designer.cs">
-      <DependentUpon>PublisherSubscriberInstance.cs</DependentUpon>
+    <Compile Include="MySynchNodeInstance.Designer.cs">
+      <DependentUpon>MySynchNodeInstance.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MySynch.Common\MySynch.Common.csproj">
+      <Project>{9E007CA9-F233-4DF1-8A18-A4E3411FDD32}</Project>
+      <Name>MySynch.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MySynch.Contracts\MySynch.Contracts.csproj">
       <Project>{EE4C1C53-0F1E-40D1-ACAB-0BF493593424}</Project>
       <Name>MySynch.Contracts</Name>
@@ -94,7 +98,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="log4net.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="map\distributormap.xml">

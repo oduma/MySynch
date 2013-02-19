@@ -3,7 +3,7 @@ using MySynch.Core.WCF.Clients;
 
 namespace MySynch.Proxies
 {
-    public interface ISubscriberProxy:IChangeApplyer,IInitiateClient
+    public interface ISubscriberProxy:ISubscriber,IInitiateClient
     {
     }
 }

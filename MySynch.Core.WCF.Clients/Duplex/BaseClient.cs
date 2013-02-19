@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ServiceModel;
+using MySynch.Common;
 
 namespace MySynch.Core.WCF.Clients.Duplex
 {
@@ -10,20 +11,24 @@ namespace MySynch.Core.WCF.Clients.Duplex
 
         public void InitiateUsingEndpoint(TCallback callbackInstance, string endpointName)
         {
-            ChannelFactory<T> channelFactory;
-            try
+            LoggingManager.Debug("Initating using endpoint: " + endpointName);
+            using (LoggingManager.LogMySynchPerformance())
             {
-                channelFactory = ChannelFactoryPool<T>.Instance.GetChannelFactory<TCallback>(callbackInstance, endpointName);
+                ChannelFactory<T> channelFactory;
+                try
+                {
+                    channelFactory = ChannelFactoryPool<T>.Instance.GetChannelFactory(callbackInstance, endpointName);
+                }
+                catch (Exception ex)
+                {
+
+                    throw ex;
+                }
+
+                Proxy = channelFactory.CreateChannel();
+
+                _channel = (ICommunicationObject) Proxy;
             }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
-
-            Proxy = channelFactory.CreateChannel();
-
-            _channel = (ICommunicationObject)Proxy;
         }
 
         protected virtual void OnTimeoutException(TimeoutException tex)

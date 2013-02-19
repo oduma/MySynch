@@ -3,10 +3,13 @@ using MySynch.Contracts.Messages;
 
 namespace MySynch.Contracts
 {
-    [ServiceContract(SessionMode = SessionMode.Required, CallbackContract = typeof(IDistributorCallbacks))]
-    public interface IDistributorMonitor:ICommunicationCopmonent
+    [ServiceContract]
+    public interface IDistributorMonitor:ICommunicationComponent
     {
         [OperationContract]
         DistributorComponent ListAvailableComponentsTree();
+
+        [OperationContract]
+        void ReEvaluateAllChannels();
     }
 }

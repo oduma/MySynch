@@ -9,7 +9,6 @@
       <SubScriberName>ISubscriber.Remote.NotPresent</SubScriberName>
       <EndpointName>endpoint1</EndpointName>
     </SubscriberInfo>
-    <CopyStartegyName>ICopyStrategy.Local</CopyStartegyName>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
     <Status>NotChecked</Status>
     <NoOfFailedAttempts>0</NoOfFailedAttempts>

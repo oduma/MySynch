@@ -1,6 +1,9 @@
 ﻿using System;
+using MySynch.Contracts.Messages;
 using MySynch.Core;
 using MySynch.Core.DataTypes;
+using MySynch.Core.Interfaces;
+using MySynch.Proxies;
 
 namespace MySynch.ClientConsole
 {
@@ -8,21 +11,19 @@ namespace MySynch.ClientConsole
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Monitoring... (close this window to stop it)");
-            //Start monitoring the queue and respond to a number of situations
-            string sourceRootFolder=@"C:\Code\Sciendo\MySynch\MySynch.ClientConsole\bin\Debug";
-            FSWatcher fsWatcher= new FSWatcher(sourceRootFolder);
-            fsWatcher.ItemsQueued += fsWatcher_ItemsQueued;
-            Console.WriteLine("Monitoring path: " + fsWatcher.Path);
-            System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);
-        }
+            //IPublisherProxy publisherProxy = new PublisherClient();
+            //publisherProxy.InitiateUsingEndpoint("PublisherSciendoLaptop");
+            //publisherProxy.PublishPackage();
 
-        static void fsWatcher_ItemsQueued(object sender, ItemsQueuedEventArgs e)
-        {
-            foreach(var key in e.NonPublishedItems.Keys)
-                Console.WriteLine("{0} recorded on path {1}",e.NonPublishedItems[key],key);
-            Console.WriteLine();
-            Console.WriteLine();
+            ISourceOfDataProxy sourceOfDataProxy = new SourceOfDataClient();
+            sourceOfDataProxy.InitiateUsingEndpoint("SourceOfDataSciendoLaptop");
+            //var data = sourceOfDataProxy.GetData(new RemoteRequest {FileName = @"C:\MySynch.Source.Test.Root\img001.jpg"});
+
+            ISubscriberProxy subscriberProxy = new SubscriberClient();
+            subscriberProxy.InitiateUsingEndpoint("SubscriberSciendoLaptop");
+            CopyStrategy copyStrategy= new CopyStrategy();
+            copyStrategy.Initialize(sourceOfDataProxy);
+            subscriberProxy.ApplyChangePackage(new ChangePushPackage(), "SourceOfDataSciendoLaptop");
         }
     }
 }

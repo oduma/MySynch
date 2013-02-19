@@ -6,16 +6,19 @@ namespace MySynch.Tests.Stubs
 {
     public class MockRemoteSubscriber:ISubscriberProxy
     {
+        private string targetRootFolder;
+
         public HeartbeatResponse GetHeartbeat()
         {
             return new HeartbeatResponse {Status = true};
         }
 
-        public bool ApplyChangePackage(ChangePushPackage changePushPackage, string targetRootFolder, Func<string, string, bool> copyMethod)
+        public bool ApplyChangePackage(ChangePushPackage changePushPackage)
         {
             if(targetRootFolder=="wrong folder")
                 throw new Exception();
             bool result = true;
+
             foreach (ChangePushItem upsert in changePushPackage.ChangePushItems)
             {
                 var tempResult = copyMethod(upsert.AbsolutePath,
@@ -23,6 +26,21 @@ namespace MySynch.Tests.Stubs
                 result = result && tempResult;
             }
             return result;
+        }
+
+        public string GetTargetRootFolder()
+        {
+            return targetRootFolder;
+        }
+
+        public bool TryOpenChannel(string sourceOfDataEndpointName)
+        {
+            return true;
+        }
+
+        private bool copyMethod(string absolutePath, string replace)
+        {
+            return true;
         }
 
         public void InitiateUsingEndpoint(string endpointName)

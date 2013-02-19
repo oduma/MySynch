@@ -3,175 +3,380 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.ServiceModel;
-using Castle.Core.Internal;
+using MySynch.Common;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
 using MySynch.Core.DataTypes;
-using MySynch.Core.Interfaces;
-using MySynch.Core.Utilities;
 using MySynch.Proxies;
 
 namespace MySynch.Core
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
-    public class Distributor:IDistributor
+    public class Distributor : IDistributorMonitor
     {
         private ComponentResolver _componentResolver = new ComponentResolver();
-        private readonly int _maxNoOfFailedAttempts = 3;
+        private const int MaxNoOfFailedAttempts = 3;
         private List<AvailableComponent> _allComponents;
-
         public List<AvailableChannel> AvailableChannels { get; private set; }
 
         public void DistributeMessages()
         {
-            //Recheck the AvailableChannels
-            AvailableChannels.ForEach(CheckChannel);
-
-            var availableChannels = AvailableChannels.Where(c => c.Status == Status.Ok);
-            if(availableChannels==null || availableChannels.Count()==0)
-                return;
-            //the channels have to be processed in the order of the publisher
-            var publisherGroups =
-                availableChannels.GroupBy(
-                    c => c.PublisherInfo.PublisherInstanceName + "-" + c.PublisherInfo.EndpointName);
-            foreach (var publisherGroup in publisherGroups)
+            try
             {
-                var publisherChannelsNotAvailable =
-                    AvailableChannels.Count(
-                        c =>
-                        ((c.PublisherInfo.PublisherInstanceName + "-" + c.PublisherInfo.EndpointName) ==
-                         publisherGroup.Key) && c.Status != Status.Ok);
+                LoggingManager.Debug("Starting to distribute messages ...");
+                //For test only keep old trace
+                UnRegisterOldPackages(_allComponents);
+                //Recheck the AvailableChannels
+                AvailableChannels.ForEach(CheckChannel);
 
-                var currentPublisher = publisherGroup.Select(g => g).First().PublisherInfo.Publisher;
-                var packagePublished = currentPublisher.PublishPackage();
+                var availableChannels = AvailableChannels.Where(c => c.Status == Status.Ok);
+                if (availableChannels.Count() == 0)
+                    return;
+                //the channels have to be processed in the order of the publisher
+                var publisherGroups =
+                    availableChannels.GroupBy(
+                        c => c.PublisherInfo.PublisherInstanceName + "-" + c.PublisherInfo.EndpointName);
+                foreach (var publisherGroup in publisherGroups)
+                {
+                    IGrouping<string, AvailableChannel> @group = publisherGroup;
+                    var publisherChannelsNotAvailable =
+                        AvailableChannels.Count(
+                            c =>
+                            ((c.PublisherInfo.PublisherInstanceName + "-" + c.PublisherInfo.EndpointName) ==
+                             group.Key) && c.Status != Status.Ok);
 
-                if(packagePublished==null)
-                    continue;
-                IDistributorCallbacks callbacks = OperationContext.Current.GetCallbackChannel<IDistributorCallbacks>();
+                    var currentPublisher = publisherGroup.Select(g => g).First().PublisherInfo.Publisher;
 
-                callbacks.PackagePublished(packagePublished);
+                    var packagePublished = currentPublisher.PublishPackage();
 
-                if (DistributeMessages(publisherGroup.Select(g => g), packagePublished) && publisherChannelsNotAvailable==0)
-                    //Publisher's messages not needed anymore
-                    currentPublisher.RemovePackage(packagePublished);
+                    if (packagePublished == null)
+                        continue;
+                    RegisterPublisherPackage(publisherGroup.Select(g => g).First(), packagePublished, State.Published);
+
+                    if (DistributeMessages(publisherGroup.Select(g => g), packagePublished) &&
+                        publisherChannelsNotAvailable == 0)
+                        //Publisher's messages not needed anymore
+                    {
+                        RegisterPublisherPackage(publisherGroup.Select(g => g).First(), packagePublished,
+                                                 State.Distributed);
+                        currentPublisher.RemovePackage(packagePublished);
+                        RegisterPublisherPackage(publisherGroup.Select(g => g).First(), packagePublished,
+                                                 State.Removed);
+                        foreach (var channel in publisherGroup.Select(g => g))
+                            RegisterSubscriberPackage(channel, packagePublished, State.Removed);
+                        LoggingManager.Debug("Dsitributed all available messages.");
+                    }
+                    else
+                        LoggingManager.Debug("Some messages were not distributed.");
+                }
+            }
+            catch (Exception ex)
+            {
+                LoggingManager.LogMySynchSystemError(ex);
+                throw;
             }
         }
 
-        private bool DistributeMessages(IEnumerable<AvailableChannel> channelsFromAPublisher,ChangePushPackage package)
+        private void RegisterPublisherPackage(AvailableChannel channel, ChangePushPackage package, State state)
         {
+            var publisherName = string.Format("{0}{1}",
+                                              channel.PublisherInfo.
+                                                  PublisherInstanceName,
+                                              (string.IsNullOrEmpty(
+                                                  channel.PublisherInfo.
+                                                      EndpointName))
+                                                  ? ""
+                                                  : "." +
+                                                    channel.PublisherInfo.
+                                                        EndpointName);
+            LoggingManager.Debug("Register package: " + package.PackageId + " with publisher: " + publisherName);
+
+            var existingcomponent = _allComponents.FirstOrDefault(c => c.Name == publisherName);
+            if (existingcomponent == null)
+            {
+                LoggingManager.Debug("Publisher doesn't exist:" + publisherName);
+                return;
+            }
+            if (existingcomponent.Packages == null)
+                existingcomponent.Packages = new List<Package>();
+            var existingPackage = existingcomponent.Packages.FirstOrDefault(p => p.Id == package.PackageId);
+            if (existingPackage != null)
+            {
+                existingPackage.State = state;
+                LoggingManager.Debug("Package exists updating state to: " + state);
+                return;
+            }
+            existingcomponent.Packages.Add(new Package
+                                               {
+                                                   Id = package.PackageId,
+                                                   State = state,
+                                                   PackageMessages = package.ChangePushItems
+                                               });
+            LoggingManager.Debug("Registered new package: " + package.PackageId + " on publisher: " + publisherName +
+                                 " with state: " + state);
+        }
+
+        private static void UnRegisterOldPackages(IEnumerable<AvailableComponent> components)
+        {
+            LoggingManager.Debug("Trying to unregister packages from components");
+            foreach (var component in components)
+            {
+                LoggingManager.Debug("Trying to unregister packages from component:" + component.Name);
+                if (component.Packages != null && component.Packages.Count(p => p.State == State.Removed) > 0)
+                {
+                    foreach (var removedPackage in component.Packages.Where(p => p.State == State.Removed).ToList())
+                    {
+                        LoggingManager.Debug("Trying to remove package:" + removedPackage.Id + " from component: " +
+                                             component.Name);
+                        component.Packages.Remove(removedPackage);
+                    }
+                }
+                if (component.DependentComponents != null)
+                    UnRegisterOldPackages(component.DependentComponents);
+                LoggingManager.Debug("Unregistered packages from component:" + component.Name);
+            }
+            LoggingManager.Debug("Unregistered all packages");
+        }
+
+        private bool DistributeMessages(IEnumerable<AvailableChannel> channelsFromAPublisher, ChangePushPackage package)
+        {
+            LoggingManager.Debug("Distribute messages from package:" + package.PackageId);
+            RegisterPublisherPackage(channelsFromAPublisher.First(), package, State.InProgress);
             bool result = true;
             foreach (var channel in channelsFromAPublisher)
             {
                 CheckChannel(channel);
                 if (channel.Status != Status.Ok)
-                    return false;
+                {
+                    result = false;
+                    continue;
+                }
                 try
                 {
-                    if (channel.SubscriberInfo.Subscriber.ApplyChangePackage(package, channel.SubscriberInfo.TargetRootFolder,
-                                                                         channel.CopyStrategy.Copy))
+                    RegisterSubscriberPackage(channel, package, State.InProgress);
+                    if (channel.SubscriberInfo.Subscriber.ApplyChangePackage(package))
                     {
-                        result = true;
-                        IDistributorCallbacks callbacks = OperationContext.Current.GetCallbackChannel<IDistributorCallbacks>();
-
-                        callbacks.PackageApplyed(package);
-
+                        RegisterSubscriberPackage(channel, package, State.Distributed);
                     }
                     else
                         result = false;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    result = false;                    
+                    LoggingManager.LogMySynchSystemError("Error while applying the changes", ex);
+                    result = false;
                 }
             }
+            LoggingManager.Debug(((result) ? "Message distributed: " : "Message not distributed: ") + package.PackageId);
             return result;
         }
 
-        public void InitiateDistributionMap(string mapFile,ComponentResolver componentResolver)
+        private void RegisterSubscriberPackage(AvailableChannel channel, ChangePushPackage package, State state)
         {
-            if(componentResolver==null)
+            var publisherName = string.Format("{0}{1}",
+                                              channel.PublisherInfo.
+                                                  PublisherInstanceName,
+                                              (string.IsNullOrEmpty(
+                                                  channel.PublisherInfo.
+                                                      EndpointName))
+                                                  ? ""
+                                                  : "." +
+                                                    channel.PublisherInfo.
+                                                        EndpointName);
+            var subscriberName = string.Format("{0}{1}",
+                                               channel.SubscriberInfo.
+                                                   SubScriberName,
+                                               (string.IsNullOrEmpty(
+                                                   channel.SubscriberInfo.
+                                                       EndpointName))
+                                                   ? ""
+                                                   : "." +
+                                                     channel.SubscriberInfo.
+                                                         EndpointName);
+
+            LoggingManager.Debug("Register package: " + package.PackageId + " with subscriber: " + subscriberName);
+
+            var existingpublisher = _allComponents.FirstOrDefault(c => c.Name == publisherName);
+            if (existingpublisher == null)
+            {
+                LoggingManager.Debug("Publisher doesn't exist:" + publisherName);
+                return;
+            }
+            var existingcomponent = existingpublisher.DependentComponents.FirstOrDefault(c => c.Name == subscriberName);
+            if (existingcomponent == null)
+            {
+                LoggingManager.Debug("Subscriber doesn't exist:" + subscriberName);
+                return;
+            }
+
+            if (existingcomponent.Packages == null)
+                existingcomponent.Packages = new List<Package>();
+
+            var existingPackage = existingcomponent.Packages.FirstOrDefault(p => p.Id == package.PackageId);
+            if (existingPackage != null)
+            {
+                existingPackage.State = state;
+                LoggingManager.Debug("Package exists updating state to: " + state);
+                return;
+            }
+            existingcomponent.Packages.Add(new Package
+                                               {
+                                                   Id = package.PackageId,
+                                                   State = state,
+                                                   PackageMessages =
+                                                       GetMessagesForSubscriber(package.ChangePushItems,
+                                                                                existingcomponent.RootPath,
+                                                                                package.SourceRootName)
+                                               });
+            LoggingManager.Debug("Registered new package: " + package.PackageId + " on subscriber: " + subscriberName +
+                                 " with state: " + state);
+        }
+
+        private static List<ChangePushItem> GetMessagesForSubscriber(List<ChangePushItem> changePushItems,
+                                                              string targetRootPath, string sourceRootPath)
+        {
+            var resultPushItems = new List<ChangePushItem>();
+            changePushItems.ForEach(c => resultPushItems.Add(new ChangePushItem
+                                                                   {
+                                                                       AbsolutePath =
+                                                                           c.AbsolutePath.Replace(sourceRootPath,
+                                                                                                  targetRootPath),
+                                                                       OperationType = c.OperationType
+                                                                   }));
+            return resultPushItems;
+        }
+
+        public void InitiateDistributionMap(string mapFile, ComponentResolver componentResolver)
+        {
+            if (componentResolver == null)
                 throw new ArgumentNullException("componentResolver");
-            CheckRegistration(componentResolver);
+
             _componentResolver = componentResolver;
-           
-            if(string.IsNullOrEmpty(mapFile))
+
+            if (string.IsNullOrEmpty(mapFile))
                 throw new ArgumentNullException();
-            if(!File.Exists(mapFile))
+            if (!File.Exists(mapFile))
                 throw new ArgumentException();
             AvailableChannels = Serializer.DeserializeFromFile<AvailableChannel>(mapFile);
-            _allComponents=new List<AvailableComponent>();
+            _allComponents = new List<AvailableComponent>();
 
-            if(AvailableChannels==null || AvailableChannels.Count<=0)
+            if (AvailableChannels == null || AvailableChannels.Count <= 0)
                 throw new Exception("No channels in the map file");
-            AvailableChannels.ForEach(CheckChannel);
-            //Initialize all the active channels
-            AvailableChannels.Where(c=>c.Status==Status.Ok).ForEach(InitializeChannel);
-        }
-
-        private static void CheckRegistration(ComponentResolver componentResolver)
-        {
-            componentResolver.ResolveAll<IPublisher>();
-            componentResolver.ResolveAll<IPublisherProxy>();
-            componentResolver.ResolveAll<ICopyStrategy>();
-            componentResolver.ResolveAll<IChangeApplyer>();
-            componentResolver.ResolveAll<ISubscriberProxy>();
-
-        }
-
-        private void InitializeChannel(AvailableChannel channel)
-        {
-            //publisher
-            if (string.IsNullOrEmpty(channel.PublisherInfo.EndpointName))
+            try
             {
-                //publisher has to be local
-                channel.PublisherInfo.Publisher =
-                    _componentResolver.Resolve<IPublisher>(channel.PublisherInfo.PublisherInstanceName);
+                LoggingManager.Debug("Initiating distributor with map: " + mapFile);
+                AvailableChannels.ForEach(CheckChannel);
+                LoggingManager.Debug("Initiated Ok.");
             }
-            else
+            catch (Exception ex)
             {
-                //publisher has to be local
-                channel.PublisherInfo.Publisher =
-                    _componentResolver.Resolve<IPublisherProxy>(channel.PublisherInfo.PublisherInstanceName,
-                                                                channel.PublisherInfo.EndpointName);
-
+                LoggingManager.LogMySynchSystemError(ex);
+                throw;
             }
-            //subscriber
-            if (string.IsNullOrEmpty(channel.PublisherInfo.EndpointName))
-            {
-                //subscriber has to be local
-                channel.SubscriberInfo.Subscriber =
-                    _componentResolver.Resolve<IChangeApplyer>(channel.SubscriberInfo.SubScriberName);
-            }
-            else
-            {
-                //subscriber has to be remote
-                channel.SubscriberInfo.Subscriber =
-                    _componentResolver.Resolve<ISubscriberProxy>(channel.SubscriberInfo.SubScriberName,
-                                                                channel.SubscriberInfo.EndpointName);
-
-            }
-            //copy strategy
-            channel.CopyStrategy = _componentResolver.Resolve<ICopyStrategy>(channel.CopyStartegyName);
         }
 
         private void CheckChannel(AvailableChannel availableChannel)
         {
-            IDistributorCallbacks callbacks = OperationContext.Current.GetCallbackChannel<IDistributorCallbacks>();
-
+            availableChannel.PublisherInfo.CheckForOfflineChanges = false;
+            if (availableChannel.Status == Status.OfflinePermanent)
+                return;
+            if (availableChannel.Status == Status.NotChecked)
+                availableChannel.PublisherInfo.CheckForOfflineChanges = true;
             if (!PublisherAlive(availableChannel))
-            {
-                callbacks.ChannelsChecked(new DistributorComponent{Name=Environment.MachineName,AvailablePublishers=_allComponents});
                 return;
-            }
             if (!SubscriberAlive(availableChannel))
-            {
-                callbacks.ChannelsChecked(new DistributorComponent { Name = Environment.MachineName, AvailablePublishers = _allComponents });
+                return;
+            if (!DataSourceAlive(availableChannel))
+                return;
+            availableChannel.Status = Status.Ok;
+        }
 
+        private bool DataSourceAlive(AvailableChannel availableChannel)
+        {
+            var publisherName = string.Format("{0}{1}",
+                                              availableChannel.PublisherInfo.
+                                                  PublisherInstanceName,
+                                              (string.IsNullOrEmpty(
+                                                  availableChannel.PublisherInfo.
+                                                      EndpointName))
+                                                  ? ""
+                                                  : "." +
+                                                    availableChannel.PublisherInfo.
+                                                        EndpointName);
+            var subscriberName =
+                string.Format("{0}{1}",
+                              availableChannel.SubscriberInfo.
+                                  SubScriberName,
+                              (string.IsNullOrEmpty(
+                                  availableChannel.SubscriberInfo.
+                                      EndpointName))
+                                  ? ""
+                                  : "." +
+                                    availableChannel.SubscriberInfo.
+                                        EndpointName);
+
+            try
+            {
+                if (CheckDataSourceFromTheSubscriberPointOfView(availableChannel))
+                {
+                    UpdateDataSource(subscriberName, publisherName, Status.Ok);
+                    return true;
+                }
+                Status dataSourceStatus;
+                if (availableChannel.NoOfFailedAttempts < MaxNoOfFailedAttempts)
+                {
+                    availableChannel.Status = Status.OfflineTemporary;
+                    availableChannel.NoOfFailedAttempts++;
+                    dataSourceStatus = Status.OfflineTemporary;
+                }
+                else
+                {
+                    availableChannel.Status = Status.OfflinePermanent;
+                    dataSourceStatus = Status.OfflinePermanent;
+                }
+                UpdateDataSource(subscriberName, publisherName, dataSourceStatus);
+                return false;
+
+            }
+            catch (Exception ex)
+            {
+                LoggingManager.LogMySynchSystemError(availableChannel.DataSourceEndpointName, ex);
+                availableChannel.Status = Status.OfflinePermanent;
+                UpdateDataSource(subscriberName,publisherName,Status.OfflinePermanent);
+                return false;
+            }
+        }
+
+        private static bool CheckDataSourceFromTheSubscriberPointOfView(AvailableChannel availableChannel)
+        {
+            if (availableChannel.SubscriberInfo.Subscriber == null)
+                return false;
+            return availableChannel.SubscriberInfo.Subscriber.TryOpenChannel(availableChannel.DataSourceEndpointName);
+        }
+
+        private void UpdateDataSource(string subscriberName, string publisherName, Status dataSourceStatus)
+        {
+            LoggingManager.Debug("Updating datasource for subsriber: " + subscriberName + " to value: " + dataSourceStatus);
+            var existingPublisher = _allComponents.FirstOrDefault(c => c.Name == publisherName);
+            if (existingPublisher == null)
+            {
+                LoggingManager.Debug("Publisher not found: " + publisherName);
                 return;
             }
-            callbacks.ChannelsChecked(new DistributorComponent { Name = Environment.MachineName, AvailablePublishers = _allComponents });
-
-            availableChannel.Status = Status.Ok;
+            if (existingPublisher.DependentComponents == null)
+            {
+                LoggingManager.Debug("Publisher does not have any subscribers");
+                return;
+            }
+            var existingComponent =
+                existingPublisher.DependentComponents.FirstOrDefault(c => c.Name == subscriberName);
+            if (existingComponent == null)
+            {
+                LoggingManager.Debug("Subscriber not found: " + subscriberName);
+                return;
+            }
+            existingComponent.DataSourceStatus = dataSourceStatus;
+            LoggingManager.Debug("DataSource updated.");
         }
 
         private bool SubscriberAlive(AvailableChannel availableChannel)
@@ -186,30 +391,44 @@ namespace MySynch.Core
                                                   : "." +
                                                     availableChannel.PublisherInfo.
                                                         EndpointName);
-            AvailableComponent availableComponent = new AvailableComponent
-            {
-                Name =
-                    string.Format("{0}{1}",
-                                  availableChannel.SubscriberInfo.
-                                      SubScriberName,
-                                  (string.IsNullOrEmpty(
-                                      availableChannel.SubscriberInfo.
-                                          EndpointName))
-                                      ? ""
-                                      : "." +
-                                        availableChannel.SubscriberInfo.
-                                            EndpointName),
-                Status = Status.NotChecked
-            };
+            var availableComponent = new AvailableComponent
+                                                        {
+                                                            Name =
+                                                                string.Format("{0}{1}",
+                                                                              availableChannel.SubscriberInfo.
+                                                                                  SubScriberName,
+                                                                              (string.IsNullOrEmpty(
+                                                                                  availableChannel.SubscriberInfo.
+                                                                                      EndpointName))
+                                                                                  ? ""
+                                                                                  : "." +
+                                                                                    availableChannel.SubscriberInfo.
+                                                                                        EndpointName),
+                                                            Status = Status.NotChecked
+                                                        };
 
+            ISubscriber subscriber;
 
-            if (string.IsNullOrEmpty(availableChannel.SubscriberInfo.EndpointName))
+            try
             {
-                //the publisher has to be local
-                var subscriberLocal = _componentResolver.Resolve<IChangeApplyer>(availableChannel.SubscriberInfo.SubScriberName);
-                if (!subscriberLocal.GetHeartbeat().Status)
+                if (string.IsNullOrEmpty(availableChannel.SubscriberInfo.EndpointName))
                 {
-                    if (availableChannel.NoOfFailedAttempts < _maxNoOfFailedAttempts)
+                    subscriber = (availableChannel.SubscriberInfo.Subscriber) ??
+                                 (availableChannel.SubscriberInfo.Subscriber =
+                                  _componentResolver.Resolve<ISubscriber>(
+                                      availableChannel.SubscriberInfo.SubScriberName));
+                }
+                else
+                {
+                    subscriber = (availableChannel.SubscriberInfo.Subscriber) ??
+                                 (availableChannel.SubscriberInfo.Subscriber =
+                                  _componentResolver.Resolve<ISubscriberProxy>(
+                                      availableChannel.SubscriberInfo.SubScriberName,
+                                      availableChannel.SubscriberInfo.EndpointName));
+                }
+                if (!subscriber.GetHeartbeat().Status)
+                {
+                    if (availableChannel.NoOfFailedAttempts < MaxNoOfFailedAttempts)
                     {
                         availableChannel.Status = Status.OfflineTemporary;
                         availableChannel.NoOfFailedAttempts++;
@@ -220,83 +439,90 @@ namespace MySynch.Core
                         availableChannel.Status = Status.OfflinePermanent;
                         availableComponent.Status = Status.OfflinePermanent;
                     }
-                    UpsertComponent(availableComponent,publisherName);
+                    UpsertComponent(availableComponent, publisherName);
                     return false;
                 }
                 availableComponent.Status = Status.Ok;
-                UpsertComponent(availableComponent,publisherName);
+                availableComponent.RootPath = availableChannel.SubscriberInfo.Subscriber.GetTargetRootFolder();
+                UpsertComponent(availableComponent, publisherName);
                 return true;
             }
-            //the publisher has to be remote
-            var subscriberRemote =
-                _componentResolver.Resolve<ISubscriberProxy>(availableChannel.SubscriberInfo.SubScriberName,
-                                                                availableChannel.SubscriberInfo.EndpointName);
-            if (!subscriberRemote.GetHeartbeat().Status)
+            catch (Exception ex)
             {
-                if (availableChannel.NoOfFailedAttempts < _maxNoOfFailedAttempts)
-                {
-                    availableChannel.Status = Status.OfflineTemporary;
-                    availableChannel.NoOfFailedAttempts++;
-                    availableComponent.Status = Status.OfflineTemporary;
-                }
-                else
-                {
-                    availableChannel.Status = Status.OfflinePermanent;
-                    availableComponent.Status = Status.OfflinePermanent;
-
-                }
-                UpsertComponent(availableComponent, publisherName);
+                LoggingManager.LogMySynchSystemError(
+                    availableChannel.SubscriberInfo.SubScriberName + availableChannel.SubscriberInfo.EndpointName, ex);
+                availableChannel.Status = Status.OfflinePermanent;
+                availableComponent.Status = Status.OfflinePermanent;
                 return false;
             }
-            availableComponent.Status = Status.Ok;
-            UpsertComponent(availableComponent, publisherName);
-            return true;
         }
 
         private void UpsertComponent(AvailableComponent availableComponent, string publisherName)
         {
+            LoggingManager.Debug("Upserting component for publisher: " + publisherName);
             var existingPublisher = _allComponents.FirstOrDefault(c => c.Name == publisherName);
             if (existingPublisher == null)
+            {
+                LoggingManager.Debug("Publisher not found: " + publisherName);
                 return;
-            if(existingPublisher.DependentComponents==null)
-                existingPublisher.DependentComponents=new List<AvailableComponent>();
+            }
+            if (existingPublisher.DependentComponents == null)
+                existingPublisher.DependentComponents = new List<AvailableComponent>();
             var existingComponent =
                 existingPublisher.DependentComponents.FirstOrDefault(c => c.Name == availableComponent.Name);
-            if(existingComponent==null)
+            if (existingComponent == null)
                 existingPublisher.DependentComponents.Add(availableComponent);
             else
             {
                 existingComponent.Status = availableComponent.Status;
                 existingComponent.IsLocal = availableComponent.IsLocal;
             }
+            LoggingManager.Debug("Components upserted.");
         }
 
         private bool PublisherAlive(AvailableChannel availableChannel)
         {
-            AvailableComponent availableComponent=new AvailableComponent
-                                                      {
-                                                          Name =
-                                                              string.Format("{0}{1}",
-                                                                            availableChannel.PublisherInfo.
-                                                                                PublisherInstanceName,
-                                                                            (string.IsNullOrEmpty(
-                                                                                availableChannel.PublisherInfo.
-                                                                                    EndpointName))
-                                                                                ? ""
-                                                                                : "." +
+            var availableComponent = new AvailableComponent
+                                                        {
+                                                            Name =
+                                                                string.Format("{0}{1}",
+                                                                              availableChannel.PublisherInfo.
+                                                                                  PublisherInstanceName,
+                                                                              (string.IsNullOrEmpty(
                                                                                   availableChannel.PublisherInfo.
-                                                                                      EndpointName),
-                                                          Status = Status.NotChecked
-                                                      };
+                                                                                      EndpointName))
+                                                                                  ? ""
+                                                                                  : "." +
+                                                                                    availableChannel.PublisherInfo.
+                                                                                        EndpointName),
+                                                            Status = Status.NotChecked,
+                                                        };
 
-            if (string.IsNullOrEmpty(availableChannel.PublisherInfo.EndpointName))
+            IPublisher localPublisher;
+            try
             {
-                availableComponent.IsLocal = true;
-                //the publisher has to be local
-                var localPublisher = _componentResolver.Resolve<IPublisher>(availableChannel.PublisherInfo.PublisherInstanceName);
+                if (string.IsNullOrEmpty(availableChannel.PublisherInfo.EndpointName))
+                {
+                    availableComponent.IsLocal = true;
+                    //the publisher has to be local
+                    localPublisher = (availableChannel.PublisherInfo.Publisher) ??
+                                     (availableChannel.PublisherInfo.Publisher =
+                                      _componentResolver.Resolve<IPublisher>(
+                                          availableChannel.PublisherInfo.PublisherInstanceName));
+                }
+                else
+                {
+                    availableComponent.IsLocal = false;
+
+                    localPublisher = (availableChannel.PublisherInfo.Publisher) ??
+                                     (availableChannel.PublisherInfo.Publisher =
+                                      _componentResolver.Resolve<IPublisherProxy>(
+                                          availableChannel.PublisherInfo.PublisherInstanceName,
+                                          availableChannel.PublisherInfo.EndpointName));
+                }
                 if (!localPublisher.GetHeartbeat().Status)
                 {
-                    if (availableChannel.NoOfFailedAttempts < _maxNoOfFailedAttempts)
+                    if (availableChannel.NoOfFailedAttempts < MaxNoOfFailedAttempts)
                     {
                         availableChannel.Status = Status.OfflineTemporary;
                         availableChannel.NoOfFailedAttempts++;
@@ -314,50 +540,45 @@ namespace MySynch.Core
                 UpsertComponent(availableComponent);
                 return true;
             }
-            //the publisher has to be remote
-            availableComponent.IsLocal = false;
-
-            var remotePublisher = _componentResolver.Resolve<IPublisherProxy>(availableChannel.PublisherInfo.PublisherInstanceName, 
-                                                                                availableChannel.PublisherInfo.EndpointName);
-            if (!remotePublisher.GetHeartbeat().Status)
+            catch (Exception ex)
             {
-                if (availableChannel.NoOfFailedAttempts < _maxNoOfFailedAttempts)
-                {
-                    availableChannel.Status = Status.OfflineTemporary;
-                    availableChannel.NoOfFailedAttempts++;
-                    availableComponent.Status = Status.OfflineTemporary;
-                }
-                else
-                {
-                    availableComponent.Status = Status.OfflinePermanent;
-                    availableChannel.Status = Status.OfflinePermanent;
-                }
-                UpsertComponent(availableComponent);
+                LoggingManager.LogMySynchSystemError(
+                    availableChannel.PublisherInfo.PublisherInstanceName + availableChannel.PublisherInfo.EndpointName,
+                    ex);
+                availableChannel.Status = Status.OfflinePermanent;
+                availableComponent.Status = Status.OfflinePermanent;
                 return false;
             }
-            availableComponent.Status = Status.Ok;
-            UpsertComponent(availableComponent);
-            return true;
+
         }
 
         private void UpsertComponent(AvailableComponent availableComponent)
         {
+            LoggingManager.Debug("Upserting publisher:" + availableComponent.Name);
             var existingComponent = _allComponents.FirstOrDefault(p => p.Name == availableComponent.Name);
-            if(existingComponent==null)
+            if (existingComponent == null)
                 _allComponents.Add(availableComponent);
             else
             {
                 existingComponent.Status = availableComponent.Status;
             }
+            LoggingManager.Debug("Publisher upserted.");
         }
 
         public DistributorComponent ListAvailableComponentsTree()
         {
+            LoggingManager.Debug("Listing all available components");
             return new DistributorComponent {Name = Environment.MachineName, AvailablePublishers = _allComponents};
+        }
+
+        public void ReEvaluateAllChannels()
+        {
+            throw new NotImplementedException();
         }
 
         public HeartbeatResponse GetHeartbeat()
         {
+            LoggingManager.Debug("GetHeartbeat will return true.");
             return new HeartbeatResponse {Status = true};
         }
     }

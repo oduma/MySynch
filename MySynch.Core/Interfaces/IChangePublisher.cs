@@ -15,5 +15,7 @@ namespace MySynch.Core.Interfaces
         void QueueDelete(string absolutePath);
 
         void Initialize(string rootFolder);
+
+        string RootFolder { get; }
     }
 }

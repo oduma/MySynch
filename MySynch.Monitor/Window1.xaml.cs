@@ -1,5 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows;
+using MySynch.Common;
 using MySynch.Contracts;
 using MySynch.Monitor.MVVM.ViewModels;
 using MySynch.Proxies;
@@ -13,12 +15,23 @@ namespace MySynch.Monitor
     {
         public Window1()
         {
-            InitializeComponent();
-            IDistributorCallbacks distributorCallbacks = new DistributorCallbacks();
-            IDistributorMonitorProxy distributorMonitorProxy = new DistributorMonitorClient();
-            distributorMonitorProxy.InitiateUsingEndpoint(distributorCallbacks, "distributor");
+            using (LoggingManager.LogMySynchPerformance())
+            {
+                InitializeComponent();
+                try
+                {
+                    IDistributorMonitorProxy distributorMonitorProxy = new DistributorMonitorClient();
+                    distributorMonitorProxy.InitiateUsingEndpoint("distributor");
 
-            this.DataContext = new DistributorDetailsViewModel(distributorCallbacks,distributorMonitorProxy);
+                    this.DataContext = new NotificationDetailsViewModel(distributorMonitorProxy);
+
+                }
+                catch (Exception ex)
+                {
+                    LoggingManager.LogMySynchSystemError(ex);
+                    throw;
+                }
+            }
         }
     }
 }

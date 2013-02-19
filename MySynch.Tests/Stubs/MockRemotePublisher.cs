@@ -25,5 +25,10 @@ namespace MySynch.Tests.Stubs
         {
             return;
         }
+
+        public RemoteResponse GetData(RemoteRequest remoteRequest)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
