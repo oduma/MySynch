@@ -8,5 +8,8 @@ namespace MySynch.Contracts
     {
         [OperationContract]
         DistributorComponent ListAvailableComponentsTree();
+
+        [OperationContract]
+        void ReEvaluateAllChannels();
     }
 }

@@ -15,9 +15,8 @@ namespace MySynch.Core
     public class Distributor : IDistributorMonitor
     {
         private ComponentResolver _componentResolver = new ComponentResolver();
-        private readonly int _maxNoOfFailedAttempts = 3;
+        private const int MaxNoOfFailedAttempts = 3;
         private List<AvailableComponent> _allComponents;
-
         public List<AvailableChannel> AvailableChannels { get; private set; }
 
         public void DistributeMessages()
@@ -31,7 +30,7 @@ namespace MySynch.Core
                 AvailableChannels.ForEach(CheckChannel);
 
                 var availableChannels = AvailableChannels.Where(c => c.Status == Status.Ok);
-                if (availableChannels == null || availableChannels.Count() == 0)
+                if (availableChannels.Count() == 0)
                     return;
                 //the channels have to be processed in the order of the publisher
                 var publisherGroups =
@@ -39,11 +38,12 @@ namespace MySynch.Core
                         c => c.PublisherInfo.PublisherInstanceName + "-" + c.PublisherInfo.EndpointName);
                 foreach (var publisherGroup in publisherGroups)
                 {
+                    IGrouping<string, AvailableChannel> @group = publisherGroup;
                     var publisherChannelsNotAvailable =
                         AvailableChannels.Count(
                             c =>
                             ((c.PublisherInfo.PublisherInstanceName + "-" + c.PublisherInfo.EndpointName) ==
-                             publisherGroup.Key) && c.Status != Status.Ok);
+                             group.Key) && c.Status != Status.Ok);
 
                     var currentPublisher = publisherGroup.Select(g => g).First().PublisherInfo.Publisher;
 
@@ -116,7 +116,7 @@ namespace MySynch.Core
                                  " with state: " + state);
         }
 
-        private void UnRegisterOldPackages(List<AvailableComponent> components)
+        private static void UnRegisterOldPackages(IEnumerable<AvailableComponent> components)
         {
             LoggingManager.Debug("Trying to unregister packages from components");
             foreach (var component in components)
@@ -232,11 +232,11 @@ namespace MySynch.Core
                                  " with state: " + state);
         }
 
-        private List<ChangePushItem> GetMessagesForSubscriber(List<ChangePushItem> changePushItems,
+        private static List<ChangePushItem> GetMessagesForSubscriber(List<ChangePushItem> changePushItems,
                                                               string targetRootPath, string sourceRootPath)
         {
             var resultPushItems = new List<ChangePushItem>();
-            changePushItems.ForEach((c) => resultPushItems.Add(new ChangePushItem
+            changePushItems.ForEach(c => resultPushItems.Add(new ChangePushItem
                                                                    {
                                                                        AbsolutePath =
                                                                            c.AbsolutePath.Replace(sourceRootPath,
@@ -277,6 +277,11 @@ namespace MySynch.Core
 
         private void CheckChannel(AvailableChannel availableChannel)
         {
+            availableChannel.PublisherInfo.CheckForOfflineChanges = false;
+            if (availableChannel.Status == Status.OfflinePermanent)
+                return;
+            if (availableChannel.Status == Status.NotChecked)
+                availableChannel.PublisherInfo.CheckForOfflineChanges = true;
             if (!PublisherAlive(availableChannel))
                 return;
             if (!SubscriberAlive(availableChannel))
@@ -310,7 +315,6 @@ namespace MySynch.Core
                                     availableChannel.SubscriberInfo.
                                         EndpointName);
 
-            var dataSourceStatus = Status.NotChecked;
             try
             {
                 if (CheckDataSourceFromTheSubscriberPointOfView(availableChannel))
@@ -318,7 +322,8 @@ namespace MySynch.Core
                     UpdateDataSource(subscriberName, publisherName, Status.Ok);
                     return true;
                 }
-                if (availableChannel.NoOfFailedAttempts < _maxNoOfFailedAttempts)
+                Status dataSourceStatus;
+                if (availableChannel.NoOfFailedAttempts < MaxNoOfFailedAttempts)
                 {
                     availableChannel.Status = Status.OfflineTemporary;
                     availableChannel.NoOfFailedAttempts++;
@@ -342,7 +347,7 @@ namespace MySynch.Core
             }
         }
 
-        private bool CheckDataSourceFromTheSubscriberPointOfView(AvailableChannel availableChannel)
+        private static bool CheckDataSourceFromTheSubscriberPointOfView(AvailableChannel availableChannel)
         {
             if (availableChannel.SubscriberInfo.Subscriber == null)
                 return false;
@@ -386,7 +391,7 @@ namespace MySynch.Core
                                                   : "." +
                                                     availableChannel.PublisherInfo.
                                                         EndpointName);
-            AvailableComponent availableComponent = new AvailableComponent
+            var availableComponent = new AvailableComponent
                                                         {
                                                             Name =
                                                                 string.Format("{0}{1}",
@@ -423,7 +428,7 @@ namespace MySynch.Core
                 }
                 if (!subscriber.GetHeartbeat().Status)
                 {
-                    if (availableChannel.NoOfFailedAttempts < _maxNoOfFailedAttempts)
+                    if (availableChannel.NoOfFailedAttempts < MaxNoOfFailedAttempts)
                     {
                         availableChannel.Status = Status.OfflineTemporary;
                         availableChannel.NoOfFailedAttempts++;
@@ -477,7 +482,7 @@ namespace MySynch.Core
 
         private bool PublisherAlive(AvailableChannel availableChannel)
         {
-            AvailableComponent availableComponent = new AvailableComponent
+            var availableComponent = new AvailableComponent
                                                         {
                                                             Name =
                                                                 string.Format("{0}{1}",
@@ -517,7 +522,7 @@ namespace MySynch.Core
                 }
                 if (!localPublisher.GetHeartbeat().Status)
                 {
-                    if (availableChannel.NoOfFailedAttempts < _maxNoOfFailedAttempts)
+                    if (availableChannel.NoOfFailedAttempts < MaxNoOfFailedAttempts)
                     {
                         availableChannel.Status = Status.OfflineTemporary;
                         availableChannel.NoOfFailedAttempts++;
@@ -564,6 +569,11 @@ namespace MySynch.Core
         {
             LoggingManager.Debug("Listing all available components");
             return new DistributorComponent {Name = Environment.MachineName, AvailablePublishers = _allComponents};
+        }
+
+        public void ReEvaluateAllChannels()
+        {
+            throw new NotImplementedException();
         }
 
         public HeartbeatResponse GetHeartbeat()

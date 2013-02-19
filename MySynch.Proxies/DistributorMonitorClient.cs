@@ -64,5 +64,30 @@ namespace MySynch.Proxies
 
 
         }
+
+        public void ReEvaluateAllChannels()
+        {
+            try
+            {
+                using (new OperationContextScope((IContextChannel)Proxy))
+                {
+                    Proxy.ReEvaluateAllChannels();
+
+                }
+            }
+            catch (CommunicationException e)
+            {
+                OnCommunicationException(e);
+            }
+            catch (TimeoutException e)
+            {
+                OnTimeoutException(e);
+            }
+            catch (Exception e)
+            {
+                OnException(e);
+            }
+
+        }
     }
 }

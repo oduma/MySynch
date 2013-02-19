@@ -1,4 +1,5 @@
-﻿using MySynch.Contracts.Messages;
+﻿using System;
+using MySynch.Contracts.Messages;
 
 namespace MySynch.Core.DataTypes
 {
