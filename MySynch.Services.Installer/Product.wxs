@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="4cdac2c8-7fab-41d4-9fdd-9838fcd21b39" Name="MySynch.Services" Language="1033" Version="1.0.0.0" Manufacturer="Sciendo Limited" UpgradeCode="96d40af2-71e0-4058-b382-09713c1b31ce">
+		<Package InstallerVersion="200" Compressed="yes" />
+   
+		<Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
+		<PropertyRef Id="NETFRAMEWORK40FULL"></PropertyRef>
+		<Condition Message='This setup requires the .NET Framework 4.0 installed.'>
+			<![CDATA[Installed OR NETFRAMEWORK40FULL]]>
+		</Condition>		
+    <Directory Id="TARGETDIR" Name="SourceDir">
+		 <Directory Id="ProgramFilesFolder">
+				<Directory Id="Sciendo" Name="Sciendo">
+					<Directory Id="INSTALLLOCATION" Name="MySynch">
+						<Directory Id ="PUBLISHER" Name="Publisher"/>
+            <Directory Id ="SUBSCRIBER" Name="Subscriber"/>
+            <Directory Id ="DISTRIBUTOR" Name="Distributor"/>
+					</Directory>
+				</Directory>
+			</Directory>
+		</Directory>
+		<Feature Id="Complete" Title="All MySynch Services" Display="expand" Level="1" ConfigurableDirectory="INSTALLLOCATION">
+      <Feature Id="Publisher" Title="MySynch Publisher" Level="1" ConfigurableDirectory="PUBLISHER">
+        <ComponentGroupRef Id="PublisherGroup"/>
+      </Feature>
+      <Feature Id="Subscriber" Title="MySynch Subscriber" Level="1" ConfigurableDirectory="SUBSCRIBER">
+        <ComponentGroupRef Id="SubscriberGroup"/>
+      </Feature>
+      <Feature Id="Distributor" Title="MySynch Distributor" Level="1" ConfigurableDirectory="DISTRIBUTOR">
+        <ComponentGroupRef Id="DistributorGroup"/>
+      </Feature>
+		</Feature>
+		<UIRef Id="WixUI_Mondo"/>
+	</Product>
+</Wix>

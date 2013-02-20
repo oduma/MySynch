@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <!-- MyWeb UI -->
+    <UI Id="MySynchUI">
+
+      <UIRef Id="WixUI_FeatureTree" />
+      <UIRef Id="WixUI_ErrorProgressText" />
+
+      <DialogRef Id="MySynchSetupDlg" />
+      <!-- Injection of custom UI. -->
+      <Publish Dialog="LicenseAgreementDlg" Control="Next"
+           Event="NewDialog" Value="MySynchSetupDlg"
+           Order="3">LicenseAccepted = "1"</Publish>
+      <!--<Publish Dialog="CustomizeDlg" Control="Back"
+           Event="NewDialog" Value="ConnectionStringDlg">1</Publish>-->
+    </UI>
+  </Fragment>
+</Wix>
