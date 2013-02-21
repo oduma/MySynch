@@ -11,7 +11,5 @@ namespace MySynch.Core.DataTypes
         public string PublisherInstanceName { get; set; }
 
         public string EndpointName { get; set; }
-
-        public bool CheckForOfflineChanges { get; set; }
     }
 }

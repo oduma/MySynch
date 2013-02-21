@@ -1,24 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
-namespace MySynch.Core.DataTypes
+namespace MySynch.Contracts.Messages
 {
+    [DataContract]
     public class SynchItem
     {
+        [DataMember]
         public string Name
         {
             get;
             set;
         }
 
+        [DataMember]
         public string Identifier
         {
             get;
             set;
         }
 
+        [DataMember]
         public List<SynchItem> Items
         {
             get;

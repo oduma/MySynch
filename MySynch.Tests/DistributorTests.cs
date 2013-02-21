@@ -256,5 +256,18 @@ namespace MySynch.Tests
             mockSubscriber.Setup(m => m.ApplyChangePackage(changePushPackage)).Returns(true);
             channel.SubscriberInfo.Subscriber = mockSubscriber.Object;
         }
+
+        [Test]
+        public void InitialSynchronization_NoNeed()
+        {
+            Assert.Fail();
+        }
+
+        [Test]
+        public void InitialSynchronization_OneChannel_Ok()
+        {
+            Assert.Fail();
+        }
+
     }
 }

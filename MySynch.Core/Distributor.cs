@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.ServiceModel;
+using Castle.Core.Internal;
 using MySynch.Common;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
@@ -275,13 +276,36 @@ namespace MySynch.Core
             }
         }
 
+        public void InitialSynchronization()
+        {
+            LoggingManager.Debug("Trying to initial synchronize all channels");
+            var availableChannels = AvailableChannels.Where(c => c.Status == Status.Ok && c.CheckForOfflineChanges);
+            availableChannels.ForEach(ChannelInitialSynchronization);
+            LoggingManager.Debug("Initial synchronized all channels");
+        }
+
+        private void ChannelInitialSynchronization(AvailableChannel channel)
+        {
+            LoggingManager.Debug("Trying to initial synchronize channel");
+            var existingRepository = channel.PublisherInfo.Publisher.ListRepository();
+            var messages = channel.SubscriberInfo.Subscriber.GetDifferenceAsMessages(existingRepository);
+            foreach (var message in messages)
+            {
+                if (DistributeMessages(new[] { channel }, message))
+                {
+                    LoggingManager.Debug("Some initialization messages were not applyed");
+                }
+            }
+            LoggingManager.Debug("Initial synchronized channel.");
+        }
+
         private void CheckChannel(AvailableChannel availableChannel)
         {
-            availableChannel.PublisherInfo.CheckForOfflineChanges = false;
+            availableChannel.CheckForOfflineChanges = false;
             if (availableChannel.Status == Status.OfflinePermanent)
                 return;
             if (availableChannel.Status == Status.NotChecked)
-                availableChannel.PublisherInfo.CheckForOfflineChanges = true;
+                availableChannel.CheckForOfflineChanges = true;
             if (!PublisherAlive(availableChannel))
                 return;
             if (!SubscriberAlive(availableChannel))

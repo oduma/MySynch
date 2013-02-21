@@ -4,6 +4,7 @@ using System.IO;
 using System.Xml.Serialization;
 using CommandLine;
 using CommandLine.Text;
+using MySynch.Contracts.Messages;
 using MySynch.Core;
 using MySynch.Core.DataTypes;
 

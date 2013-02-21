@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using MySynch.Contracts.Messages;
 using MySynch.Proxies;
 
@@ -36,6 +37,11 @@ namespace MySynch.Tests.Stubs
         public bool TryOpenChannel(string sourceOfDataEndpointName)
         {
             return true;
+        }
+
+        public IEnumerable<ChangePushPackage> GetDifferenceAsMessages(SynchItem currentPublisherRepository)
+        {
+            throw new NotImplementedException();
         }
 
         private bool copyMethod(string absolutePath, string replace)

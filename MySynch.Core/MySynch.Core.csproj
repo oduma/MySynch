@@ -120,7 +120,6 @@
     <Compile Include="ItemDiscoverer.cs" />
     <Compile Include="LocalSourceOfData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DataTypes\SynchItem.cs" />
     <Compile Include="PublisherSetupException.cs" />
     <Compile Include="MySynchInstaller.cs" />
     <Compile Include="RemoteSourceOfData.cs" />

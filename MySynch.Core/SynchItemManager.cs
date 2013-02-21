@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MySynch.Contracts.Messages;
 using MySynch.Core.Interfaces;
 using MySynch.Core.DataTypes;
 

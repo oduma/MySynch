@@ -73,6 +73,7 @@
     <Compile Include="Messages\RemoteResponse.cs" />
     <Compile Include="Messages\State.cs" />
     <Compile Include="Messages\Status.cs" />
+    <Compile Include="Messages\SynchItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

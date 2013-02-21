@@ -1,4 +1,5 @@
-﻿using System.ServiceModel;
+﻿using System.Collections.Generic;
+using System.ServiceModel;
 using MySynch.Contracts.Messages;
 
 namespace MySynch.Contracts
@@ -14,5 +15,8 @@ namespace MySynch.Contracts
 
         [OperationContract]
         bool TryOpenChannel(string sourceOfDataEndpointName);
+
+        [OperationContract]
+        IEnumerable<ChangePushPackage> GetDifferenceAsMessages(SynchItem currentPublisherRepository);
     }
 }

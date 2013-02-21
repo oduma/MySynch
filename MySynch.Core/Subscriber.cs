@@ -72,6 +72,11 @@ namespace MySynch.Core
             }
         }
 
+        public IEnumerable<ChangePushPackage> GetDifferenceAsMessages(SynchItem currentPublisherRepository)
+        {
+            throw new NotImplementedException();
+        }
+
         internal bool TryApplyChanges(ChangePushPackage changePushPackage)
         {
             var response = ApplyUpserts(changePushPackage.ChangePushItems.Where(i => i.OperationType == OperationType.Insert || i.OperationType == OperationType.Update),

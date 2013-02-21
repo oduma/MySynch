@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MySynch.Contracts.Messages;
 using NUnit.Framework;
 using MySynch.Core;
 using MySynch.Core.Interfaces;

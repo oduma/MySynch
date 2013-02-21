@@ -129,6 +129,11 @@ namespace MySynch.Core
             }
         }
 
+        public SynchItem ListRepository()
+        {
+            throw new NotImplementedException();
+        }
+
         public string MachineName
         {
             get { return Environment.MachineName; }
