@@ -107,16 +107,23 @@ namespace MySynch.Core
 
         private SortedList<string, OperationType> GetDifferencesBetweenTrees(SynchItem newTree, SynchItem oldTree)
         {
-            //flatten both trees
             List<SynchItemData> newTreeFlatten = SynchItemManager.FlattenTree(newTree);
             List<SynchItemData> oldTreeFlatten = SynchItemManager.FlattenTree(oldTree);
-            //check if there are any new items in the new tree compared with the oldTree (inserts)
-            var itemsToBeInserted = newTreeFlatten.Except(oldTreeFlatten);
-            //check if there are any items in the old tree that are not in the newTree (deletions)
-            var itemsToBeDeleted = oldTreeFlatten.Except(newTreeFlatten);
-            //check if any of the items present in both trees have different size stamp (updates))))
-            throw new NotImplementedException();
+            SortedList<string,OperationType> result = new SortedList<string, OperationType>();
+
+            foreach(string key in newTreeFlatten.Except(oldTreeFlatten).Select(o=>o.Identifier))
+                result.Add(key,OperationType.Insert);
+            foreach (string key in newTreeFlatten.Join(oldTreeFlatten, n => n.Identifier, o => o.Identifier,
+                                (n, o) =>
+                                new { Identifier = n.Identifier, Name = n.Name, NewSize = n.Size, OldSize = o.Size }).
+                Where(c => c.NewSize != c.OldSize).Select(c => c.Identifier))
+                result.Add(key,OperationType.Update);
+
+            foreach (string key in oldTreeFlatten.Except(newTreeFlatten).Select(n => n.Identifier))
+                result.Add(key,OperationType.Delete);
+            return result;
         }
+
 
         public void SaveSettingsEndExit()
         {
