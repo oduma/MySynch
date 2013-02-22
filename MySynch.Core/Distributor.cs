@@ -276,29 +276,6 @@ namespace MySynch.Core
             }
         }
 
-        public void InitialSynchronization()
-        {
-            LoggingManager.Debug("Trying to initial synchronize all channels");
-            var availableChannels = AvailableChannels.Where(c => c.Status == Status.Ok && c.CheckForOfflineChanges);
-            availableChannels.ForEach(ChannelInitialSynchronization);
-            LoggingManager.Debug("Initial synchronized all channels");
-        }
-
-        private void ChannelInitialSynchronization(AvailableChannel channel)
-        {
-            LoggingManager.Debug("Trying to initial synchronize channel");
-            var existingRepository = channel.PublisherInfo.Publisher.ListRepository();
-            var messages = channel.SubscriberInfo.Subscriber.GetDifferenceAsMessages(existingRepository);
-            foreach (var message in messages)
-            {
-                if (DistributeMessages(new[] { channel }, message))
-                {
-                    LoggingManager.Debug("Some initialization messages were not applyed");
-                }
-            }
-            LoggingManager.Debug("Initial synchronized channel.");
-        }
-
         private void CheckChannel(AvailableChannel availableChannel)
         {
             availableChannel.CheckForOfflineChanges = false;

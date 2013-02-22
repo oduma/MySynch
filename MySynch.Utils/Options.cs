@@ -6,9 +6,6 @@ namespace MySynch.Utils
     public class Options
     {
 
-        [Option("t", "test", DefaultValue = false, HelpText = "Generates a xml file based on data from memory.", MutuallyExclusiveSet = "action")]
-        public bool BuildTestXml { get; set; }
-
         [Option("i", "inFolder", DefaultValue = "", HelpText = "Generates a xml file based on data from the folder structure.", MutuallyExclusiveSet = "action")]
         public string StartFromFolder { get; set; }
 

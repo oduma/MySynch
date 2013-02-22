@@ -87,11 +87,38 @@ namespace MySynch.Core
             }
         }
 
-        public void Initialize(string rootFolder)
+        public void Initialize(string rootFolder,IItemDiscoverer itemDiscoverer)
         {
             if(string.IsNullOrEmpty(rootFolder))
                 throw new ArgumentNullException("rootFolder");
             _sourceRootName = rootFolder;
+            _itemDiscoverer = itemDiscoverer;
+            _temporaryStore = GetOfflineChanges(CurrentRepository);
+        }
+
+        internal SortedList<string, OperationType> GetOfflineChanges(SynchItem currentRepository)
+        {
+            var oldRepository = Serializer.DeserializeFromFile<SynchItem>("backup.xml");
+            if (oldRepository == null || oldRepository.Count == 0)
+                return new SortedList<string, OperationType>();
+            return GetDifferencesBetweenTrees(currentRepository, oldRepository[0]);
+        }
+
+        private SortedList<string, OperationType> GetDifferencesBetweenTrees(SynchItem newTree, SynchItem oldTree)
+        {
+            //flatten both trees
+            List<SynchItemData> newTreeFlatten = SynchItemManager.FlattenTree(newTree);
+            //check if there are any new items in the new tree compared with the oldTree (inserts)
+
+            //check if there are any items in the old tree that are not in the newTree (deletions)
+
+            //check if any of the items present in both trees have exactly the same size stamp (updates)
+            throw new NotImplementedException();
+        }
+
+        public void SaveSettingsEndExit()
+        {
+            Serializer.SerializeToFile(new List<SynchItem>{CurrentRepository},"backup.xml");
         }
 
         public string RootFolder
@@ -148,20 +175,9 @@ namespace MySynch.Core
             }
         }
 
-        public SynchItem ListRepository()
-        {
-            return CurrentRepository;
-        }
-
         private SynchItem _currentRepository;
-        internal SynchItem CurrentRepository { get { return _currentRepository = (_currentRepository) ?? InitiateCurrentRepository(); } }
-
-        internal SynchItem InitiateCurrentRepository()
-        {
-            //var itemDiscoverer = new ItemDiscoverer(RootFolder);
-            //return itemDiscoverer.DiscoverFromFolder(RootFolder);
-            return new SynchItem();
-        }
+        private IItemDiscoverer _itemDiscoverer;
+        internal SynchItem CurrentRepository { get { return _currentRepository = (_currentRepository) ?? _itemDiscoverer.DiscoverFromFolder(RootFolder); } }
 
         public string MachineName
         {

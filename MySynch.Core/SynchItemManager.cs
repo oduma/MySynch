@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MySynch.Contracts.Messages;
+using MySynch.Core.DataTypes;
 using MySynch.Core.Interfaces;
 
 namespace MySynch.Core
@@ -53,7 +54,7 @@ namespace MySynch.Core
                 if (list == null)
                     return null;
                 currentLevel = (string.IsNullOrEmpty(currentLevel)) ? level : string.Format("{0}\\{1}", currentLevel, level);
-                parentItem = list.FirstOrDefault(i => i.Identifier == currentLevel);
+                parentItem = list.FirstOrDefault(i => i.SynchItemData.Identifier == currentLevel);
                 if (parentItem == null)
                     return null;
                 list = parentItem.Items;
@@ -97,7 +98,7 @@ namespace MySynch.Core
             var item = GetItem(_items,Identifier);
             if (item == null)
                 throw new ArgumentException("Item not found", "Identifier");
-            item.Name = Name;
+            item.SynchItemData.Name = Name;
         }
 
         public bool RemoveItem(string Identifier)

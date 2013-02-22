@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MySynch.Contracts.Messages;
+﻿using System.Collections.Generic;
 using MySynch.Core.DataTypes;
 
 namespace MySynch.Core
@@ -11,16 +7,16 @@ namespace MySynch.Core
     {
         public bool Equals(SynchItem x, SynchItem y)
         {
-            if (x == null || string.IsNullOrEmpty(x.Identifier))
+            if (x == null || x.SynchItemData==null || string.IsNullOrEmpty(x.SynchItemData.Identifier))
                 return false;
-            if (y == null || string.IsNullOrEmpty(y.Identifier))
+            if (y == null || y.SynchItemData==null || string.IsNullOrEmpty(y.SynchItemData.Identifier))
                 return false;
-            return x.Identifier.Equals(y.Identifier);
+            return x.SynchItemData.Identifier.Equals(y.SynchItemData.Identifier);
         }
 
         public int GetHashCode(SynchItem obj)
         {
-            return obj.Identifier.GetHashCode();
+            return obj.SynchItemData.Identifier.GetHashCode();
         }
     }
 }

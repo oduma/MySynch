@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Moq;
 using MySynch.Contracts.Messages;
 using MySynch.Core;
+using MySynch.Core.DataTypes;
+using MySynch.Core.Interfaces;
 using NUnit.Framework;
 
 namespace MySynch.Tests
@@ -20,14 +23,23 @@ namespace MySynch.Tests
         {
             _expectedPackage = new ChangePushPackage { Source = Environment.MachineName, SourceRootName = "source root name 1" };
             _changePublisherForThreads= new ChangePublisher();
-            _changePublisherForThreads.Initialize("source root name 1");
+            var mockItemDiscoverer = MockItemDiscoverer("source root name 1");
+            _changePublisherForThreads.Initialize("source root name 1", mockItemDiscoverer);
+        }
+
+        private IItemDiscoverer MockItemDiscoverer(string folderPath)
+        {
+            var mockItemDiscoverer = new Mock<IItemDiscoverer>();
+            mockItemDiscoverer.Setup(m => m.DiscoverFromFolder(folderPath)).Returns(new SynchItem());
+            return mockItemDiscoverer.Object;
         }
 
         [Test]
         public void QueueOneOperationAtATime_Ok()
         {
             ChangePublisher changePublisher = new ChangePublisher();
-            changePublisher.Initialize("source root name 1");
+            var mockItemDiscoverer = MockItemDiscoverer("source root name 1");
+            changePublisher.Initialize("source root name 1", mockItemDiscoverer);
 
             changePublisher.QueueInsert("item one");
 
@@ -90,7 +102,8 @@ namespace MySynch.Tests
         public void QueueOperationsSomeDuplicates_NonThreaded_Ok()
         {
             ChangePublisher changePublisher = new ChangePublisher();
-            changePublisher.Initialize("source root name 1");
+            var mockItemDiscoverer = MockItemDiscoverer("source root name 1");
+            changePublisher.Initialize("source root name 1",mockItemDiscoverer);
 
             changePublisher.QueueInsert("item one");
 
@@ -153,7 +166,8 @@ namespace MySynch.Tests
         public void QueueInsert_Nothing_Sent()
         {
             ChangePublisher changePublisher = new ChangePublisher();
-            changePublisher.Initialize("source root name 1");
+            var mockItemDiscoverer = MockItemDiscoverer("source root name 1");
+            changePublisher.Initialize("source root name 1",mockItemDiscoverer);
 
             changePublisher.QueueInsert("");
 
@@ -163,7 +177,8 @@ namespace MySynch.Tests
         public void QueueUpdate_Nothing_Sent()
         {
             ChangePublisher changePublisher = new ChangePublisher( );
-            changePublisher.Initialize("source root name 1");
+            var mockItemDiscoverer = MockItemDiscoverer("source root name 1");
+            changePublisher.Initialize("source root name 1", mockItemDiscoverer);
 
             changePublisher.QueueUpdate(null);
 
@@ -175,8 +190,9 @@ namespace MySynch.Tests
         public void QueueDelete_Nothing_Sent()
         {
             ChangePublisher changePublisher = new ChangePublisher( );
+            var mockItemDiscoverer = MockItemDiscoverer("source root name 1");
 
-            changePublisher.Initialize("source root name 1");
+            changePublisher.Initialize("source root name 1",mockItemDiscoverer);
 
             changePublisher.QueueDelete(string.Empty);
 
@@ -198,7 +214,9 @@ namespace MySynch.Tests
         public void RemovePackage_Ok()
         {
             ChangePublisher changePublisher = new ChangePublisher();
-            changePublisher.Initialize("source root name 1");
+            var mockItemDiscoverer = MockItemDiscoverer("source root name 1");
+
+            changePublisher.Initialize("source root name 1",mockItemDiscoverer);
 
             changePublisher.QueueInsert("item one");
 
@@ -227,7 +245,9 @@ namespace MySynch.Tests
         public void RemovePackage_AfterPackage_Changed()
         {
             ChangePublisher changePublisher = new ChangePublisher();
-            changePublisher.Initialize("source root name 1");
+            var mockItemDiscoverer = MockItemDiscoverer("source root name 1");
+
+            changePublisher.Initialize("source root name 1",mockItemDiscoverer);
 
             changePublisher.QueueInsert("item one");
 
@@ -278,7 +298,9 @@ namespace MySynch.Tests
         public void RemovePackage_NoPackageSent()
         {
             ChangePublisher changePublisher = new ChangePublisher();
-            changePublisher.Initialize("source root name 1");
+            var mockItemDiscoverer = MockItemDiscoverer("source root name 1");
+
+            changePublisher.Initialize("source root name 1",mockItemDiscoverer);
 
             changePublisher.RemovePackage(null);
         }

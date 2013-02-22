@@ -15,8 +15,5 @@ namespace MySynch.Contracts
 
         [OperationContract]
         bool TryOpenChannel(string sourceOfDataEndpointName);
-
-        [OperationContract]
-        IEnumerable<ChangePushPackage> GetDifferenceAsMessages(SynchItem currentPublisherRepository);
     }
 }

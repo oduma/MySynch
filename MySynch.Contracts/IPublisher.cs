@@ -11,8 +11,5 @@ namespace MySynch.Contracts
 
         [OperationContract]
         void RemovePackage(ChangePushPackage packagePublished);
-
-        [OperationContract]
-        SynchItem ListRepository();
     }
 }

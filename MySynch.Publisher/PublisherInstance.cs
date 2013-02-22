@@ -6,9 +6,12 @@ namespace MySynch.Publisher
 {
     public partial class PublisherInstance : MySynchBaseService
     {
+        private ChangePublisher _changePublisher;
+
         public PublisherInstance()
         {
             LoggingManager.Debug("Initializing service");
+            _changePublisher = new ChangePublisher();
             InitializeComponent();
             ReadTheNodeConfiguration();
             LoggingManager.Debug("Initializion Ok publishing changes from folder: " + _rootFolder);
@@ -29,10 +32,9 @@ namespace MySynch.Publisher
         {
             if (!string.IsNullOrEmpty(_rootFolder))
             {
-                var changePublisher = new ChangePublisher();
-                changePublisher.Initialize(_rootFolder);
-                FSWatcher fsWatcher = new FSWatcher(changePublisher);
-                _serviceHosts.Add(new ServiceHost(changePublisher));
+                _changePublisher.Initialize(_rootFolder, new ItemDiscoverer(_rootFolder));
+                FSWatcher fsWatcher = new FSWatcher(_changePublisher);
+                _serviceHosts.Add(new ServiceHost(_changePublisher));
                 _serviceHosts.Add(new ServiceHost(typeof(RemoteSourceOfData)));
             }
         }
@@ -41,6 +43,7 @@ namespace MySynch.Publisher
         {
             LoggingManager.Debug("Stoping service");
             CloseAllServiceHosts();
+            _changePublisher.SaveSettingsEndExit();
             LoggingManager.Debug("Service stoped.");
         }
     }

@@ -25,15 +25,5 @@ namespace MySynch.Tests.Stubs
         {
             throw new NotImplementedException();
         }
-
-        public SynchItem ListRepository()
-        {
-            throw new NotImplementedException();
-        }
-
-        public RemoteResponse GetData(RemoteRequest remoteRequest)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

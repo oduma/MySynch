@@ -88,33 +88,5 @@ namespace MySynch.Proxies
             }
 
         }
-
-        public SynchItem ListRepository()
-        {
-            SynchItem response = new SynchItem();
-            try
-            {
-                using (new OperationContextScope((IContextChannel)Proxy))
-                {
-                    response = Proxy.ListRepository();
-
-                }
-            }
-            catch (CommunicationException e)
-            {
-                OnCommunicationException(e);
-            }
-            catch (TimeoutException e)
-            {
-                OnTimeoutException(e);
-            }
-            catch (Exception e)
-            {
-                OnException(e);
-            }
-
-            return response;
-
-        }
     }
 }

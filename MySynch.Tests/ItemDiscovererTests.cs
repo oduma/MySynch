@@ -18,7 +18,7 @@ namespace MySynch.Tests
             itemDiscoverer.DiscoveringFolder += new EventHandler<Core.DataTypes.FolderDiscoveredArg>(itemDiscoverer_DiscoveringFolder);
             var item = itemDiscoverer.DiscoverFromFolder(@"Data\Test");
             Assert.IsNotNull(item);
-            Assert.AreEqual("Test",item.Name);
+            Assert.AreEqual("Test", item.SynchItemData.Name);
             Assert.AreEqual(3,item.Items.Count);
             Assert.AreEqual(1,item.Items[0].Items.Count);
         }

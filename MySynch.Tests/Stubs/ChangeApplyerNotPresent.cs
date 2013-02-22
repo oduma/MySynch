@@ -31,10 +31,5 @@ namespace MySynch.Tests.Stubs
         {
             throw new NotImplementedException();
         }
-
-        public IEnumerable<ChangePushPackage> GetDifferenceAsMessages(SynchItem currentPublisherRepository)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

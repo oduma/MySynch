@@ -39,11 +39,6 @@ namespace MySynch.Tests.Stubs
             return true;
         }
 
-        public IEnumerable<ChangePushPackage> GetDifferenceAsMessages(SynchItem currentPublisherRepository)
-        {
-            throw new NotImplementedException();
-        }
-
         private bool copyMethod(string absolutePath, string replace)
         {
             return true;

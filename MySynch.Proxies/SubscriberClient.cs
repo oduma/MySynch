@@ -120,33 +120,5 @@ namespace MySynch.Proxies
             return response;
 
         }
-
-        public IEnumerable<ChangePushPackage> GetDifferenceAsMessages(SynchItem currentPublisherRepository)
-        {
-            IEnumerable<ChangePushPackage> response = null;
-            try
-            {
-                using (new OperationContextScope((IContextChannel)Proxy))
-                {
-                    response = Proxy.GetDifferenceAsMessages(currentPublisherRepository);
-
-                }
-            }
-            catch (CommunicationException e)
-            {
-                OnCommunicationException(e);
-            }
-            catch (TimeoutException e)
-            {
-                OnTimeoutException(e);
-            }
-            catch (Exception e)
-            {
-                OnException(e);
-            }
-
-            return response;
-
-        }
     }
 }

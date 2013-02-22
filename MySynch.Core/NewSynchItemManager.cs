@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MySynch.Contracts.Messages;
+using MySynch.Core.DataTypes;
 
 namespace MySynch.Core
 {
@@ -11,20 +12,25 @@ namespace MySynch.Core
         {
             if (string.IsNullOrEmpty(absolutePathtoNewItem))
                 return;
-            if (topSynchItem == null)
+            if (topSynchItem == null || topSynchItem.Items==null)
                 return;
             var parrent=GetItemLowestAvailableParrent(topSynchItem, absolutePathtoNewItem);
-            if (parrent.Identifier == absolutePathtoNewItem)
+            if (parrent.SynchItemData.Identifier == absolutePathtoNewItem)
                 return;
             AddNewItemTree(parrent, absolutePathtoNewItem);
         }
 
         private static void AddNewItemTree(SynchItem parrent, string absolutePathtoNewItem)
         {
-            string[] restOfLevels = absolutePathtoNewItem.Replace(parrent.Identifier +"\\", "").Split(new char[] {'\\'});
+            string[] restOfLevels = absolutePathtoNewItem.Replace(parrent.SynchItemData.Identifier +"\\", "").Split(new char[] {'\\'});
             foreach (string level in restOfLevels)
             {
-                var current = new SynchItem {Name = level, Identifier = parrent.Identifier + @"\" + level};
+                var current = new SynchItem
+                                  {
+                                      SynchItemData =
+                                          new SynchItemData
+                                              {Name = level, Identifier = parrent.SynchItemData.Identifier + @"\" + level}
+                                  };
                 if (parrent.Items == null)
                     parrent.Items=new List<SynchItem>();
                 parrent.Items.Add(current);
@@ -36,13 +42,13 @@ namespace MySynch.Core
         {
             if (string.IsNullOrEmpty(absolutePathtoNewItem))
                 return;
-            if (topSynchItem == null)
+            if (topSynchItem == null || topSynchItem.Items==null)
                 return;
             var parrent=GetItemLowestAvailableParrent(topSynchItem, absolutePathtoNewItem);
-            if (parrent.Identifier == absolutePathtoNewItem)
+            if (parrent.SynchItemData.Identifier == absolutePathtoNewItem)
             {
-                if (!parrent.Changed)
-                    parrent.Changed = true;
+                if (!parrent.SynchItemData.Changed)
+                    parrent.SynchItemData.Changed = true;
                 return;
             }
             AddNewItemTree(parrent,absolutePathtoNewItem);
@@ -52,10 +58,10 @@ namespace MySynch.Core
         {
             if (string.IsNullOrEmpty(absolutePathtoNewItem))
                 return;
-            if (topSynchItem == null)
+            if (topSynchItem == null || topSynchItem.Items==null)
                 return;
             var currentItem = GetItemLowestAvailableParrent(topSynchItem, absolutePathtoNewItem);
-            if (currentItem.Identifier == absolutePathtoNewItem)
+            if (currentItem.SynchItemData.Identifier == absolutePathtoNewItem)
             {
                 var parenttem = GetParentItem(new List<SynchItem> {topSynchItem}, absolutePathtoNewItem);
                 parenttem.Items.Remove(currentItem);
@@ -75,7 +81,7 @@ namespace MySynch.Core
             foreach (string level in levels)
             {
                 currentLevel = (string.IsNullOrEmpty(currentLevel)) ? level : string.Format("{0}\\{1}", currentLevel, level);
-                currentItem = list.FirstOrDefault(i => i.Identifier == currentLevel);
+                currentItem = list.FirstOrDefault(i => i.SynchItemData.Identifier == currentLevel);
                 if (currentItem == null)
                     return parentItem;
                 parentItem = currentItem;
@@ -85,5 +91,9 @@ namespace MySynch.Core
         }
 
 
+        public static List<SynchItemData> FlattenTree(SynchItem newTree)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
