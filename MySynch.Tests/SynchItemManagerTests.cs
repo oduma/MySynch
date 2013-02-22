@@ -82,7 +82,57 @@ namespace MySynch.Tests
                     }}
                 }}};
         }
+        #region static methods tests
+        [Test]
+        public void GetItem_Ok()
+        {
+            Assert.AreEqual(@"root\300\330\331",SynchItemManager.GetItemLowestAvailableParrent(_initialLoad[0], @"root\300\330\331").Identifier);
+        }
+        [Test]
+        public void GetItem_Parent_Found_Ok()
+        {
+            Assert.AreEqual(@"root\300\330\331", SynchItemManager.GetItemLowestAvailableParrent(_initialLoad[0], @"root\300\330\331\332").Identifier);
+        }
+        [Test]
+        public void GetItem_GrandParent_Found_Ok()
+        {
+            Assert.AreEqual(@"root\300\330", SynchItemManager.GetItemLowestAvailableParrent(_initialLoad[0], @"root\300\330\333\332").Identifier);
+        }
+        [Test]
+        public void AddNewItem_ParentItemExists()
+        {
+            SynchItemManager.AddItem(_initialLoad[0],@"root\300\340");
+            Assert.AreEqual(@"root\300\340", _initialLoad[0].Items[2].Items[3].Identifier);
+        }
 
+        [Test]
+        public void AddNewItem_ParentItemDoesNotExist()
+        {
+            SynchItemManager.AddItem(_initialLoad[0], @"root\300\340\341\341\342");
+            Assert.AreEqual(@"root\300\340", _initialLoad[0].Items[2].Items[3].Identifier);
+            Assert.AreEqual(@"root\300\340\341", _initialLoad[0].Items[2].Items[3].Items[0].Identifier);
+            Assert.AreEqual(@"root\300\340\341\341", _initialLoad[0].Items[2].Items[3].Items[0].Items[0].Identifier);
+            Assert.AreEqual(@"root\300\340\341\341\342", _initialLoad[0].Items[2].Items[3].Items[0].Items[0].Items[0].Identifier);
+        }
+
+        [Test]
+        public void AddNewItem_ItemAlreadyExists()
+        {
+            SynchItemManager.AddItem(_initialLoad[0], @"root\300");
+            Assert.AreEqual(@"root\300", _initialLoad[0].Items[2].Identifier); 
+            Assert.AreEqual(3,_initialLoad[0].Items[2].Items.Count);
+        }
+        [Test]
+        public void AddNewItem_NoItemSent()
+        {
+            SynchItemManager.AddItem(_initialLoad[0], null);
+        }
+        [Test]
+        public void AddNewItem_NoTopItemSent()
+        {
+            SynchItemManager.AddItem(null, @"root\300");
+        }
+        #endregion
         [Test]
         public void ListAllItems_Ok()
         {

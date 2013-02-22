@@ -42,8 +42,27 @@ namespace MySynch.Core
                 _temporaryStore[absolutePath] = operationType;
             else
                 _temporaryStore.Add(absolutePath, operationType);
+            UpdateCurrentRepository(absolutePath, operationType);
             if(ItemsQueued!=null)
                 ItemsQueued(this,new ItemsQueuedEventArgs(_temporaryStore));
+        }
+
+        private void UpdateCurrentRepository(string absolutePath, OperationType operationType)
+        {
+            LoggingManager.Debug("Updating CurrentRepository with " + absolutePath);
+            switch(operationType)
+            {
+                case OperationType.Insert:
+                        SynchItemManager.AddItem(CurrentRepository, absolutePath);
+                    return;
+                case OperationType.Update:
+                        SynchItemManager.UpdateExistingItem(CurrentRepository, absolutePath);
+                    return;
+                case OperationType.Delete:
+                        SynchItemManager.DeleteItem(CurrentRepository, absolutePath);
+                    return;
+
+            }
         }
 
         public void QueueUpdate(string absolutePath)
@@ -131,7 +150,17 @@ namespace MySynch.Core
 
         public SynchItem ListRepository()
         {
-            throw new NotImplementedException();
+            return CurrentRepository;
+        }
+
+        private SynchItem _currentRepository;
+        internal SynchItem CurrentRepository { get { return _currentRepository = (_currentRepository) ?? InitiateCurrentRepository(); } }
+
+        internal SynchItem InitiateCurrentRepository()
+        {
+            //var itemDiscoverer = new ItemDiscoverer(RootFolder);
+            //return itemDiscoverer.DiscoverFromFolder(RootFolder);
+            return new SynchItem();
         }
 
         public string MachineName

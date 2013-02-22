@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using MySynch.Contracts.Messages;
 using MySynch.Core.Interfaces;
-using MySynch.Core.DataTypes;
 
 namespace MySynch.Core
 {
-    public class SynchItemManager : ISynchItemManager
+    public partial class SynchItemManager : ISynchItemManager
     {
         private List<SynchItem> _items;
 
@@ -37,19 +36,18 @@ namespace MySynch.Core
             if (_items == null)
                 return new List<SynchItem>();
 
-            SynchItem parentItem = GetItem(parentItemId);
+            SynchItem parentItem = GetItem(_items, parentItemId);
             if (parentItem == null)
                 return null;
             return (parentItem.Items)??new List<SynchItem>();
         }
 
-        private SynchItem GetItem(string itemId)
+        private static SynchItem GetItem(List<SynchItem> list, string itemId)
         {
             string[] levels = itemId.Split(new char[] { '\\' });
 
             SynchItem parentItem = null;
             string currentLevel = string.Empty;
-            List<SynchItem> list = _items;
             foreach (string level in levels)
             {
                 if (list == null)
@@ -71,7 +69,7 @@ namespace MySynch.Core
                 return 0;
             if (Items == null || Items.Count == 0)
                 return 0;
-            SynchItem parentItem = GetItem(parentItemId);
+            SynchItem parentItem = GetItem(_items, parentItemId);
             if (parentItem == null)
                 throw new ArgumentException("Item not found", parentItemId);
 
@@ -96,7 +94,7 @@ namespace MySynch.Core
                 throw new ArgumentNullException("Name");
             if (_items == null)
                 return;
-            var item = GetItem(Identifier);
+            var item = GetItem(_items,Identifier);
             if (item == null)
                 throw new ArgumentException("Item not found", "Identifier");
             item.Name = Name;
@@ -108,7 +106,7 @@ namespace MySynch.Core
                 throw new ArgumentNullException("Identifier");
             if (_items == null)
                 return false;
-            var item=GetItem(Identifier);
+            var item=GetItem(_items, Identifier);
             if (item == null)
                 throw new ArgumentException("Item not found", "Identifier");
             var parentItem = GetParentItem(Identifier);
@@ -130,7 +128,7 @@ namespace MySynch.Core
             for(int i=0;i<levels.Count()-1;i++)
                 parentIdentifier= (string.IsNullOrEmpty(parentIdentifier)) ? levels[i] : string.Format("{0}\\{1}", parentIdentifier, levels[i]);
 
-            return GetItem(parentIdentifier);
+            return GetItem(_items, parentIdentifier);
         }
 
         public int RemoveItems(string parentItemId)
@@ -139,7 +137,7 @@ namespace MySynch.Core
                 throw new ArgumentNullException("parentItemId");
             if (_items == null)
                 return 0;
-            var item = GetItem(parentItemId);
+            var item = GetItem(_items, parentItemId);
             if (item == null)
                 throw new ArgumentException("Item not found", "parentItemId");
             var itemsCount = item.Items.Count;

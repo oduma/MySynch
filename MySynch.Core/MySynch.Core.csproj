@@ -100,6 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Interfaces\IChangeSubscriber.cs" />
+    <Compile Include="NewSynchItemManager.cs" />
     <Compile Include="Subscriber.cs" />
     <Compile Include="ChangePublisher.cs" />
     <Compile Include="ComponentNotRegieteredException.cs" />
