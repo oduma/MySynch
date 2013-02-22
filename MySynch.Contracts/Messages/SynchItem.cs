@@ -21,6 +21,9 @@ namespace MySynch.Contracts.Messages
         }
 
         [DataMember]
+        public bool Changed { get; set; }
+
+        [DataMember]
         public List<SynchItem> Items
         {
             get;

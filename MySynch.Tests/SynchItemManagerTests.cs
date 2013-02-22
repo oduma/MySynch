@@ -99,9 +99,62 @@ namespace MySynch.Tests
             Assert.AreEqual(@"root\300\330", SynchItemManager.GetItemLowestAvailableParrent(_initialLoad[0], @"root\300\330\333\332").Identifier);
         }
         [Test]
+        public void UpdateItem_ItemExists()
+        {
+            Assert.False(_initialLoad[0].Items[2].Items[2].Changed);
+            SynchItemManager.UpdateExistingItem(_initialLoad[0], @"root\300\330");
+            Assert.AreEqual(@"root\300\330", _initialLoad[0].Items[2].Items[2].Identifier);
+            Assert.True(_initialLoad[0].Items[2].Items[2].Changed);
+        }
+
+        [Test]
+        public void UpdateItem_ItemDoesNotExist()
+        {
+            SynchItemManager.UpdateExistingItem(_initialLoad[0], @"root\300\340\341\341\342");
+            Assert.AreEqual(@"root\300\340", _initialLoad[0].Items[2].Items[3].Identifier);
+            Assert.AreEqual(@"root\300\340\341", _initialLoad[0].Items[2].Items[3].Items[0].Identifier);
+            Assert.AreEqual(@"root\300\340\341\341", _initialLoad[0].Items[2].Items[3].Items[0].Items[0].Identifier);
+            Assert.AreEqual(@"root\300\340\341\341\342", _initialLoad[0].Items[2].Items[3].Items[0].Items[0].Items[0].Identifier);
+        }
+        [Test]
+        public void UpdateItem_NoItemSent()
+        {
+            SynchItemManager.UpdateExistingItem(_initialLoad[0], null);
+        }
+        [Test]
+        public void UpdateItem_NoTopItemSent()
+        {
+            SynchItemManager.UpdateExistingItem(null, @"root\300");
+        }
+
+        [Test]
+        public void DeleteItem_ItemExists()
+        {
+            SynchItemManager.DeleteItem(_initialLoad[0], @"root\300\330");
+            Assert.IsNull(_initialLoad[0].Items[2].Items.FirstOrDefault(i => i.Identifier == @"root\300\330"));
+            Assert.IsNotNull(_initialLoad[0].Items[2].Items.FirstOrDefault(i => i.Identifier == @"root\300\310"));
+            Assert.IsNotNull(_initialLoad[0].Items[2].Items.FirstOrDefault(i => i.Identifier == @"root\300\320"));
+        }
+
+        [Test]
+        public void DeleteItem_ItemDoesNotExist()
+        {
+            SynchItemManager.DeleteItem(_initialLoad[0], @"root\300\340\341\341\342");
+        }
+        [Test]
+        public void DeleteItem_NoItemSent()
+        {
+            SynchItemManager.DeleteItem(_initialLoad[0], null);
+        }
+        [Test]
+        public void DeleteItem_NoTopItemSent()
+        {
+            SynchItemManager.DeleteItem(null, @"root\300");
+        }
+        [Test]
         public void AddNewItem_ParentItemExists()
         {
-            SynchItemManager.AddItem(_initialLoad[0],@"root\300\340");
+            SynchItemManager.AddItem(_initialLoad[0], @"root\300\340");
             Assert.AreEqual(@"root\300\340", _initialLoad[0].Items[2].Items[3].Identifier);
         }
 
@@ -119,8 +172,8 @@ namespace MySynch.Tests
         public void AddNewItem_ItemAlreadyExists()
         {
             SynchItemManager.AddItem(_initialLoad[0], @"root\300");
-            Assert.AreEqual(@"root\300", _initialLoad[0].Items[2].Identifier); 
-            Assert.AreEqual(3,_initialLoad[0].Items[2].Items.Count);
+            Assert.AreEqual(@"root\300", _initialLoad[0].Items[2].Identifier);
+            Assert.AreEqual(3, _initialLoad[0].Items[2].Items.Count);
         }
         [Test]
         public void AddNewItem_NoItemSent()
@@ -132,6 +185,7 @@ namespace MySynch.Tests
         {
             SynchItemManager.AddItem(null, @"root\300");
         }
+
         #endregion
         [Test]
         public void ListAllItems_Ok()

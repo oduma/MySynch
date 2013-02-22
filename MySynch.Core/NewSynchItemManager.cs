@@ -16,6 +16,11 @@ namespace MySynch.Core
             var parrent=GetItemLowestAvailableParrent(topSynchItem, absolutePathtoNewItem);
             if (parrent.Identifier == absolutePathtoNewItem)
                 return;
+            AddNewItemTree(parrent, absolutePathtoNewItem);
+        }
+
+        private static void AddNewItemTree(SynchItem parrent, string absolutePathtoNewItem)
+        {
             string[] restOfLevels = absolutePathtoNewItem.Replace(parrent.Identifier +"\\", "").Split(new char[] {'\\'});
             foreach (string level in restOfLevels)
             {
@@ -29,13 +34,35 @@ namespace MySynch.Core
 
         public static void UpdateExistingItem(SynchItem topSynchItem, string absolutePathtoNewItem)
         {
-            return;
+            if (string.IsNullOrEmpty(absolutePathtoNewItem))
+                return;
+            if (topSynchItem == null)
+                return;
+            var parrent=GetItemLowestAvailableParrent(topSynchItem, absolutePathtoNewItem);
+            if (parrent.Identifier == absolutePathtoNewItem)
+            {
+                if (!parrent.Changed)
+                    parrent.Changed = true;
+                return;
+            }
+            AddNewItemTree(parrent,absolutePathtoNewItem);
         }
 
         public static void DeleteItem(SynchItem topSynchItem, string absolutePathtoNewItem)
         {
-            return;
+            if (string.IsNullOrEmpty(absolutePathtoNewItem))
+                return;
+            if (topSynchItem == null)
+                return;
+            var currentItem = GetItemLowestAvailableParrent(topSynchItem, absolutePathtoNewItem);
+            if (currentItem.Identifier == absolutePathtoNewItem)
+            {
+                var parenttem = GetParentItem(new List<SynchItem> {topSynchItem}, absolutePathtoNewItem);
+                parenttem.Items.Remove(currentItem);
+                return;
+            }
         }
+
 
         internal static SynchItem GetItemLowestAvailableParrent(SynchItem topSynchItem, string itemId)
         {

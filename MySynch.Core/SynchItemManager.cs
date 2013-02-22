@@ -109,7 +109,7 @@ namespace MySynch.Core
             var item=GetItem(_items, Identifier);
             if (item == null)
                 throw new ArgumentException("Item not found", "Identifier");
-            var parentItem = GetParentItem(Identifier);
+            var parentItem = GetParentItem(_items,Identifier);
             if (parentItem == null)
             {
                 _items = new List<SynchItem>();
@@ -119,7 +119,7 @@ namespace MySynch.Core
             return true;
         }
 
-        private SynchItem GetParentItem(string Identifier)
+        private static SynchItem GetParentItem(List<SynchItem> list, string Identifier)
         {
             string[] levels = Identifier.Split(new char[] { '\\' });
             if (levels.Count() <= 1)
@@ -128,7 +128,7 @@ namespace MySynch.Core
             for(int i=0;i<levels.Count()-1;i++)
                 parentIdentifier= (string.IsNullOrEmpty(parentIdentifier)) ? levels[i] : string.Format("{0}\\{1}", parentIdentifier, levels[i]);
 
-            return GetItem(_items, parentIdentifier);
+            return GetItem(list, parentIdentifier);
         }
 
         public int RemoveItems(string parentItemId)
