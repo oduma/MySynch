@@ -14,7 +14,7 @@
             set;
         }
 
-        public bool Changed { get; set; }
+        public long Size { get; set; }
 
 
     }

@@ -63,7 +63,7 @@ namespace MySynch.Tests
                             new SynchItem{SynchItemData=new SynchItemData{Name="123",Identifier=@"root\100\120\123"}}}}}},
                     new SynchItem{SynchItemData=new SynchItemData{Name="200",Identifier=@"root\200"}},
                     new SynchItem{SynchItemData=new SynchItemData{Name="300",Identifier=@"root\300"},Items=new List<SynchItem>{
-                        new SynchItem{SynchItemData=new SynchItemData{Name="310",Identifier=@"root\300\310"}},
+                        new SynchItem{SynchItemData=new SynchItemData{Name="310",Identifier=@"root\300\310",Size=1}},
                         new SynchItem{SynchItemData=new SynchItemData{Name="320",Identifier=@"root\300\320"}},
                         new SynchItem{SynchItemData=new SynchItemData{Name="330",Identifier=@"root\300\330"}, Items=new List<SynchItem>{
                             new SynchItem{SynchItemData=new SynchItemData{Name="331",Identifier=@"root\300\330\331"},Items=new List<SynchItem>{
@@ -101,16 +101,16 @@ namespace MySynch.Tests
         [Test]
         public void UpdateItem_ItemExists()
         {
-            Assert.False(_initialLoad[0].Items[2].Items[2].SynchItemData.Changed);
-            SynchItemManager.UpdateExistingItem(_initialLoad[0], @"root\300\330");
-            Assert.AreEqual(@"root\300\330", _initialLoad[0].Items[2].Items[2].SynchItemData.Identifier);
-            Assert.True(_initialLoad[0].Items[2].Items[2].SynchItemData.Changed);
+            Assert.AreEqual(1,_initialLoad[0].Items[2].Items[0].SynchItemData.Size);
+            SynchItemManager.UpdateExistingItem(_initialLoad[0], @"root\300\310",2);
+            Assert.AreEqual(@"root\300\310", _initialLoad[0].Items[2].Items[0].SynchItemData.Identifier);
+            Assert.AreEqual(2,_initialLoad[0].Items[2].Items[0].SynchItemData.Size);
         }
 
         [Test]
         public void UpdateItem_ItemDoesNotExist()
         {
-            SynchItemManager.UpdateExistingItem(_initialLoad[0], @"root\300\340\341\341\342");
+            SynchItemManager.UpdateExistingItem(_initialLoad[0], @"root\300\340\341\341\342",3);
             Assert.AreEqual(@"root\300\340", _initialLoad[0].Items[2].Items[3].SynchItemData.Identifier);
             Assert.AreEqual(@"root\300\340\341", _initialLoad[0].Items[2].Items[3].Items[0].SynchItemData.Identifier);
             Assert.AreEqual(@"root\300\340\341\341", _initialLoad[0].Items[2].Items[3].Items[0].Items[0].SynchItemData.Identifier);
@@ -119,12 +119,12 @@ namespace MySynch.Tests
         [Test]
         public void UpdateItem_NoItemSent()
         {
-            SynchItemManager.UpdateExistingItem(_initialLoad[0], null);
+            SynchItemManager.UpdateExistingItem(_initialLoad[0], null,0);
         }
         [Test]
         public void UpdateItem_NoTopItemSent()
         {
-            SynchItemManager.UpdateExistingItem(null, @"root\300");
+            SynchItemManager.UpdateExistingItem(null, @"root\300",100);
         }
 
         [Test]
@@ -154,36 +154,48 @@ namespace MySynch.Tests
         [Test]
         public void AddNewItem_ParentItemExists()
         {
-            SynchItemManager.AddItem(_initialLoad[0], @"root\300\340");
+            SynchItemManager.AddItem(_initialLoad[0], @"root\300\340",2);
             Assert.AreEqual(@"root\300\340", _initialLoad[0].Items[2].Items[3].SynchItemData.Identifier);
+            Assert.AreEqual(2, _initialLoad[0].Items[2].Items[3].SynchItemData.Size);
         }
 
         [Test]
         public void AddNewItem_ParentItemDoesNotExist()
         {
-            SynchItemManager.AddItem(_initialLoad[0], @"root\300\340\341\341\342");
+            SynchItemManager.AddItem(_initialLoad[0], @"root\300\340\341\341\342",3);
             Assert.AreEqual(@"root\300\340", _initialLoad[0].Items[2].Items[3].SynchItemData.Identifier);
             Assert.AreEqual(@"root\300\340\341", _initialLoad[0].Items[2].Items[3].Items[0].SynchItemData.Identifier);
             Assert.AreEqual(@"root\300\340\341\341", _initialLoad[0].Items[2].Items[3].Items[0].Items[0].SynchItemData.Identifier);
             Assert.AreEqual(@"root\300\340\341\341\342", _initialLoad[0].Items[2].Items[3].Items[0].Items[0].Items[0].SynchItemData.Identifier);
+            Assert.AreEqual(0, _initialLoad[0].Items[2].Items[3].SynchItemData.Size);
+            Assert.AreEqual(0, _initialLoad[0].Items[2].Items[3].Items[0].SynchItemData.Size);
+            Assert.AreEqual(0, _initialLoad[0].Items[2].Items[3].Items[0].Items[0].SynchItemData.Size);
+            Assert.AreEqual(3, _initialLoad[0].Items[2].Items[3].Items[0].Items[0].Items[0].SynchItemData.Size);
         }
 
         [Test]
         public void AddNewItem_ItemAlreadyExists()
         {
-            SynchItemManager.AddItem(_initialLoad[0], @"root\300");
+            SynchItemManager.AddItem(_initialLoad[0], @"root\300",0);
             Assert.AreEqual(@"root\300", _initialLoad[0].Items[2].SynchItemData.Identifier);
             Assert.AreEqual(3, _initialLoad[0].Items[2].Items.Count);
         }
         [Test]
         public void AddNewItem_NoItemSent()
         {
-            SynchItemManager.AddItem(_initialLoad[0], null);
+            SynchItemManager.AddItem(_initialLoad[0], null,0);
         }
         [Test]
         public void AddNewItem_NoTopItemSent()
         {
-            SynchItemManager.AddItem(null, @"root\300");
+            SynchItemManager.AddItem(null, @"root\300",0);
+        }
+
+        [Test]
+        public void FlattenTree_Ok()
+        {
+            var listOfItems = SynchItemManager.FlattenTree(_initialLoad[0]);
+            Assert.IsNotNull(listOfItems);
         }
 
         #endregion

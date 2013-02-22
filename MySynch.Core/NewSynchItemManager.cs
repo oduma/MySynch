@@ -8,7 +8,7 @@ namespace MySynch.Core
 {
     public partial class SynchItemManager
     {
-        public static void AddItem(SynchItem topSynchItem, string absolutePathtoNewItem)
+        public static void AddItem(SynchItem topSynchItem, string absolutePathtoNewItem, long size)
         {
             if (string.IsNullOrEmpty(absolutePathtoNewItem))
                 return;
@@ -17,10 +17,10 @@ namespace MySynch.Core
             var parrent=GetItemLowestAvailableParrent(topSynchItem, absolutePathtoNewItem);
             if (parrent.SynchItemData.Identifier == absolutePathtoNewItem)
                 return;
-            AddNewItemTree(parrent, absolutePathtoNewItem);
+            AddNewItemTree(parrent, absolutePathtoNewItem,size);
         }
 
-        private static void AddNewItemTree(SynchItem parrent, string absolutePathtoNewItem)
+        private static void AddNewItemTree(SynchItem parrent, string absolutePathtoNewItem,long size)
         {
             string[] restOfLevels = absolutePathtoNewItem.Replace(parrent.SynchItemData.Identifier +"\\", "").Split(new char[] {'\\'});
             foreach (string level in restOfLevels)
@@ -36,9 +36,11 @@ namespace MySynch.Core
                 parrent.Items.Add(current);
                 parrent = current;
             }
+            if (parrent.Items==null || parrent.Items.Count == 0)
+                parrent.SynchItemData.Size = size;
         }
 
-        public static void UpdateExistingItem(SynchItem topSynchItem, string absolutePathtoNewItem)
+        public static void UpdateExistingItem(SynchItem topSynchItem, string absolutePathtoNewItem, long size)
         {
             if (string.IsNullOrEmpty(absolutePathtoNewItem))
                 return;
@@ -47,11 +49,10 @@ namespace MySynch.Core
             var parrent=GetItemLowestAvailableParrent(topSynchItem, absolutePathtoNewItem);
             if (parrent.SynchItemData.Identifier == absolutePathtoNewItem)
             {
-                if (!parrent.SynchItemData.Changed)
-                    parrent.SynchItemData.Changed = true;
+                parrent.SynchItemData.Size = size;
                 return;
             }
-            AddNewItemTree(parrent,absolutePathtoNewItem);
+            AddNewItemTree(parrent,absolutePathtoNewItem, size);
         }
 
         public static void DeleteItem(SynchItem topSynchItem, string absolutePathtoNewItem)
@@ -93,7 +94,13 @@ namespace MySynch.Core
 
         public static List<SynchItemData> FlattenTree(SynchItem newTree)
         {
-            throw new NotImplementedException();
+            List<SynchItemData> synchItems=new List<SynchItemData>();
+            synchItems.Add(newTree.SynchItemData);
+            if(newTree.Items==null)
+                return synchItems;
+            foreach(SynchItem synchItem in newTree.Items)
+                synchItems.AddRange(FlattenTree(synchItem));
+            return synchItems;
         }
     }
 }

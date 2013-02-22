@@ -38,6 +38,10 @@ namespace MySynch.Core
         }
 
         public event EventHandler<FolderDiscoveredArg> DiscoveringFolder;
+        public long GetSize(string filePath)
+        {
+            return new FileInfo(filePath).Length;
+        }
 
         private List<SynchItem> GetSubFoldersOrFiles(string path)
         {
@@ -45,6 +49,7 @@ namespace MySynch.Core
             var files = Directory.GetFiles(path);
             if (files.Length != 0)
                 foreach (string file in files)
+                {
                     list.Add(new SynchItem
                     {
                         SynchItemData = new SynchItemData
@@ -52,9 +57,10 @@ namespace MySynch.Core
                             Identifier = file.Replace(_rootPath, _rootPlaceHolder),
                             Name =
                                 file.Substring(file.LastIndexOf(@"\") + 1,
-                                     file.Length - file.LastIndexOf(@"\") - 1)
+                                     file.Length - file.LastIndexOf(@"\") - 1),
+                            Size = new FileInfo(file).Length
                         }
-                    });
+                    });}
             var folders = Directory.GetDirectories(path);
             if(folders.Length !=0)
                 foreach(string folder in folders)

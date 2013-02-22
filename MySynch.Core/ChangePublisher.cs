@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.ServiceModel;
 using MySynch.Common;
@@ -53,10 +54,10 @@ namespace MySynch.Core
             switch(operationType)
             {
                 case OperationType.Insert:
-                        SynchItemManager.AddItem(CurrentRepository, absolutePath);
+                        SynchItemManager.AddItem(CurrentRepository, absolutePath, _itemDiscoverer.GetSize(absolutePath));
                     return;
                 case OperationType.Update:
-                        SynchItemManager.UpdateExistingItem(CurrentRepository, absolutePath);
+                        SynchItemManager.UpdateExistingItem(CurrentRepository, absolutePath, _itemDiscoverer.GetSize(absolutePath));
                     return;
                 case OperationType.Delete:
                         SynchItemManager.DeleteItem(CurrentRepository, absolutePath);
@@ -108,11 +109,12 @@ namespace MySynch.Core
         {
             //flatten both trees
             List<SynchItemData> newTreeFlatten = SynchItemManager.FlattenTree(newTree);
+            List<SynchItemData> oldTreeFlatten = SynchItemManager.FlattenTree(oldTree);
             //check if there are any new items in the new tree compared with the oldTree (inserts)
-
+            var itemsToBeInserted = newTreeFlatten.Except(oldTreeFlatten);
             //check if there are any items in the old tree that are not in the newTree (deletions)
-
-            //check if any of the items present in both trees have exactly the same size stamp (updates)
+            var itemsToBeDeleted = oldTreeFlatten.Except(newTreeFlatten);
+            //check if any of the items present in both trees have different size stamp (updates))))
             throw new NotImplementedException();
         }
 
