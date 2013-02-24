@@ -134,5 +134,16 @@ namespace MySynch.Tests.Integration
 
         }
 
+        [Test]
+        [Ignore(@"Requires the subscriber to be started and responsive on the media-centre machine")]
+        public void SubscriberRemoteGetHeartBeat_OK()
+        {
+            ISubscriberProxy subscriberProxy = new SubscriberClient();
+            subscriberProxy.InitiateUsingEndpoint("SubscriberMediaCentre");
+            var heartBeatResponse = subscriberProxy.GetHeartbeat();
+            Assert.IsNotNull(heartBeatResponse);
+            Assert.True(heartBeatResponse.Status);
+        }
+
     }
 }
