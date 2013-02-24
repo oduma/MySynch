@@ -141,18 +141,12 @@ namespace MySynch.Tests
             distributor.DistributeMessages();
             Assert.AreEqual(0, changePublisher.PublishedPackageNotDistributed.Count);
         }
-        private IItemDiscoverer MockItemDiscoverer(string folderPath)
-        {
-            var mockItemDiscoverer = new Mock<IItemDiscoverer>();
-            mockItemDiscoverer.Setup(m => m.DiscoverFromFolder(folderPath)).Returns(new SynchItem());
-            return mockItemDiscoverer.Object;
-        }
 
         private ChangePublisher InitiateLocalPublisher()
         {
             ChangePublisher changePublisher =
                 (ChangePublisher) _componentResolver.Resolve<IPublisher>("IPublisher.Local");
-            var mockItemDiscoverer = MockItemDiscoverer("local source root folder");
+            var mockItemDiscoverer = MockTestHelper.MockItemDiscoverer("local source root folder");
             changePublisher.Initialize("local source root folder",mockItemDiscoverer);
             changePublisher.QueueInsert("local source root folder\\item one");
             changePublisher.QueueInsert("local source root folder\\item two");
@@ -206,7 +200,7 @@ namespace MySynch.Tests
             Distributor distributor = new Distributor();
             distributor.InitiateDistributionMap(@"Data\distributormap5.xml", _componentResolver);
             ChangePublisher changePublisher = (ChangePublisher)distributor.AvailableChannels.FirstOrDefault(c => string.IsNullOrEmpty(c.PublisherInfo.EndpointName)).PublisherInfo.Publisher;
-            var mockItemDiscoverer = MockItemDiscoverer("root folder");
+            var mockItemDiscoverer = MockTestHelper.MockItemDiscoverer("root folder");
             changePublisher.Initialize("root folder",mockItemDiscoverer);
             changePublisher.QueueInsert(@"root folder\Item One");
             changePublisher.QueueInsert(@"root folder\ItemTwo");
@@ -233,7 +227,7 @@ namespace MySynch.Tests
             Distributor distributor = new Distributor();
             distributor.InitiateDistributionMap(@"Data\distributormap5.xml", _componentResolver);
             ChangePublisher changePublisher = (ChangePublisher)distributor.AvailableChannels.FirstOrDefault(c => string.IsNullOrEmpty(c.PublisherInfo.EndpointName)).PublisherInfo.Publisher;
-            var mockItemDiscoverer = MockItemDiscoverer("root folder");
+            var mockItemDiscoverer = MockTestHelper.MockItemDiscoverer("root folder");
             changePublisher.Initialize("root folder", mockItemDiscoverer);
             changePublisher.QueueInsert(@"root folder\Item One");
             changePublisher.QueueInsert(@"root folder\ItemTwo");

@@ -111,7 +111,7 @@ namespace MySynch.Core
             List<SynchItemData> oldTreeFlatten = SynchItemManager.FlattenTree(oldTree);
             SortedList<string,OperationType> result = new SortedList<string, OperationType>();
 
-            foreach(string key in newTreeFlatten.Except(oldTreeFlatten).Select(o=>o.Identifier))
+            foreach(string key in newTreeFlatten.Except(oldTreeFlatten,new SynchItemDataEqualityComparer()).Select(o=>o.Identifier))
                 result.Add(key,OperationType.Insert);
             foreach (string key in newTreeFlatten.Join(oldTreeFlatten, n => n.Identifier, o => o.Identifier,
                                 (n, o) =>
@@ -119,7 +119,7 @@ namespace MySynch.Core
                 Where(c => c.NewSize != c.OldSize).Select(c => c.Identifier))
                 result.Add(key,OperationType.Update);
 
-            foreach (string key in oldTreeFlatten.Except(newTreeFlatten).Select(n => n.Identifier))
+            foreach (string key in oldTreeFlatten.Except(newTreeFlatten, new SynchItemDataEqualityComparer()).Select(n => n.Identifier))
                 result.Add(key,OperationType.Delete);
             return result;
         }

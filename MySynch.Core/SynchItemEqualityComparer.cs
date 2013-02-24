@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MySynch.Core.DataTypes;
 
 namespace MySynch.Core
 {
+    [Obsolete("Replaced by SynchItemDataEqualityComparer")]
     internal class SynchItemEqualityComparer:IEqualityComparer<SynchItem>
     {
         public bool Equals(SynchItem x, SynchItem y)

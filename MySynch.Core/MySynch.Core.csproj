@@ -129,6 +129,7 @@
     <Compile Include="CopyStrategy.cs" />
     <Compile Include="ServiceHelper.cs" />
     <Compile Include="SourceOfDataSetupException.cs" />
+    <Compile Include="SynchItemDataEqualityComparer.cs" />
     <Compile Include="SynchItemEqualityComparer.cs" />
     <Compile Include="SynchItemManager.cs" />
   </ItemGroup>

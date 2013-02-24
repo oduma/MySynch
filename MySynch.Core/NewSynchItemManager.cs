@@ -92,13 +92,15 @@ namespace MySynch.Core
         }
 
 
-        public static List<SynchItemData> FlattenTree(SynchItem newTree)
+        public static List<SynchItemData> FlattenTree(SynchItem tree)
         {
             List<SynchItemData> synchItems=new List<SynchItemData>();
-            synchItems.Add(newTree.SynchItemData);
-            if(newTree.Items==null)
+            if (tree.Items == null || tree.Items.Count==0)
+            {
+                synchItems.Add(tree.SynchItemData);
                 return synchItems;
-            foreach(SynchItem synchItem in newTree.Items)
+            }
+            foreach(SynchItem synchItem in tree.Items)
                 synchItems.AddRange(FlattenTree(synchItem));
             return synchItems;
         }
