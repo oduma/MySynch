@@ -105,7 +105,7 @@ namespace MySynch.Core
             return GetDifferencesBetweenTrees(currentRepository, oldRepository[0]);
         }
 
-        private SortedList<string, OperationType> GetDifferencesBetweenTrees(SynchItem newTree, SynchItem oldTree)
+        internal static SortedList<string, OperationType> GetDifferencesBetweenTrees(SynchItem newTree, SynchItem oldTree)
         {
             List<SynchItemData> newTreeFlatten = SynchItemManager.FlattenTree(newTree);
             List<SynchItemData> oldTreeFlatten = SynchItemManager.FlattenTree(oldTree);
