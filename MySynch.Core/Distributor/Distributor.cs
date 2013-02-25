@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.ServiceModel;
-using Castle.Core.Internal;
 using MySynch.Common;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
 using MySynch.Core.DataTypes;
 using MySynch.Proxies;
 
-namespace MySynch.Core
+namespace MySynch.Core.Distributor
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class Distributor : IDistributorMonitor

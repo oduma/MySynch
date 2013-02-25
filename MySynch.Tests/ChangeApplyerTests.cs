@@ -6,6 +6,7 @@ using MySynch.Contracts.Messages;
 using MySynch.Core;
 using MySynch.Core.DataTypes;
 using MySynch.Core.Interfaces;
+using MySynch.Core.Subscriber;
 using NUnit.Framework;
 
 namespace MySynch.Tests

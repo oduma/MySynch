@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MySynch.Core
+namespace MySynch.Core.Publisher
 {
     public class PublisherSetupException:Exception
     {

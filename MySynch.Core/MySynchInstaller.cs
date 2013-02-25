@@ -5,6 +5,7 @@ using Castle.Windsor;
 using MySynch.Common;
 using MySynch.Contracts;
 using MySynch.Core.Interfaces;
+using MySynch.Core.Publisher;
 using MySynch.Proxies;
 
 namespace MySynch.Core
@@ -18,7 +19,7 @@ namespace MySynch.Core
             {
                 container.Register(
                     Component.For<IPublisher>().ImplementedBy<ChangePublisher>().Named("IPublisher.Local"),
-                    Component.For<ISubscriber>().ImplementedBy<Subscriber>().Named("ISubScriber.Local"),
+                    Component.For<ISubscriber>().ImplementedBy<Subscriber.Subscriber>().Named("ISubScriber.Local"),
                     Component.For<ISourceOfData>().ImplementedBy<LocalSourceOfData>().Named(
                         "ISourceOfData.Local"),
                     Component.For<IPublisherProxy>().ImplementedBy<PublisherClient>().Named("IPublisher.Remote"),

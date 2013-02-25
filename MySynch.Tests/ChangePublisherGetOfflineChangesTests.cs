@@ -5,6 +5,7 @@ using System.Linq;
 using MySynch.Contracts.Messages;
 using MySynch.Core;
 using MySynch.Core.DataTypes;
+using MySynch.Core.Publisher;
 using NUnit.Framework;
 
 namespace MySynch.Tests
@@ -188,10 +189,7 @@ namespace MySynch.Tests
                     };
 
                 var listOfChanges = changePublisher.GetOfflineChanges(newTree);
-                Assert.IsNotNull(listOfChanges);
-                Assert.AreEqual(listOfChanges.Count, listOfChanges.Count(c => c.Value == OperationType.Insert));
-                Assert.AreEqual(11, listOfChanges.Count);
-
+                Assert.IsEmpty(listOfChanges);
             }
             catch (Exception)
             {

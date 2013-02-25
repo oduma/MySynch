@@ -2,6 +2,7 @@
 using System.IO;
 using MySynch.Contracts.Messages;
 using MySynch.Core;
+using MySynch.Core.Publisher;
 using NUnit.Framework;
 
 namespace MySynch.Tests

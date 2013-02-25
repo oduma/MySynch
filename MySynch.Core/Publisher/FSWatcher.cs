@@ -4,7 +4,7 @@ using System.Threading;
 using MySynch.Common;
 using MySynch.Core.Interfaces;
 
-namespace MySynch.Core
+namespace MySynch.Core.Publisher
 {
     public class FSWatcher
     {

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MySynch.Contracts.Messages;
 using MySynch.Core;
+using MySynch.Core.Publisher;
 using NUnit.Framework;
 
 namespace MySynch.Tests

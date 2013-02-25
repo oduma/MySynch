@@ -1,5 +1,4 @@
-﻿using System;
-using Castle.MicroKernel.Registration;
+﻿using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using MySynch.Common;
 using MySynch.Core.WCF.Clients;

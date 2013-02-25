@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using MySynch.Core;
+using MySynch.Core.Subscriber;
 using NUnit.Framework;
 
 namespace MySynch.Tests

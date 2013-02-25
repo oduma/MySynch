@@ -5,6 +5,8 @@ using Castle.Windsor;
 using MySynch.Contracts;
 using MySynch.Core;
 using MySynch.Core.Interfaces;
+using MySynch.Core.Publisher;
+using MySynch.Core.Subscriber;
 using MySynch.Proxies;
 
 namespace MySynch.Tests.Stubs

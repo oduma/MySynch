@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Xml;
 using MySynch.Contracts.Messages;
-using MySynch.Core;
+using MySynch.Core.Subscriber;
 using MySynch.Proxies;
 using NUnit.Framework;
 

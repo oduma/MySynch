@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using MySynch.Core;
 using MySynch.Core.DataTypes;
+using MySynch.Core.Publisher;
 using NUnit.Framework;
 
 namespace MySynch.Tests

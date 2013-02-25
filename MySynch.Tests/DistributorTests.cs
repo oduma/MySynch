@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using Moq;
+using MySynch.Common;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
 using MySynch.Core;
 using MySynch.Core.DataTypes;
+using MySynch.Core.Distributor;
 using MySynch.Core.Interfaces;
+using MySynch.Core.Publisher;
 using MySynch.Tests.Stubs;
 using NUnit.Framework;
 using System.Linq;

@@ -8,7 +8,7 @@ namespace MySynch.Distributor
 {
     public partial class DistributorInstance : MySynchBaseService
     {
-        private Core.Distributor _distributor;
+        private Core.Distributor.Distributor _distributor;
         private Timer _timer;
 
         public DistributorInstance()
@@ -33,7 +33,7 @@ namespace MySynch.Distributor
         private void InitializeDistributor()
         {
             LoggingManager.Debug("Initializing distributor with map:" + _distributorMapFile);
-            _distributor = new Core.Distributor();
+            _distributor = new Core.Distributor.Distributor();
             _timer = new Timer();
             _timer.Interval = 60000;
             ComponentResolver componentResolver = new ComponentResolver();

@@ -4,7 +4,7 @@ using MySynch.Common;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
 
-namespace MySynch.Core
+namespace MySynch.Core.Publisher
 {
     public class RemoteSourceOfData:ISourceOfData
     {

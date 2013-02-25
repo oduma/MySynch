@@ -5,7 +5,7 @@ using MySynch.Contracts;
 using MySynch.Contracts.Messages;
 using MySynch.Core.Interfaces;
 
-namespace MySynch.Core
+namespace MySynch.Core.Subscriber
 {
     public class CopyStrategy:ICopyStrategy
     {

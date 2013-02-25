@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using MySynch.Contracts.Messages;
 using MySynch.Core.DataTypes;
 using MySynch.Core.Interfaces;
 
-namespace MySynch.Core
+namespace MySynch.Core.Publisher
 {
     public class ItemDiscoverer:IItemDiscoverer
     {

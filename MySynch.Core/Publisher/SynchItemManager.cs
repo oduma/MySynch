@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using MySynch.Contracts.Messages;
 using MySynch.Core.DataTypes;
 
-namespace MySynch.Core
+namespace MySynch.Core.Publisher
 {
-    public partial class SynchItemManager
+    public static class SynchItemManager
     {
         public static void AddItem(SynchItem topSynchItem, string absolutePathtoNewItem, long size)
         {
@@ -70,7 +68,6 @@ namespace MySynch.Core
             }
         }
 
-
         internal static SynchItem GetItemLowestAvailableParrent(SynchItem topSynchItem, string itemId)
         {
             string[] levels = itemId.Split(new char[] { '\\' });
@@ -91,7 +88,6 @@ namespace MySynch.Core
             return parentItem;
         }
 
-
         public static List<SynchItemData> FlattenTree(SynchItem tree)
         {
             List<SynchItemData> synchItems=new List<SynchItemData>();
@@ -104,5 +100,39 @@ namespace MySynch.Core
                 synchItems.AddRange(FlattenTree(synchItem));
             return synchItems;
         }
+
+        private static SynchItem GetParentItem(List<SynchItem> list, string Identifier)
+        {
+            string[] levels = Identifier.Split(new char[] { '\\' });
+            if (levels.Count() <= 1)
+                return null;
+            string parentIdentifier = string.Empty;
+            for (int i = 0; i < levels.Count() - 1; i++)
+                parentIdentifier = (string.IsNullOrEmpty(parentIdentifier)) ? levels[i] : string.Format("{0}\\{1}", parentIdentifier, levels[i]);
+
+            return GetItem(list, parentIdentifier);
+        }
+
+
+        private static SynchItem GetItem(List<SynchItem> list, string itemId)
+        {
+            string[] levels = itemId.Split(new char[] { '\\' });
+
+            SynchItem parentItem = null;
+            string currentLevel = string.Empty;
+            foreach (string level in levels)
+            {
+                if (list == null)
+                    return null;
+                currentLevel = (string.IsNullOrEmpty(currentLevel)) ? level : string.Format("{0}\\{1}", currentLevel, level);
+                parentItem = list.FirstOrDefault(i => i.SynchItemData.Identifier == currentLevel);
+                if (parentItem == null)
+                    return null;
+                list = parentItem.Items;
+            }
+            return parentItem;
+        }
+
+
     }
 }

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MySynch.Contracts;
+﻿using MySynch.Contracts;
 using MySynch.Contracts.Messages;
 
-namespace MySynch.Core
+namespace MySynch.Core.Publisher
 {
     public class LocalSourceOfData:ISourceOfData
     {

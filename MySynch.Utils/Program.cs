@@ -5,6 +5,7 @@ using CommandLine;
 using CommandLine.Text;
 using MySynch.Core;
 using MySynch.Core.DataTypes;
+using MySynch.Core.Publisher;
 
 namespace MySynch.Utils
 {

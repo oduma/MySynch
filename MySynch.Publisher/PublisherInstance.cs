@@ -1,6 +1,7 @@
 ﻿using System.ServiceModel;
 using MySynch.Common;
 using MySynch.Core;
+using MySynch.Core.Publisher;
 
 namespace MySynch.Publisher
 {

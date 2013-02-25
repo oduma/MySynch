@@ -1,6 +1,8 @@
-﻿using MySynch.Contracts;
+﻿using MySynch.Common;
+using MySynch.Contracts;
 using MySynch.Core;
 using MySynch.Core.Interfaces;
+using MySynch.Core.Publisher;
 using NUnit.Framework;
 
 namespace MySynch.Tests

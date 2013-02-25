@@ -7,9 +7,10 @@ using MySynch.Common;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
 using MySynch.Core.Interfaces;
+using MySynch.Core.Publisher;
 using MySynch.Proxies;
 
-namespace MySynch.Core
+namespace MySynch.Core.Subscriber
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class Subscriber:IChangeSubscriber

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.ServiceModel;
 using MySynch.Common;
@@ -8,7 +7,7 @@ using MySynch.Contracts.Messages;
 using MySynch.Core.DataTypes;
 using MySynch.Core.Interfaces;
 
-namespace MySynch.Core
+namespace MySynch.Core.Publisher
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class ChangePublisher: IChangePublisher
@@ -110,6 +109,8 @@ namespace MySynch.Core
             if(currentRepository==null)
                 throw new ArgumentNullException("currentRepository");
             var oldRepository = Serializer.DeserializeFromFile<SynchItem>("backup.xml");
+            if(oldRepository.Count==0)
+                return new SortedList<string, OperationType>();
             return GetDifferencesBetweenTrees(currentRepository, (oldRepository==null || oldRepository.Count==0)?new SynchItem(): oldRepository[0]);
         }
 
