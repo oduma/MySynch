@@ -90,19 +90,27 @@ namespace MySynch.Core
 
         public void Initialize(string rootFolder,IItemDiscoverer itemDiscoverer)
         {
-            if(string.IsNullOrEmpty(rootFolder))
-                throw new ArgumentNullException("rootFolder");
-            _sourceRootName = rootFolder;
-            _itemDiscoverer = itemDiscoverer;
-            _temporaryStore = GetOfflineChanges(CurrentRepository);
+            try
+            {
+                if (string.IsNullOrEmpty(rootFolder))
+                    throw new ArgumentNullException("rootFolder");
+                _sourceRootName = rootFolder;
+                _itemDiscoverer = itemDiscoverer;
+                _temporaryStore = GetOfflineChanges(CurrentRepository);
+
+            }
+            catch (Exception ex)
+            {
+                LoggingManager.LogMySynchSystemError(ex);
+            }
         }
 
         internal SortedList<string, OperationType> GetOfflineChanges(SynchItem currentRepository)
         {
+            if(currentRepository==null)
+                throw new ArgumentNullException("currentRepository");
             var oldRepository = Serializer.DeserializeFromFile<SynchItem>("backup.xml");
-            if (oldRepository == null || oldRepository.Count == 0)
-                return new SortedList<string, OperationType>();
-            return GetDifferencesBetweenTrees(currentRepository, oldRepository[0]);
+            return GetDifferencesBetweenTrees(currentRepository, (oldRepository==null || oldRepository.Count==0)?new SynchItem(): oldRepository[0]);
         }
 
         internal static SortedList<string, OperationType> GetDifferencesBetweenTrees(SynchItem newTree, SynchItem oldTree)
@@ -110,7 +118,28 @@ namespace MySynch.Core
             List<SynchItemData> newTreeFlatten = SynchItemManager.FlattenTree(newTree);
             List<SynchItemData> oldTreeFlatten = SynchItemManager.FlattenTree(oldTree);
             SortedList<string,OperationType> result = new SortedList<string, OperationType>();
-
+            if(newTree.Items==null)
+            {
+                if (oldTree.Items == null)
+                    return new SortedList<string, OperationType>();
+                else
+                {
+                    foreach (SynchItemData synchItemData in oldTreeFlatten)
+                        result.Add(synchItemData.Identifier, OperationType.Delete);
+                    return result;
+                }
+            }
+            else
+            {
+                if (oldTree.Items == null)
+                {
+                    foreach(SynchItemData synchItemData in newTreeFlatten)
+                        result.Add(synchItemData.Identifier,OperationType.Insert);
+                    return result;
+                }
+            }
+            if(newTree.SynchItemData.Identifier!=oldTree.SynchItemData.Identifier)
+                throw new PublisherSetupException(newTree.SynchItemData.Identifier,"The backup does not belong to the root folder");
             foreach(string key in newTreeFlatten.Except(oldTreeFlatten,new SynchItemDataEqualityComparer()).Select(o=>o.Identifier))
                 result.Add(key,OperationType.Insert);
             foreach (string key in newTreeFlatten.Join(oldTreeFlatten, n => n.Identifier, o => o.Identifier,

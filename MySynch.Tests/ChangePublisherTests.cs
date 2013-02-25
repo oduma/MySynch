@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MySynch.Contracts.Messages;
@@ -18,10 +19,27 @@ namespace MySynch.Tests
         [SetUp]
         public void SetUp()
         {
+            if (File.Exists("backup.xml"))
+            {
+                File.Copy("backup.xml", "backup1.xml", true);
+                File.Delete("backup.xml");
+            }
+
             _expectedPackage = new ChangePushPackage { Source = Environment.MachineName, SourceRootName = "source root name 1" };
             _changePublisherForThreads= new ChangePublisher();
             var mockItemDiscoverer = MockTestHelper.MockItemDiscoverer("source root name 1");
             _changePublisherForThreads.Initialize("source root name 1", mockItemDiscoverer);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            if (File.Exists("backup1.xml"))
+            {
+                File.Copy("backup1.xml", "backup.xml", true);
+                File.Delete("backup1.xml");
+            }
+
         }
         [Test]
         public void QueueOneOperationAtATime_Ok()

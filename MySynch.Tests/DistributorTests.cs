@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Moq;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
@@ -20,8 +21,25 @@ namespace MySynch.Tests
         [SetUp]
         public void SetUp()
         {
+            if (File.Exists("backup.xml"))
+            {
+                File.Copy("backup.xml", "backup1.xml", true);
+                File.Delete("backup.xml");
+            }
+
             _componentResolver=new ComponentResolver();
             _componentResolver.RegisterAll(new TestInstaller());
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            if (File.Exists("backup1.xml"))
+            {
+                File.Copy("backup1.xml", "backup.xml", true);
+                File.Delete("backup1.xml");
+            }
+
         }
         [Test]
         public void BasicLoadinTestWithOneLocalChannelOneRemoteChannelAndOneMixedChannel_Ok()
@@ -259,18 +277,5 @@ namespace MySynch.Tests
             mockSubscriber.Setup(m => m.ApplyChangePackage(changePushPackage)).Returns(true);
             channel.SubscriberInfo.Subscriber = mockSubscriber.Object;
         }
-
-        [Test]
-        public void InitialSynchronization_NoNeed()
-        {
-            Assert.Fail();
-        }
-
-        [Test]
-        public void InitialSynchronization_OneChannel_Ok()
-        {
-            Assert.Fail();
-        }
-
     }
 }
