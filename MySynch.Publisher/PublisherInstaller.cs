@@ -15,7 +15,12 @@ namespace MySynch.Publisher
             process = new ServiceProcessInstaller();
             process.Account = ServiceAccount.LocalSystem;
             service = new ServiceInstaller();
+#if (DEBUG)
+            service.ServiceName = "MySynch.Publisher.Debug";
+#endif
+#if (!DEBUG)
             service.ServiceName = "MySynch.Publisher";
+#endif
             Installers.Add(process);
             Installers.Add(service);
         }

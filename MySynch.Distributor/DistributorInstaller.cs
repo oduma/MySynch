@@ -15,7 +15,12 @@ namespace MySynch.Distributor
             process = new ServiceProcessInstaller();
             process.Account = ServiceAccount.LocalSystem;
             service = new ServiceInstaller();
+#if (DEBUG)
+            service.ServiceName = "MySynch.Distributor.Debug";
+#endif
+#if (!DEBUG)
             service.ServiceName = "MySynch.Distributor";
+#endif
             Installers.Add(process);
             Installers.Add(service);
         }
