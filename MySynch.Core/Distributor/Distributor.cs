@@ -277,11 +277,8 @@ namespace MySynch.Core.Distributor
 
         private void CheckChannel(AvailableChannel availableChannel)
         {
-            availableChannel.CheckForOfflineChanges = false;
             if (availableChannel.Status == Status.OfflinePermanent)
                 return;
-            if (availableChannel.Status == Status.NotChecked)
-                availableChannel.CheckForOfflineChanges = true;
             if (!PublisherAlive(availableChannel))
                 return;
             if (!SubscriberAlive(availableChannel))
@@ -290,6 +287,7 @@ namespace MySynch.Core.Distributor
                 return;
             availableChannel.Status = Status.Ok;
         }
+
 
         private bool DataSourceAlive(AvailableChannel availableChannel)
         {
@@ -573,7 +571,7 @@ namespace MySynch.Core.Distributor
 
         public void ReEvaluateAllChannels()
         {
-            throw new NotImplementedException();
+            AvailableChannels.Where(c => c.Status != Status.Ok || c.Status != Status.NotChecked).ToList().ForEach(c => c.Status = Status.NotChecked);
         }
 
         public HeartbeatResponse GetHeartbeat()

@@ -17,7 +17,5 @@ namespace MySynch.Core.DataTypes
 
         public int NoOfFailedAttempts { get; set; }
 
-        public bool CheckForOfflineChanges { get; set; }
-
     }
 }

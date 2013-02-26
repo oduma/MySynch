@@ -10,6 +10,7 @@ namespace MySynch.Distributor
     {
         private Core.Distributor.Distributor _distributor;
         private Timer _timer;
+        private int _noOfSpins = 0;
 
         public DistributorInstance()
         {
@@ -53,8 +54,14 @@ namespace MySynch.Distributor
         {
             LoggingManager.Debug("Timer kicked in again.");
             _timer.Enabled = false;
+            if (_noOfSpins == 10)
+            {
+                _noOfSpins = 0;
+                _distributor.ReEvaluateAllChannels();
+            }
             _distributor.DistributeMessages();
-            LoggingManager.Debug("Finished distribution round.");
+            _noOfSpins++;
+            LoggingManager.Debug("Finished distribution round. NoOfSpins: " +_noOfSpins);
             _timer.Enabled = true;
             LoggingManager.Debug("Starting timer again.");
         }
