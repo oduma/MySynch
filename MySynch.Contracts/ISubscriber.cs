@@ -8,12 +8,12 @@ namespace MySynch.Contracts
     public interface ISubscriber:ICommunicationComponent
     {
         [OperationContract]
-        bool ApplyChangePackage(ChangePushPackage changePushPackage);
+        ApplyChangePackageResponse ApplyChangePackage(PublishPackageRequestResponse publishPackageRequestResponse);
 
         [OperationContract]
-        string GetTargetRootFolder();
+        GetTargetFolderResponse GetTargetRootFolder();
 
         [OperationContract]
-        bool TryOpenChannel(string sourceOfDataEndpointName);
+        TryOpenChannelResponse TryOpenChannel(TryOpenChannelRequest sourceOfDataEndpointName);
     }
 }

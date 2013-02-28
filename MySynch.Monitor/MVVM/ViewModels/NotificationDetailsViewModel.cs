@@ -8,6 +8,7 @@ using System.Windows.Media;
 using MySynch.Common;
 using MySynch.Contracts.Messages;
 using MySynch.Proxies;
+using MySynch.Proxies.Interfaces;
 
 namespace MySynch.Monitor.MVVM.ViewModels
 {
@@ -174,7 +175,7 @@ namespace MySynch.Monitor.MVVM.ViewModels
                                                                                 }));
         }
 
-        private void ParseDistributorInformation(DistributorComponent distributorInformation)
+        private void ParseDistributorInformation(ListAvailableComponentsTreeResponse distributorInformation)
         {
             var currentNode = new NotificationDetailsViewModel
                                   {Name = distributorInformation.Name, Type = ComponentType.Distributor,IsExpanded=true,TypeColor=Brushes.Peru};

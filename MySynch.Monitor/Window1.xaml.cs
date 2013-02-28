@@ -5,6 +5,7 @@ using MySynch.Common;
 using MySynch.Contracts;
 using MySynch.Monitor.MVVM.ViewModels;
 using MySynch.Proxies;
+using MySynch.Proxies.Interfaces;
 
 namespace MySynch.Monitor
 {

@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using MySynch.Contracts.Messages;
 using MySynch.Proxies;
+using MySynch.Proxies.Interfaces;
 using NUnit.Framework;
 
 namespace MySynch.Tests.Integration

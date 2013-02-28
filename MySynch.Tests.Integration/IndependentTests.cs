@@ -5,6 +5,7 @@ using System.Text;
 using MySynch.Contracts.Messages;
 using MySynch.Core.Subscriber;
 using MySynch.Proxies;
+using MySynch.Proxies.Interfaces;
 using NUnit.Framework;
 
 namespace MySynch.Tests.Integration
@@ -66,9 +67,9 @@ namespace MySynch.Tests.Integration
         {
             ISubscriberProxy subscriberProxy = new SubscriberClient();
             subscriberProxy.InitiateUsingEndpoint("SubscriberSciendoLaptop");
-            Assert.True(subscriberProxy.TryOpenChannel("SourceOfDataSciendoLaptop"));
-            var result = subscriberProxy.ApplyChangePackage(new ChangePushPackage());
-            Assert.False(result);
+            Assert.True(subscriberProxy.TryOpenChannel(new TryOpenChannelRequest{SourceOfDataEndpointName="SourceOfDataSciendoLaptop"}).Status);
+            var result = subscriberProxy.ApplyChangePackage(new PublishPackageRequestResponse());
+            Assert.False(result.Status);
             
         }
 
@@ -80,7 +81,7 @@ namespace MySynch.Tests.Integration
                 File.Delete(@"Data\Output\File1.xml");
             Subscriber subscriber = new Subscriber();
             subscriber.Initialize(@"Data\Output");
-            ChangePushPackage publishedPackage = new ChangePushPackage
+            PublishPackageRequestResponse publishedPackageRequestResponse = new PublishPackageRequestResponse
             {
                 PackageId = Guid.NewGuid(),
                 Source = "SCIENDO-LAPTOP",
@@ -96,9 +97,9 @@ namespace MySynch.Tests.Integration
                                                                          }
                                                                  }
             };
-            Assert.True(subscriber.TryOpenChannel("SourceOfDataSciendoLaptop"));
-            var result = subscriber.ApplyChangePackage(publishedPackage);
-            Assert.True(result);
+            Assert.True(subscriber.TryOpenChannel(new TryOpenChannelRequest{SourceOfDataEndpointName="SourceOfDataSciendoLaptop"}).Status);
+            var result = subscriber.ApplyChangePackage(publishedPackageRequestResponse);
+            Assert.True(result.Status);
             Assert.True(File.Exists(@"Data\Output\File1.xml"));
         }
 
@@ -110,7 +111,7 @@ namespace MySynch.Tests.Integration
                 File.Delete(@"C:\MySynch.Dest.Test.Root\File1.xml");
             ISubscriberProxy subscriberProxy = new SubscriberClient();
             subscriberProxy.InitiateUsingEndpoint("SubscriberSciendoLaptop");
-            ChangePushPackage publishedPackage = new ChangePushPackage
+            PublishPackageRequestResponse publishedPackageRequestResponse = new PublishPackageRequestResponse
                                                      {
                                                          PackageId = Guid.NewGuid(),
                                                          Source = "SCIENDO-LAPTOP",
@@ -126,9 +127,9 @@ namespace MySynch.Tests.Integration
                                                                          }
                                                                  }
                                                      };
-            Assert.True(subscriberProxy.TryOpenChannel("SourceOfDataSciendoLaptop"));
-            var result = subscriberProxy.ApplyChangePackage(publishedPackage);
-            Assert.True(result);
+            Assert.True(subscriberProxy.TryOpenChannel(new TryOpenChannelRequest{SourceOfDataEndpointName="SourceOfDataSciendoLaptop"}).Status);
+            var result = subscriberProxy.ApplyChangePackage(publishedPackageRequestResponse);
+            Assert.True(result.Status);
             Assert.True(File.Exists(@"C:\MySynch.Dest.Test.Root\File1.xml"));
 
         }

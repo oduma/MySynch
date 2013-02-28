@@ -265,19 +265,19 @@ namespace MySynch.Tests
             Assert.AreEqual(0, compo.AvailablePublishers[0].DependentComponents[0].Packages.Count);
         }
 
-        private void MockAllTheSubscribers(List<AvailableChannel> availableChannels, ChangePushPackage changePushPackage)
+        private void MockAllTheSubscribers(List<AvailableChannel> availableChannels, PublishPackageRequestResponse publishPackageRequestResponse)
         {
             foreach (var availableChannel in availableChannels)
-                MockTheSubscriber(availableChannel,changePushPackage);
+                MockTheSubscriber(availableChannel,publishPackageRequestResponse);
         }
 
-        private void MockTheSubscriber(AvailableChannel channel, ChangePushPackage changePushPackage)
+        private void MockTheSubscriber(AvailableChannel channel, PublishPackageRequestResponse publishPackageRequestResponse)
         {
             var mockSubscriber = new Mock<ISubscriber>();
-            mockSubscriber.Setup(m => m.GetHeartbeat()).Returns(new HeartbeatResponse {Status = true});
-            mockSubscriber.Setup(m => m.GetTargetRootFolder()).Returns(@"destination root folder\Item One");
-            mockSubscriber.Setup(m => m.TryOpenChannel(null)).Returns(true);
-            mockSubscriber.Setup(m => m.ApplyChangePackage(changePushPackage)).Returns(true);
+            mockSubscriber.Setup(m => m.GetHeartbeat()).Returns(new GetHeartbeatResponse {Status = true});
+            mockSubscriber.Setup(m => m.GetTargetRootFolder()).Returns(new GetTargetFolderResponse{RootFolder=@"destination root folder\Item One"});
+            mockSubscriber.Setup(m => m.TryOpenChannel(null)).Returns(new TryOpenChannelResponse{Status=true});
+            mockSubscriber.Setup(m => m.ApplyChangePackage(publishPackageRequestResponse)).Returns(new ApplyChangePackageResponse{Status=true});
             channel.SubscriberInfo.Subscriber = mockSubscriber.Object;
         }
     }

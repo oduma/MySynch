@@ -8,6 +8,7 @@ using MySynch.Core.Interfaces;
 using MySynch.Core.Publisher;
 using MySynch.Core.Subscriber;
 using MySynch.Proxies;
+using MySynch.Proxies.Interfaces;
 
 namespace MySynch.Tests.Stubs
 {

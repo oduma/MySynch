@@ -26,9 +26,9 @@ namespace MySynch.Core.Publisher
             return response;
         }
 
-        public HeartbeatResponse GetHeartbeat()
+        public GetHeartbeatResponse GetHeartbeat()
         {
-            return new HeartbeatResponse {Status = true};
+            return new GetHeartbeatResponse {Status = true};
         }
     }
 }

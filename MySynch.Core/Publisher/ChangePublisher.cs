@@ -165,7 +165,7 @@ namespace MySynch.Core.Publisher
             get { return _sourceRootName; }
         }
 
-        public ChangePushPackage PublishPackage()
+        public PublishPackageRequestResponse PublishPackage()
         {
             if(string.IsNullOrEmpty(_sourceRootName) || _temporaryStore==null)
                 throw new PublisherSetupException(_sourceRootName,"Publisher Information incomplete");
@@ -182,35 +182,35 @@ namespace MySynch.Core.Publisher
                     LoggingManager.Debug("Nothing to publish");
                     return null;
                 }
-                ChangePushPackage changePushPackage = new ChangePushPackage
+                PublishPackageRequestResponse publishPackageRequestResponse = new PublishPackageRequestResponse
                                                           {Source = Environment.MachineName,
                                                               SourceRootName = _sourceRootName,PackageId=Guid.NewGuid()};
                 List<ChangePushItem> _pushItems= new List<ChangePushItem>();
                 foreach(string key in _temporaryStore.Keys)
                     _pushItems.Add(new ChangePushItem{AbsolutePath = key,OperationType = _temporaryStore[key]});
                 _temporaryStore.Clear();
-                changePushPackage.ChangePushItems = _pushItems;
+                publishPackageRequestResponse.ChangePushItems = _pushItems;
                 if(PublishedPackageNotDistributed==null)
-                    PublishedPackageNotDistributed= new List<ChangePushPackage>();
-                PublishedPackageNotDistributed.Add(changePushPackage);
-                LoggingManager.Debug("Published package: " +changePushPackage.PackageId);
-                return changePushPackage;
+                    PublishedPackageNotDistributed= new List<PublishPackageRequestResponse>();
+                PublishedPackageNotDistributed.Add(publishPackageRequestResponse);
+                LoggingManager.Debug("Published package: " +publishPackageRequestResponse.PackageId);
+                return publishPackageRequestResponse;
             }
         }
 
-        public void RemovePackage(ChangePushPackage packagePublished)
+        public void RemovePackage(PublishPackageRequestResponse packageRequestResponsePublished)
         {
-            if(packagePublished==null)
+            if(packageRequestResponsePublished==null)
                 throw new ArgumentNullException("publishedPackage");
             lock (_lock)
             {
-                LoggingManager.Debug("Removing package after publishing: " + packagePublished.PackageId);
+                LoggingManager.Debug("Removing package after publishing: " + packageRequestResponsePublished.PackageId);
                 var identifiedPackage =
-                    PublishedPackageNotDistributed.FirstOrDefault(p => p.PackageId == packagePublished.PackageId);
+                    PublishedPackageNotDistributed.FirstOrDefault(p => p.PackageId == packageRequestResponsePublished.PackageId);
                 if (identifiedPackage == null)
                     return;
                 PublishedPackageNotDistributed.Remove(identifiedPackage);
-                LoggingManager.Debug("Removed package after publishing: " + packagePublished.PackageId);
+                LoggingManager.Debug("Removed package after publishing: " + packageRequestResponsePublished.PackageId);
             }
         }
 
@@ -223,13 +223,13 @@ namespace MySynch.Core.Publisher
             get { return Environment.MachineName; }
         }
 
-        public HeartbeatResponse GetHeartbeat()
+        public GetHeartbeatResponse GetHeartbeat()
         {
             LoggingManager.Debug("GetHeartbeat will return true.");
-            return new HeartbeatResponse {Status = true};
+            return new GetHeartbeatResponse {Status = true};
         }
 
-        internal List<ChangePushPackage> PublishedPackageNotDistributed { get; set; }
+        internal List<PublishPackageRequestResponse> PublishedPackageNotDistributed { get; set; }
 
     }
 }

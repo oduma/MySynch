@@ -2,33 +2,35 @@
 using System.Collections.Generic;
 using MySynch.Contracts.Messages;
 using MySynch.Proxies;
+using MySynch.Proxies.Interfaces;
 
 namespace MySynch.Tests.Stubs
 {
     public class MockRemoteSubscriberNotPresent:ISubscriberProxy
     {
-        public HeartbeatResponse GetHeartbeat()
+        public GetHeartbeatResponse GetHeartbeat()
         {
-            return new HeartbeatResponse {Status = false};
+            return new GetHeartbeatResponse {Status = false};
         }
 
-        public bool ApplyChangePackage(ChangePushPackage changePushPackage)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetTargetRootFolder()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool TryOpenChannel(string sourceOfDataEndpointName)
-        {
-            throw new NotImplementedException();
-        }
         public void InitiateUsingEndpoint(string endpointName)
         {
             return;
+        }
+
+        public ApplyChangePackageResponse ApplyChangePackage(PublishPackageRequestResponse publishPackageRequestResponse)
+        {
+            throw new NotImplementedException();
+        }
+
+        public GetTargetFolderResponse GetTargetRootFolder()
+        {
+            throw new NotImplementedException();
+        }
+
+        public TryOpenChannelResponse TryOpenChannel(TryOpenChannelRequest sourceOfDataEndpointName)
+        {
+            throw new NotImplementedException();
         }
     }
 }

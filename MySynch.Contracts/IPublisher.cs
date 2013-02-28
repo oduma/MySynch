@@ -7,9 +7,9 @@ namespace MySynch.Contracts
     public interface IPublisher:ICommunicationComponent
     {
         [OperationContract]
-        ChangePushPackage PublishPackage();
+        PublishPackageRequestResponse PublishPackage();
 
         [OperationContract]
-        void RemovePackage(ChangePushPackage packagePublished);
+        void RemovePackage(PublishPackageRequestResponse packageRequestResponsePublished);
     }
 }

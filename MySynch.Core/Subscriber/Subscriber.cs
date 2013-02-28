@@ -22,63 +22,65 @@ namespace MySynch.Core.Subscriber
         {
             set { _copyStrategy = value; }
         }
-        public bool ApplyChangePackage(ChangePushPackage changePushPackage)
+        public ApplyChangePackageResponse ApplyChangePackage(PublishPackageRequestResponse publishPackageRequestResponse)
         {
             LoggingManager.Debug("Trying to apply some changes to: " + _targetRootFolder);
-            if(changePushPackage==null || changePushPackage.ChangePushItems==null || changePushPackage.ChangePushItems.Count<=0)
+            if(publishPackageRequestResponse==null || publishPackageRequestResponse.ChangePushItems==null || publishPackageRequestResponse.ChangePushItems.Count<=0)
             {
                 LoggingManager.Debug("Nothing to apply.");
-                return false;
+                return new ApplyChangePackageResponse {Status = false};
             }
             if (_copyStrategy == null)
             {
                 throw new SourceOfDataSetupException("","No source of data established");
             }
-            return TryApplyChanges(changePushPackage);
+            return new ApplyChangePackageResponse {Status = TryApplyChanges(publishPackageRequestResponse)};
         }
 
-        public string GetTargetRootFolder()
+        public GetTargetFolderResponse GetTargetRootFolder()
         {
-            return _targetRootFolder;
+            return new GetTargetFolderResponse {RootFolder = _targetRootFolder};
         }
 
-        public bool TryOpenChannel(string sourceOfDataEndpointName)
+        public TryOpenChannelResponse TryOpenChannel(TryOpenChannelRequest request)
         {
-            LoggingManager.Debug("Trying to open channel to: " + sourceOfDataEndpointName);
+            if (request == null)
+                request = new TryOpenChannelRequest {SourceOfDataEndpointName = null};
+            LoggingManager.Debug("Trying to open channel to: " + request.SourceOfDataEndpointName);
             if (_copyStrategy != null)
             {
                 LoggingManager.Debug("Channel already opened.");
-                return true;
+                return new TryOpenChannelResponse {Status = true};
             }
             try
             {
                 ISourceOfData sourceOfData;
-                if (string.IsNullOrEmpty(sourceOfDataEndpointName))
+                if (string.IsNullOrEmpty(request.SourceOfDataEndpointName))
                     sourceOfData = new LocalSourceOfData();
                 else
                 {
                     sourceOfData = new SourceOfDataClient();
-                    ((SourceOfDataClient)sourceOfData).InitiateUsingEndpoint(sourceOfDataEndpointName);
+                    ((SourceOfDataClient)sourceOfData).InitiateUsingEndpoint(request.SourceOfDataEndpointName);
                 }
                 _copyStrategy = new CopyStrategy();
                 _copyStrategy.Initialize(sourceOfData);
                 LoggingManager.Debug("Channel opened.");
-                return true;
+                return new TryOpenChannelResponse{Status=true};
 
             }
             catch (Exception ex)
             {
                 LoggingManager.LogMySynchSystemError(ex);
-                return false;
+                return new TryOpenChannelResponse{Status=false};
             }
         }
 
-        internal bool TryApplyChanges(ChangePushPackage changePushPackage)
+        internal bool TryApplyChanges(PublishPackageRequestResponse publishPackageRequestResponse)
         {
-            var response = ApplyUpserts(changePushPackage.ChangePushItems.Where(i => i.OperationType == OperationType.Insert || i.OperationType == OperationType.Update),
-                                      _targetRootFolder, changePushPackage.SourceRootName) &&
-                         ApplyDeletes(changePushPackage.ChangePushItems.Where(i => i.OperationType == OperationType.Delete),
-                                      _targetRootFolder, changePushPackage.SourceRootName);
+            var response = ApplyUpserts(publishPackageRequestResponse.ChangePushItems.Where(i => i.OperationType == OperationType.Insert || i.OperationType == OperationType.Update),
+                                      _targetRootFolder, publishPackageRequestResponse.SourceRootName) &&
+                         ApplyDeletes(publishPackageRequestResponse.ChangePushItems.Where(i => i.OperationType == OperationType.Delete),
+                                      _targetRootFolder, publishPackageRequestResponse.SourceRootName);
             LoggingManager.Debug("Result of applying changes is: " +response);
             return response;
         }
@@ -128,10 +130,10 @@ namespace MySynch.Core.Subscriber
             get { return Environment.MachineName; }
         }
 
-        public HeartbeatResponse GetHeartbeat()
+        public GetHeartbeatResponse GetHeartbeat()
         {
             LoggingManager.Debug("GetHeartbeat will return true.");
-            return new HeartbeatResponse {Status = true};
+            return new GetHeartbeatResponse {Status = true};
         }
     }
 }

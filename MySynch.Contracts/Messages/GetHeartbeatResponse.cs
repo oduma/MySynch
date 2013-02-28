@@ -3,7 +3,7 @@
 namespace MySynch.Contracts.Messages
 {
     [DataContract]
-    public class HeartbeatResponse
+    public class GetHeartbeatResponse
     {
         [DataMember]
         public bool Status { get; set; }

@@ -12,22 +12,22 @@ namespace MySynch.Tests.Stubs
             get { throw new NotImplementedException(); }
         }
 
-        public HeartbeatResponse GetHeartbeat()
+        public GetHeartbeatResponse GetHeartbeat()
         {
-            return new HeartbeatResponse {Status = false};
+            return new GetHeartbeatResponse {Status = false};
         }
 
-        public bool ApplyChangePackage(ChangePushPackage changePushPackage)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetTargetRootFolder()
+        public ApplyChangePackageResponse ApplyChangePackage(PublishPackageRequestResponse publishPackageRequestResponse)
         {
             throw new NotImplementedException();
         }
 
-        public bool TryOpenChannel(string sourceOfDataEndpointName)
+        public GetTargetFolderResponse GetTargetRootFolder()
+        {
+            throw new NotImplementedException();
+        }
+
+        public TryOpenChannelResponse TryOpenChannel(TryOpenChannelRequest sourceOfDataEndpointName)
         {
             throw new NotImplementedException();
         }

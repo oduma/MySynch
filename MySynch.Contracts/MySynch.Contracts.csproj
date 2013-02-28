@@ -32,7 +32,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\Assemblies\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -58,21 +58,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ISourceOfData.cs" />
+    <Compile Include="Messages\ApplyChangePackageResponse.cs" />
     <Compile Include="Messages\AvailableComponent.cs" />
     <Compile Include="ISubscriber.cs" />
     <Compile Include="ICommunicationComponent.cs" />
     <Compile Include="IDistributorMonitor.cs" />
     <Compile Include="IPublisher.cs" />
     <Compile Include="Messages\ChangePushItem.cs" />
-    <Compile Include="Messages\ChangePushPackage.cs" />
+    <Compile Include="Messages\GetTargetFolderResponse.cs" />
+    <Compile Include="Messages\PublishPackageRequestResponse.cs" />
     <Compile Include="Messages\Package.cs" />
-    <Compile Include="Messages\DistributorComponent.cs" />
-    <Compile Include="Messages\HeartbeatResponse.cs" />
+    <Compile Include="Messages\ListAvailableComponentsTreeResponse.cs" />
+    <Compile Include="Messages\GetHeartbeatResponse.cs" />
     <Compile Include="Messages\OperationType.cs" />
     <Compile Include="Messages\RemoteRequest.cs" />
     <Compile Include="Messages\RemoteResponse.cs" />
     <Compile Include="Messages\State.cs" />
     <Compile Include="Messages\Status.cs" />
+    <Compile Include="Messages\TryOpenChannelRequest.cs" />
+    <Compile Include="Messages\TryOpenChannelResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

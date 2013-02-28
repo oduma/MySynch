@@ -7,6 +7,7 @@ using MySynch.Contracts;
 using MySynch.Core.Interfaces;
 using MySynch.Core.Publisher;
 using MySynch.Proxies;
+using MySynch.Proxies.Interfaces;
 
 namespace MySynch.Core
 {

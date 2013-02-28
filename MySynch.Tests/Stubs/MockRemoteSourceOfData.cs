@@ -4,14 +4,15 @@ using System.Linq;
 using System.Text;
 using MySynch.Contracts.Messages;
 using MySynch.Proxies;
+using MySynch.Proxies.Interfaces;
 
 namespace MySynch.Tests.Stubs
 {
     public class MockRemoteSourceOfData:ISourceOfDataProxy
     {
-        public HeartbeatResponse GetHeartbeat()
+        public GetHeartbeatResponse GetHeartbeat()
         {
-            return new HeartbeatResponse {Status = true};
+            return new GetHeartbeatResponse {Status = true};
         }
 
         public RemoteResponse GetData(RemoteRequest remoteRequest)

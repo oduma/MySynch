@@ -11,17 +11,17 @@ namespace MySynch.Tests.Stubs
             get { throw new NotImplementedException(); }
         }
 
-        public HeartbeatResponse GetHeartbeat()
+        public GetHeartbeatResponse GetHeartbeat()
         {
-            return new HeartbeatResponse { Status = false };
+            return new GetHeartbeatResponse { Status = false };
         }
 
-        public ChangePushPackage PublishPackage()
+        public PublishPackageRequestResponse PublishPackage()
         {
             throw new NotImplementedException();
         }
 
-        public void RemovePackage(ChangePushPackage packagePublished)
+        public void RemovePackage(PublishPackageRequestResponse packageRequestResponsePublished)
         {
             throw new NotImplementedException();
         }

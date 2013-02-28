@@ -7,6 +7,6 @@ namespace MySynch.Contracts
     public interface ICommunicationComponent
     {
         [OperationContract]
-        HeartbeatResponse GetHeartbeat();
+        GetHeartbeatResponse GetHeartbeat();
     }
 }

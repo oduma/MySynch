@@ -1,22 +1,23 @@
 ﻿using System;
 using MySynch.Contracts.Messages;
 using MySynch.Proxies;
+using MySynch.Proxies.Interfaces;
 
 namespace MySynch.Tests.Stubs
 {
     public class MockRemotePublisher:IPublisherProxy
     {
-        public HeartbeatResponse GetHeartbeat()
+        public GetHeartbeatResponse GetHeartbeat()
         {
-            return new HeartbeatResponse {Status = true};
+            return new GetHeartbeatResponse {Status = true};
         }
 
-        public ChangePushPackage PublishPackage()
+        public PublishPackageRequestResponse PublishPackage()
         {
             throw new NotImplementedException();
         }
 
-        public void RemovePackage(ChangePushPackage packagePublished)
+        public void RemovePackage(PublishPackageRequestResponse packageRequestResponsePublished)
         {
             throw new NotImplementedException();
         }

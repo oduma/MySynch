@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 namespace MySynch.Contracts.Messages
 {
     [DataContract]
-    public class ChangePushPackage
+    public class PublishPackageRequestResponse
     {
         [DataMember]
         public string Source { get; set; }

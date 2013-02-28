@@ -13,7 +13,7 @@ namespace MySynch.Tests
     [TestFixture]
     public class ChangePublisherTests
     {
-        private ChangePushPackage _expectedPackage;
+        private PublishPackageRequestResponse _expectedPackageRequestResponse;
 
         private ChangePublisher _changePublisherForThreads;
 
@@ -26,7 +26,7 @@ namespace MySynch.Tests
                 File.Delete("backup.xml");
             }
 
-            _expectedPackage = new ChangePushPackage { Source = Environment.MachineName, SourceRootName = "source root name 1" };
+            _expectedPackageRequestResponse = new PublishPackageRequestResponse { Source = Environment.MachineName, SourceRootName = "source root name 1" };
             _changePublisherForThreads= new ChangePublisher();
             var mockItemDiscoverer = MockTestHelper.MockItemDiscoverer("source root name 1");
             _changePublisherForThreads.Initialize("source root name 1", mockItemDiscoverer);
@@ -51,7 +51,7 @@ namespace MySynch.Tests
 
             changePublisher.QueueInsert("item one");
 
-            _expectedPackage.ChangePushItems = new List<ChangePushItem>
+            _expectedPackageRequestResponse.ChangePushItems = new List<ChangePushItem>
                                                    {
                                                        new ChangePushItem
                                                            {
@@ -60,13 +60,13 @@ namespace MySynch.Tests
                                                            }
                                                    };
             var actualPackage = changePublisher.PublishPackage();
-            CompareTwoPackages(_expectedPackage, actualPackage);
+            CompareTwoPackages(_expectedPackageRequestResponse, actualPackage);
             changePublisher.RemovePackage(actualPackage);
             Assert.IsNull(changePublisher.PublishPackage());
 
             changePublisher.QueueUpdate("item one");
 
-            _expectedPackage.ChangePushItems = new List<ChangePushItem>
+            _expectedPackageRequestResponse.ChangePushItems = new List<ChangePushItem>
                                                    {
                                                        new ChangePushItem
                                                            {
@@ -75,12 +75,12 @@ namespace MySynch.Tests
                                                            }
                                                    };
             actualPackage = changePublisher.PublishPackage();
-            CompareTwoPackages(_expectedPackage, actualPackage);
+            CompareTwoPackages(_expectedPackageRequestResponse, actualPackage);
             changePublisher.RemovePackage(actualPackage); 
             Assert.IsNull(changePublisher.PublishPackage());
 
             changePublisher.QueueDelete("item one");
-            _expectedPackage.ChangePushItems = new List<ChangePushItem>
+            _expectedPackageRequestResponse.ChangePushItems = new List<ChangePushItem>
                                                    {
                                                        new ChangePushItem
                                                            {
@@ -89,20 +89,20 @@ namespace MySynch.Tests
                                                            }
                                                    };
             actualPackage = changePublisher.PublishPackage();
-            CompareTwoPackages(_expectedPackage, actualPackage);
+            CompareTwoPackages(_expectedPackageRequestResponse, actualPackage);
             changePublisher.RemovePackage(actualPackage); 
             Assert.IsNull(changePublisher.PublishPackage());
 
         }
 
-        private void CompareTwoPackages(ChangePushPackage expectedPackage, ChangePushPackage actualPackage)
+        private void CompareTwoPackages(PublishPackageRequestResponse expectedPackageRequestResponse, PublishPackageRequestResponse actualPackageRequestResponse)
         {
-            Assert.AreEqual(expectedPackage.Source,actualPackage.Source);
-            Assert.AreEqual(expectedPackage.SourceRootName, actualPackage.SourceRootName);
-            Assert.AreEqual(expectedPackage.ChangePushItems.Count,actualPackage.ChangePushItems.Count);
-            foreach (var expectedItem in expectedPackage.ChangePushItems)
+            Assert.AreEqual(expectedPackageRequestResponse.Source,actualPackageRequestResponse.Source);
+            Assert.AreEqual(expectedPackageRequestResponse.SourceRootName, actualPackageRequestResponse.SourceRootName);
+            Assert.AreEqual(expectedPackageRequestResponse.ChangePushItems.Count,actualPackageRequestResponse.ChangePushItems.Count);
+            foreach (var expectedItem in expectedPackageRequestResponse.ChangePushItems)
             {
-                Assert.IsNotNull(actualPackage.ChangePushItems.FirstOrDefault(i=>i.AbsolutePath==expectedItem.AbsolutePath && i.OperationType==expectedItem.OperationType));
+                Assert.IsNotNull(actualPackageRequestResponse.ChangePushItems.FirstOrDefault(i=>i.AbsolutePath==expectedItem.AbsolutePath && i.OperationType==expectedItem.OperationType));
             }
         }
 
@@ -117,7 +117,7 @@ namespace MySynch.Tests
 
             changePublisher.QueueUpdate("item one");
 
-            _expectedPackage.ChangePushItems = new List<ChangePushItem>
+            _expectedPackageRequestResponse.ChangePushItems = new List<ChangePushItem>
                                                    {
                                                        new ChangePushItem
                                                            {
@@ -125,7 +125,7 @@ namespace MySynch.Tests
                                                                OperationType = OperationType.Update
                                                            }
                                                    };
-            CompareTwoPackages(_expectedPackage, changePublisher.PublishPackage());
+            CompareTwoPackages(_expectedPackageRequestResponse, changePublisher.PublishPackage());
         }
 
         [Test]
@@ -137,7 +137,7 @@ namespace MySynch.Tests
             Task taskInsert = new Task(InitiateAnInsert);
             Task taskUpdate= new Task(InitiateAnUpdate);
 
-            _expectedPackage.ChangePushItems = new List<ChangePushItem>
+            _expectedPackageRequestResponse.ChangePushItems = new List<ChangePushItem>
                                                    {
                                                        new ChangePushItem
                                                            {
@@ -145,10 +145,10 @@ namespace MySynch.Tests
                                                                OperationType = OperationType.Update
                                                            }
                                                    };
-            Task<ChangePushPackage> publisher= new Task<ChangePushPackage>(_changePublisherForThreads.PublishPackage);
+            Task<PublishPackageRequestResponse> publisher= new Task<PublishPackageRequestResponse>(_changePublisherForThreads.PublishPackage);
             publisher.Start();
             Assert.AreEqual(0, publisher.Result.ChangePushItems.Count);
-            publisher = new Task<ChangePushPackage>(_changePublisherForThreads.PublishPackage);
+            publisher = new Task<PublishPackageRequestResponse>(_changePublisherForThreads.PublishPackage);
 
             taskInsert.Start();
             taskUpdate.Start();
@@ -190,7 +190,7 @@ namespace MySynch.Tests
 
             changePublisher.QueueUpdate(null);
 
-            _expectedPackage.ChangePushItems = new List<ChangePushItem>();
+            _expectedPackageRequestResponse.ChangePushItems = new List<ChangePushItem>();
 
             Assert.IsNull(changePublisher.PublishPackage());
         }
@@ -230,7 +230,7 @@ namespace MySynch.Tests
 
             changePublisher.QueueUpdate("item one");
 
-            _expectedPackage.ChangePushItems = new List<ChangePushItem>
+            _expectedPackageRequestResponse.ChangePushItems = new List<ChangePushItem>
                                                    {
                                                        new ChangePushItem
                                                            {
@@ -240,7 +240,7 @@ namespace MySynch.Tests
                                                    };
             var publishedPackage = changePublisher.PublishPackage();
 
-            CompareTwoPackages(_expectedPackage,publishedPackage);
+            CompareTwoPackages(_expectedPackageRequestResponse,publishedPackage);
 
             Assert.AreEqual(1, changePublisher.PublishedPackageNotDistributed.Count);
             Assert.AreEqual(1,changePublisher.PublishedPackageNotDistributed[0].ChangePushItems.Count);
@@ -261,7 +261,7 @@ namespace MySynch.Tests
 
             changePublisher.QueueUpdate("item one");
 
-            _expectedPackage.ChangePushItems = new List<ChangePushItem>
+            _expectedPackageRequestResponse.ChangePushItems = new List<ChangePushItem>
                                                    {
                                                        new ChangePushItem
                                                            {
@@ -271,7 +271,7 @@ namespace MySynch.Tests
                                                    };
             var firstPublishedPackage = changePublisher.PublishPackage();
 
-            CompareTwoPackages(_expectedPackage, firstPublishedPackage);
+            CompareTwoPackages(_expectedPackageRequestResponse, firstPublishedPackage);
 
             Assert.AreEqual(1, changePublisher.PublishedPackageNotDistributed.Count);
             Assert.AreEqual(1, changePublisher.PublishedPackageNotDistributed[0].ChangePushItems.Count);
@@ -279,7 +279,7 @@ namespace MySynch.Tests
             changePublisher.QueueDelete("item one");
             changePublisher.QueueInsert("item two");
 
-            _expectedPackage.ChangePushItems = new List<ChangePushItem>
+            _expectedPackageRequestResponse.ChangePushItems = new List<ChangePushItem>
                                                    {
                                                        new ChangePushItem
                                                            {
@@ -296,7 +296,7 @@ namespace MySynch.Tests
             changePublisher.RemovePackage(firstPublishedPackage);
             var scndPublishedPackage = changePublisher.PublishPackage();
 
-            CompareTwoPackages(_expectedPackage, scndPublishedPackage);
+            CompareTwoPackages(_expectedPackageRequestResponse, scndPublishedPackage);
             Assert.AreEqual(1, changePublisher.PublishedPackageNotDistributed.Count);
             Assert.AreEqual(2, changePublisher.PublishedPackageNotDistributed[0].ChangePushItems.Count);
             Assert.AreEqual(scndPublishedPackage.PackageId, changePublisher.PublishedPackageNotDistributed[0].PackageId);

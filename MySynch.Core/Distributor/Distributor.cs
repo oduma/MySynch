@@ -8,6 +8,7 @@ using MySynch.Contracts;
 using MySynch.Contracts.Messages;
 using MySynch.Core.DataTypes;
 using MySynch.Proxies;
+using MySynch.Proxies.Interfaces;
 
 namespace MySynch.Core.Distributor
 {
@@ -77,7 +78,7 @@ namespace MySynch.Core.Distributor
             }
         }
 
-        private void RegisterPublisherPackage(AvailableChannel channel, ChangePushPackage package, State state)
+        private void RegisterPublisherPackage(AvailableChannel channel, PublishPackageRequestResponse packageRequestResponse, State state)
         {
             var publisherName = string.Format("{0}{1}",
                                               channel.PublisherInfo.
@@ -89,7 +90,7 @@ namespace MySynch.Core.Distributor
                                                   : "." +
                                                     channel.PublisherInfo.
                                                         EndpointName);
-            LoggingManager.Debug("Register package: " + package.PackageId + " with publisher: " + publisherName);
+            LoggingManager.Debug("Register package: " + packageRequestResponse.PackageId + " with publisher: " + publisherName);
 
             var existingcomponent = _allComponents.FirstOrDefault(c => c.Name == publisherName);
             if (existingcomponent == null)
@@ -99,7 +100,7 @@ namespace MySynch.Core.Distributor
             }
             if (existingcomponent.Packages == null)
                 existingcomponent.Packages = new List<Package>();
-            var existingPackage = existingcomponent.Packages.FirstOrDefault(p => p.Id == package.PackageId);
+            var existingPackage = existingcomponent.Packages.FirstOrDefault(p => p.Id == packageRequestResponse.PackageId);
             if (existingPackage != null)
             {
                 existingPackage.State = state;
@@ -108,11 +109,11 @@ namespace MySynch.Core.Distributor
             }
             existingcomponent.Packages.Add(new Package
                                                {
-                                                   Id = package.PackageId,
+                                                   Id = packageRequestResponse.PackageId,
                                                    State = state,
-                                                   PackageMessages = package.ChangePushItems
+                                                   PackageMessages = packageRequestResponse.ChangePushItems
                                                });
-            LoggingManager.Debug("Registered new package: " + package.PackageId + " on publisher: " + publisherName +
+            LoggingManager.Debug("Registered new package: " + packageRequestResponse.PackageId + " on publisher: " + publisherName +
                                  " with state: " + state);
         }
 
@@ -138,10 +139,10 @@ namespace MySynch.Core.Distributor
             LoggingManager.Debug("Unregistered all packages");
         }
 
-        private bool DistributeMessages(IEnumerable<AvailableChannel> channelsFromAPublisher, ChangePushPackage package)
+        private bool DistributeMessages(IEnumerable<AvailableChannel> channelsFromAPublisher, PublishPackageRequestResponse packageRequestResponse)
         {
-            LoggingManager.Debug("Distribute messages from package:" + package.PackageId);
-            RegisterPublisherPackage(channelsFromAPublisher.First(), package, State.InProgress);
+            LoggingManager.Debug("Distribute messages from package:" + packageRequestResponse.PackageId);
+            RegisterPublisherPackage(channelsFromAPublisher.First(), packageRequestResponse, State.InProgress);
             bool result = true;
             foreach (var channel in channelsFromAPublisher)
             {
@@ -153,10 +154,10 @@ namespace MySynch.Core.Distributor
                 }
                 try
                 {
-                    RegisterSubscriberPackage(channel, package, State.InProgress);
-                    if (channel.SubscriberInfo.Subscriber.ApplyChangePackage(package))
+                    RegisterSubscriberPackage(channel, packageRequestResponse, State.InProgress);
+                    if (channel.SubscriberInfo.Subscriber.ApplyChangePackage(packageRequestResponse).Status)
                     {
-                        RegisterSubscriberPackage(channel, package, State.Distributed);
+                        RegisterSubscriberPackage(channel, packageRequestResponse, State.Distributed);
                     }
                     else
                         result = false;
@@ -167,11 +168,11 @@ namespace MySynch.Core.Distributor
                     result = false;
                 }
             }
-            LoggingManager.Debug(((result) ? "Message distributed: " : "Message not distributed: ") + package.PackageId);
+            LoggingManager.Debug(((result) ? "Message distributed: " : "Message not distributed: ") + packageRequestResponse.PackageId);
             return result;
         }
 
-        private void RegisterSubscriberPackage(AvailableChannel channel, ChangePushPackage package, State state)
+        private void RegisterSubscriberPackage(AvailableChannel channel, PublishPackageRequestResponse packageRequestResponse, State state)
         {
             var publisherName = string.Format("{0}{1}",
                                               channel.PublisherInfo.
@@ -194,7 +195,7 @@ namespace MySynch.Core.Distributor
                                                      channel.SubscriberInfo.
                                                          EndpointName);
 
-            LoggingManager.Debug("Register package: " + package.PackageId + " with subscriber: " + subscriberName);
+            LoggingManager.Debug("Register package: " + packageRequestResponse.PackageId + " with subscriber: " + subscriberName);
 
             var existingpublisher = _allComponents.FirstOrDefault(c => c.Name == publisherName);
             if (existingpublisher == null)
@@ -212,7 +213,7 @@ namespace MySynch.Core.Distributor
             if (existingcomponent.Packages == null)
                 existingcomponent.Packages = new List<Package>();
 
-            var existingPackage = existingcomponent.Packages.FirstOrDefault(p => p.Id == package.PackageId);
+            var existingPackage = existingcomponent.Packages.FirstOrDefault(p => p.Id == packageRequestResponse.PackageId);
             if (existingPackage != null)
             {
                 existingPackage.State = state;
@@ -221,14 +222,14 @@ namespace MySynch.Core.Distributor
             }
             existingcomponent.Packages.Add(new Package
                                                {
-                                                   Id = package.PackageId,
+                                                   Id = packageRequestResponse.PackageId,
                                                    State = state,
                                                    PackageMessages =
-                                                       GetMessagesForSubscriber(package.ChangePushItems,
+                                                       GetMessagesForSubscriber(packageRequestResponse.ChangePushItems,
                                                                                 existingcomponent.RootPath,
-                                                                                package.SourceRootName)
+                                                                                packageRequestResponse.SourceRootName)
                                                });
-            LoggingManager.Debug("Registered new package: " + package.PackageId + " on subscriber: " + subscriberName +
+            LoggingManager.Debug("Registered new package: " + packageRequestResponse.PackageId + " on subscriber: " + subscriberName +
                                  " with state: " + state);
         }
 
@@ -349,7 +350,13 @@ namespace MySynch.Core.Distributor
         {
             if (availableChannel.SubscriberInfo.Subscriber == null)
                 return false;
-            return availableChannel.SubscriberInfo.Subscriber.TryOpenChannel(availableChannel.DataSourceEndpointName);
+            
+            return
+                availableChannel.SubscriberInfo.Subscriber.TryOpenChannel((string.IsNullOrEmpty(availableChannel.DataSourceEndpointName))?null:new TryOpenChannelRequest
+                                                                              {
+                                                                                  SourceOfDataEndpointName =
+                                                                                      availableChannel.DataSourceEndpointName
+                                                                              }).Status;
         }
 
         private void UpdateDataSource(string subscriberName, string publisherName, Status dataSourceStatus)
@@ -441,7 +448,7 @@ namespace MySynch.Core.Distributor
                     return false;
                 }
                 availableComponent.Status = Status.Ok;
-                availableComponent.RootPath = availableChannel.SubscriberInfo.Subscriber.GetTargetRootFolder();
+                availableComponent.RootPath = availableChannel.SubscriberInfo.Subscriber.GetTargetRootFolder().RootFolder;
                 UpsertComponent(availableComponent, publisherName);
                 return true;
             }
@@ -563,10 +570,10 @@ namespace MySynch.Core.Distributor
             LoggingManager.Debug("Publisher upserted.");
         }
 
-        public DistributorComponent ListAvailableComponentsTree()
+        public ListAvailableComponentsTreeResponse ListAvailableComponentsTree()
         {
             LoggingManager.Debug("Listing all available components");
-            return new DistributorComponent {Name = Environment.MachineName, AvailablePublishers = _allComponents};
+            return new ListAvailableComponentsTreeResponse {Name = Environment.MachineName, AvailablePublishers = _allComponents};
         }
 
         public void ReEvaluateAllChannels()
@@ -574,10 +581,10 @@ namespace MySynch.Core.Distributor
             AvailableChannels.Where(c => c.Status != Status.Ok || c.Status != Status.NotChecked).ToList().ForEach(c => c.Status = Status.NotChecked);
         }
 
-        public HeartbeatResponse GetHeartbeat()
+        public GetHeartbeatResponse GetHeartbeat()
         {
             LoggingManager.Debug("GetHeartbeat will return true.");
-            return new HeartbeatResponse {Status = true};
+            return new GetHeartbeatResponse {Status = true};
         }
     }
 }
