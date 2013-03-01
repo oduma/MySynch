@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel;
-using System.Text;
+﻿using System.ServiceModel;
+using MySynch.Contracts;
 
 namespace MySynch.Tests.Stubs
 {
     [ServiceContract]
-    internal interface ITest1
+    internal interface ITest1:ICommunicationComponent
     {
         [OperationContract]
         void Opertaion1();

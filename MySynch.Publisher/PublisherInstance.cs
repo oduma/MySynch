@@ -1,5 +1,7 @@
-﻿using System.ServiceModel;
+﻿using System;
+using System.ServiceModel;
 using MySynch.Common;
+using MySynch.Contracts;
 using MySynch.Core;
 using MySynch.Core.Publisher;
 
@@ -35,11 +37,14 @@ namespace MySynch.Publisher
             {
                 _changePublisher.Initialize(_rootFolder, new ItemDiscoverer(_rootFolder));
                 FSWatcher fsWatcher = new FSWatcher(_changePublisher);
-                _serviceHosts.Add(new ServiceHost(_changePublisher));
-                _serviceHosts.Add(new ServiceHost(typeof(RemoteSourceOfData)));
+                Uri publisherBaseAddress = new Uri(string.Format("http://{0}:8765/publisher/{1}/",
+        System.Net.Dns.GetHostName(), Guid.NewGuid().ToString()));
+                _serviceHosts.Add(CreateAndConfigureServiceHost<IPublisher>(_changePublisher,publisherBaseAddress));
+                Uri dataSourceBaseAddress = new Uri(string.Format("http://{0}:8765/sourceOfData/{1}/",
+        System.Net.Dns.GetHostName(), Guid.NewGuid().ToString()));
+                _serviceHosts.Add(CreateAndConfigureServiceHost<ISourceOfData,RemoteSourceOfData>(dataSourceBaseAddress));
             }
         }
-
         protected override void OnStop()
         {
             LoggingManager.Debug("Stoping service");

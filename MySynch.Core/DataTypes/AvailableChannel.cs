@@ -1,5 +1,4 @@
-﻿using System;
-using MySynch.Contracts.Messages;
+﻿using MySynch.Contracts.Messages;
 
 namespace MySynch.Core.DataTypes
 {
@@ -9,7 +8,7 @@ namespace MySynch.Core.DataTypes
 
         public SubscriberInfo SubscriberInfo { get; set; }
 
-        public string DataSourceEndpointName { get; set; }
+        public int DataSourcePort { get; set; }
 
         public string UniqueKey { get; set; }
 

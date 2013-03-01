@@ -9,7 +9,7 @@
       <SubScriberName>ISubscriber.Remote</SubScriberName>
       <EndpointName>SubscriberSciendoLaptop</EndpointName>
     </SubscriberInfo>
-    <DataSourceEndpointName>SourceOfDataSciendoLaptop</DataSourceEndpointName>
+    <DataSourcePort>SourceOfDataSciendoLaptop</DataSourcePort>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
     <Status>NotChecked</Status>
     <NoOfFailedAttempts>0</NoOfFailedAttempts>

@@ -16,7 +16,7 @@ namespace MySynch.Tests.Integration
         public void DistributorUpAndAccessible()
         {
             IDistributorMonitorProxy distributorMonitorProxy = new DistributorMonitorClient();
-            distributorMonitorProxy.InitiateUsingEndpoint("DistributorSciendoLaptop");
+            distributorMonitorProxy.InitiateUsingPort(8765);
             var listOfComponents = distributorMonitorProxy.ListAvailableComponentsTree();
             Assert.IsNotNull(listOfComponents);
             Assert.AreEqual("SCIENDO-LAPTOP", listOfComponents.Name);
@@ -40,7 +40,7 @@ namespace MySynch.Tests.Integration
             if (File.Exists(@"C:\MySynch.Dest.Test.Root\File1.xml"))
                 File.Delete(@"C:\MySynch.Dest.Test.Root\File1.xml");
             IDistributorMonitorProxy distributorMonitorProxy = new DistributorMonitorClient();
-            distributorMonitorProxy.InitiateUsingEndpoint("DistributorSciendoLaptop");
+            distributorMonitorProxy.InitiateUsingPort(8765);
             var listOfComponents = distributorMonitorProxy.ListAvailableComponentsTree();
             Assert.IsNotNull(listOfComponents);
             File.Copy(@"Data\File1.xml", @"C:\MySynch.Source.Test.Root\File1.xml", true);

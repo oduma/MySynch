@@ -13,11 +13,6 @@ namespace MySynch.Tests.Stubs
             return new GetHeartbeatResponse {Status = false};
         }
 
-        public void InitiateUsingEndpoint(string endpointName)
-        {
-            return;
-        }
-
         public ApplyChangePackageResponse ApplyChangePackage(PublishPackageRequestResponse publishPackageRequestResponse)
         {
             throw new NotImplementedException();
@@ -31,6 +26,11 @@ namespace MySynch.Tests.Stubs
         public TryOpenChannelResponse TryOpenChannel(TryOpenChannelRequest sourceOfDataEndpointName)
         {
             throw new NotImplementedException();
+        }
+
+        public void InitiateUsingPort(int port)
+        {
+            return;
         }
     }
 }

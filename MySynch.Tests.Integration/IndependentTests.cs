@@ -19,7 +19,7 @@ namespace MySynch.Tests.Integration
         public void PublisherServiceUpAndAccessible()
         {
             IPublisherProxy publisherProxy = new PublisherClient();
-            publisherProxy.InitiateUsingEndpoint("PublisherSciendoLaptop");
+            publisherProxy.InitiateUsingPort(8765);
             var publishedPackage = publisherProxy.PublishPackage();
             Assert.IsNull(publishedPackage);
         }
@@ -30,7 +30,7 @@ namespace MySynch.Tests.Integration
         {
             File.Copy(@"Data\File1.xml", @"C:\MySynch.Source.Test.Root\File1.xml",true);
             IPublisherProxy publisherProxy = new PublisherClient();
-            publisherProxy.InitiateUsingEndpoint("PublisherSciendoLaptop");
+            publisherProxy.InitiateUsingPort(8765);
             var publishedPackage = publisherProxy.PublishPackage();
             Assert.IsNotNull(publishedPackage);
             Assert.AreEqual("SCIENDO-LAPTOP",publishedPackage.Source);
@@ -49,7 +49,7 @@ namespace MySynch.Tests.Integration
         {
 
             ISourceOfDataProxy sourceOfDataProxy = new SourceOfDataClient();
-            sourceOfDataProxy.InitiateUsingEndpoint("SourceOfDataSciendoLaptop");
+            sourceOfDataProxy.InitiateUsingPort(8765);
             var data = sourceOfDataProxy.GetData(new RemoteRequest {FileName = @"C:\MySynch.Source.Test.Root\File1.xml"});
             Assert.IsNotNull(data);
             Assert.IsNotNull(data.Data);
@@ -66,8 +66,8 @@ namespace MySynch.Tests.Integration
         public void SubscriberUpAndAccessible()
         {
             ISubscriberProxy subscriberProxy = new SubscriberClient();
-            subscriberProxy.InitiateUsingEndpoint("SubscriberSciendoLaptop");
-            Assert.True(subscriberProxy.TryOpenChannel(new TryOpenChannelRequest{SourceOfDataEndpointName="SourceOfDataSciendoLaptop"}).Status);
+            subscriberProxy.InitiateUsingPort(8765);
+            Assert.True(subscriberProxy.TryOpenChannel(new TryOpenChannelRequest{SourceOfDataPort=8765}).Status);
             var result = subscriberProxy.ApplyChangePackage(new PublishPackageRequestResponse());
             Assert.False(result.Status);
             
@@ -97,7 +97,7 @@ namespace MySynch.Tests.Integration
                                                                          }
                                                                  }
             };
-            Assert.True(subscriber.TryOpenChannel(new TryOpenChannelRequest{SourceOfDataEndpointName="SourceOfDataSciendoLaptop"}).Status);
+            Assert.True(subscriber.TryOpenChannel(new TryOpenChannelRequest{SourceOfDataPort=8765}).Status);
             var result = subscriber.ApplyChangePackage(publishedPackageRequestResponse);
             Assert.True(result.Status);
             Assert.True(File.Exists(@"Data\Output\File1.xml"));
@@ -110,7 +110,7 @@ namespace MySynch.Tests.Integration
             if(File.Exists(@"C:\MySynch.Dest.Test.Root\File1.xml"))
                 File.Delete(@"C:\MySynch.Dest.Test.Root\File1.xml");
             ISubscriberProxy subscriberProxy = new SubscriberClient();
-            subscriberProxy.InitiateUsingEndpoint("SubscriberSciendoLaptop");
+            subscriberProxy.InitiateUsingPort(8765);
             PublishPackageRequestResponse publishedPackageRequestResponse = new PublishPackageRequestResponse
                                                      {
                                                          PackageId = Guid.NewGuid(),
@@ -127,7 +127,7 @@ namespace MySynch.Tests.Integration
                                                                          }
                                                                  }
                                                      };
-            Assert.True(subscriberProxy.TryOpenChannel(new TryOpenChannelRequest{SourceOfDataEndpointName="SourceOfDataSciendoLaptop"}).Status);
+            Assert.True(subscriberProxy.TryOpenChannel(new TryOpenChannelRequest{SourceOfDataPort=8765}).Status);
             var result = subscriberProxy.ApplyChangePackage(publishedPackageRequestResponse);
             Assert.True(result.Status);
             Assert.True(File.Exists(@"C:\MySynch.Dest.Test.Root\File1.xml"));
@@ -139,7 +139,7 @@ namespace MySynch.Tests.Integration
         public void SubscriberRemoteGetHeartBeat_OK()
         {
             ISubscriberProxy subscriberProxy = new SubscriberClient();
-            subscriberProxy.InitiateUsingEndpoint("SubscriberMediaCentre");
+            subscriberProxy.InitiateUsingPort(8766);
             var heartBeatResponse = subscriberProxy.GetHeartbeat();
             Assert.IsNotNull(heartBeatResponse);
             Assert.True(heartBeatResponse.Status);

@@ -20,6 +20,7 @@
 			t.ContractInterface=contractsAssembly.GetTypes().First(i=>i.IsInterface && i.Name==interfaceType);
 			t.Output.File=interfaceType.Substring(1,interfaceType.Length-1) + "Client.cs";
 			t.Render();
+
         }
     }
 #>
