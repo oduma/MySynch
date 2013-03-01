@@ -3,11 +3,11 @@
   <AvailableChannel>
     <PublisherInfo>
       <PublisherInstanceName>IPublisher.Local</PublisherInstanceName>
-      <EndpointName></EndpointName>
+      <Port></Port>
     </PublisherInfo>
     <SubscriberInfo>
       <SubScriberName>ISubscriber.Local</SubScriberName>
-      <EndpointName></EndpointName>
+      <Port></Port>
       <TargetRootFolder></TargetRootFolder>
     </SubscriberInfo>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
@@ -17,11 +17,11 @@
   <AvailableChannel>
     <PublisherInfo>
       <PublisherInstanceName>IPublisher.Remote</PublisherInstanceName>
-      <EndpointName>endpoint1</EndpointName>
+      <Port>endpoint1</Port>
     </PublisherInfo>
     <SubscriberInfo>
       <SubScriberName>ISubscriber.Remote</SubScriberName>
-      <EndpointName>endpoint2</EndpointName>
+      <Port>endpoint2</Port>
       <TargetRootFolder></TargetRootFolder>
     </SubscriberInfo>
     <DataSourcePort>dsendpoint1</DataSourcePort>
@@ -32,11 +32,11 @@
   <AvailableChannel>
     <PublisherInfo>
       <PublisherInstanceName>IPublisher.Local</PublisherInstanceName>
-      <EndpointName></EndpointName>
+      <Port></Port>
     </PublisherInfo>
     <SubscriberInfo>
       <SubScriberName>ISubscriber.Remote</SubScriberName>
-      <EndpointName>endpoint1</EndpointName>
+      <Port>endpoint1</Port>
       <TargetRootFolder></TargetRootFolder>
     </SubscriberInfo>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>

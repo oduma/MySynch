@@ -45,7 +45,7 @@ namespace MySynch.Tests
 
         }
         [Test]
-        public void BasicLoadinTestWithOneLocalChannelOneRemoteChannelAndOneMixedChannel_Ok()
+        public void BasicLoadingTestWithOneLocalChannelOneRemoteChannelAndOneMixedChannel_Ok()
         {
             Distributor distributor=new Distributor();
             distributor.InitiateDistributionMap(@"Data\distributormap.xml",_componentResolver);
@@ -53,18 +53,18 @@ namespace MySynch.Tests
             Assert.AreEqual(1,
                             distributor.AvailableChannels.Count(
                                 c =>
-                                c.Status == Status.Ok && string.IsNullOrEmpty(c.PublisherInfo.EndpointName) &&
-                                string.IsNullOrEmpty(c.SubscriberInfo.EndpointName)));
+                                c.Status == Status.Ok && c.PublisherInfo.Port==0 &&
+                                c.SubscriberInfo.Port==0));
             Assert.AreEqual(1,
                             distributor.AvailableChannels.Count(
                                 c =>
-                                c.Status == Status.Ok && c.PublisherInfo.EndpointName=="endpoint1" &&
-                                c.SubscriberInfo.EndpointName=="endpoint2"));
+                                c.Status == Status.Ok && c.PublisherInfo.Port==8765 &&
+                                c.SubscriberInfo.Port==8766));
             Assert.AreEqual(1,
                             distributor.AvailableChannels.Count(
                                 c =>
-                                c.Status == Status.Ok && string.IsNullOrEmpty(c.PublisherInfo.EndpointName) &&
-                                c.SubscriberInfo.EndpointName == "endpoint1"));
+                                c.Status == Status.Ok && c.PublisherInfo.Port==0 &&
+                                c.SubscriberInfo.Port == 8766));
             
         }
 
@@ -220,7 +220,8 @@ namespace MySynch.Tests
         {
             Distributor distributor = new Distributor();
             distributor.InitiateDistributionMap(@"Data\distributormap5.xml", _componentResolver);
-            ChangePublisher changePublisher = (ChangePublisher)distributor.AvailableChannels.FirstOrDefault(c => string.IsNullOrEmpty(c.PublisherInfo.EndpointName)).PublisherInfo.Publisher;
+            ChangePublisher changePublisher = (ChangePublisher)distributor.AvailableChannels
+            .FirstOrDefault(c => c.PublisherInfo.Port==0).PublisherInfo.Publisher;
             var mockItemDiscoverer = MockTestHelper.MockItemDiscoverer("root folder");
             changePublisher.Initialize("root folder",mockItemDiscoverer);
             changePublisher.QueueInsert(@"root folder\Item One");
@@ -247,7 +248,8 @@ namespace MySynch.Tests
         {
             Distributor distributor = new Distributor();
             distributor.InitiateDistributionMap(@"Data\distributormap5.xml", _componentResolver);
-            ChangePublisher changePublisher = (ChangePublisher)distributor.AvailableChannels.FirstOrDefault(c => string.IsNullOrEmpty(c.PublisherInfo.EndpointName)).PublisherInfo.Publisher;
+            ChangePublisher changePublisher = (ChangePublisher)distributor.AvailableChannels
+                .FirstOrDefault(c => c.PublisherInfo.Port==0).PublisherInfo.Publisher;
             var mockItemDiscoverer = MockTestHelper.MockItemDiscoverer("root folder");
             changePublisher.Initialize("root folder", mockItemDiscoverer);
             changePublisher.QueueInsert(@"root folder\Item One");

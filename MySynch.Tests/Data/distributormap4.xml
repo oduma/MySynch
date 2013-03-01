@@ -7,7 +7,7 @@
     </PublisherInfo>
     <SubscriberInfo>
       <SubScriberName>ISubscriber.Remote.NotPresent</SubScriberName>
-      <EndpointName>endpoint1</EndpointName>
+      <Port>endpoint1</EndpointName>
     </SubscriberInfo>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
     <Status>NotChecked</Status>

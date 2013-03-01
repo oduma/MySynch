@@ -7,7 +7,7 @@
     </PublisherInfo>
     <SubscriberInfo>
       <SubScriberName>ISubscriber.NotPresent</SubScriberName>
-      <EndpointName></EndpointName>
+      <Port></Port>
       <TargetRootFolder>local target root folder</TargetRootFolder>
     </SubscriberInfo>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
@@ -17,11 +17,11 @@
   <AvailableChannel>
     <PublisherInfo>
       <PublisherInstanceName>IPublisher.Local</PublisherInstanceName>
-      <EndpointName></EndpointName>
+      <Port></Port>
     </PublisherInfo>
     <SubscriberInfo>
       <SubScriberName>ISubscriber.Remote</SubScriberName>
-      <EndpointName>endpoint1</EndpointName>
+      <Port>endpoint1</Port>
       <TargetRootFolder>remote target root folder</TargetRootFolder>
     </SubscriberInfo>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
@@ -31,11 +31,11 @@
   <AvailableChannel>
     <PublisherInfo>
       <PublisherInstanceName>IPublisher.Local</PublisherInstanceName>
-      <EndpointName></EndpointName>
+      <Port></Port>
     </PublisherInfo>
     <SubscriberInfo>
       <SubScriberName>ISubscriber.Remote</SubScriberName>
-      <EndpointName>endpoint2</EndpointName>
+      <Port>endpoint2</Port>
       <TargetRootFolder>wrong folder</TargetRootFolder>
     </SubscriberInfo>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>

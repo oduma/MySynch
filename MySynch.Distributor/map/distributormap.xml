@@ -3,11 +3,11 @@
   <AvailableChannel>
     <PublisherInfo>
       <PublisherInstanceName>IPublisher.Remote</PublisherInstanceName>
-      <EndpointName>PublisherSciendoLaptop</EndpointName>
+      <Port>PublisherSciendoLaptop</Port>
     </PublisherInfo>
     <SubscriberInfo>
       <SubScriberName>ISubscriber.Remote</SubScriberName>
-      <EndpointName>SubscriberSciendoLaptop</EndpointName>
+      <Port>SubscriberSciendoLaptop</Port>
     </SubscriberInfo>
     <DataSourcePort>SourceOfDataSciendoLaptop</DataSourcePort>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
