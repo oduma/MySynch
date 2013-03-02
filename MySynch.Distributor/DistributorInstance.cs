@@ -1,6 +1,8 @@
-﻿using System.ServiceModel;
+﻿using System;
+using System.ServiceModel;
 using System.Timers;
 using MySynch.Common;
+using MySynch.Contracts;
 using MySynch.Core;
 using MySynch.Core.DataTypes;
 
@@ -45,7 +47,8 @@ namespace MySynch.Distributor
             _timer.Enabled = true;
             _timer.Start();
 
-            _serviceHosts.Add(new ServiceHost(_distributor));
+            _serviceHosts.Add(CreateAndConfigureServiceHost<IDistributorMonitor>(_distributor, new Uri(string.Format("http://{0}:{1}/distributor/{2}/",
+    System.Net.Dns.GetHostName(), _instancePort, Guid.NewGuid().ToString()))));
             LoggingManager.Debug("Distributor initialized.");
 
         }

@@ -12,6 +12,7 @@ namespace MySynch.Common
     {
         protected string _rootFolder;
         protected string _distributorMapFile;
+        protected int _instancePort;
 
         protected List<ServiceHost> _serviceHosts = new List<ServiceHost>();
 
@@ -27,6 +28,12 @@ namespace MySynch.Common
                 _distributorMapFile = string.Empty;
             else
                 _distributorMapFile = ConfigurationManager.AppSettings[key];
+
+            key = ConfigurationManager.AppSettings.AllKeys.FirstOrDefault(k => k == "InstancePort");
+            if (key == null)
+                _instancePort = 0;
+            else
+                _instancePort = Convert.ToInt32(ConfigurationManager.AppSettings[key]);
 
         }
 

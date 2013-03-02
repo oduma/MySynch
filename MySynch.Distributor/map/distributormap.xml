@@ -3,13 +3,13 @@
   <AvailableChannel>
     <PublisherInfo>
       <PublisherInstanceName>IPublisher.Remote</PublisherInstanceName>
-      <Port>PublisherSciendoLaptop</Port>
+      <Port>8765</Port>
     </PublisherInfo>
     <SubscriberInfo>
       <SubScriberName>ISubscriber.Remote</SubScriberName>
-      <Port>SubscriberSciendoLaptop</Port>
+      <Port>8765</Port>
     </SubscriberInfo>
-    <DataSourcePort>SourceOfDataSciendoLaptop</DataSourcePort>
+    <DataSourcePort>8765</DataSourcePort>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
     <Status>NotChecked</Status>
     <NoOfFailedAttempts>0</NoOfFailedAttempts>
