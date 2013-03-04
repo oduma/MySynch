@@ -7,7 +7,7 @@
     </PublisherInfo>
     <SubscriberInfo>
       <SubScriberName>ISubscriber.Remote</SubScriberName>
-      <Port>8765</Port>
+      <Port>8767</Port>
     </SubscriberInfo>
     <DataSourcePort>8765</DataSourcePort>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>

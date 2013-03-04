@@ -57,9 +57,11 @@ namespace MySynch.Core.WCF.Clients.Discovery
             if (!TryGetChannelFactory(port, out channelFactory))
             {
                 channelFactory = CreateAndCache<T>(port);
+                if(channelFactory!=null)
+                    LoggingManager.Debug("Got channel factory for:" + channelFactory.Endpoint.Address);
+                else
+                    LoggingManager.Debug("No endpoint found in the network listening to port: " + port);
             }
-            LoggingManager.Debug("Got channel factory for:" + channelFactory.Endpoint.Address);
-
             return channelFactory;
         }
 
@@ -158,28 +160,31 @@ namespace MySynch.Core.WCF.Clients.Discovery
 
         internal bool FindService<T>(int port, out EndpointAddress baseAddress)
         {
+            LoggingManager.Debug("Looking for service of type " + typeof(T).FullName + " listening at port: " + port);
             try
             {
                 DiscoveryClient discoveryClient =
                     new DiscoveryClient(new UdpDiscoveryEndpoint());
 
-                var publisherServices =
+                var discoveredServices =
                     discoveryClient.Find(new FindCriteria(typeof(T)));
 
                 discoveryClient.Close();
 
-                var endpointAddress = publisherServices.Endpoints.FirstOrDefault(e => e.Address.Uri.Port == port);
+                var endpointAddress = discoveredServices.Endpoints.FirstOrDefault(e => e.Address.Uri.Port == port);
                 if (endpointAddress == null)
                 {
+                    LoggingManager.Debug("No service of type " + typeof(T).FullName + " listening at port: " + port);
                     baseAddress = null;
                     return false;
                 }
+                LoggingManager.Debug("Found service " + endpointAddress.Address);
                 baseAddress = endpointAddress.Address;
                 return true;
             }
             catch (Exception ex)
             {
-                
+                LoggingManager.LogMySynchSystemError(ex);
                 throw;
             }
             

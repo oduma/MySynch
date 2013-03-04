@@ -139,7 +139,7 @@ namespace MySynch.Tests.Integration
         public void SubscriberRemoteGetHeartBeat_OK()
         {
             ISubscriberProxy subscriberProxy = new SubscriberClient();
-            subscriberProxy.InitiateUsingPort(8766);
+            subscriberProxy.InitiateUsingPort(8767);
             var heartBeatResponse = subscriberProxy.GetHeartbeat();
             Assert.IsNotNull(heartBeatResponse);
             Assert.True(heartBeatResponse.Status);
