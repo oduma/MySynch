@@ -2,15 +2,16 @@
 using Moq;
 using MySynch.Core.DataTypes;
 using MySynch.Core.Interfaces;
+using MySynch.Core.Publisher;
 
 namespace MySynch.Tests
 {
     internal static class MockTestHelper
     {
 
-        internal static IItemDiscoverer MockItemDiscoverer(string folderPath)
+        internal static ItemDiscoverer MockItemDiscoverer(string folderPath)
         {
-            var mockItemDiscoverer = new Mock<IItemDiscoverer>();
+            var mockItemDiscoverer = new Mock<ItemDiscoverer>();
             if (folderPath == "generate backup")
                 mockItemDiscoverer.Setup(m => m.DiscoverFromFolder(folderPath)).Returns(
                 new SynchItem

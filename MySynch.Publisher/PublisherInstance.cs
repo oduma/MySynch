@@ -33,7 +33,7 @@ namespace MySynch.Publisher
         {
             if (!string.IsNullOrEmpty(_rootFolder))
             {
-                _changePublisher.Initialize(_rootFolder, new ItemDiscoverer(_rootFolder));
+                _changePublisher.Initialize(_rootFolder, new ItemDiscoverer());
                 FSWatcher fsWatcher = new FSWatcher(_changePublisher);
                 
                 _serviceHosts.Add(CreateAndConfigureServiceHost<IPublisher>(_changePublisher, new Uri(string.Format("http://{0}:{1}/publisher/{2}/",

@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.ServiceProcess;
 using System.Text;
+using MySynch.Common;
 using MySynch.Contracts.Messages;
+using MySynch.Core.DataTypes;
+using MySynch.Core.Publisher;
 using MySynch.Core.Subscriber;
 using MySynch.Proxies;
 using MySynch.Proxies.Interfaces;
@@ -95,25 +100,65 @@ namespace MySynch.Tests.Integration
         [Test]
         public void PublisherStartsWithoutABackupFile()
         {
-            Assert.Fail();
+            if (File.Exists(@"C:\Code\Sciendo\MySynch\MySynch.Publisher\bin\Debug\backup.xml"))
+                File.Delete(@"C:\Code\Sciendo\MySynch\MySynch.Publisher\bin\Debug\backup.xml");
+            IPublisherProxy publisherProxy = new PublisherClient();
+            publisherProxy.InitiateUsingPort(8765);
+            var publishedPackage = publisherProxy.PublishPackage();
+            Assert.IsNull(publishedPackage);
+
         }
 
         [Test]
         public void PublisherStartsWithABackupFile()
         {
-            Assert.Fail();
-        }
+            ServiceController serviceController = new ServiceController("MySynch.Publisher.Debug");
+            serviceController.Stop();
+            serviceController.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(10));
 
-        [Test]
-        public void PublisherSavingABackupFileOnStop_NothingToSave()
-        {
-            Assert.Fail();
+            File.Copy(@"Data\XMLFile2.xml", @"C:\MySynch.Source.Test.Root\XMLFile2.xml", true);
+            
+            File.Copy(@"Data\backup.xml", @"C:\Code\Sciendo\MySynch\MySynch.Publisher\bin\Debug\backup.xml", true);
+            serviceController.Start();
+            serviceController.WaitForStatus(ServiceControllerStatus.Running,TimeSpan.FromSeconds(10));
+
+            IPublisherProxy publisherProxy = new PublisherClient();
+            publisherProxy.InitiateUsingPort(8765);
+            var publishedPackage = publisherProxy.PublishPackage();
+            Assert.IsNotNull(publishedPackage);
+            Assert.AreEqual(2,publishedPackage.ChangePushItems.Count);
+            Assert.AreEqual(1,
+                            publishedPackage.ChangePushItems.Count(
+                                i =>
+                                i.OperationType == OperationType.Update &&
+                                i.AbsolutePath == @"C:\MySynch.Source.Test.Root\abc\abc def\def feg\abc cba.txt"));
+            Assert.AreEqual(1,
+                            publishedPackage.ChangePushItems.Count(
+                                i =>
+                                i.OperationType == OperationType.Insert &&
+                                i.AbsolutePath == @"C:\MySynch.Source.Test.Root\XMLFile2.xml"));
+
+            serviceController.Stop();
+            serviceController.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(10));
+            File.Delete(@"C:\Code\Sciendo\MySynch\MySynch.Publisher\bin\Debug\backup.xml");
+            File.Delete(@"C:\MySynch.Source.Test.Root\XMLFile2.xml");
         }
 
         [Test]
         public void PublisherSavingABackupFileOnStop()
         {
-            Assert.Fail();
+            ServiceController serviceController = new ServiceController("MySynch.Publisher.Debug");
+
+            File.Copy(@"Data\XMLFile2.xml", @"C:\MySynch.Source.Test.Root\XMLFile2.xml", true);
+            serviceController.Stop();
+            serviceController.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(10));
+            var backup = Serializer.DeserializeFromFile<SynchItem>(@"C:\Code\Sciendo\MySynch\MySynch.Publisher\bin\Debug\backup.xml");
+            Assert.AreEqual(1, SynchItemManager.FlattenTree(backup[0]).Count(t => t.Identifier == @"C:\MySynch.Source.Test.Root\XMLFile2.xml"));
+            File.Delete(@"C:\Code\Sciendo\MySynch\MySynch.Publisher\bin\Debug\backup.xml");
+            File.Delete(@"C:\MySynch.Source.Test.Root\XMLFile2.xml");
+            serviceController.Start();
+            serviceController.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(10));
+
         }
     }
 }

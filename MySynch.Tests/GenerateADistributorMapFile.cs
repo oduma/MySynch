@@ -22,11 +22,11 @@ namespace MySynch.Tests
             availableChannel.DataSourcePort =0;
             availableChannel.PublisherInfo= new PublisherInfo();
             availableChannel.PublisherInfo.Port = 0;
-            availableChannel.PublisherInfo.PublisherInstanceName = "IPublisher.Local";
+            availableChannel.PublisherInfo.InstanceName = "IPublisher.Local";
             availableChannel.Status = Status.NotChecked;
             availableChannel.SubscriberInfo= new SubscriberInfo();
             availableChannel.SubscriberInfo.Port = 0;
-            availableChannel.SubscriberInfo.SubScriberName = "ISubscriber.Local";
+            availableChannel.SubscriberInfo.InstanceName = "ISubscriber.Local";
             availableChannel.UniqueKey = availableChannel.PublisherInfo.Port + "to" +
                                          availableChannel.SubscriberInfo.Port;
             availableChannels.Add(availableChannel);

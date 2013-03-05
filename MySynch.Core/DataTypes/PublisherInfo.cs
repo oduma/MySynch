@@ -3,13 +3,9 @@ using MySynch.Contracts;
 
 namespace MySynch.Core.DataTypes
 {
-    public class PublisherInfo
+    public class PublisherInfo:BaseInfo
     {
         [XmlIgnore]
         public IPublisher Publisher { get; set; }
-
-        public string PublisherInstanceName { get; set; }
-
-        public int Port { get; set; }
     }
 }

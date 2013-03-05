@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.ServiceModel;
 using MySynch.Common;
@@ -20,6 +22,12 @@ namespace MySynch.Core.Publisher
         {
             LoggingManager.Debug("");
             _temporaryStore=new SortedList<string, OperationType>();
+            var key = ConfigurationManager.AppSettings.AllKeys.FirstOrDefault(k => k == "BackupFileName");
+            if (key == null)
+                _backupFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "backup.xml");
+            else
+                _backupFileName = ConfigurationManager.AppSettings[key];
+
         }
 
         public event EventHandler<ItemsQueuedEventArgs> ItemsQueued;
@@ -87,8 +95,9 @@ namespace MySynch.Core.Publisher
             }
         }
 
-        public void Initialize(string rootFolder,IItemDiscoverer itemDiscoverer)
+        public void Initialize(string rootFolder,ItemDiscoverer itemDiscoverer)
         {
+            LoggingManager.Debug("Initializing publisher with rootfolder: " +rootFolder);
             try
             {
                 if (string.IsNullOrEmpty(rootFolder))
@@ -96,7 +105,7 @@ namespace MySynch.Core.Publisher
                 _sourceRootName = rootFolder;
                 _itemDiscoverer = itemDiscoverer;
                 _temporaryStore = GetOfflineChanges(CurrentRepository);
-
+                LoggingManager.Debug("Publisher initialized");
             }
             catch (Exception ex)
             {
@@ -106,16 +115,19 @@ namespace MySynch.Core.Publisher
 
         internal SortedList<string, OperationType> GetOfflineChanges(SynchItem currentRepository)
         {
+            LoggingManager.Debug("Getting the offline changes based on file: " + _backupFileName);
             if(currentRepository==null)
                 throw new ArgumentNullException("currentRepository");
-            var oldRepository = Serializer.DeserializeFromFile<SynchItem>("backup.xml");
+            var oldRepository = Serializer.DeserializeFromFile<SynchItem>(_backupFileName);
+
             if(oldRepository.Count==0)
                 return new SortedList<string, OperationType>();
-            return GetDifferencesBetweenTrees(currentRepository, (oldRepository==null || oldRepository.Count==0)?new SynchItem(): oldRepository[0]);
+            return GetDifferencesBetweenTrees(currentRepository, (oldRepository.Count==0)?new SynchItem(): oldRepository[0]);
         }
 
         internal static SortedList<string, OperationType> GetDifferencesBetweenTrees(SynchItem newTree, SynchItem oldTree)
         {
+            LoggingManager.Debug("Getting the differences between trees");
             List<SynchItemData> newTreeFlatten = SynchItemManager.FlattenTree(newTree);
             List<SynchItemData> oldTreeFlatten = SynchItemManager.FlattenTree(oldTree);
             SortedList<string,OperationType> result = new SortedList<string, OperationType>();
@@ -151,13 +163,14 @@ namespace MySynch.Core.Publisher
 
             foreach (string key in oldTreeFlatten.Except(newTreeFlatten, new SynchItemDataEqualityComparer()).Select(n => n.Identifier))
                 result.Add(key,OperationType.Delete);
+            LoggingManager.Debug("Differences calculated.");
             return result;
         }
 
 
         public void SaveSettingsEndExit()
         {
-            Serializer.SerializeToFile(new List<SynchItem>{CurrentRepository},"backup.xml");
+            Serializer.SerializeToFile(new List<SynchItem>{CurrentRepository},_backupFileName);
         }
 
         public string RootFolder
@@ -215,8 +228,23 @@ namespace MySynch.Core.Publisher
         }
 
         private SynchItem _currentRepository;
-        private IItemDiscoverer _itemDiscoverer;
-        internal SynchItem CurrentRepository { get { return _currentRepository = (_currentRepository) ?? _itemDiscoverer.DiscoverFromFolder(RootFolder); } }
+        private ItemDiscoverer _itemDiscoverer;
+        private string _backupFileName;
+
+        internal SynchItem CurrentRepository { get
+        {
+            try
+            {
+                return _currentRepository = (_currentRepository) ?? _itemDiscoverer.DiscoverFromFolder(RootFolder);
+
+            }
+            catch (Exception ex)
+            {
+                LoggingManager.LogMySynchSystemError("Trying to load the current rwpository", ex);                
+                throw;
+            }
+        } 
+        }
 
         public string MachineName
         {

@@ -2,11 +2,11 @@
 <ArrayOfAvailableChannel xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <AvailableChannel>
     <PublisherInfo>
-      <PublisherInstanceName>IPublisher.Local</PublisherInstanceName>
+      <InstanceName>IPublisher.Local</InstanceName>
       <EndpointName></EndpointName>
     </PublisherInfo>
     <SubscriberInfo>
-      <SubScriberName>ISubscriber.Local</SubScriberName>
+      <InstanceName>ISubscriber.Local</InstanceName>
       <EndpointName></EndpointName>
       <TargetRootFolder>destination root folder</TargetRootFolder>
     </SubscriberInfo>

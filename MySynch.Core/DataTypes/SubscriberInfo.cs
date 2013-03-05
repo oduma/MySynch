@@ -3,13 +3,9 @@ using MySynch.Contracts;
 
 namespace MySynch.Core.DataTypes
 {
-    public class SubscriberInfo
+    public class SubscriberInfo:BaseInfo
     {
         [XmlIgnore]
         public ISubscriber Subscriber { get; set; }
-
-        public string SubScriberName { get; set; }
-
-        public int Port { get; set; }
     }
 }

@@ -1,0 +1,376 @@
+<?xml version="1.0"?>
+<ArrayOfSynchItem xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SynchItem>
+    <SynchItemData>
+      <Name />
+      <Identifier>C:\MySynch.Source.Test.Root\</Identifier>
+      <Size>0</Size>
+    </SynchItemData>
+    <Items>
+      <SynchItem>
+        <SynchItemData>
+          <Name>05. I Specialize In Loneliness.mp3</Name>
+          <Identifier>C:\MySynch.Source.Test.Root\05. I Specialize In Loneliness.mp3</Identifier>
+          <Size>15459378</Size>
+        </SynchItemData>
+      </SynchItem>
+      <SynchItem>
+        <SynchItemData>
+          <Name>06. No Clause 28 (Pascal Gabriel Mix).mp3</Name>
+          <Identifier>C:\MySynch.Source.Test.Root\06. No Clause 28 (Pascal Gabriel Mix).mp3</Identifier>
+          <Size>15308920</Size>
+        </SynchItemData>
+      </SynchItem>
+      <SynchItem>
+        <SynchItemData>
+          <Name>07. Love Hurts (L.P. Mix).mp3</Name>
+          <Identifier>C:\MySynch.Source.Test.Root\07. Love Hurts (L.P. Mix).mp3</Identifier>
+          <Size>15681936</Size>
+        </SynchItemData>
+      </SynchItem>
+      <SynchItem>
+        <SynchItemData>
+          <Name>08. Siempre Te Amare.mp3</Name>
+          <Identifier>C:\MySynch.Source.Test.Root\08. Siempre Te Amare.mp3</Identifier>
+          <Size>14793768</Size>
+        </SynchItemData>
+      </SynchItem>
+      <SynchItem>
+        <SynchItemData>
+          <Name>09. Too Much Love.mp3</Name>
+          <Identifier>C:\MySynch.Source.Test.Root\09. Too Much Love.mp3</Identifier>
+          <Size>14454173</Size>
+        </SynchItemData>
+      </SynchItem>
+      <SynchItem>
+        <SynchItemData>
+          <Name>10. Bow Down Mister.mp3</Name>
+          <Identifier>C:\MySynch.Source.Test.Root\10. Bow Down Mister.mp3</Identifier>
+          <Size>15714322</Size>
+        </SynchItemData>
+      </SynchItem>
+      <SynchItem>
+        <SynchItemData>
+          <Name>11. Generations Of Love (Seventies Mix).mp3</Name>
+          <Identifier>C:\MySynch.Source.Test.Root\11. Generations Of Love (Seventies Mix).mp3</Identifier>
+          <Size>14965150</Size>
+        </SynchItemData>
+      </SynchItem>
+      <SynchItem>
+        <SynchItemData>
+          <Name>File1.xml</Name>
+          <Identifier>C:\MySynch.Source.Test.Root\File1.xml</Identifier>
+          <Size>75</Size>
+        </SynchItemData>
+      </SynchItem>
+      <SynchItem>
+        <SynchItemData>
+          <Name>img001.jpg</Name>
+          <Identifier>C:\MySynch.Source.Test.Root\img001.jpg</Identifier>
+          <Size>2601093</Size>
+        </SynchItemData>
+      </SynchItem>
+      <SynchItem>
+        <SynchItemData>
+          <Name>img002.jpg</Name>
+          <Identifier>C:\MySynch.Source.Test.Root\img002.jpg</Identifier>
+          <Size>1614922</Size>
+        </SynchItemData>
+      </SynchItem>
+      <SynchItem>
+        <SynchItemData>
+          <Name>img003.jpg</Name>
+          <Identifier>C:\MySynch.Source.Test.Root\img003.jpg</Identifier>
+          <Size>1813500</Size>
+        </SynchItemData>
+      </SynchItem>
+      <SynchItem>
+        <SynchItemData>
+          <Name>img004.jpg</Name>
+          <Identifier>C:\MySynch.Source.Test.Root\img004.jpg</Identifier>
+          <Size>1620026</Size>
+        </SynchItemData>
+      </SynchItem>
+      <SynchItem>
+        <SynchItemData>
+          <Name>img005.jpg</Name>
+          <Identifier>C:\MySynch.Source.Test.Root\img005.jpg</Identifier>
+          <Size>1491032</Size>
+        </SynchItemData>
+      </SynchItem>
+      <SynchItem>
+        <SynchItemData>
+          <Name>img006.jpg</Name>
+          <Identifier>C:\MySynch.Source.Test.Root\img006.jpg</Identifier>
+          <Size>175729</Size>
+        </SynchItemData>
+      </SynchItem>
+      <SynchItem>
+        <SynchItemData>
+          <Name>2Cellos</Name>
+          <Identifier>C:\MySynch.Source.Test.Root\2Cellos</Identifier>
+          <Size>0</Size>
+        </SynchItemData>
+        <Items>
+          <SynchItem>
+            <SynchItemData>
+              <Name>In2ition</Name>
+              <Identifier>C:\MySynch.Source.Test.Root\2Cellos\In2ition</Identifier>
+              <Size>0</Size>
+            </SynchItemData>
+            <Items>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>01 - Oh, Well.mp3</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\2Cellos\In2ition\01 - Oh, Well.mp3</Identifier>
+                  <Size>6185881</Size>
+                </SynchItemData>
+              </SynchItem>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>02 - We Found Love.mp3</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\2Cellos\In2ition\02 - We Found Love.mp3</Identifier>
+                  <Size>8548395</Size>
+                </SynchItemData>
+              </SynchItem>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>03 - Highway to Hell.mp3</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\2Cellos\In2ition\03 - Highway to Hell.mp3</Identifier>
+                  <Size>8447040</Size>
+                </SynchItemData>
+              </SynchItem>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>04 - Every Breath You Take.mp3</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\2Cellos\In2ition\04 - Every Breath You Take.mp3</Identifier>
+                  <Size>9244297</Size>
+                </SynchItemData>
+              </SynchItem>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>05 - Supermassive Black Hole.mp3</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\2Cellos\In2ition\05 - Supermassive Black Hole.mp3</Identifier>
+                  <Size>8233881</Size>
+                </SynchItemData>
+              </SynchItem>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>06 - Technical Difficulties.mp3</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\2Cellos\In2ition\06 - Technical Difficulties.mp3</Identifier>
+                  <Size>6629962</Size>
+                </SynchItemData>
+              </SynchItem>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>07 - Clocks.mp3</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\2Cellos\In2ition\07 - Clocks.mp3</Identifier>
+                  <Size>13557636</Size>
+                </SynchItemData>
+              </SynchItem>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>08 - Bang Bang.mp3</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\2Cellos\In2ition\08 - Bang Bang.mp3</Identifier>
+                  <Size>6679073</Size>
+                </SynchItemData>
+              </SynchItem>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>09 - Voodoo People.mp3</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\2Cellos\In2ition\09 - Voodoo People.mp3</Identifier>
+                  <Size>6687432</Size>
+                </SynchItemData>
+              </SynchItem>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>10 - Candle in the Wind.mp3</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\2Cellos\In2ition\10 - Candle in the Wind.mp3</Identifier>
+                  <Size>6705195</Size>
+                </SynchItemData>
+              </SynchItem>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>11 - Orient Express.mp3</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\2Cellos\In2ition\11 - Orient Express.mp3</Identifier>
+                  <Size>7605897</Size>
+                </SynchItemData>
+              </SynchItem>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>12 - Il Libro Dell'Amore.mp3</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\2Cellos\In2ition\12 - Il Libro Dell'Amore.mp3</Identifier>
+                  <Size>8266273</Size>
+                </SynchItemData>
+              </SynchItem>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>13 - Benedictus.mp3</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\2Cellos\In2ition\13 - Benedictus.mp3</Identifier>
+                  <Size>16021505</Size>
+                </SynchItemData>
+              </SynchItem>
+            </Items>
+          </SynchItem>
+        </Items>
+      </SynchItem>
+      <SynchItem>
+        <SynchItemData>
+          <Name>abc</Name>
+          <Identifier>C:\MySynch.Source.Test.Root\abc</Identifier>
+          <Size>0</Size>
+        </SynchItemData>
+        <Items>
+          <SynchItem>
+            <SynchItemData>
+              <Name>abc def</Name>
+              <Identifier>C:\MySynch.Source.Test.Root\abc\abc def</Identifier>
+              <Size>0</Size>
+            </SynchItemData>
+            <Items>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>def feg</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\abc\abc def\def feg</Identifier>
+                  <Size>0</Size>
+                </SynchItemData>
+                <Items>
+                  <SynchItem>
+                    <SynchItemData>
+                      <Name>abc cba.txt</Name>
+                      <Identifier>C:\MySynch.Source.Test.Root\abc\abc def\def feg\abc cba.txt</Identifier>
+                      <Size>8</Size>
+                    </SynchItemData>
+                  </SynchItem>
+                </Items>
+              </SynchItem>
+            </Items>
+          </SynchItem>
+        </Items>
+      </SynchItem>
+      <SynchItem>
+        <SynchItemData>
+          <Name>Mogwai</Name>
+          <Identifier>C:\MySynch.Source.Test.Root\Mogwai</Identifier>
+          <Size>0</Size>
+        </SynchItemData>
+        <Items>
+          <SynchItem>
+            <SynchItemData>
+              <Name>Les Revenants</Name>
+              <Identifier>C:\MySynch.Source.Test.Root\Mogwai\Les Revenants</Identifier>
+              <Size>0</Size>
+            </SynchItemData>
+            <Items>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>01 - Hungry Face.mp3</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\Mogwai\Les Revenants\01 - Hungry Face.mp3</Identifier>
+                  <Size>5861604</Size>
+                </SynchItemData>
+              </SynchItem>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>02 - Jaguar.mp3</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\Mogwai\Les Revenants\02 - Jaguar.mp3</Identifier>
+                  <Size>5631716</Size>
+                </SynchItemData>
+              </SynchItem>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>03 - The Huts.mp3</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\Mogwai\Les Revenants\03 - The Huts.mp3</Identifier>
+                  <Size>9766381</Size>
+                </SynchItemData>
+              </SynchItem>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>04 - Kill Jester.mp3</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\Mogwai\Les Revenants\04 - Kill Jester.mp3</Identifier>
+                  <Size>8467579</Size>
+                </SynchItemData>
+              </SynchItem>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>05 - This Messiah Needs Watching.mp3</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\Mogwai\Les Revenants\05 - This Messiah Needs Watching.mp3</Identifier>
+                  <Size>11155089</Size>
+                </SynchItemData>
+              </SynchItem>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>06 - Whisky Time.mp3</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\Mogwai\Les Revenants\06 - Whisky Time.mp3</Identifier>
+                  <Size>4070649</Size>
+                </SynchItemData>
+              </SynchItem>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>07 - Special N.mp3</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\Mogwai\Les Revenants\07 - Special N.mp3</Identifier>
+                  <Size>9235575</Size>
+                </SynchItemData>
+              </SynchItem>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>08 - Relative Hysteria.mp3</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\Mogwai\Les Revenants\08 - Relative Hysteria.mp3</Identifier>
+                  <Size>8906448</Size>
+                </SynchItemData>
+              </SynchItem>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>09 - Fridge Magic.mp3</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\Mogwai\Les Revenants\09 - Fridge Magic.mp3</Identifier>
+                  <Size>8190683</Size>
+                </SynchItemData>
+              </SynchItem>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>10 - Portugal.mp3</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\Mogwai\Les Revenants\10 - Portugal.mp3</Identifier>
+                  <Size>9733990</Size>
+                </SynchItemData>
+              </SynchItem>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>11 - Eagle Tax.mp3</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\Mogwai\Les Revenants\11 - Eagle Tax.mp3</Identifier>
+                  <Size>8149926</Size>
+                </SynchItemData>
+              </SynchItem>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>12 - Modern.mp3</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\Mogwai\Les Revenants\12 - Modern.mp3</Identifier>
+                  <Size>6831259</Size>
+                </SynchItemData>
+              </SynchItem>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>13 - What Are They Doing In Heaven Today.mp3</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\Mogwai\Les Revenants\13 - What Are They Doing In Heaven Today.mp3</Identifier>
+                  <Size>14166503</Size>
+                </SynchItemData>
+              </SynchItem>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>14 - Wizard Motor.mp3</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\Mogwai\Les Revenants\14 - Wizard Motor.mp3</Identifier>
+                  <Size>11318063</Size>
+                </SynchItemData>
+              </SynchItem>
+              <SynchItem>
+                <SynchItemData>
+                  <Name>New Album Releases.url</Name>
+                  <Identifier>C:\MySynch.Source.Test.Root\Mogwai\Les Revenants\New Album Releases.url</Identifier>
+                  <Size>111</Size>
+                </SynchItemData>
+              </SynchItem>
+            </Items>
+          </SynchItem>
+        </Items>
+      </SynchItem>
+    </Items>
+  </SynchItem>
+</ArrayOfSynchItem>

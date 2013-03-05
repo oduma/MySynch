@@ -2,11 +2,11 @@
 <ArrayOfAvailableChannel xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <AvailableChannel>
     <PublisherInfo>
-      <PublisherInstanceName>IPublisher.Remote.NotPresent</PublisherInstanceName>
+      <InstanceName>IPublisher.Remote.NotPresent</InstanceName>
       <Port>8765</Port>
     </PublisherInfo>
     <SubscriberInfo>
-      <SubScriberName>ISubscriber.Local</SubScriberName>
+      <InstanceName>ISubscriber.Local</InstanceName>
       <Port>8766</Port>
     </SubscriberInfo>
     <CopyStartegyName>ICopyStrategy.Local</CopyStartegyName>

@@ -2,11 +2,11 @@
 <ArrayOfAvailableChannel xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <AvailableChannel>
     <PublisherInfo>
-      <PublisherInstanceName>IPublisher.Local</PublisherInstanceName>
+      <InstanceName>IPublisher.Local</InstanceName>
       <Port>0</Port>
     </PublisherInfo>
     <SubscriberInfo>
-      <SubScriberName>ISubscriber.NotPresent</SubScriberName>
+      <InstanceName>ISubscriber.NotPresent</InstanceName>
       <Port>0</Port>
     </SubscriberInfo>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>

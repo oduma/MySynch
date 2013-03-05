@@ -1,33 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using MySynch.Common;
 using MySynch.Core.DataTypes;
-using MySynch.Core.Interfaces;
 
 namespace MySynch.Core.Publisher
 {
-    public class ItemDiscoverer:IItemDiscoverer
+    public class ItemDiscoverer
     {
-        private string _rootPath;
-
-        private readonly static string _rootPlaceHolder="root";
-
-        public ItemDiscoverer(string rootPath)
+        public virtual SynchItem DiscoverFromFolder(string path)
         {
-            _rootPath = rootPath;
-        }
-
-        public SynchItem DiscoverFromFolder(string path)
-        {
+            LoggingManager.Debug("Discovering from root folder:" +path);
             if(string.IsNullOrEmpty(path))
                 throw new ArgumentNullException("path");
             if(!Directory.Exists(path))
                 throw new ArgumentException("Directory does not exist", "path");
-            if(DiscoveringFolder!=null)
-                DiscoveringFolder(this,new FolderDiscoveredArg(path));
             return new SynchItem
                                              {SynchItemData=new SynchItemData{
-                                                 Identifier = path.Replace(_rootPath,_rootPlaceHolder),
+                                                 Identifier = path,
                                                  Name =
                                                      path.Substring(path.LastIndexOf(@"\") + 1,
                                                                     path.Length - path.LastIndexOf(@"\") - 1)
@@ -36,14 +26,14 @@ namespace MySynch.Core.Publisher
                                              };
         }
 
-        public event EventHandler<FolderDiscoveredArg> DiscoveringFolder;
-        public long GetSize(string filePath)
+        public virtual long GetSize(string filePath)
         {
             return new FileInfo(filePath).Length;
         }
 
         private List<SynchItem> GetSubFoldersOrFiles(string path)
         {
+            LoggingManager.Debug("Getting sub folders or files "+path);
             List<SynchItem> list= new List<SynchItem>();
             var files = Directory.GetFiles(path);
             if (files.Length != 0)
@@ -53,7 +43,7 @@ namespace MySynch.Core.Publisher
                     {
                         SynchItemData = new SynchItemData
                         {
-                            Identifier = file.Replace(_rootPath, _rootPlaceHolder),
+                            Identifier = file,
                             Name =
                                 file.Substring(file.LastIndexOf(@"\") + 1,
                                      file.Length - file.LastIndexOf(@"\") - 1),
@@ -64,6 +54,7 @@ namespace MySynch.Core.Publisher
             if(folders.Length !=0)
                 foreach(string folder in folders)
                     list.Add(DiscoverFromFolder(folder));
+            LoggingManager.Debug("Got subfolder or file");
             return list;
         }
     }

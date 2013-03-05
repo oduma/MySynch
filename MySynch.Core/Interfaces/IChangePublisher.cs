@@ -1,6 +1,7 @@
 ﻿using System;
 using MySynch.Contracts;
 using MySynch.Core.DataTypes;
+using MySynch.Core.Publisher;
 
 namespace MySynch.Core.Interfaces
 {
@@ -14,7 +15,7 @@ namespace MySynch.Core.Interfaces
 
         void QueueDelete(string absolutePath);
 
-        void Initialize(string rootFolder,IItemDiscoverer itemDiscoverer);
+        void Initialize(string rootFolder,ItemDiscoverer itemDiscoverer);
 
         void SaveSettingsEndExit();
 

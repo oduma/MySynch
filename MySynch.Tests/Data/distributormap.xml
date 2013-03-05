@@ -2,11 +2,11 @@
 <ArrayOfAvailableChannel xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <AvailableChannel>
     <PublisherInfo>
-      <PublisherInstanceName>IPublisher.Local</PublisherInstanceName>
+      <InstanceName>IPublisher.Local</InstanceName>
       <Port>0</Port>
     </PublisherInfo>
     <SubscriberInfo>
-      <SubScriberName>ISubscriber.Local</SubScriberName>
+      <InstanceName>ISubscriber.Local</InstanceName>
       <Port>0</Port>
       <TargetRootFolder></TargetRootFolder>
     </SubscriberInfo>
@@ -16,11 +16,11 @@
   </AvailableChannel>
   <AvailableChannel>
     <PublisherInfo>
-      <PublisherInstanceName>IPublisher.Remote</PublisherInstanceName>
+      <InstanceName>IPublisher.Remote</InstanceName>
       <Port>8765</Port>
     </PublisherInfo>
     <SubscriberInfo>
-      <SubScriberName>ISubscriber.Remote</SubScriberName>
+      <InstanceName>ISubscriber.Remote</InstanceName>
       <Port>8766</Port>
       <TargetRootFolder></TargetRootFolder>
     </SubscriberInfo>
@@ -31,11 +31,11 @@
   </AvailableChannel>
   <AvailableChannel>
     <PublisherInfo>
-      <PublisherInstanceName>IPublisher.Local</PublisherInstanceName>
+      <InstanceName>IPublisher.Local</InstanceName>
       <Port>0</Port>
     </PublisherInfo>
     <SubscriberInfo>
-      <SubScriberName>ISubscriber.Remote</SubScriberName>
+      <InstanceName>ISubscriber.Remote</InstanceName>
       <Port>8766</Port>
       <TargetRootFolder></TargetRootFolder>
     </SubscriberInfo>
