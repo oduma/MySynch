@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
+using System.ServiceModel.Description;
 using System.ServiceModel.Discovery;
 using System.Threading;
 using MySynch.Common;
@@ -180,6 +181,7 @@ namespace MySynch.Core.WCF.Clients.Discovery
                 }
                 LoggingManager.Debug("Found service " + endpointAddress.Address);
                 baseAddress = endpointAddress.Address;
+                //baseAddress = new EndpointAddress(endpointAddress.Address.Uri, EndpointIdentity.CreateDnsIdentity(System.Net.Dns.GetHostName()));
                 return true;
             }
             catch (Exception ex)
@@ -203,9 +205,8 @@ namespace MySynch.Core.WCF.Clients.Discovery
                                              {
                                                  EndpointAddress = baseAddress
             };
-            endpointChannelFactory.ChannelFactory = new ChannelFactory<T>(new WSHttpBinding(),
+            endpointChannelFactory.ChannelFactory = new ChannelFactory<T>(ClientServerBindingHelper.GetBinding(),
                                                                           endpointChannelFactory.EndpointAddress);
-
             endpointChannelFactory.ChannelFactory.Endpoint.Behaviors.Add(new MySynchAuditBehavior());
 
             endpointChannelFactory.ChannelFactory.Open();

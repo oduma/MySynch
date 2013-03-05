@@ -66,10 +66,9 @@ namespace MySynch.Common
 
         protected ServiceHost CreateAndConfigureServiceHost<TContract,TInstance>(Uri baseAddress)
         {
-            var serviceHost = new ServiceHost(typeof (TInstance), baseAddress);
+            var serviceHost = new ServiceHost(typeof (TInstance),baseAddress);
             
-            var serviceEndPoint = serviceHost.AddServiceEndpoint(typeof(TContract), new WSHttpBinding(),string.Empty);
-
+            var serviceEndPoint = serviceHost.AddServiceEndpoint(typeof(TContract), ClientServerBindingHelper.GetBinding(),string.Empty);
             serviceEndPoint.Behaviors.Add(new MySynchAuditBehavior());
 
             // ** DISCOVERY ** //
@@ -92,7 +91,7 @@ namespace MySynch.Common
         protected ServiceHost CreateAndConfigureServiceHost<T>(T serviceInstance, Uri baseAddress)
         {
             var serviceHost = new ServiceHost(serviceInstance, baseAddress);
-            var serviceEndPoint = serviceHost.AddServiceEndpoint(typeof(T), new WSHttpBinding(), string.Empty);
+            var serviceEndPoint = serviceHost.AddServiceEndpoint(typeof(T), ClientServerBindingHelper.GetBinding(), string.Empty);
 
             serviceEndPoint.Behaviors.Add(new MySynchAuditBehavior());
 
