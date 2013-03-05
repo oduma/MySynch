@@ -45,7 +45,7 @@ namespace MySynch.Tests.Stubs
             return true;
         }
 
-        public void InitiateUsingEndpoint(string endpointName)
+        public void InitiateUsingPort(int port)
         {
             return;
         }

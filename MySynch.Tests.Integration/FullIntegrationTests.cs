@@ -16,17 +16,17 @@ namespace MySynch.Tests.Integration
         public void DistributorUpAndAccessible()
         {
             IDistributorMonitorProxy distributorMonitorProxy = new DistributorMonitorClient();
-            distributorMonitorProxy.InitiateUsingEndpoint("DistributorSciendoLaptop");
+            distributorMonitorProxy.InitiateUsingPort(8765);
             var listOfComponents = distributorMonitorProxy.ListAvailableComponentsTree();
             Assert.IsNotNull(listOfComponents);
             Assert.AreEqual("SCIENDO-LAPTOP", listOfComponents.Name);
             Assert.AreEqual(1, listOfComponents.AvailablePublishers.Count);
-            Assert.AreEqual("IPublisher.Remote.PublisherSciendoLaptop", listOfComponents.AvailablePublishers[0].Name);
+            Assert.AreEqual("IPublisher.Remote.8765", listOfComponents.AvailablePublishers[0].Name);
             Assert.AreEqual(Status.Ok, listOfComponents.AvailablePublishers[0].Status);
             Assert.False(listOfComponents.AvailablePublishers[0].IsLocal);
             Assert.IsNull(listOfComponents.AvailablePublishers[0].Packages);
             Assert.AreEqual(1, listOfComponents.AvailablePublishers[0].DependentComponents.Count);
-            Assert.AreEqual("ISubscriber.Remote.SubscriberSciendoLaptop", listOfComponents.AvailablePublishers[0].DependentComponents[0].Name);
+            Assert.AreEqual("ISubscriber.Remote.8767", listOfComponents.AvailablePublishers[0].DependentComponents[0].Name);
             Assert.AreEqual(Status.Ok, listOfComponents.AvailablePublishers[0].DependentComponents[0].Status);
             Assert.AreEqual(Status.Ok, listOfComponents.AvailablePublishers[0].DependentComponents[0].DataSourceStatus);
             Assert.False(listOfComponents.AvailablePublishers[0].DependentComponents[0].IsLocal);
@@ -40,7 +40,7 @@ namespace MySynch.Tests.Integration
             if (File.Exists(@"C:\MySynch.Dest.Test.Root\File1.xml"))
                 File.Delete(@"C:\MySynch.Dest.Test.Root\File1.xml");
             IDistributorMonitorProxy distributorMonitorProxy = new DistributorMonitorClient();
-            distributorMonitorProxy.InitiateUsingEndpoint("DistributorSciendoLaptop");
+            distributorMonitorProxy.InitiateUsingPort(8765);
             var listOfComponents = distributorMonitorProxy.ListAvailableComponentsTree();
             Assert.IsNotNull(listOfComponents);
             File.Copy(@"Data\File1.xml", @"C:\MySynch.Source.Test.Root\File1.xml", true);

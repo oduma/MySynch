@@ -45,8 +45,8 @@ namespace MySynch.Core.Subscriber
         public TryOpenChannelResponse TryOpenChannel(TryOpenChannelRequest request)
         {
             if (request == null)
-                request = new TryOpenChannelRequest {SourceOfDataEndpointName = null};
-            LoggingManager.Debug("Trying to open channel to: " + request.SourceOfDataEndpointName);
+                request = new TryOpenChannelRequest {SourceOfDataPort = 0};
+            LoggingManager.Debug("Trying to open channel to: " + request.SourceOfDataPort);
             if (_copyStrategy != null)
             {
                 LoggingManager.Debug("Channel already opened.");
@@ -55,12 +55,12 @@ namespace MySynch.Core.Subscriber
             try
             {
                 ISourceOfData sourceOfData;
-                if (string.IsNullOrEmpty(request.SourceOfDataEndpointName))
+                if (request.SourceOfDataPort==0)
                     sourceOfData = new LocalSourceOfData();
                 else
                 {
                     sourceOfData = new SourceOfDataClient();
-                    ((SourceOfDataClient)sourceOfData).InitiateUsingEndpoint(request.SourceOfDataEndpointName);
+                    ((SourceOfDataClient)sourceOfData).InitiateUsingPort(request.SourceOfDataPort);
                 }
                 _copyStrategy = new CopyStrategy();
                 _copyStrategy.Initialize(sourceOfData);

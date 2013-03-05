@@ -1,6 +1,5 @@
 ﻿using System;
 using MySynch.Contracts.Messages;
-using MySynch.Proxies;
 using MySynch.Proxies.Interfaces;
 
 namespace MySynch.Tests.Stubs
@@ -21,7 +20,8 @@ namespace MySynch.Tests.Stubs
         {
             throw new NotImplementedException();
         }
-        public void InitiateUsingEndpoint(string endpointName)
+
+        public void InitiateUsingPort(int port)
         {
             return;
         }

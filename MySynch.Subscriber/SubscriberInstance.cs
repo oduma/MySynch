@@ -1,5 +1,7 @@
-﻿using System.ServiceModel;
+﻿using System;
+using System.ServiceModel;
 using MySynch.Common;
+using MySynch.Contracts;
 using MySynch.Core;
 
 namespace MySynch.Subscriber
@@ -31,7 +33,8 @@ namespace MySynch.Subscriber
                 LoggingManager.Debug("Initializing Subscriber with "+ _rootFolder);
                 var changeApplyer = new Core.Subscriber.Subscriber();
                 changeApplyer.Initialize(_rootFolder);
-                _serviceHosts.Add(new ServiceHost(changeApplyer));
+                _serviceHosts.Add(CreateAndConfigureServiceHost<ISubscriber>(changeApplyer, new Uri(string.Format("http://{0}:{1}/subscriber/{2}/",
+        System.Net.Dns.GetHostName(), _instancePort, Guid.NewGuid().ToString()))));
                 LoggingManager.Debug("Subscriber Initialized.");
             }
         }

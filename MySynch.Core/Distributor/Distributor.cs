@@ -36,14 +36,14 @@ namespace MySynch.Core.Distributor
                 //the channels have to be processed in the order of the publisher
                 var publisherGroups =
                     availableChannels.GroupBy(
-                        c => c.PublisherInfo.PublisherInstanceName + "-" + c.PublisherInfo.EndpointName);
+                        c => c.PublisherInfo.PublisherInstanceName + "-" + c.PublisherInfo.Port);
                 foreach (var publisherGroup in publisherGroups)
                 {
                     IGrouping<string, AvailableChannel> @group = publisherGroup;
                     var publisherChannelsNotAvailable =
                         AvailableChannels.Count(
                             c =>
-                            ((c.PublisherInfo.PublisherInstanceName + "-" + c.PublisherInfo.EndpointName) ==
+                            ((c.PublisherInfo.PublisherInstanceName + "-" + c.PublisherInfo.Port) ==
                              group.Key) && c.Status != Status.Ok);
 
                     var currentPublisher = publisherGroup.Select(g => g).First().PublisherInfo.Publisher;
@@ -83,13 +83,12 @@ namespace MySynch.Core.Distributor
             var publisherName = string.Format("{0}{1}",
                                               channel.PublisherInfo.
                                                   PublisherInstanceName,
-                                              (string.IsNullOrEmpty(
-                                                  channel.PublisherInfo.
-                                                      EndpointName))
+                                              (channel.PublisherInfo.
+                                                      Port==0)
                                                   ? ""
                                                   : "." +
                                                     channel.PublisherInfo.
-                                                        EndpointName);
+                                                        Port);
             LoggingManager.Debug("Register package: " + packageRequestResponse.PackageId + " with publisher: " + publisherName);
 
             var existingcomponent = _allComponents.FirstOrDefault(c => c.Name == publisherName);
@@ -177,23 +176,21 @@ namespace MySynch.Core.Distributor
             var publisherName = string.Format("{0}{1}",
                                               channel.PublisherInfo.
                                                   PublisherInstanceName,
-                                              (string.IsNullOrEmpty(
-                                                  channel.PublisherInfo.
-                                                      EndpointName))
+                                              (channel.PublisherInfo.
+                                                      Port==0)
                                                   ? ""
                                                   : "." +
                                                     channel.PublisherInfo.
-                                                        EndpointName);
+                                                        Port);
             var subscriberName = string.Format("{0}{1}",
                                                channel.SubscriberInfo.
                                                    SubScriberName,
-                                               (string.IsNullOrEmpty(
-                                                   channel.SubscriberInfo.
-                                                       EndpointName))
+                                               (channel.SubscriberInfo.
+                                                       Port==0)
                                                    ? ""
                                                    : "." +
                                                      channel.SubscriberInfo.
-                                                         EndpointName);
+                                                         Port);
 
             LoggingManager.Debug("Register package: " + packageRequestResponse.PackageId + " with subscriber: " + subscriberName);
 
@@ -295,24 +292,22 @@ namespace MySynch.Core.Distributor
             var publisherName = string.Format("{0}{1}",
                                               availableChannel.PublisherInfo.
                                                   PublisherInstanceName,
-                                              (string.IsNullOrEmpty(
-                                                  availableChannel.PublisherInfo.
-                                                      EndpointName))
+                                              (availableChannel.PublisherInfo.
+                                                      Port==0)
                                                   ? ""
                                                   : "." +
                                                     availableChannel.PublisherInfo.
-                                                        EndpointName);
+                                                        Port);
             var subscriberName =
                 string.Format("{0}{1}",
                               availableChannel.SubscriberInfo.
                                   SubScriberName,
-                              (string.IsNullOrEmpty(
-                                  availableChannel.SubscriberInfo.
-                                      EndpointName))
+                              (availableChannel.SubscriberInfo.
+                                      Port==0)
                                   ? ""
                                   : "." +
                                     availableChannel.SubscriberInfo.
-                                        EndpointName);
+                                        Port);
 
             try
             {
@@ -339,7 +334,7 @@ namespace MySynch.Core.Distributor
             }
             catch (Exception ex)
             {
-                LoggingManager.LogMySynchSystemError(availableChannel.DataSourceEndpointName, ex);
+                LoggingManager.LogMySynchSystemError(availableChannel.DataSourcePort, ex);
                 availableChannel.Status = Status.OfflinePermanent;
                 UpdateDataSource(subscriberName,publisherName,Status.OfflinePermanent);
                 return false;
@@ -352,10 +347,10 @@ namespace MySynch.Core.Distributor
                 return false;
             
             return
-                availableChannel.SubscriberInfo.Subscriber.TryOpenChannel((string.IsNullOrEmpty(availableChannel.DataSourceEndpointName))?null:new TryOpenChannelRequest
+                availableChannel.SubscriberInfo.Subscriber.TryOpenChannel((availableChannel.DataSourcePort==0)?null:new TryOpenChannelRequest
                                                                               {
-                                                                                  SourceOfDataEndpointName =
-                                                                                      availableChannel.DataSourceEndpointName
+                                                                                  SourceOfDataPort =
+                                                                                      availableChannel.DataSourcePort
                                                                               }).Status;
         }
 
@@ -389,26 +384,24 @@ namespace MySynch.Core.Distributor
             var publisherName = string.Format("{0}{1}",
                                               availableChannel.PublisherInfo.
                                                   PublisherInstanceName,
-                                              (string.IsNullOrEmpty(
-                                                  availableChannel.PublisherInfo.
-                                                      EndpointName))
+                                              (availableChannel.PublisherInfo.
+                                                      Port==0)
                                                   ? ""
                                                   : "." +
                                                     availableChannel.PublisherInfo.
-                                                        EndpointName);
+                                                        Port);
             var availableComponent = new AvailableComponent
                                                         {
                                                             Name =
                                                                 string.Format("{0}{1}",
                                                                               availableChannel.SubscriberInfo.
                                                                                   SubScriberName,
-                                                                              (string.IsNullOrEmpty(
-                                                                                  availableChannel.SubscriberInfo.
-                                                                                      EndpointName))
+                                                                              (availableChannel.SubscriberInfo.
+                                                                                      Port==0)
                                                                                   ? ""
                                                                                   : "." +
                                                                                     availableChannel.SubscriberInfo.
-                                                                                        EndpointName),
+                                                                                        Port),
                                                             Status = Status.NotChecked
                                                         };
 
@@ -416,7 +409,7 @@ namespace MySynch.Core.Distributor
 
             try
             {
-                if (string.IsNullOrEmpty(availableChannel.SubscriberInfo.EndpointName))
+                if (availableChannel.SubscriberInfo.Port==0)
                 {
                     subscriber = (availableChannel.SubscriberInfo.Subscriber) ??
                                  (availableChannel.SubscriberInfo.Subscriber =
@@ -429,7 +422,7 @@ namespace MySynch.Core.Distributor
                                  (availableChannel.SubscriberInfo.Subscriber =
                                   _componentResolver.Resolve<ISubscriberProxy>(
                                       availableChannel.SubscriberInfo.SubScriberName,
-                                      availableChannel.SubscriberInfo.EndpointName));
+                                      availableChannel.SubscriberInfo.Port));
                 }
                 if (!subscriber.GetHeartbeat().Status)
                 {
@@ -455,7 +448,7 @@ namespace MySynch.Core.Distributor
             catch (Exception ex)
             {
                 LoggingManager.LogMySynchSystemError(
-                    availableChannel.SubscriberInfo.SubScriberName + availableChannel.SubscriberInfo.EndpointName, ex);
+                    availableChannel.SubscriberInfo.SubScriberName + availableChannel.SubscriberInfo.Port, ex);
                 availableChannel.Status = Status.OfflinePermanent;
                 availableComponent.Status = Status.OfflinePermanent;
                 return false;
@@ -493,20 +486,19 @@ namespace MySynch.Core.Distributor
                                                                 string.Format("{0}{1}",
                                                                               availableChannel.PublisherInfo.
                                                                                   PublisherInstanceName,
-                                                                              (string.IsNullOrEmpty(
-                                                                                  availableChannel.PublisherInfo.
-                                                                                      EndpointName))
+                                                                              (availableChannel.PublisherInfo.
+                                                                                      Port==0)
                                                                                   ? ""
                                                                                   : "." +
                                                                                     availableChannel.PublisherInfo.
-                                                                                        EndpointName),
+                                                                                        Port),
                                                             Status = Status.NotChecked,
                                                         };
 
             IPublisher localPublisher;
             try
             {
-                if (string.IsNullOrEmpty(availableChannel.PublisherInfo.EndpointName))
+                if (availableChannel.PublisherInfo.Port==0)
                 {
                     availableComponent.IsLocal = true;
                     //the publisher has to be local
@@ -523,7 +515,7 @@ namespace MySynch.Core.Distributor
                                      (availableChannel.PublisherInfo.Publisher =
                                       _componentResolver.Resolve<IPublisherProxy>(
                                           availableChannel.PublisherInfo.PublisherInstanceName,
-                                          availableChannel.PublisherInfo.EndpointName));
+                                          availableChannel.PublisherInfo.Port));
                 }
                 if (!localPublisher.GetHeartbeat().Status)
                 {
@@ -548,7 +540,7 @@ namespace MySynch.Core.Distributor
             catch (Exception ex)
             {
                 LoggingManager.LogMySynchSystemError(
-                    availableChannel.PublisherInfo.PublisherInstanceName + availableChannel.PublisherInfo.EndpointName,
+                    availableChannel.PublisherInfo.PublisherInstanceName + availableChannel.PublisherInfo.Port,
                     ex);
                 availableChannel.Status = Status.OfflinePermanent;
                 availableComponent.Status = Status.OfflinePermanent;

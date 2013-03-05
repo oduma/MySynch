@@ -3,11 +3,11 @@
   <AvailableChannel>
     <PublisherInfo>
       <PublisherInstanceName>IPublisher.Local</PublisherInstanceName>
-      <EndpointName></EndpointName>
+      <Port>0</Port>
     </PublisherInfo>
     <SubscriberInfo>
       <SubScriberName>ISubscriber.NotPresent</SubScriberName>
-      <EndpointName></EndpointName>
+      <Port>0</Port>
     </SubscriberInfo>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
     <Status>NotChecked</Status>

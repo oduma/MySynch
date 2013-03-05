@@ -22,7 +22,7 @@ namespace MySynch.Tests.Stubs
             throw new NotImplementedException();
         }
 
-        public void InitiateUsingEndpoint(string endpointName)
+        public void InitiateUsingPort(int port)
         {
             return;
         }

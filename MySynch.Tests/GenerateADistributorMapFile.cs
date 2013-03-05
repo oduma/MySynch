@@ -19,16 +19,16 @@ namespace MySynch.Tests
         {
             List<AvailableChannel> availableChannels=new List<AvailableChannel>();
             AvailableChannel availableChannel= new AvailableChannel();
-            availableChannel.DataSourceEndpointName = "";
+            availableChannel.DataSourcePort =0;
             availableChannel.PublisherInfo= new PublisherInfo();
-            availableChannel.PublisherInfo.EndpointName = Environment.MachineName;
+            availableChannel.PublisherInfo.Port = 0;
             availableChannel.PublisherInfo.PublisherInstanceName = "IPublisher.Local";
             availableChannel.Status = Status.NotChecked;
             availableChannel.SubscriberInfo= new SubscriberInfo();
-            availableChannel.SubscriberInfo.EndpointName = Environment.MachineName;
+            availableChannel.SubscriberInfo.Port = 0;
             availableChannel.SubscriberInfo.SubScriberName = "ISubscriber.Local";
-            availableChannel.UniqueKey = availableChannel.PublisherInfo.EndpointName + "to" +
-                                         availableChannel.SubscriberInfo.EndpointName;
+            availableChannel.UniqueKey = availableChannel.PublisherInfo.Port + "to" +
+                                         availableChannel.SubscriberInfo.Port;
             availableChannels.Add(availableChannel);
 
             XmlSerializer xmlSerializer= new XmlSerializer(typeof(List<AvailableChannel>));

@@ -3,11 +3,11 @@
   <AvailableChannel>
     <PublisherInfo>
       <PublisherInstanceName>IPublisher.Local</PublisherInstanceName>
-      <EndpointName></EndpointName>
+      <Port>0</Port>
     </PublisherInfo>
     <SubscriberInfo>
       <SubScriberName>ISubscriber.Local</SubScriberName>
-      <EndpointName></EndpointName>
+      <Port>0</Port>
       <TargetRootFolder>local target root folder</TargetRootFolder>
     </SubscriberInfo>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
@@ -17,11 +17,11 @@
   <AvailableChannel>
     <PublisherInfo>
       <PublisherInstanceName>IPublisher.Local</PublisherInstanceName>
-      <EndpointName></EndpointName>
+      <Port>0</Port>
     </PublisherInfo>
     <SubscriberInfo>
       <SubScriberName>ISubscriber.Remote</SubScriberName>
-      <EndpointName></EndpointName>
+      <Port>8766</Port>
       <TargetRootFolder>remote target root folder</TargetRootFolder>
     </SubscriberInfo>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>

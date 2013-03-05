@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.ServiceModel;
+using System.ServiceModel.Discovery;
 using System.ServiceProcess;
 
 namespace MySynch.Common
@@ -10,6 +12,7 @@ namespace MySynch.Common
     {
         protected string _rootFolder;
         protected string _distributorMapFile;
+        protected int _instancePort;
 
         protected List<ServiceHost> _serviceHosts = new List<ServiceHost>();
 
@@ -25,6 +28,12 @@ namespace MySynch.Common
                 _distributorMapFile = string.Empty;
             else
                 _distributorMapFile = ConfigurationManager.AppSettings[key];
+
+            key = ConfigurationManager.AppSettings.AllKeys.FirstOrDefault(k => k == "InstancePort");
+            if (key == null)
+                _instancePort = 0;
+            else
+                _instancePort = Convert.ToInt32(ConfigurationManager.AppSettings[key]);
 
         }
 
@@ -42,7 +51,6 @@ namespace MySynch.Common
             _serviceHosts.ForEach(OpenServiceHost);
         }
 
-
         private void OpenServiceHost(ServiceHost serviceHost)
         {
             serviceHost.Open();
@@ -53,6 +61,54 @@ namespace MySynch.Common
         {
             LoggingManager.Debug("Closed Host: " + serviceHost.BaseAddresses[0].ToString());
             serviceHost.Close();
+        }
+
+
+        protected ServiceHost CreateAndConfigureServiceHost<TContract,TInstance>(Uri baseAddress)
+        {
+            var serviceHost = new ServiceHost(typeof (TInstance),baseAddress);
+            
+            var serviceEndPoint = serviceHost.AddServiceEndpoint(typeof(TContract), ClientServerBindingHelper.GetBinding(),string.Empty);
+            serviceEndPoint.Behaviors.Add(new MySynchAuditBehavior());
+
+            // ** DISCOVERY ** //
+            // make the service discoverable by adding the discovery behavior
+            ServiceDiscoveryBehavior serviceDiscoveryBehavior=new ServiceDiscoveryBehavior();
+            serviceHost.Description.Behaviors.Add(serviceDiscoveryBehavior);
+
+            // send announcements on UDP multicast transport
+            serviceDiscoveryBehavior.AnnouncementEndpoints.Add(
+              new UdpAnnouncementEndpoint());
+    
+            // ** DISCOVERY ** //
+            // add the discovery endpoint that specifies where to publish the services
+            serviceHost.AddServiceEndpoint(new UdpDiscoveryEndpoint());
+
+
+            return serviceHost;
+        }
+
+        protected ServiceHost CreateAndConfigureServiceHost<T>(T serviceInstance, Uri baseAddress)
+        {
+            var serviceHost = new ServiceHost(serviceInstance, baseAddress);
+            var serviceEndPoint = serviceHost.AddServiceEndpoint(typeof(T), ClientServerBindingHelper.GetBinding(), string.Empty);
+
+            serviceEndPoint.Behaviors.Add(new MySynchAuditBehavior());
+
+            // ** DISCOVERY ** //
+            // make the service discoverable by adding the discovery behavior
+            ServiceDiscoveryBehavior serviceDiscoveryBehavior = new ServiceDiscoveryBehavior();
+            serviceHost.Description.Behaviors.Add(serviceDiscoveryBehavior);
+
+            // send announcements on UDP multicast transport
+            serviceDiscoveryBehavior.AnnouncementEndpoints.Add(
+              new UdpAnnouncementEndpoint());
+
+            // ** DISCOVERY ** //
+            // add the discovery endpoint that specifies where to publish the services
+            serviceHost.AddServiceEndpoint(new UdpDiscoveryEndpoint());
+
+            return serviceHost;
         }
 
 

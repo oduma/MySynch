@@ -3,7 +3,8 @@
 using System;
 using System.ServiceModel;
 using MySynch.Contracts;
-using MySynch.Core.WCF.Clients;
+using MySynch.Contracts.Messages;
+using MySynch.Core.WCF.Clients.Discovery;
 using MySynch.Proxies.Interfaces;
 
 namespace MySynch.Proxies

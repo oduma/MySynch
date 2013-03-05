@@ -1,7 +1,7 @@
 ﻿using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using MySynch.Common;
-using MySynch.Core.WCF.Clients;
+using MySynch.Core.WCF.Clients.Discovery;
 
 namespace MySynch.Core
 {
@@ -36,16 +36,16 @@ namespace MySynch.Core
             }
         }
 
-        public T Resolve<T>(string name,string endpointName)
+        public T Resolve<T>(string name,int port)
         {
             try
             {
-                LoggingManager.Debug("Resolving for " + name + " and endpoint " +endpointName);
+                LoggingManager.Debug("Resolving for " + name + " and port " +port);
                 using (LoggingManager.LogMySynchPerformance())
                 {
 
                     T result = _container.Resolve<T>(name);
-                    ((IInitiateClient) result).InitiateUsingEndpoint(endpointName);
+                    ((IInitiateClient) result).InitiateUsingPort(port);
                     return result;
                 }
             }

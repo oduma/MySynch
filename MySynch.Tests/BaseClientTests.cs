@@ -1,5 +1,4 @@
-﻿using MySynch.Core.WCF.Clients;
-using MySynch.Tests.Stubs;
+﻿using MySynch.Tests.Stubs;
 using NUnit.Framework;
 
 namespace MySynch.Tests
@@ -13,6 +12,5 @@ namespace MySynch.Tests
             ITest1Proxy baseClient= new ClientImplementation();
             Assert.IsNotNull(baseClient);
         }
-
     }
 }

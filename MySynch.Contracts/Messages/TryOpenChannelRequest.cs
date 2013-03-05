@@ -2,6 +2,6 @@
 {
     public class TryOpenChannelRequest
     {
-        public string SourceOfDataEndpointName { get; set; }
+        public int SourceOfDataPort { get; set; }
     }
 }
