@@ -12,6 +12,7 @@ namespace MySynch.Common
         IDispatchMessageInspector
     {
         private const string ConfigSwitch="CommunicationLogging";
+        private bool? _configAllows = null;
 
         #region IClientMessageInspector Members
 
@@ -78,14 +79,26 @@ namespace MySynch.Common
 
         private bool ConfigAllows()
         {
+            if(_configAllows.HasValue)
+                return _configAllows.Value;
             var configAllows = ConfigurationManager.AppSettings.AllKeys.FirstOrDefault(k => k == ConfigSwitch);
             if (string.IsNullOrEmpty(configAllows))
-                return false;
+            {
+                _configAllows = false;
+                return _configAllows.Value;
+            }
             if (string.IsNullOrEmpty(ConfigurationManager.AppSettings[ConfigSwitch]))
-                return false;
+            {
+                _configAllows= false;
+                return _configAllows.Value;
+            }
             if (ConfigurationManager.AppSettings[ConfigSwitch].ToLower() != "verbose")
-                return false;
-            return true;
+            {
+                _configAllows = false;
+                return _configAllows.Value;
+            }
+            _configAllows = true;
+            return  _configAllows.Value;
         }
 
         #endregion
