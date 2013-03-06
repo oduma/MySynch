@@ -5,67 +5,67 @@
     </Fragment>
     <Fragment>
         <ComponentGroup Id="SubscriberGroup">
-            <Component Id="cmp6DDE03FB5E2E4667003090FA41D50169" Directory="SUBSCRIBER" Guid="{5BA536AF-5363-4041-B7C9-FBC60FE039DA}">
+            <Component Id="cmp6DDE03FB5E2E4667003090FA41D50169" Directory="SUBSCRIBER" Guid="{B679A359-19A2-4D35-B02A-F1E8AC585BC4}">
                 <File Id="filA603783E1FE78A128322496CC657C4C1" KeyPath="yes" Source="$(var.SubscriberSource)\Castle.Core.dll" />
             </Component>
-            <Component Id="cmp20B06D70780B414EA25A72708F45933C" Directory="SUBSCRIBER" Guid="{1A5DA2F4-67F8-4789-A95A-894A170CB68C}">
+            <Component Id="cmp20B06D70780B414EA25A72708F45933C" Directory="SUBSCRIBER" Guid="{13A0D840-1425-4479-8487-FEE65A8B066B}">
                 <File Id="filC999AF6192FC6E832EABB4A1B45C5744" KeyPath="yes" Source="$(var.SubscriberSource)\Castle.Core.pdb" />
             </Component>
-            <Component Id="cmp33BF47CEBA46AEFA1D50041054CFFC68" Directory="SUBSCRIBER" Guid="{FBF363A8-64C9-4F0C-A535-90873AEAC0A2}">
+            <Component Id="cmp33BF47CEBA46AEFA1D50041054CFFC68" Directory="SUBSCRIBER" Guid="{BC07BDC2-3A18-41E8-BD51-3F7F1538BC22}">
                 <File Id="filB3E3C9CCC3178302A65529AABBB9F1C6" KeyPath="yes" Source="$(var.SubscriberSource)\Castle.Core.xml" />
             </Component>
-            <Component Id="cmp238C74638D5A91B9F03E75229FD75346" Directory="SUBSCRIBER" Guid="{2A8C0065-21CD-47A4-BBF7-276D4E7DAE59}">
+            <Component Id="cmp238C74638D5A91B9F03E75229FD75346" Directory="SUBSCRIBER" Guid="{6839FC97-4D1C-4599-8C4A-02AB7CA7E367}">
                 <File Id="filB8745F2DC21656B619FB73C816BF0394" KeyPath="yes" Source="$(var.SubscriberSource)\Castle.Windsor.dll" />
             </Component>
-            <Component Id="cmp50AA07483C38EE58501BBA4F6BDC0AA1" Directory="SUBSCRIBER" Guid="{170F8EA9-E8AA-40D0-BCEA-880F646C8FDD}">
+            <Component Id="cmp50AA07483C38EE58501BBA4F6BDC0AA1" Directory="SUBSCRIBER" Guid="{CE585959-B415-4A10-B3F5-9E483AC989DA}">
                 <File Id="fil67B73DAA87D8C2EE0285673C553717B5" KeyPath="yes" Source="$(var.SubscriberSource)\Castle.Windsor.pdb" />
             </Component>
-            <Component Id="cmp96F811D8D6475E64996DD45E2191213B" Directory="SUBSCRIBER" Guid="{384BA196-6FAF-4085-9CB4-A943152E2152}">
+            <Component Id="cmp96F811D8D6475E64996DD45E2191213B" Directory="SUBSCRIBER" Guid="{CFBFEB73-A13B-4072-B0EF-2332A89161D5}">
                 <File Id="fil9FB98F25D296AA33AC561D2B5D29E4E6" KeyPath="yes" Source="$(var.SubscriberSource)\Castle.Windsor.xml" />
             </Component>
-            <Component Id="cmp890DA65FDE6012215C4598611134539F" Directory="SUBSCRIBER" Guid="{28EC514E-7EE9-4D69-9A13-E6145015D5B4}">
+            <Component Id="cmp890DA65FDE6012215C4598611134539F" Directory="SUBSCRIBER" Guid="{F2F565CC-FD2E-4B4A-BD55-4F8C131312E1}">
                 <File Id="filA945703DFD33CFBA91F713EE91972A77" KeyPath="yes" Source="$(var.SubscriberSource)\log4net.config" />
             </Component>
-            <Component Id="cmpD9E351D239C6B3313079084CF440AB10" Directory="SUBSCRIBER" Guid="{3F231884-D2E8-43C6-B649-AC6AB62AD93C}">
+            <Component Id="cmpD9E351D239C6B3313079084CF440AB10" Directory="SUBSCRIBER" Guid="{B09FD179-5F2B-4C9C-A9A2-C58FC9656793}">
                 <File Id="fil073C5A0BD5752A56C0A3150AFEA3923C" KeyPath="yes" Source="$(var.SubscriberSource)\log4net.dll" />
             </Component>
-            <Component Id="cmpBF4BB05DA0276CDBE24673C4831134A2" Directory="SUBSCRIBER" Guid="{89132DC8-324B-4145-815C-F4C0CB1BB706}">
+            <Component Id="cmpBF4BB05DA0276CDBE24673C4831134A2" Directory="SUBSCRIBER" Guid="{6FC62A27-7439-4EE8-AA28-849866A2471C}">
                 <File Id="filBDA3AE645935EE907FED9F04AAE0B9D8" KeyPath="yes" Source="$(var.SubscriberSource)\log4net.xml" />
             </Component>
-            <Component Id="cmpF6612AF6A5926DD27CE55143F4A3246B" Directory="SUBSCRIBER" Guid="{48E50BCC-7A98-4166-95B0-FD558133303C}">
+            <Component Id="cmpF6612AF6A5926DD27CE55143F4A3246B" Directory="SUBSCRIBER" Guid="{B198AB53-5E32-4709-84C6-468FF54BEC4E}">
                 <File Id="fil3BC96A9AAB2FC7D7C47A669C0CF2D771" KeyPath="yes" Source="$(var.SubscriberSource)\MySynch.Common.dll" />
             </Component>
-            <Component Id="cmp93CF81297556DC63F72C2DABA8FE4419" Directory="SUBSCRIBER" Guid="{CB2E8655-DCD8-4EE2-BEB0-ADA11088C73C}">
+            <Component Id="cmp93CF81297556DC63F72C2DABA8FE4419" Directory="SUBSCRIBER" Guid="{5663DF94-7835-4A73-B57C-B4CE4B9BE9CA}">
                 <File Id="filE18D53D90D9BA3E2280C40984119B6BB" KeyPath="yes" Source="$(var.SubscriberSource)\MySynch.Common.pdb" />
             </Component>
-            <Component Id="cmp6672C98CD29BC5CD49735FFF7143570E" Directory="SUBSCRIBER" Guid="{B93A35D3-8B22-4860-80E1-9261D2DD5EA7}">
+            <Component Id="cmp6672C98CD29BC5CD49735FFF7143570E" Directory="SUBSCRIBER" Guid="{FB4FC0C2-FBE9-4902-8873-E35D5AA27CB8}">
                 <File Id="filC1122C68B7DFF6E562D5E182F4516FF6" KeyPath="yes" Source="$(var.SubscriberSource)\MySynch.Contracts.dll" />
             </Component>
-            <Component Id="cmp709AD829F4F9B45201887A09319FC5B7" Directory="SUBSCRIBER" Guid="{9724299B-18DB-4B49-8256-325ADB29B680}">
+            <Component Id="cmp709AD829F4F9B45201887A09319FC5B7" Directory="SUBSCRIBER" Guid="{86129D62-4382-4F9A-9F37-0DF52E703AAD}">
                 <File Id="fil6E93A48FC9AF71EA879BE98A16C6FBFC" KeyPath="yes" Source="$(var.SubscriberSource)\MySynch.Contracts.pdb" />
             </Component>
-            <Component Id="cmpE2AB126EE00B385B2AFFEBB877CDE83F" Directory="SUBSCRIBER" Guid="{E6E58D2B-8ED6-4898-9306-A3B1E736E4CA}">
+            <Component Id="cmpE2AB126EE00B385B2AFFEBB877CDE83F" Directory="SUBSCRIBER" Guid="{C1CB428B-4A6C-4E8D-80E9-A91DFFABEB36}">
                 <File Id="fil1A3D9DA898D877F842575DDBB774DA2C" KeyPath="yes" Source="$(var.SubscriberSource)\MySynch.Core.dll" />
             </Component>
-            <Component Id="cmp36D8D1EB292B7E6902A4A0DB4F42417E" Directory="SUBSCRIBER" Guid="{20F0ECA9-92E9-4FBB-83BC-B4A81B961B65}">
+            <Component Id="cmp36D8D1EB292B7E6902A4A0DB4F42417E" Directory="SUBSCRIBER" Guid="{A994907F-1520-4CE0-BE31-56744E0027FF}">
                 <File Id="filBF9DA978CF30ACFA50D9EDB238FB81AD" KeyPath="yes" Source="$(var.SubscriberSource)\MySynch.Core.pdb" />
             </Component>
-            <Component Id="cmp3777EFD4282F4E68A99819EB260D4222" Directory="SUBSCRIBER" Guid="{B8A02DBB-8986-48DC-B826-B8F824D93F56}">
+            <Component Id="cmp3777EFD4282F4E68A99819EB260D4222" Directory="SUBSCRIBER" Guid="{F709BF7F-2688-480F-B39B-AE404D76E506}">
                 <File Id="fil2F4912CC483269D514882464F9151D6B" KeyPath="yes" Source="$(var.SubscriberSource)\MySynch.Core.WCF.Clients.dll" />
             </Component>
-            <Component Id="cmpE0C6BE14D5523D6979482E5FBED4AE3F" Directory="SUBSCRIBER" Guid="{9E90496D-E816-4833-B177-04D5635F1EDA}">
+            <Component Id="cmpE0C6BE14D5523D6979482E5FBED4AE3F" Directory="SUBSCRIBER" Guid="{0920ED2B-2B83-442A-96BA-D35FFC01617C}">
                 <File Id="fil3BD11B5931E5C5AE843DAF42DAED8B95" KeyPath="yes" Source="$(var.SubscriberSource)\MySynch.Core.WCF.Clients.pdb" />
             </Component>
-            <Component Id="cmpA3EF4503B65B27403009A152725FBEE8" Directory="SUBSCRIBER" Guid="{9451ED91-ED56-4D5E-B96A-A00B553ADAB9}">
+            <Component Id="cmpA3EF4503B65B27403009A152725FBEE8" Directory="SUBSCRIBER" Guid="{68CA4760-FD53-4768-8005-5A8479941892}">
                 <File Id="fil30B85937CDA7EDD2CFB7780BF117B229" KeyPath="yes" Source="$(var.SubscriberSource)\MySynch.Proxies.dll" />
             </Component>
-            <Component Id="cmp9C6731892FBBC480A59518EB7786A9C7" Directory="SUBSCRIBER" Guid="{E7D4DC2F-F81C-4F40-81FE-B995D617DCC5}">
+            <Component Id="cmp9C6731892FBBC480A59518EB7786A9C7" Directory="SUBSCRIBER" Guid="{54A5C8E8-5743-4A36-9BE4-C461FAEC5038}">
                 <File Id="filA40563CBE06FF6E6DBC22E874B4E8563" KeyPath="yes" Source="$(var.SubscriberSource)\MySynch.Proxies.pdb" />
             </Component>
-            <Component Id="cmpEE5CBE2A0DACE3887368386EAF610749" Directory="SUBSCRIBER" Guid="{504D1D99-AA92-4958-9B32-64562053E5D8}">
+            <Component Id="cmpEE5CBE2A0DACE3887368386EAF610749" Directory="SUBSCRIBER" Guid="{F73FFF25-6A5A-4193-B5BA-B1B9FD629B21}">
                 <File Id="filFDE3F859894537376E2233F273CEB92E" KeyPath="yes" Source="$(var.SubscriberSource)\MySynch.Subscriber.exe" />
             </Component>
-            <Component Id="cmp70BFC618D966F4A7BD6E0DA2F2031B88" Directory="SUBSCRIBER" Guid="{2554F976-FFF2-4AC4-ABAD-4E0679CC69E6}">
+            <Component Id="cmp70BFC618D966F4A7BD6E0DA2F2031B88" Directory="SUBSCRIBER" Guid="{38F4A17E-0D91-4F19-86DC-FFCB81CAFD30}">
                 <File Id="filBAA5E176238A45D4BB35D72EB282A478" KeyPath="yes" Source="$(var.SubscriberSource)\MySynch.Subscriber.exe.config" />
             </Component>
         </ComponentGroup>

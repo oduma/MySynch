@@ -1,3 +1,3 @@
-heat dir ..\MySynch.Publisher\Assemblies -srd -dr Publisher -cg PublisherGroup -var var.PublisherSource -gg -out PublisherGroup.wxs
-heat dir ..\MySynch.Subscriber\Assemblies -srd -dr Subscriber -cg SubscriberGroup -var var.SubscriberSource -gg -out SubscriberGroup.wxs
-heat dir ..\MySynch.Distributor\Assemblies -srd -dr Distributor -cg DistributorGroup -var var.DistributorSource -gg -out DistributorGroup.wxs
+heat dir ..\MySynch.Publisher\Assemblies -srd -dr PUBLISHER -cg PublisherGroup -var var.PublisherSource -gg -out PublisherGroup.wxs
+heat dir ..\MySynch.Subscriber\Assemblies -srd -dr SUBSCRIBER -cg SubscriberGroup -var var.SubscriberSource -gg -out SubscriberGroup.wxs
+heat dir ..\MySynch.Distributor\Assemblies -srd -dr DISTRIBUTOR -cg DistributorGroup -var var.DistributorSource -gg -out DistributorGroup.wxs

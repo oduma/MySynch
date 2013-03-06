@@ -50,6 +50,7 @@
     </WixExtension>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="buildpackages.bat" />
     <Content Include="ConfigurationProperties.wxi" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />

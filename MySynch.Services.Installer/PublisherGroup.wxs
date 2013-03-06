@@ -5,67 +5,67 @@
     </Fragment>
     <Fragment>
         <ComponentGroup Id="PublisherGroup">
-            <Component Id="cmpA62C487865A9D5C040FA49A68CE1A040" Directory="PUBLISHER" Guid="{D05F246F-AFCC-47FD-8D59-9A2A6A4FA40E}">
+            <Component Id="cmpA62C487865A9D5C040FA49A68CE1A040" Directory="PUBLISHER" Guid="{7220C052-FDF3-44B5-AF98-7E391AEE9676}">
                 <File Id="fil77AAF6387078BCFCC30979B258868424" KeyPath="yes" Source="$(var.PublisherSource)\Castle.Core.dll" />
             </Component>
-            <Component Id="cmpD4898E63818CADFA9EDAED69F2CA81E2" Directory="PUBLISHER" Guid="{EAD70CA7-7EDF-4780-8309-173DD50EADAE}">
+            <Component Id="cmpD4898E63818CADFA9EDAED69F2CA81E2" Directory="PUBLISHER" Guid="{A24312A2-100E-4BFD-8AB9-AFFB0D41EFBD}">
                 <File Id="fil3914A80AF2D48FE721C3298F782D5C0F" KeyPath="yes" Source="$(var.PublisherSource)\Castle.Core.pdb" />
             </Component>
-            <Component Id="cmpEEC61B081F8BDB32FC01AAD29D5E6196" Directory="PUBLISHER" Guid="{FB81FC58-D183-4FB8-A9CB-29D8D48E173D}">
+            <Component Id="cmpEEC61B081F8BDB32FC01AAD29D5E6196" Directory="PUBLISHER" Guid="{FBEA1582-1BA9-4DB3-9FD2-C1B8542F65DD}">
                 <File Id="fil463FA2E81F24B75435385AFFF47B8503" KeyPath="yes" Source="$(var.PublisherSource)\Castle.Core.xml" />
             </Component>
-            <Component Id="cmp6D34BEA272A4D4B33A2313D89E11FDCA" Directory="PUBLISHER" Guid="{1EA752D6-BDD5-44B3-843C-AF252F6F6B9F}">
+            <Component Id="cmp6D34BEA272A4D4B33A2313D89E11FDCA" Directory="PUBLISHER" Guid="{5C515C86-086C-4DD5-BC32-7D31375703CE}">
                 <File Id="filF832EA3A793F0CB5FA1C6E618DD2FB8D" KeyPath="yes" Source="$(var.PublisherSource)\Castle.Windsor.dll" />
             </Component>
-            <Component Id="cmpB44FDDC3B070BE52810788242B155AB0" Directory="PUBLISHER" Guid="{2386BE3B-6443-4501-9B62-5D05F52390D6}">
+            <Component Id="cmpB44FDDC3B070BE52810788242B155AB0" Directory="PUBLISHER" Guid="{44BDD585-D5C1-4B5B-B71C-093C4B96A5CE}">
                 <File Id="fil3204581E7471F0CD2C478C1068DFB8FD" KeyPath="yes" Source="$(var.PublisherSource)\Castle.Windsor.pdb" />
             </Component>
-            <Component Id="cmp49D24CB6EB3D2EEEAFCF4C00136C6CD7" Directory="PUBLISHER" Guid="{278D83B1-DFEB-448C-8896-7D7012B3BA8A}">
+            <Component Id="cmp49D24CB6EB3D2EEEAFCF4C00136C6CD7" Directory="PUBLISHER" Guid="{ED0145B0-0A80-497F-AF2A-9C861F770C85}">
                 <File Id="fil5FC61E1ECF3EEE31750B57EA8C0D260D" KeyPath="yes" Source="$(var.PublisherSource)\Castle.Windsor.xml" />
             </Component>
-            <Component Id="cmp3A68FEBA27962FE316CB4DB3AE5F6733" Directory="PUBLISHER" Guid="{1F19E6E4-C200-497B-956F-29A46F9FD8DC}">
+            <Component Id="cmp3A68FEBA27962FE316CB4DB3AE5F6733" Directory="PUBLISHER" Guid="{463AC486-5B44-410E-AD56-A0C8595730D4}">
                 <File Id="fil1BCB069BBFA07C79A09FF7038092F999" KeyPath="yes" Source="$(var.PublisherSource)\log4net.config" />
             </Component>
-            <Component Id="cmpBE5B605B1B980594F7B8DFE2B1457FC3" Directory="PUBLISHER" Guid="{7B0E9B5F-22C9-4F42-A32C-3C510D2D9980}">
+            <Component Id="cmpBE5B605B1B980594F7B8DFE2B1457FC3" Directory="PUBLISHER" Guid="{AB2CE2D1-252E-4B9A-B2A9-23D22DD7DCBA}">
                 <File Id="filA71F56093046A6EE293F06C6194A2D18" KeyPath="yes" Source="$(var.PublisherSource)\log4net.dll" />
             </Component>
-            <Component Id="cmp15E5001F7D755D50977B102EE48A772B" Directory="PUBLISHER" Guid="{B2EDB3BD-A797-4A1F-BD59-B52C73640336}">
+            <Component Id="cmp15E5001F7D755D50977B102EE48A772B" Directory="PUBLISHER" Guid="{91C35B46-C0EA-4460-A10C-16E9807DEAD5}">
                 <File Id="fil882F971AEEF97BB2B95D4B5A55C37946" KeyPath="yes" Source="$(var.PublisherSource)\log4net.xml" />
             </Component>
-            <Component Id="cmp04072CB10836E5298D1D5002F7285FBC" Directory="PUBLISHER" Guid="{8DC49A3C-342E-45DE-A097-E54E2F745A36}">
+            <Component Id="cmp04072CB10836E5298D1D5002F7285FBC" Directory="PUBLISHER" Guid="{BB8393DE-D3E1-4082-975B-844BCAE4E6EB}">
                 <File Id="filBB7E4B05AD34C196A3AFD41888E15D08" KeyPath="yes" Source="$(var.PublisherSource)\MySynch.Common.dll" />
             </Component>
-            <Component Id="cmp5DB2BCBF3FFB1F641D2747DDF283D78F" Directory="PUBLISHER" Guid="{F84A8141-7ECA-49F0-876D-5925F65864F7}">
+            <Component Id="cmp5DB2BCBF3FFB1F641D2747DDF283D78F" Directory="PUBLISHER" Guid="{4799A020-2439-496A-ADD0-6BD6FCA8D3BE}">
                 <File Id="fil976EE2FC02C1B333F4668CCC73176D26" KeyPath="yes" Source="$(var.PublisherSource)\MySynch.Common.pdb" />
             </Component>
-            <Component Id="cmp05FDA3422D172851CD6B07486D2DB85B" Directory="PUBLISHER" Guid="{DC5E108E-8818-4E22-90BB-53162933653B}">
+            <Component Id="cmp05FDA3422D172851CD6B07486D2DB85B" Directory="PUBLISHER" Guid="{83C5DDE5-4400-4AFB-9D24-B8B2F94DC97A}">
                 <File Id="fil1452FE9D19AE9002284A9B205EF59EBA" KeyPath="yes" Source="$(var.PublisherSource)\MySynch.Contracts.dll" />
             </Component>
-            <Component Id="cmp5214F6275D815B39FE76A04C37D5C729" Directory="PUBLISHER" Guid="{692AE621-764C-4FFE-8425-1CD99B51EF85}">
+            <Component Id="cmp5214F6275D815B39FE76A04C37D5C729" Directory="PUBLISHER" Guid="{1526FEB4-A06D-4AD9-83A5-3EAD25991902}">
                 <File Id="filED93B06C52D9DBF21A0E4E9AC0375C32" KeyPath="yes" Source="$(var.PublisherSource)\MySynch.Contracts.pdb" />
             </Component>
-            <Component Id="cmp34F8D74E07C420692347E49EE9ED6642" Directory="PUBLISHER" Guid="{6CA7E692-6555-47B5-B7F0-66B11C14C852}">
+            <Component Id="cmp34F8D74E07C420692347E49EE9ED6642" Directory="PUBLISHER" Guid="{A92B8E0A-CC25-4A06-B867-6AE09982F7C5}">
                 <File Id="filEE83C8F868EF9F3ED1101685FB16A793" KeyPath="yes" Source="$(var.PublisherSource)\MySynch.Core.dll" />
             </Component>
-            <Component Id="cmpD6BA05C62D2ADF2DCBBA5E037FDD70C6" Directory="PUBLISHER" Guid="{EBD73320-EE03-451D-8468-7328432C2F50}">
+            <Component Id="cmpD6BA05C62D2ADF2DCBBA5E037FDD70C6" Directory="PUBLISHER" Guid="{3E1771AE-250B-41CF-9F99-D6E8B47BC3DF}">
                 <File Id="filE61E7EC49A7E8A411045DF33D21A6A13" KeyPath="yes" Source="$(var.PublisherSource)\MySynch.Core.pdb" />
             </Component>
-            <Component Id="cmp861C6DC9A0B058FF758A2B3B85444BCD" Directory="PUBLISHER" Guid="{D8733D52-2E30-4E35-B239-A716FB7871F2}">
+            <Component Id="cmp861C6DC9A0B058FF758A2B3B85444BCD" Directory="PUBLISHER" Guid="{E0E7C5BE-0774-4515-8852-E24BB6DADF97}">
                 <File Id="filF574D073A8743CBBA67FF51D2606F44D" KeyPath="yes" Source="$(var.PublisherSource)\MySynch.Core.WCF.Clients.dll" />
             </Component>
-            <Component Id="cmp73C2382CD789F83DDDA31E8458749772" Directory="PUBLISHER" Guid="{6E8FA8DF-0B4A-49B4-AE14-EF3CE23FDF6C}">
+            <Component Id="cmp73C2382CD789F83DDDA31E8458749772" Directory="PUBLISHER" Guid="{74A9E148-B764-453F-A3A1-C2F085242947}">
                 <File Id="filEB61B8EBA0C55EAFBF457CED46ECA262" KeyPath="yes" Source="$(var.PublisherSource)\MySynch.Core.WCF.Clients.pdb" />
             </Component>
-            <Component Id="cmp5EA87A48E8DE016F2E15B1FA75C5B378" Directory="PUBLISHER" Guid="{98E367B5-1554-4A6F-B591-588E8F0D47CB}">
+            <Component Id="cmp5EA87A48E8DE016F2E15B1FA75C5B378" Directory="PUBLISHER" Guid="{8D68518C-8BF8-42EC-9424-D740F073ACC9}">
                 <File Id="fil4219D082F4C448097E3274986E18DEF4" KeyPath="yes" Source="$(var.PublisherSource)\MySynch.Proxies.dll" />
             </Component>
-            <Component Id="cmpDD0747830A0ECA198EBA844CA3E69BAC" Directory="PUBLISHER" Guid="{A58AB680-1844-47CD-95A4-6B9C0EBF5789}">
+            <Component Id="cmpDD0747830A0ECA198EBA844CA3E69BAC" Directory="PUBLISHER" Guid="{093A68DC-1A62-4D09-9BCA-80D0B12E3439}">
                 <File Id="fil7F1ABE3CDC7BFD8FBE6CF5B942C4FC76" KeyPath="yes" Source="$(var.PublisherSource)\MySynch.Proxies.pdb" />
             </Component>
-            <Component Id="cmpAB127BF8AE8A3BABDA98EAFB9BCCF441" Directory="PUBLISHER" Guid="{7384D791-1BD8-413B-AD43-67D2D80366AC}">
+            <Component Id="cmpAB127BF8AE8A3BABDA98EAFB9BCCF441" Directory="PUBLISHER" Guid="{6231D7D3-033C-4B06-BD70-71B949EF96EC}">
                 <File Id="fil1CEEB097C3429C6C8D7B02BCA0E358F4" KeyPath="yes" Source="$(var.PublisherSource)\MySynch.Publisher.exe" />
             </Component>
-            <Component Id="cmpE6A47F8814951167DA5951AA3292E348" Directory="PUBLISHER" Guid="{5550BD3F-0A8F-4DEB-B2B2-DF8C2B68ECDA}">
+            <Component Id="cmpE6A47F8814951167DA5951AA3292E348" Directory="PUBLISHER" Guid="{AEA47F38-436E-4821-BE4A-9737EAD910D7}">
                 <File Id="fil25AED7FBEF59B8DCB6BDB9B2413C004E" KeyPath="yes" Source="$(var.PublisherSource)\MySynch.Publisher.exe.config" />
             </Component>
         </ComponentGroup>
