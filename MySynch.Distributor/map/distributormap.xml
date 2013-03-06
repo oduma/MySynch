@@ -6,7 +6,7 @@
       <Port>8765</Port>
     </PublisherInfo>
     <SubscriberInfo>
-      <InstanceName>ISubscriber.Remote</SubScriberName>
+      <InstanceName>ISubscriber.Remote</InstanceName>
       <Port>8767</Port>
     </SubscriberInfo>
     <DataSourcePort>8765</DataSourcePort>

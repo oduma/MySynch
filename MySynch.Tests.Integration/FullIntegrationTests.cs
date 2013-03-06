@@ -47,11 +47,5 @@ namespace MySynch.Tests.Integration
             
         }
 
-        [Test]
-        public void ReEvaluateOfEndPoints_Ok()
-        {
-            Assert.Fail();
-        }
-
     }
 }
