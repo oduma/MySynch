@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+	<Fragment>
+    <ComponentGroup Id="DistributorGroupConf">
+      <Component Id="MySynch.Distributor.exe.config" Directory="DISTRIBUTOR" Guid="{72408884-A477-43D0-93A5-3930CBA9EC4C}">
+        <File Id="MySynch.Distributor.exe.config" KeyPath="yes" Source="$(var.DistributorConfigSource)\MySynch.Distributor.exe.config" />
+        <util:XmlFile Id="SetDistributorInstancePort"
+                      Action="setValue"
+                      ElementPath="//appSettings/add[\[]@key='InstancePort'[\]]/@value"
+                      Value="[DSTPORTVAL]"
+                      File="[#MySynch.Distributor.exe.config]" />
+      </Component>
+    </ComponentGroup>
+	  <ComponentGroup Id="PublisherGroupConf">
+      <Component Id="MySynch.Publisher.exe.config" Directory="PUBLISHER" Guid="{7C74FEB9-2A53-4E73-86A9-C1D001FEAAF5}">
+        <File Id="MySynch.Publisher.exe.config" KeyPath="yes" Source="$(var.PublisherConfigSource)\MySynch.Publisher.exe.config" />
+        <util:XmlFile Id="SetPublisherInstancePort"
+                      Action="setValue"
+                      ElementPath="//appSettings/add[\[]@key='InstancePort'[\]]/@value"
+                      Value="[PUBPORTVAL]"
+                      File="[#MySynch.Publisher.exe.config]" />
+        <util:XmlFile Id="SetPublisherRootFolder"
+                      Action="setValue"
+                      ElementPath="//appSettings/add[\[]@key='LocalRootFolder'[\]]/@value"
+                      Value="[SRCROOTDIRVAL]"
+                      File="[#MySynch.Publisher.exe.config]" />
+
+      </Component>
+	  </ComponentGroup>
+	  <ComponentGroup Id="SubscriberGroupConf">
+      <Component Id="MySynch.Subscriber.exe.config" Directory="SUBSCRIBER" Guid="{D2661E8D-426A-4D56-9050-4BC57AC42F8A}">
+        <File Id="MySynch.Subscriber.exe.config" KeyPath="yes" Source="$(var.SubscriberConfigSource)\MySynch.Subscriber.exe.config" />
+        <util:XmlFile Id="SetSubscriberInstancePort"
+              Action="setValue"
+              ElementPath="//appSettings/add[\[]@key='InstancePort'[\]]/@value"
+              Value="[SUBPORTVAL]"
+              File="[#MySynch.Subscriber.exe.config]" />
+        <util:XmlFile Id="SetSubscriberRootFolder"
+                      Action="setValue"
+                      ElementPath="//appSettings/add[\[]@key='LocalRootFolder'[\]]/@value"
+                      Value="[DSTROOTDIRVAL]"
+                      File="[#MySynch.Subscriber.exe.config]" />
+
+
+      </Component>
+	  </ComponentGroup>
+	</Fragment>
+</Wix>

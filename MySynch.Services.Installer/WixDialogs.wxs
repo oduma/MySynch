@@ -5,22 +5,40 @@
       <Dialog Id="MySynchPublisherSetupDlg" Width="370" Height="270"
                Title="Settings - [ProductName]" NoMinimize="yes">
         <!-- Virtual Dir prompt -->
-        <Control Id="RootDirLabel" Type="Text" X="45" Y="73"
-           Width="100" Height="15" TabSkip="no" Text="&amp;Publisher Root Directory:" />
-        <Control Id="RootDirEdit" Type="PathEdit" X="45"
-           Y="85" Width="220" Height="18" Property="ROOTDIRVAL"/>
+        <Control Id="RootDirLabel" Type="Text" X="45" Y="73" Width="100" Height="15" TabSkip="no" Text="&amp;Publisher Root Directory:" />
+        <Control Id="RootDirEdit" Type="Edit" X="45"  Y="85" Width="220" Height="18" Property="SRCROOTDIRVAL" Text="{80}" />
+        <!-- Publisher Port prompt -->
+        <Control Id="PublisherPortLabel" Type="Text" X="45" Y="103" Width="100" Height="15" TabSkip="no" Text="&amp;Publisher Port:" />
+        <Control Id="PublisherPortEdit" Type="Edit" X="45"  Y="115" Width="220" Height="18" Property="PUBPORTVAL" Text="{80}" >
+        </Control>
+        <!-- Dest Dir prompt -->
+        <Control Id="DestDirLabel" Type="Text" X="45" Y="133" Width="100" Height="15" TabSkip="no" Text="&amp;Destination Directory:" />
+        <Control Id="DestRootDirEdit" Type="Edit" X="45" Y="145" Width="220" Height="18" Property="DSTROOTDIRVAL" Text="{80}" >
+        </Control>
+        <!-- Subscriber Port prompt -->
+        <Control Id="SubscriberPortLabel" Type="Text" X="45" Y="163" Width="100" Height="15" TabSkip="no" Text="&amp;Subscriber Port:" />
+        <Control Id="SubscriberPortEdit" Type="Edit" X="45"  Y="175" Width="220" Height="18" Property="SUBPORTVAL" Text="{80}" >
+        </Control>
+        <!-- Distributor Port prompt -->
+        <Control Id="DistributorPortLabel" Type="Text" X="45" Y="193" Width="100" Height="15" TabSkip="no" Text="&amp;Distributor Port:" />
+        <Control Id="DistributorPortEdit" Type="Edit" X="45"  Y="205" Width="220" Height="18" Property="DSTPORTVAL" Text="{80}" >
+        </Control>
         <!-- Back button -->
         <Control Id="Back" Type="PushButton" X="180" Y="243"
                 Width="56" Height="17" Text="&amp;Back">
-          <Publish Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
+          <Publish Event="NewDialog" Value="CustomizeDlg">1</Publish>
         </Control>
         <Control Id="Next" Type="PushButton" X="236" Y="243"
                Width="56" Height="17" Default="yes" Text="&amp;Next">
-          <Publish Event="NewDialog" Value="PlaceHolderDlg">
+          <Publish Event="NewDialog" Value="VerifyReadyDlg">
             <!--if settings are correct, allow next dialog-->
-            <![CDATA[ROOTDIRVAL <> ""]]>
+            <![CDATA[SRCROOTDIRVAL <> ""]]>
           </Publish>
-          <Publish Property="ROOTDIRVAL" Value="[ROOTDIRVAL]"></Publish>
+          <Publish Property="SRCROOTDIRVAL" Value="[SRCROOTDIRVAL]"></Publish>
+          <Publish Property="PUBPORTVAL" Value="[PUBPORTVAL]"></Publish>
+          <Publish Property="DSTROOTDIRVAL" Value="[DSTROOTDIRVAL]"></Publish>
+          <Publish Property="SUBPORTVAL" Value="[SUBPORTVAL]"></Publish>
+          <Publish Property="DSTPORTVAL" Value="[DSTPORTVAL]"></Publish>
         </Control>
         <Control Id="Cancel" Type="PushButton" X="304" Y="243"
                    Width="56" Height="17" Cancel="yes" Text="Cancel">
@@ -30,44 +48,7 @@
              Width="370" Height="44" TabSkip="no" Text="WixUI_Bmp_Banner" />
         <Control Id="Description" Type="Text" X="25" Y="23"
                Width="280" Height="15" Transparent="yes" NoPrefix="yes">
-          <Text>Please enter Publisher Root Configuration</Text>
-        </Control>
-        <Control Id="BottomLine" Type="Line" X="0" Y="234"
-              Width="370" Height="0" />
-        <Control Id="Title" Type="Text" X="15" Y="6"
-                Width="200" Height="15" Transparent="yes" NoPrefix="yes">
-          <Text>{\WixUI_Font_Title}MySynch Configuration</Text>
-        </Control>
-        <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
-      </Dialog>
-      <Dialog Id="PlaceHolderDlg" Width="370" Height="270"
-         Title="Settings - [ProductName]" NoMinimize="yes">
-        <!-- Virtual Dir prompt -->
-        <Control Id="RootDirLabel" Type="Text" X="45" Y="73"
-           Width="100" Height="15" TabSkip="no" Text="&amp;Publisher Root Directory:" />
-        <Control Id="RootDirEdit" Type="Edit" X="45"
-           Y="85" Width="220" Height="18" Property="ROOTDIRVAL" Text="{80}" />
-        <!-- Back button -->
-        <Control Id="Back" Type="PushButton" X="180" Y="243"
-                Width="56" Height="17" Text="&amp;Back">
-          <Publish Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
-        </Control>
-        <Control Id="Next" Type="PushButton" X="236" Y="243"
-               Width="56" Height="17" Default="yes" Text="&amp;Next">
-          <Publish Event="NewDialog" Value="CustomizeDlg">
-            <!--if settings are correct, allow next dialog-->
-            <![CDATA[ROOT_DIR_VAL <> ""]]>
-          </Publish>
-        </Control>
-        <Control Id="Cancel" Type="PushButton" X="304" Y="243"
-                   Width="56" Height="17" Cancel="yes" Text="Cancel">
-          <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
-        </Control>
-        <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0"
-             Width="370" Height="44" TabSkip="no" Text="WixUI_Bmp_Banner" />
-        <Control Id="Description" Type="Text" X="25" Y="23"
-               Width="280" Height="15" Transparent="yes" NoPrefix="yes">
-          <Text>Please enter Publisher Root Configuration</Text>
+          <Text>Please enter Source Root Configuration</Text>
         </Control>
         <Control Id="BottomLine" Type="Line" X="0" Y="234"
               Width="370" Height="0" />
