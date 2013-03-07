@@ -6,6 +6,8 @@ using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Discovery;
 using System.ServiceProcess;
+using MySynch.Common.Logging;
+using MySynch.Common.WCF;
 
 namespace MySynch.Common
 {

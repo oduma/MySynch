@@ -1,11 +1,11 @@
-﻿using System;
-using System.Configuration;
-using System.Linq;
+﻿using System.Configuration;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Dispatcher;
+using MySynch.Common.Logging;
+using Enumerable = System.Linq.Enumerable;
 
-namespace MySynch.Common
+namespace MySynch.Common.WCF
 {
     public class MySynchAuditMessageInspector :
         IClientMessageInspector,
@@ -81,7 +81,7 @@ namespace MySynch.Common
         {
             if(_configAllows.HasValue)
                 return _configAllows.Value;
-            var configAllows = ConfigurationManager.AppSettings.AllKeys.FirstOrDefault(k => k == ConfigSwitch);
+            var configAllows = Enumerable.FirstOrDefault<string>(ConfigurationManager.AppSettings.AllKeys, k => k == ConfigSwitch);
             if (string.IsNullOrEmpty(configAllows))
             {
                 _configAllows = false;

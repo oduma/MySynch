@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Windows;
 using MySynch.Common;
+using MySynch.Common.Logging;
 using MySynch.Contracts;
 using MySynch.Monitor.MVVM.ViewModels;
 using MySynch.Proxies;

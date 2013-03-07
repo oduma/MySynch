@@ -4,6 +4,7 @@ using System.Linq;
 using System.ServiceModel;
 using System.Text;
 using MySynch.Common;
+using MySynch.Common.Logging;
 
 namespace MySynch.Core.WCF.Clients.Discovery
 {

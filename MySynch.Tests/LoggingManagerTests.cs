@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using MySynch.Common;
+using MySynch.Common.Logging;
 using NUnit.Framework;
 
 namespace MySynch.Tests

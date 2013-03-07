@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.ServiceModel;
 using MySynch.Common;
+using MySynch.Common.Logging;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
 using MySynch.Core.Interfaces;

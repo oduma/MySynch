@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ServiceModel;
 using MySynch.Common;
+using MySynch.Common.Logging;
 
 namespace MySynch.Core.WCF.Clients
 {

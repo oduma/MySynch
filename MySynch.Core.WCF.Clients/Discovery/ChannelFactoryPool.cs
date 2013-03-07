@@ -6,6 +6,8 @@ using System.ServiceModel.Description;
 using System.ServiceModel.Discovery;
 using System.Threading;
 using MySynch.Common;
+using MySynch.Common.Logging;
+using MySynch.Common.WCF;
 
 namespace MySynch.Core.WCF.Clients.Discovery
 {
@@ -181,7 +183,6 @@ namespace MySynch.Core.WCF.Clients.Discovery
                 }
                 LoggingManager.Debug("Found service " + endpointAddress.Address);
                 baseAddress = endpointAddress.Address;
-                //baseAddress = new EndpointAddress(endpointAddress.Address.Uri, EndpointIdentity.CreateDnsIdentity(System.Net.Dns.GetHostName()));
                 return true;
             }
             catch (Exception ex)

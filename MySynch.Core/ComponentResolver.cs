@@ -1,6 +1,7 @@
 ﻿using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using MySynch.Common;
+using MySynch.Common.Logging;
 using MySynch.Core.WCF.Clients.Discovery;
 
 namespace MySynch.Core

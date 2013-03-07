@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using MySynch.Common;
+using MySynch.Common.Logging;
 using MySynch.Core.DataTypes;
 
 namespace MySynch.Core.Publisher

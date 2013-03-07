@@ -4,7 +4,7 @@ using System.Reflection;
 using log4net;
 
 [assembly: log4net.Config.XmlConfigurator(ConfigFile = "log4net.config", Watch = true)]
-namespace MySynch.Common
+namespace MySynch.Common.Logging
 {
     public class Logger
     {

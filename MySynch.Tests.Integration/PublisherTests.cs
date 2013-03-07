@@ -5,6 +5,7 @@ using System.Linq;
 using System.ServiceProcess;
 using System.Text;
 using MySynch.Common;
+using MySynch.Common.Serialization;
 using MySynch.Contracts.Messages;
 using MySynch.Core.DataTypes;
 using MySynch.Core.Publisher;

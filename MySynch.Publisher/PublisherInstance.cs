@@ -1,5 +1,6 @@
 ﻿using System;
 using MySynch.Common;
+using MySynch.Common.Logging;
 using MySynch.Contracts;
 using MySynch.Core.Publisher;
 

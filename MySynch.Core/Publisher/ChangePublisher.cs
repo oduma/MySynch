@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.ServiceModel;
 using MySynch.Common;
+using MySynch.Common.Logging;
+using MySynch.Common.Serialization;
 using MySynch.Contracts.Messages;
 using MySynch.Core.DataTypes;
 using MySynch.Core.Interfaces;
@@ -30,8 +32,6 @@ namespace MySynch.Core.Publisher
 
         }
 
-        public event EventHandler<ItemsQueuedEventArgs> ItemsQueued;
-
         public void QueueInsert(string absolutePath)
         {
             if (string.IsNullOrEmpty(absolutePath))
@@ -51,8 +51,6 @@ namespace MySynch.Core.Publisher
             else
                 _temporaryStore.Add(absolutePath, operationType);
             UpdateCurrentRepository(absolutePath, operationType);
-            if(ItemsQueued!=null)
-                ItemsQueued(this,new ItemsQueuedEventArgs(_temporaryStore));
         }
 
         private void UpdateCurrentRepository(string absolutePath, OperationType operationType)

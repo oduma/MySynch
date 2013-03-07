@@ -1,7 +1,7 @@
 ﻿using System;
 using log4net;
 
-namespace MySynch.Common
+namespace MySynch.Common.Logging
 {
     public static class Log4NetExtensionMethods
     {

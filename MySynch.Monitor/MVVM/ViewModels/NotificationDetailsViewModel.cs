@@ -6,6 +6,7 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Media;
 using MySynch.Common;
+using MySynch.Common.Logging;
 using MySynch.Contracts.Messages;
 using MySynch.Proxies;
 using MySynch.Proxies.Interfaces;

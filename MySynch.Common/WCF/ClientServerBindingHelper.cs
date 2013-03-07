@@ -1,6 +1,6 @@
 ﻿using System.ServiceModel;
 
-namespace MySynch.Common
+namespace MySynch.Common.WCF
 {
     public static class ClientServerBindingHelper
     {

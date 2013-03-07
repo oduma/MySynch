@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading;
 using MySynch.Common;
+using MySynch.Common.Logging;
 using MySynch.Core.Interfaces;
 
 namespace MySynch.Core.Publisher

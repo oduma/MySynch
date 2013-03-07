@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace MySynch.Common
+namespace MySynch.Common.Serialization
 {
     public static class Serializer
     {

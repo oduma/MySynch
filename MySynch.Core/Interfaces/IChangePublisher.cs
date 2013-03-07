@@ -7,8 +7,6 @@ namespace MySynch.Core.Interfaces
 {
     public interface IChangePublisher:IPublisher
     {
-        event EventHandler<ItemsQueuedEventArgs> ItemsQueued;
-        
         void QueueInsert(string absolutePath);
 
         void QueueUpdate(string absolutePath);

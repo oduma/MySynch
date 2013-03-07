@@ -4,7 +4,7 @@ using System.ServiceModel.Configuration;
 using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
 
-namespace MySynch.Common
+namespace MySynch.Common.WCF
 {
     public class MySynchAuditBehavior : BehaviorExtensionElement, IEndpointBehavior
     {

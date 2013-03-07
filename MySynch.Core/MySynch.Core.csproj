@@ -116,7 +116,6 @@
     <Compile Include="Publisher\RemoteSourceOfData.cs" />
     <Compile Include="Publisher\SourceOfDataSetupException.cs" />
     <Compile Include="DataTypes\AvailableChannel.cs" />
-    <Compile Include="DataTypes\ItemsQueuedEventArgs.cs" />
     <Compile Include="DataTypes\PublisherInfo.cs" />
     <Compile Include="DataTypes\SubscriberInfo.cs" />
     <Compile Include="Interfaces\IChangePublisher.cs" />
