@@ -1,20 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
+    <Property Id="SRCROOTDIRVAL" Value="C:\"/>
+    <Property Id="DSTROOTDIRVAL" Value="C:\"/>
     <UI>
       <Dialog Id="MySynchPublisherSetupDlg" Width="370" Height="270"
                Title="Settings - [ProductName]" NoMinimize="yes">
         <!-- Virtual Dir prompt -->
         <Control Id="RootDirLabel" Type="Text" X="45" Y="73" Width="100" Height="15" TabSkip="no" Text="&amp;Publisher Root Directory:" />
-        <Control Id="RootDirEdit" Type="Edit" X="45"  Y="85" Width="220" Height="18" Property="SRCROOTDIRVAL" Text="{80}" />
+        <Control Id="RootDirPathValue" Type="PathEdit" X="45" Y="85" Width="215" Height="18" Property="SRCROOTDIRVAL"/>
+        <Control Id="RootDirPathButton" Type="PushButton" X="270" Y="85" Width="50" Height="17" Text="Browse">
+          <Publish Property="VALTEMP" Value="[SRCROOTDIRVAL]" Order="1">1</Publish>
+          <Publish Event="SpawnDialog" Value="SrcDirDlg" Order="2">1</Publish>
+        </Control>
         <!-- Publisher Port prompt -->
         <Control Id="PublisherPortLabel" Type="Text" X="45" Y="103" Width="100" Height="15" TabSkip="no" Text="&amp;Publisher Port:" />
         <Control Id="PublisherPortEdit" Type="Edit" X="45"  Y="115" Width="220" Height="18" Property="PUBPORTVAL" Text="{80}" >
         </Control>
         <!-- Dest Dir prompt -->
         <Control Id="DestDirLabel" Type="Text" X="45" Y="133" Width="100" Height="15" TabSkip="no" Text="&amp;Destination Directory:" />
-        <Control Id="DestRootDirEdit" Type="Edit" X="45" Y="145" Width="220" Height="18" Property="DSTROOTDIRVAL" Text="{80}" >
+        <Control Id="DestRootDirPathValue" Type="PathEdit" X="45" Y="145" Width="215" Height="18" Property="DSTROOTDIRVAL"/>
+        <Control Id="DestRootDirPathButton" Type="PushButton" X="270" Y="145" Width="50" Height="17" Text="Browse">
+          <Publish Property="VALTEMP" Value="[DSTROOTDIRVAL]" Order="1">1</Publish>
+          <Publish Event="SpawnDialog" Value="DstDirDlg" Order="2">1</Publish>
         </Control>
+
         <!-- Subscriber Port prompt -->
         <Control Id="SubscriberPortLabel" Type="Text" X="45" Y="163" Width="100" Height="15" TabSkip="no" Text="&amp;Subscriber Port:" />
         <Control Id="SubscriberPortEdit" Type="Edit" X="45"  Y="175" Width="220" Height="18" Property="SUBPORTVAL" Text="{80}" >
@@ -57,6 +67,60 @@
           <Text>{\WixUI_Font_Title}MySynch Configuration</Text>
         </Control>
         <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+      </Dialog>
+      <Dialog Id="SrcDirDlg" Width="370" Height="270" Title="Source Root Folder selection">
+        <Control Id="PathEdit" Type="PathEdit" X="25" Y="202" Width="320" Height="18" Property="VALTEMP" />
+        <Control Id="OK" Type="PushButton" X="240" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUIOK)">
+          <Publish Property="SRCROOTDIRVAL" Value="[VALTEMP]" Order="1">1</Publish>
+          <Publish Event="EndDialog" Value="Return" Order="2">1</Publish>
+        </Control>
+        <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
+          <Publish Event="EndDialog" Value="Return">1</Publish>
+        </Control>
+        <Control Id="ComboLabel" Type="Text" X="25" Y="58" Width="44" Height="10" TabSkip="no" Text="!(loc.BrowseDlgComboLabel)" />
+        <Control Id="DirectoryCombo" Type="DirectoryCombo" X="70" Y="55" Width="220" Height="80" Property="VALTEMP" Fixed="yes" Remote="yes">
+          <Subscribe Event="IgnoreChange" Attribute="IgnoreChange" />
+        </Control>
+        <Control Id="WixUI_Bmp_Up" Type="PushButton" X="298" Y="55" Width="19" Height="19" ToolTip="!(loc.BrowseDlgWixUI_Bmp_UpTooltip)" Icon="yes" FixedSize="yes" IconSize="16" Text="!(loc.BrowseDlgWixUI_Bmp_Up)">
+          <Publish Event="DirectoryListUp" Value="0">1</Publish>
+        </Control>
+        <Control Id="NewFolder" Type="PushButton" X="325" Y="55" Width="19" Height="19" ToolTip="!(loc.BrowseDlgNewFolderTooltip)" Icon="yes" FixedSize="yes" IconSize="16" Text="!(loc.BrowseDlgNewFolder)">
+          <Publish Event="DirectoryListNew" Value="0">1</Publish>
+        </Control>
+        <Control Id="DirectoryList" Type="DirectoryList" X="25" Y="83" Width="320" Height="98" Property="VALTEMP" Sunken="yes" TabSkip="no" />
+        <Control Id="PathLabel" Type="Text" X="25" Y="190" Width="320" Height="10" TabSkip="no" Text="!(loc.BrowseDlgPathLabel)" />
+        <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.BrowseDlgBannerBitmap)" />
+        <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+        <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+        <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="This is going to be used by publisher" />
+        <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="Select a folder" />
+      </Dialog>
+      <Dialog Id="DstDirDlg" Width="370" Height="270" Title="Destination Root Folder selection">
+        <Control Id="PathEdit" Type="PathEdit" X="25" Y="202" Width="320" Height="18" Property="VALTEMP" />
+        <Control Id="OK" Type="PushButton" X="240" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUIOK)">
+          <Publish Property="DSTROOTDIRVAL" Value="[VALTEMP]" Order="1">1</Publish>
+          <Publish Event="EndDialog" Value="Return" Order="2">1</Publish>
+        </Control>
+        <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
+          <Publish Event="EndDialog" Value="Return">1</Publish>
+        </Control>
+        <Control Id="ComboLabel" Type="Text" X="25" Y="58" Width="44" Height="10" TabSkip="no" Text="!(loc.BrowseDlgComboLabel)" />
+        <Control Id="DirectoryCombo" Type="DirectoryCombo" X="70" Y="55" Width="220" Height="80" Property="VALTEMP" Fixed="yes" Remote="yes">
+          <Subscribe Event="IgnoreChange" Attribute="IgnoreChange" />
+        </Control>
+        <Control Id="WixUI_Bmp_Up" Type="PushButton" X="298" Y="55" Width="19" Height="19" ToolTip="!(loc.BrowseDlgWixUI_Bmp_UpTooltip)" Icon="yes" FixedSize="yes" IconSize="16" Text="!(loc.BrowseDlgWixUI_Bmp_Up)">
+          <Publish Event="DirectoryListUp" Value="0">1</Publish>
+        </Control>
+        <Control Id="NewFolder" Type="PushButton" X="325" Y="55" Width="19" Height="19" ToolTip="!(loc.BrowseDlgNewFolderTooltip)" Icon="yes" FixedSize="yes" IconSize="16" Text="!(loc.BrowseDlgNewFolder)">
+          <Publish Event="DirectoryListNew" Value="0">1</Publish>
+        </Control>
+        <Control Id="DirectoryList" Type="DirectoryList" X="25" Y="83" Width="320" Height="98" Property="VALTEMP" Sunken="yes" TabSkip="no" />
+        <Control Id="PathLabel" Type="Text" X="25" Y="190" Width="320" Height="10" TabSkip="no" Text="!(loc.BrowseDlgPathLabel)" />
+        <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.BrowseDlgBannerBitmap)" />
+        <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+        <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+        <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="This is going to be used by subscriber" />
+        <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="Select a folder" />
       </Dialog>
     </UI>
   </Fragment>
