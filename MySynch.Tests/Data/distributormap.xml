@@ -24,7 +24,6 @@
       <Port>8766</Port>
       <TargetRootFolder></TargetRootFolder>
     </SubscriberInfo>
-    <DataSourcePort>8765</DataSourcePort>
     <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
     <Status>NotChecked</Status>
     <NoOfFailedAttempts>0</NoOfFailedAttempts>

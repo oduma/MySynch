@@ -8,8 +8,6 @@ namespace MySynch.Core.DataTypes
 
         public SubscriberInfo SubscriberInfo { get; set; }
 
-        public int DataSourcePort { get; set; }
-
         public string UniqueKey { get; set; }
 
         public Status Status { get; set; }

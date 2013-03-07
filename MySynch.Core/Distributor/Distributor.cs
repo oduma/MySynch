@@ -307,7 +307,7 @@ namespace MySynch.Core.Distributor
             }
             catch (Exception ex)
             {
-                LoggingManager.LogMySynchSystemError(availableChannel.DataSourcePort, ex);
+                LoggingManager.LogMySynchSystemError(availableChannel.PublisherInfo.Port, ex);
                 availableChannel.Status = Status.OfflinePermanent;
                 UpdateDataSource(subscriberName,publisherName,Status.OfflinePermanent);
                 return false;
@@ -320,10 +320,10 @@ namespace MySynch.Core.Distributor
                 return false;
             
             return
-                availableChannel.SubscriberInfo.Subscriber.TryOpenChannel((availableChannel.DataSourcePort==0)?null:new TryOpenChannelRequest
+                availableChannel.SubscriberInfo.Subscriber.TryOpenChannel((availableChannel.PublisherInfo.Port==0)?null:new TryOpenChannelRequest
                                                                               {
                                                                                   SourceOfDataPort =
-                                                                                      availableChannel.DataSourcePort
+                                                                                      availableChannel.PublisherInfo.Port
                                                                               }).Status;
         }
 

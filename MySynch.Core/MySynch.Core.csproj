@@ -116,15 +116,11 @@
     <Compile Include="Publisher\RemoteSourceOfData.cs" />
     <Compile Include="Publisher\SourceOfDataSetupException.cs" />
     <Compile Include="DataTypes\AvailableChannel.cs" />
-    <Compile Include="DataTypes\FolderDiscoveredArg.cs" />
     <Compile Include="DataTypes\ItemsQueuedEventArgs.cs" />
     <Compile Include="DataTypes\PublisherInfo.cs" />
-    <Compile Include="DataTypes\RoleOfNode.cs" />
     <Compile Include="DataTypes\SubscriberInfo.cs" />
-    <Compile Include="Interfaces\IChangeDiscoverer.cs" />
     <Compile Include="Interfaces\IChangePublisher.cs" />
     <Compile Include="Interfaces\ICopyStrategy.cs" />
-    <Compile Include="Interfaces\ISynchItemManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MySynchInstaller.cs" />
     <Compile Include="Subscriber\CopyStrategy.cs" />
@@ -132,7 +128,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Core.cd" />
     <None Include="log4net.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
