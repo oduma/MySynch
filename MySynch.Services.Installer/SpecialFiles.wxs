@@ -10,38 +10,86 @@
                       Value="[DSTPORTVAL]"
                       File="[#MySynch.Distributor.exe.config]" />
       </Component>
+      <Component Id="MySynch.Distributor.Service" Directory="DISTRIBUTOR" Guid="{94CFA246-036F-4114-9348-FBCD42B0A400}">
+        <File Id="MySynch.Distributor.exe" Name="MySynch.Distributor.exe" Source="$(var.DistributorExeSource)\MySynch.Distributor.exe" Vital="yes" KeyPath="yes"/>
+        <ServiceInstall
+          Id="DistributorServiceInstaller"
+          Type="ownProcess"
+          Vital="yes"
+          Name="MySynch.Distributor"
+          DisplayName="MySynch Distributor"
+          Description="Monitoring the MySynch channels"
+          Start="auto"
+          Account="LocalSystem"
+          ErrorControl="ignore"
+          Interactive="no">
+        </ServiceInstall>
+        <ServiceControl Id="StartDistributorService" Start="install" Stop="both" Remove="uninstall" Name="MySynch.Distributor" Wait="yes" />
+      </Component>
     </ComponentGroup>
 	  <ComponentGroup Id="PublisherGroupConf">
-      <Component Id="MySynch.Publisher.exe.config" Directory="PUBLISHER" Guid="{7C74FEB9-2A53-4E73-86A9-C1D001FEAAF5}">
-        <File Id="MySynch.Publisher.exe.config" KeyPath="yes" Source="$(var.PublisherConfigSource)\MySynch.Publisher.exe.config" />
-        <util:XmlFile Id="SetPublisherInstancePort"
-                      Action="setValue"
-                      ElementPath="//appSettings/add[\[]@key='InstancePort'[\]]/@value"
-                      Value="[PUBPORTVAL]"
-                      File="[#MySynch.Publisher.exe.config]" />
-        <util:XmlFile Id="SetPublisherRootFolder"
-                      Action="setValue"
-                      ElementPath="//appSettings/add[\[]@key='LocalRootFolder'[\]]/@value"
-                      Value="[SRCROOTDIRVAL]"
-                      File="[#MySynch.Publisher.exe.config]" />
+	    <Component Id="MySynch.Publisher.exe.config" Directory="PUBLISHER" Guid="{7C74FEB9-2A53-4E73-86A9-C1D001FEAAF5}">
+	      <File Id="MySynch.Publisher.exe.config" KeyPath="yes" Source="$(var.PublisherConfigSource)\MySynch.Publisher.exe.config" />
+	      <util:XmlFile Id="SetPublisherInstancePort"
+	                    Action="setValue"
+	                    ElementPath="//appSettings/add[\[]@key='InstancePort'[\]]/@value"
+	                    Value="[PUBPORTVAL]"
+	                    File="[#MySynch.Publisher.exe.config]" />
+	      <util:XmlFile Id="SetPublisherRootFolder"
+	                    Action="setValue"
+	                    ElementPath="//appSettings/add[\[]@key='LocalRootFolder'[\]]/@value"
+	                    Value="[SRCROOTDIRVAL]"
+	                    File="[#MySynch.Publisher.exe.config]" />
 
+	    </Component>
+      <Component Id="MySynch.Publisher.Service" Directory="PUBLISHER" Guid="{A57774C4-F4E5-4E14-9B4B-09C8BD6EFCAC}">
+        <File Id="MySynch.Publisher.exe" Name="MySynch.Publisher.exe" Source="$(var.PublisherExeSource)\MySynch.Publisher.exe" Vital="yes" KeyPath="yes"/>
+        <ServiceInstall
+          Id="PublisherServiceInstaller"
+          Type="ownProcess"
+          Vital="yes"
+          Name="MySynch.Publisher"
+          DisplayName="MySynch Publisher"
+          Description="Monitores folder [SRCROOTDIRVAL] and publishes any changes"
+          Start="auto"
+          Account="LocalSystem"
+          ErrorControl="ignore"
+          Interactive="no">
+        </ServiceInstall>
+        <ServiceControl Id="StartPublisherService" Start="install" Stop="both" Remove="uninstall" Name="MySynch.Publisher" Wait="yes" />
       </Component>
 	  </ComponentGroup>
 	  <ComponentGroup Id="SubscriberGroupConf">
-      <Component Id="MySynch.Subscriber.exe.config" Directory="SUBSCRIBER" Guid="{D2661E8D-426A-4D56-9050-4BC57AC42F8A}">
-        <File Id="MySynch.Subscriber.exe.config" KeyPath="yes" Source="$(var.SubscriberConfigSource)\MySynch.Subscriber.exe.config" />
-        <util:XmlFile Id="SetSubscriberInstancePort"
-              Action="setValue"
-              ElementPath="//appSettings/add[\[]@key='InstancePort'[\]]/@value"
-              Value="[SUBPORTVAL]"
-              File="[#MySynch.Subscriber.exe.config]" />
-        <util:XmlFile Id="SetSubscriberRootFolder"
-                      Action="setValue"
-                      ElementPath="//appSettings/add[\[]@key='LocalRootFolder'[\]]/@value"
-                      Value="[DSTROOTDIRVAL]"
-                      File="[#MySynch.Subscriber.exe.config]" />
+	    <Component Id="MySynch.Subscriber.exe.config" Directory="SUBSCRIBER" Guid="{D2661E8D-426A-4D56-9050-4BC57AC42F8A}">
+	      <File Id="MySynch.Subscriber.exe.config" KeyPath="yes" Source="$(var.SubscriberConfigSource)\MySynch.Subscriber.exe.config" />
+	      <util:XmlFile Id="SetSubscriberInstancePort"
+	                    Action="setValue"
+	                    ElementPath="//appSettings/add[\[]@key='InstancePort'[\]]/@value"
+	                    Value="[SUBPORTVAL]"
+	                    File="[#MySynch.Subscriber.exe.config]" />
+	      <util:XmlFile Id="SetSubscriberRootFolder"
+	                    Action="setValue"
+	                    ElementPath="//appSettings/add[\[]@key='LocalRootFolder'[\]]/@value"
+	                    Value="[DSTROOTDIRVAL]"
+	                    File="[#MySynch.Subscriber.exe.config]" />
 
 
+	    </Component>
+      <Component Id="MySynch.Subscriber.Service" Directory="SUBSCRIBER" Guid="{749716C2-B818-4127-B31D-ACEFB95C6B7B}">
+        <File Id="MySynch.Subscriber.exe" Name="MySynch.Subscriber.exe" Source="$(var.SubscriberExeSource)\MySynch.Subscriber.exe" Vital="yes" KeyPath="yes"/>
+        <ServiceInstall
+          Id="SubscriberServiceInstaller"
+          Type="ownProcess"
+          Vital="yes"
+          Name="MySynch.Subscriber"
+          DisplayName="MySynch Subscriber"
+          Description="Applies changes to folder [DSTROOTDIRVAL]"
+          Start="auto"
+          Account="LocalSystem"
+          ErrorControl="ignore"
+          Interactive="no">
+        </ServiceInstall>
+        <ServiceControl Id="StartSuscriberService" Start="install" Stop="both" Remove="uninstall" Name="MySynch.Subscriber" Wait="yes" />
       </Component>
 	  </ComponentGroup>
 	</Fragment>
