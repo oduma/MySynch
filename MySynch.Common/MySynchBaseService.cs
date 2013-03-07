@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Discovery;
@@ -25,7 +26,7 @@ namespace MySynch.Common
                 _rootFolder = ConfigurationManager.AppSettings[key];
             key = ConfigurationManager.AppSettings.AllKeys.FirstOrDefault(k => k == "DistributorMap");
             if (key == null)
-                _distributorMapFile = string.Empty;
+                _distributorMapFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,@"map\distributormap.xml");
             else
                 _distributorMapFile = ConfigurationManager.AppSettings[key];
 

@@ -1,3 +1,9 @@
+xcopy ..\MySynch.Publisher\Assemblies\*.exe ..\MySynch.Publisher\Exe\*.* /Y
+del ..\MySynch.Publisher\Assemblies\*.exe
+xcopy ..\MySynch.Subscriber\Assemblies\*.exe ..\MySynch.Subscriber\Exe\*.* /Y
+del ..\MySynch.Subscriber\Assemblies\*.exe
+xcopy ..\MySynch.Distributor\Assemblies\*.exe ..\MySynch.Distributor\Exe\*.* /Y
+del ..\MySynch.Distributor\Assemblies\*.exe
 
 xcopy ..\MySynch.Publisher\Assemblies\*.exe.config ..\MySynch.Publisher\Config\*.* /Y
 del ..\MySynch.Publisher\Assemblies\*.exe.config
