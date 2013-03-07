@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
-	<Fragment>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension" xmlns:fire="http://schemas.microsoft.com/wix/FirewallExtension">
+  <Fragment>
     <ComponentGroup Id="DistributorGroupConf">
       <Component Id="MySynch.Distributor.exe.config" Directory="DISTRIBUTOR" Guid="{72408884-A477-43D0-93A5-3930CBA9EC4C}">
         <File Id="MySynch.Distributor.exe.config" KeyPath="yes" Source="$(var.DistributorConfigSource)\MySynch.Distributor.exe.config" />
@@ -25,23 +25,25 @@
           Interactive="no">
         </ServiceInstall>
         <ServiceControl Id="StartDistributorService" Start="install" Stop="both" Remove="uninstall" Name="MySynch.Distributor" Wait="yes" />
+        <fire:FirewallException Id="DistributorFWRuleTCP" Name="My Synch Distributor TCP Port [DSTPORTVAL]" Port="[DSTPORTVAL]" Protocol="tcp" Scope="any"/>
+        <fire:FirewallException Id="DistributorFWRuleUDP" Name="My Synch Distributor All Access" Program="[#MySynch.Distributor.exe]" Scope="any"/>
       </Component>
     </ComponentGroup>
-	  <ComponentGroup Id="PublisherGroupConf">
-	    <Component Id="MySynch.Publisher.exe.config" Directory="PUBLISHER" Guid="{7C74FEB9-2A53-4E73-86A9-C1D001FEAAF5}">
-	      <File Id="MySynch.Publisher.exe.config" KeyPath="yes" Source="$(var.PublisherConfigSource)\MySynch.Publisher.exe.config" />
-	      <util:XmlFile Id="SetPublisherInstancePort"
+    <ComponentGroup Id="PublisherGroupConf">
+      <Component Id="MySynch.Publisher.exe.config" Directory="PUBLISHER" Guid="{7C74FEB9-2A53-4E73-86A9-C1D001FEAAF5}">
+        <File Id="MySynch.Publisher.exe.config" KeyPath="yes" Source="$(var.PublisherConfigSource)\MySynch.Publisher.exe.config" />
+        <util:XmlFile Id="SetPublisherInstancePort"
 	                    Action="setValue"
 	                    ElementPath="//appSettings/add[\[]@key='InstancePort'[\]]/@value"
 	                    Value="[PUBPORTVAL]"
 	                    File="[#MySynch.Publisher.exe.config]" />
-	      <util:XmlFile Id="SetPublisherRootFolder"
+        <util:XmlFile Id="SetPublisherRootFolder"
 	                    Action="setValue"
 	                    ElementPath="//appSettings/add[\[]@key='LocalRootFolder'[\]]/@value"
 	                    Value="[SRCROOTDIRVAL]"
 	                    File="[#MySynch.Publisher.exe.config]" />
 
-	    </Component>
+      </Component>
       <Component Id="MySynch.Publisher.Service" Directory="PUBLISHER" Guid="{A57774C4-F4E5-4E14-9B4B-09C8BD6EFCAC}">
         <File Id="MySynch.Publisher.exe" Name="MySynch.Publisher.exe" Source="$(var.PublisherExeSource)\MySynch.Publisher.exe" Vital="yes" KeyPath="yes"/>
         <ServiceInstall
@@ -57,24 +59,26 @@
           Interactive="no">
         </ServiceInstall>
         <ServiceControl Id="StartPublisherService" Start="install" Stop="both" Remove="uninstall" Name="MySynch.Publisher" Wait="yes" />
+        <fire:FirewallException Id="PublisherFWRuleTCP" Name="My Synch Publisher TCP Port [PUBPORTVAL]" Port="[PUBPORTVAL]" Protocol="tcp" Scope="any"/>
+        <fire:FirewallException Id="PublisherFWRuleUDP" Name="My Synch Publisher All Access" Program="[#MySynch.Publisher.exe]" Scope="any"/>
       </Component>
-	  </ComponentGroup>
-	  <ComponentGroup Id="SubscriberGroupConf">
-	    <Component Id="MySynch.Subscriber.exe.config" Directory="SUBSCRIBER" Guid="{D2661E8D-426A-4D56-9050-4BC57AC42F8A}">
-	      <File Id="MySynch.Subscriber.exe.config" KeyPath="yes" Source="$(var.SubscriberConfigSource)\MySynch.Subscriber.exe.config" />
-	      <util:XmlFile Id="SetSubscriberInstancePort"
+    </ComponentGroup>
+    <ComponentGroup Id="SubscriberGroupConf">
+      <Component Id="MySynch.Subscriber.exe.config" Directory="SUBSCRIBER" Guid="{D2661E8D-426A-4D56-9050-4BC57AC42F8A}">
+        <File Id="MySynch.Subscriber.exe.config" KeyPath="yes" Source="$(var.SubscriberConfigSource)\MySynch.Subscriber.exe.config" />
+        <util:XmlFile Id="SetSubscriberInstancePort"
 	                    Action="setValue"
 	                    ElementPath="//appSettings/add[\[]@key='InstancePort'[\]]/@value"
 	                    Value="[SUBPORTVAL]"
 	                    File="[#MySynch.Subscriber.exe.config]" />
-	      <util:XmlFile Id="SetSubscriberRootFolder"
+        <util:XmlFile Id="SetSubscriberRootFolder"
 	                    Action="setValue"
 	                    ElementPath="//appSettings/add[\[]@key='LocalRootFolder'[\]]/@value"
 	                    Value="[DSTROOTDIRVAL]"
 	                    File="[#MySynch.Subscriber.exe.config]" />
 
 
-	    </Component>
+      </Component>
       <Component Id="MySynch.Subscriber.Service" Directory="SUBSCRIBER" Guid="{749716C2-B818-4127-B31D-ACEFB95C6B7B}">
         <File Id="MySynch.Subscriber.exe" Name="MySynch.Subscriber.exe" Source="$(var.SubscriberExeSource)\MySynch.Subscriber.exe" Vital="yes" KeyPath="yes"/>
         <ServiceInstall
@@ -90,7 +94,9 @@
           Interactive="no">
         </ServiceInstall>
         <ServiceControl Id="StartSuscriberService" Start="install" Stop="both" Remove="uninstall" Name="MySynch.Subscriber" Wait="yes" />
+        <fire:FirewallException Id="SubscriberFWRuleTCP" Name="My Synch Subscriber TCP Port [SUBPORTVAL]" Port="[SUBPORTVAL]" Protocol="tcp" Scope="any"/>
+        <fire:FirewallException Id="SubscriberFWRuleUDP" Name="My Synch Subscriber All Access" Program="[#MySynch.Subscriber.exe]" Scope="any"/>
       </Component>
-	  </ComponentGroup>
-	</Fragment>
+    </ComponentGroup>
+  </Fragment>
 </Wix>
