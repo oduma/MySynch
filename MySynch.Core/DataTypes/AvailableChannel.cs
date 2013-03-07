@@ -1,4 +1,5 @@
-﻿using MySynch.Contracts.Messages;
+﻿using System.Xml.Serialization;
+using MySynch.Contracts.Messages;
 
 namespace MySynch.Core.DataTypes
 {
@@ -8,10 +9,10 @@ namespace MySynch.Core.DataTypes
 
         public SubscriberInfo SubscriberInfo { get; set; }
 
-        public string UniqueKey { get; set; }
-
+        [XmlIgnore]
         public Status Status { get; set; }
 
+        [XmlIgnore]
         public int NoOfFailedAttempts { get; set; }
 
     }

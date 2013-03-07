@@ -9,9 +9,5 @@
       <InstanceName>ISubscriber.Remote</InstanceName>
       <Port>8767</Port>
     </SubscriberInfo>
-    <DataSourcePort>8765</DataSourcePort>
-    <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
-    <Status>NotChecked</Status>
-    <NoOfFailedAttempts>0</NoOfFailedAttempts>
   </AvailableChannel>
 </ArrayOfAvailableChannel> 

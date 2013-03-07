@@ -26,8 +26,6 @@ namespace MySynch.Tests
             availableChannel.SubscriberInfo= new SubscriberInfo();
             availableChannel.SubscriberInfo.Port = 0;
             availableChannel.SubscriberInfo.InstanceName = "ISubscriber.Local";
-            availableChannel.UniqueKey = availableChannel.PublisherInfo.Port + "to" +
-                                         availableChannel.SubscriberInfo.Port;
             availableChannels.Add(availableChannel);
 
             XmlSerializer xmlSerializer= new XmlSerializer(typeof(List<AvailableChannel>));

@@ -8,11 +8,7 @@
     <SubscriberInfo>
       <InstanceName>ISubscriber.NotPresent</InstanceName>
       <Port>0</Port>
-      <TargetRootFolder>local target root folder</TargetRootFolder>
     </SubscriberInfo>
-    <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
-    <Status>NotChecked</Status>
-    <NoOfFailedAttempts>0</NoOfFailedAttempts>
   </AvailableChannel>
   <AvailableChannel>
     <PublisherInfo>
@@ -22,11 +18,7 @@
     <SubscriberInfo>
       <InstanceName>ISubscriber.Remote</InstanceName>
       <Port>8766</Port>
-      <TargetRootFolder>remote target root folder</TargetRootFolder>
     </SubscriberInfo>
-    <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
-    <Status>NotChecked</Status>
-    <NoOfFailedAttempts>0</NoOfFailedAttempts>
   </AvailableChannel>
   <AvailableChannel>
     <PublisherInfo>
@@ -36,10 +28,6 @@
     <SubscriberInfo>
       <InstanceName>ISubscriber.Remote</InstanceName>
       <Port>8767</Port>
-      <TargetRootFolder>wrong folder</TargetRootFolder>
     </SubscriberInfo>
-    <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
-    <Status>NotChecked</Status>
-    <NoOfFailedAttempts>0</NoOfFailedAttempts>
   </AvailableChannel>
 </ArrayOfAvailableChannel>

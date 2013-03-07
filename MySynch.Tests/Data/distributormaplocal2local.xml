@@ -8,10 +8,6 @@
     <SubscriberInfo>
       <InstanceName>ISubscriber.Local</InstanceName>
       <Port>0</Port>
-      <TargetRootFolder>local target root folder</TargetRootFolder>
     </SubscriberInfo>
-    <UniqueKey>SCIENDO-LAPTOPtoSCIENDO-LAPTOP</UniqueKey>
-    <Status>NotChecked</Status>
-    <NoOfFailedAttempts>0</NoOfFailedAttempts>
   </AvailableChannel>
 </ArrayOfAvailableChannel>
