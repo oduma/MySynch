@@ -1,6 +1,6 @@
-﻿namespace MySynch.Core.DataTypes
+﻿namespace MySynch.Contracts.Messages
 {
-    public class BaseInfo
+    public class MapChannelComponent
     {
         public string InstanceName { get; set; }
 

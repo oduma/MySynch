@@ -92,6 +92,33 @@ namespace MySynch.Proxies
 			return ; 
 
 		}
+		public MySynch.Contracts.Messages.GetCurrentMapResponse GetCurrentMap() 
+		{
+		MySynch.Contracts.Messages.GetCurrentMapResponse response = new MySynch.Contracts.Messages.GetCurrentMapResponse(); 
+		try
+		{
+		                using (new OperationContextScope((IContextChannel)Proxy))
+                {
+				 response =  
+					Proxy.GetCurrentMap();
+				}
+		}
+		catch (CommunicationException e)
+            {
+                OnCommunicationException(e);
+            }
+            catch (TimeoutException e)
+            {
+                OnTimeoutException(e);
+            }
+            catch (Exception e)
+            {
+                OnException(e);
+            }
+
+			return  response; 
+
+		}
 	}
 }
 		

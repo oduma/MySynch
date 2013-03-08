@@ -41,6 +41,7 @@ namespace MySynch.Core.Distributor
                         c => c.PublisherInfo.InstanceName + "-" + c.PublisherInfo.Port);
                 foreach (var publisherGroup in publisherGroups)
                 {
+
                     IGrouping<string, AvailableChannel> @group = publisherGroup;
                     var publisherChannelsNotAvailable =
                         AvailableChannels.Count(
@@ -48,7 +49,7 @@ namespace MySynch.Core.Distributor
                             ((c.PublisherInfo.InstanceName + "-" + c.PublisherInfo.Port) ==
                              group.Key) && c.Status != Status.Ok);
 
-                    var currentPublisher = publisherGroup.Select(g => g).First().PublisherInfo.Publisher;
+                    var currentPublisher = publisherGroup.Select(g => g).First().Publisher;
 
                     var packagePublished = currentPublisher.PublishPackage();
 
@@ -110,7 +111,7 @@ namespace MySynch.Core.Distributor
                                  " with state: " + state);
         }
 
-        private static string GetInstanceName(BaseInfo baseInfo)
+        private static string GetInstanceName(MapChannelComponent baseInfo)
         {
             return string.Format("{0}{1}",
                                  baseInfo.
@@ -162,7 +163,7 @@ namespace MySynch.Core.Distributor
                 try
                 {
                     RegisterSubscriberPackage(channel, packageRequestResponse, State.InProgress);
-                    if (channel.SubscriberInfo.Subscriber.ApplyChangePackage(packageRequestResponse).Status)
+                    if (channel.Subscriber.ApplyChangePackage(packageRequestResponse).Status)
                     {
                         RegisterSubscriberPackage(channel, packageRequestResponse, State.Distributed);
                     }
@@ -318,11 +319,11 @@ namespace MySynch.Core.Distributor
 
         private static bool CheckDataSourceFromTheSubscriberPointOfView(AvailableChannel availableChannel)
         {
-            if (availableChannel.SubscriberInfo.Subscriber == null)
+            if (availableChannel.Subscriber == null)
                 return false;
             
             return
-                availableChannel.SubscriberInfo.Subscriber.TryOpenChannel((availableChannel.PublisherInfo.Port==0)?null:new TryOpenChannelRequest
+                availableChannel.Subscriber.TryOpenChannel((availableChannel.PublisherInfo.Port==0)?null:new TryOpenChannelRequest
                                                                               {
                                                                                   SourceOfDataPort =
                                                                                       availableChannel.PublisherInfo.Port
@@ -370,15 +371,15 @@ namespace MySynch.Core.Distributor
             {
                 if (availableChannel.SubscriberInfo.Port==0)
                 {
-                    subscriber = (availableChannel.SubscriberInfo.Subscriber) ??
-                                 (availableChannel.SubscriberInfo.Subscriber =
+                    subscriber = (availableChannel.Subscriber) ??
+                                 (availableChannel.Subscriber =
                                   _componentResolver.Resolve<ISubscriber>(
                                       availableChannel.SubscriberInfo.InstanceName));
                 }
                 else
                 {
-                    subscriber = (availableChannel.SubscriberInfo.Subscriber) ??
-                                 (availableChannel.SubscriberInfo.Subscriber =
+                    subscriber = (availableChannel.Subscriber) ??
+                                 (availableChannel.Subscriber =
                                   _componentResolver.Resolve<ISubscriberProxy>(
                                       availableChannel.SubscriberInfo.InstanceName,
                                       availableChannel.SubscriberInfo.Port));
@@ -400,7 +401,7 @@ namespace MySynch.Core.Distributor
                     return false;
                 }
                 availableComponent.Status = Status.Ok;
-                availableComponent.RootPath = availableChannel.SubscriberInfo.Subscriber.GetTargetRootFolder().RootFolder;
+                availableComponent.RootPath = availableChannel.Subscriber.GetTargetRootFolder().RootFolder;
                 UpsertComponent(availableComponent, publisherName);
                 return true;
             }
@@ -452,8 +453,8 @@ namespace MySynch.Core.Distributor
                 {
                     availableComponent.IsLocal = true;
                     //the publisher has to be local
-                    currentPublisher = (availableChannel.PublisherInfo.Publisher) ??
-                                     (availableChannel.PublisherInfo.Publisher =
+                    currentPublisher = (availableChannel.Publisher) ??
+                                     (availableChannel.Publisher =
                                       _componentResolver.Resolve<IPublisher>(
                                           availableChannel.PublisherInfo.InstanceName));
                 }
@@ -461,8 +462,8 @@ namespace MySynch.Core.Distributor
                 {
                     availableComponent.IsLocal = false;
 
-                    currentPublisher = (availableChannel.PublisherInfo.Publisher) ??
-                                     (availableChannel.PublisherInfo.Publisher =
+                    currentPublisher = (availableChannel.Publisher) ??
+                                     (availableChannel.Publisher =
                                       _componentResolver.Resolve<IPublisherProxy>(
                                           availableChannel.PublisherInfo.InstanceName,
                                           availableChannel.PublisherInfo.Port));
@@ -521,6 +522,11 @@ namespace MySynch.Core.Distributor
         public void ReEvaluateAllChannels()
         {
             AvailableChannels.Where(c => c.Status != Status.Ok || c.Status != Status.NotChecked).ToList().ForEach(c => c.Status = Status.NotChecked);
+        }
+
+        public GetCurrentMapResponse GetCurrentMap()
+        {
+            throw new NotImplementedException();
         }
 
         public GetHeartbeatResponse GetHeartbeat()

@@ -164,33 +164,14 @@ namespace MySynch.Core.WCF.Clients.Discovery
         internal bool FindService<T>(int port, out EndpointAddress baseAddress)
         {
             LoggingManager.Debug("Looking for service of type " + typeof(T).FullName + " listening at port: " + port);
-            try
+            var services= DiscoveryHelper.FindServices<T>();
+            if (services == null || services.Count(s => s.Address.Uri.Port == port) <= 0)
             {
-                DiscoveryClient discoveryClient =
-                    new DiscoveryClient(new UdpDiscoveryEndpoint());
-
-                var discoveredServices =
-                    discoveryClient.Find(new FindCriteria(typeof(T)));
-
-                discoveryClient.Close();
-
-                var endpointAddress = discoveredServices.Endpoints.FirstOrDefault(e => e.Address.Uri.Port == port);
-                if (endpointAddress == null)
-                {
-                    LoggingManager.Debug("No service of type " + typeof(T).FullName + " listening at port: " + port);
-                    baseAddress = null;
-                    return false;
-                }
-                LoggingManager.Debug("Found service " + endpointAddress.Address);
-                baseAddress = endpointAddress.Address;
-                return true;
+                baseAddress = null;
+                return false;
             }
-            catch (Exception ex)
-            {
-                LoggingManager.LogMySynchSystemError(ex);
-                throw;
-            }
-            
+            baseAddress = services.First(s => s.Address.Uri.Port == port).Address;
+            return true;
         }
 
         /// <summary>

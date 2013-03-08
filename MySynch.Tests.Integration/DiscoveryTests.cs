@@ -1,6 +1,8 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 using System.ServiceModel.Discovery;
 using MySynch.Contracts;
+using MySynch.Core.WCF.Clients.Discovery;
 using NUnit.Framework;
 
 namespace MySynch.Tests.Integration
@@ -24,6 +26,18 @@ namespace MySynch.Tests.Integration
             Assert.False(publisherServices.Endpoints.Count == 0);
             var serviceAddress = publisherServices.Endpoints[0].Address;
             Assert.IsNotNull(serviceAddress);
+        }
+
+        [Test]
+        public void Find_Services_All_Distributors_Ok()
+        {
+            Assert.AreEqual(2, DiscoveryHelper.FindServices<IDistributorMonitor>().Count());
+        }
+
+        [Test]
+        public void FindServices_All_Something_NothingFound()
+        {
+            Assert.IsNull(DiscoveryHelper.FindServices<IDistributorMonitor>());
         }
     }
 }

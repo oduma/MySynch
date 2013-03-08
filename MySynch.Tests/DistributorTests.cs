@@ -221,7 +221,7 @@ namespace MySynch.Tests
             Distributor distributor = new Distributor();
             distributor.InitiateDistributionMap(@"Data\distributormap5.xml", _componentResolver);
             ChangePublisher changePublisher = (ChangePublisher)distributor.AvailableChannels
-            .FirstOrDefault(c => c.PublisherInfo.Port==0).PublisherInfo.Publisher;
+            .FirstOrDefault(c => c.PublisherInfo.Port==0).Publisher;
             var mockItemDiscoverer = MockTestHelper.MockItemDiscoverer("root folder");
             changePublisher.Initialize("root folder",mockItemDiscoverer);
             changePublisher.QueueInsert(@"root folder\Item One");
@@ -249,7 +249,7 @@ namespace MySynch.Tests
             Distributor distributor = new Distributor();
             distributor.InitiateDistributionMap(@"Data\distributormap5.xml", _componentResolver);
             ChangePublisher changePublisher = (ChangePublisher)distributor.AvailableChannels
-                .FirstOrDefault(c => c.PublisherInfo.Port==0).PublisherInfo.Publisher;
+                .FirstOrDefault(c => c.PublisherInfo.Port==0).Publisher;
             var mockItemDiscoverer = MockTestHelper.MockItemDiscoverer("root folder");
             changePublisher.Initialize("root folder", mockItemDiscoverer);
             changePublisher.QueueInsert(@"root folder\Item One");
@@ -280,7 +280,7 @@ namespace MySynch.Tests
             mockSubscriber.Setup(m => m.GetTargetRootFolder()).Returns(new GetTargetFolderResponse{RootFolder=@"destination root folder\Item One"});
             mockSubscriber.Setup(m => m.TryOpenChannel(null)).Returns(new TryOpenChannelResponse{Status=true});
             mockSubscriber.Setup(m => m.ApplyChangePackage(publishPackageRequestResponse)).Returns(new ApplyChangePackageResponse{Status=true});
-            channel.SubscriberInfo.Subscriber = mockSubscriber.Object;
+            channel.Subscriber = mockSubscriber.Object;
         }
     }
 }

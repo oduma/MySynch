@@ -19,11 +19,11 @@ namespace MySynch.Tests
         {
             List<AvailableChannel> availableChannels=new List<AvailableChannel>();
             AvailableChannel availableChannel= new AvailableChannel();
-            availableChannel.PublisherInfo= new PublisherInfo();
+            availableChannel.PublisherInfo= new MapChannelComponent();
             availableChannel.PublisherInfo.Port = 0;
             availableChannel.PublisherInfo.InstanceName = "IPublisher.Local";
             availableChannel.Status = Status.NotChecked;
-            availableChannel.SubscriberInfo= new SubscriberInfo();
+            availableChannel.SubscriberInfo= new MapChannelComponent();
             availableChannel.SubscriberInfo.Port = 0;
             availableChannel.SubscriberInfo.InstanceName = "ISubscriber.Local";
             availableChannels.Add(availableChannel);
