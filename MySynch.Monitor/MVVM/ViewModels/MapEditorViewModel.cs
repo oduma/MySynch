@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
 using System.IO;
 using System.Linq;
-using System.Text;
 using MySynch.Common.Serialization;
 using MySynch.Core.DataTypes;
 
@@ -12,8 +10,8 @@ namespace MySynch.Monitor.MVVM.ViewModels
 {
     internal class MapEditorViewModel:ViewModelBase
     {
-        private ObservableCollection<MapChannelViewModel> _mapChannels;
         private string _distributorMapFile;
+        private ObservableCollection<MapChannelViewModel> _mapChannels;
 
         public ObservableCollection<MapChannelViewModel> MapChannels
         {
@@ -27,6 +25,38 @@ namespace MySynch.Monitor.MVVM.ViewModels
                 }
             }
         }
+
+        private ObservableCollection<string> _allAvailablePublishers;
+
+        public ObservableCollection<string> AllAvailablePublishers
+        {
+            get { return _allAvailablePublishers; }
+            set
+            {
+                if (_allAvailablePublishers != value)
+                {
+                    _allAvailablePublishers = value;
+                    RaisePropertyChanged(() => AllAvailablePublishers);
+                }
+            }
+        }
+
+
+        private ObservableCollection<string> _allAvailableSubscribers;
+
+        public ObservableCollection<string> AllAvailableSubscribers
+        {
+            get { return _allAvailableSubscribers; }
+            set
+            {
+                if (_allAvailableSubscribers != value)
+                {
+                    _allAvailableSubscribers = value;
+                    RaisePropertyChanged(() => AllAvailableSubscribers);
+                }
+            }
+        }
+
 
         public MapEditorViewModel()
         {
@@ -49,8 +79,22 @@ namespace MySynch.Monitor.MVVM.ViewModels
                             MapChannelSubscriberTitle = c.SubscriberInfo.InstanceName + ":" + c.SubscriberInfo.Port
                         });
             MapChannels=new ObservableCollection<MapChannelViewModel>();
+            AllAvailablePublishers=new ObservableCollection<string>();
+            AllAvailableSubscribers=new ObservableCollection<string>();
             foreach(var mapChannel in mapChannels)
+            {
                 MapChannels.Add(mapChannel);
+                MapChannelViewModel channel = mapChannel;
+                if(!AllAvailablePublishers.Any(p=>p==channel.MapChannelPublisherTitle))
+                {
+                    AllAvailablePublishers.Add(mapChannel.MapChannelPublisherTitle);
+                }
+                if(!AllAvailableSubscribers.Any(s=>s==mapChannel.MapChannelSubscriberTitle))
+                {
+                    AllAvailableSubscribers.Add(mapChannel.MapChannelSubscriberTitle);
+                }
+            }
+            
         }
     }
 }
