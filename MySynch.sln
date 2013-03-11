@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySynch.Tests.Integration",
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "MySynch.Services.Installer", "MySynch.Services.Installer\MySynch.Services.Installer.wixproj", "{36FE7C56-E471-422F-91ED-BE6FCA8BEF03}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySynch.MVVM.Tests", "MySynch.MVVM.Tests\MySynch.MVVM.Tests.csproj", "{986815A7-C827-4316-B91D-5D178839196F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -160,13 +162,23 @@ Global
 		{36FE7C56-E471-422F-91ED-BE6FCA8BEF03}.Release|Mixed Platforms.Build.0 = Release|x86
 		{36FE7C56-E471-422F-91ED-BE6FCA8BEF03}.Release|x86.ActiveCfg = Release|x86
 		{36FE7C56-E471-422F-91ED-BE6FCA8BEF03}.Release|x86.Build.0 = Release|x86
+		{986815A7-C827-4316-B91D-5D178839196F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{986815A7-C827-4316-B91D-5D178839196F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{986815A7-C827-4316-B91D-5D178839196F}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{986815A7-C827-4316-B91D-5D178839196F}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{986815A7-C827-4316-B91D-5D178839196F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{986815A7-C827-4316-B91D-5D178839196F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{986815A7-C827-4316-B91D-5D178839196F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{986815A7-C827-4316-B91D-5D178839196F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{986815A7-C827-4316-B91D-5D178839196F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{986815A7-C827-4316-B91D-5D178839196F}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		BuildVersion_UpdateAssemblyVersion = False
-		BuildVersion_UpdateFileVersion = False
 		BuildVersion_BuildVersioningStyle = None.None.None.None
+		BuildVersion_UpdateFileVersion = False
+		BuildVersion_UpdateAssemblyVersion = False
 	EndGlobalSection
 EndGlobal
