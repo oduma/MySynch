@@ -524,9 +524,19 @@ namespace MySynch.Core.Distributor
             AvailableChannels.Where(c => c.Status != Status.Ok || c.Status != Status.NotChecked).ToList().ForEach(c => c.Status = Status.NotChecked);
         }
 
-        public GetCurrentMapResponse GetCurrentMap()
+        public IEnumerable<MapChannel> GetCurrentMap()
         {
-            throw new NotImplementedException();
+            LoggingManager.Debug("Trying to get the map");
+            try
+            {
+                return AvailableChannels.Select(c => (MapChannel)c);
+
+            }
+            catch (Exception ex)
+            {
+                LoggingManager.LogMySynchSystemError(ex);   
+                return null;
+            }
         }
 
         public GetHeartbeatResponse GetHeartbeat()

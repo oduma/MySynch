@@ -1,4 +1,4 @@
-﻿namespace MySynch.Contracts.Messages
+﻿namespace MySynch.Core.DataTypes
 {
     public class MapChannel
     {

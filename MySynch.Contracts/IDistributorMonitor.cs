@@ -11,8 +11,5 @@ namespace MySynch.Contracts
 
         [OperationContract]
         void ReEvaluateAllChannels();
-
-        [OperationContract]
-        GetCurrentMapResponse GetCurrentMap();
     }
 }

@@ -282,5 +282,23 @@ namespace MySynch.Tests
             mockSubscriber.Setup(m => m.ApplyChangePackage(publishPackageRequestResponse)).Returns(new ApplyChangePackageResponse{Status=true});
             channel.Subscriber = mockSubscriber.Object;
         }
+
+        [Test]
+        public void GetCurrentMap_Ok()
+        {
+            Distributor distributor = new Distributor();
+            distributor.InitiateDistributionMap(@"Data\distributormap.xml", _componentResolver);
+            var distributorMap = distributor.GetCurrentMap();
+            Assert.IsNotNull(distributorMap);
+            Assert.IsNotNull(distributorMap);
+            Assert.AreEqual(3,distributorMap.Count());
+        }
+        [Test]
+        public void GetCurrentMap_Ex()
+        {
+            Distributor distributor = new Distributor();
+            var distributorMap = distributor.GetCurrentMap();
+            Assert.IsNull(distributorMap);
+        }
     }
 }
