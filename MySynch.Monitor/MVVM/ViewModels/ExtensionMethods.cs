@@ -1,0 +1,48 @@
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using MySynch.Core.DataTypes;
+using System.Linq;
+
+namespace MySynch.Monitor.MVVM.ViewModels
+{
+    public static class ExtensionMethods
+    {
+        internal static IEnumerable<AvailableChannel> ConvertToChannels(this ObservableCollection<MapChannelViewModel> inCollection)
+        {
+            foreach (var inElement in inCollection)
+            {
+                if (string.IsNullOrEmpty(inElement.MapChannelPublisherTitle)
+     || string.IsNullOrEmpty(inElement.MapChannelSubscriberTitle))
+                    yield return null;
+
+                var publisherParts = inElement.MapChannelPublisherTitle.Split(new char[] { ':' });
+                if (publisherParts.Count() < 2)
+                    yield return null;
+                int publisherPort;
+                if (!int.TryParse(publisherParts[1], out publisherPort))
+                    yield return null;
+                var subscriberParts = inElement.MapChannelSubscriberTitle.Split(new char[] { ':' });
+                if (subscriberParts.Count() < 2)
+                    yield return null;
+                int subscriberPort;
+                if (!int.TryParse(subscriberParts[1], out subscriberPort))
+                    yield return null;
+                yield return new AvailableChannel
+                {
+                    PublisherInfo =
+                        new MapChannelComponent
+                        {
+                            InstanceName = publisherParts[0],
+                            Port = publisherPort
+                        },
+                    SubscriberInfo = new MapChannelComponent
+                    {
+                        InstanceName = subscriberParts[0],
+                        Port = subscriberPort
+                    }
+                };
+
+            }
+        }
+    }
+}

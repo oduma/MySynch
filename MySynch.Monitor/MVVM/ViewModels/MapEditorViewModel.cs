@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Configuration;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.ServiceModel.Discovery;
+using System.Windows.Input;
 using MySynch.Common.Serialization;
 using MySynch.Contracts;
 using MySynch.Core.DataTypes;
@@ -65,6 +67,8 @@ namespace MySynch.Monitor.MVVM.ViewModels
             }
         }
 
+        public ICommand SaveAndRestart { get; private set; }
+
 
         public MapEditorViewModel()
         {
@@ -93,6 +97,8 @@ namespace MySynch.Monitor.MVVM.ViewModels
             MapChannels=new ObservableCollection<MapChannelViewModel>();
             AllAvailablePublishers=new ObservableCollection<string>();
             AllAvailableSubscribers=new ObservableCollection<string>();
+            SaveAndRestart = new RelayCommand(PerformSaveAnRestart);
+
             if (searchNetwork)
             {
                 BackgroundWorker backgroundWorker = new BackgroundWorker();
@@ -131,6 +137,40 @@ namespace MySynch.Monitor.MVVM.ViewModels
                     AllAvailableSubscribers.Add(PlaceHolderLoading);
                 }
             }
+        }
+
+        internal void PerformSaveAnRestart()
+        {
+            BlockTheUI();
+            StopDistributor();
+            SaveChannelsToDistributorMap(MapChannels.ConvertToChannels().Where(c => c != null),_distributorMapFile);
+            StartDistributor();
+            UnblockTheUI();
+        }
+
+        internal virtual void SaveChannelsToDistributorMap(IEnumerable<AvailableChannel> availableChannels, string distributorMapFile)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal virtual void StartDistributor()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal virtual void StopDistributor()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void UnblockTheUI()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void BlockTheUI()
+        {
+            throw new NotImplementedException();
         }
 
         private void ProgressChanged(object sender, ProgressChangedEventArgs e)
