@@ -1,17 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.ServiceModel.Discovery;
 using MySynch.Common.Serialization;
+using MySynch.Contracts;
 using MySynch.Core.DataTypes;
+using MySynch.Core.WCF.Clients.Discovery;
 
 namespace MySynch.Monitor.MVVM.ViewModels
 {
     internal class MapEditorViewModel:ViewModelBase
     {
+        private const string PlaceHolderLoading = "Still loading...";
         private string _distributorMapFile;
         private ObservableCollection<MapChannelViewModel> _mapChannels;
+        private object _publisherLock=new object();
+        private object _subscriberLock = new object();
 
         public ObservableCollection<MapChannelViewModel> MapChannels
         {
@@ -70,6 +78,10 @@ namespace MySynch.Monitor.MVVM.ViewModels
                 return;
             if (!File.Exists(_distributorMapFile))
                 return;
+        }
+
+        public void InitiateView(bool searchNetwork=true)
+        {
             var mapChannels =
                 Serializer.DeserializeFromFile<AvailableChannel>(_distributorMapFile).Select(
                     c =>
@@ -81,20 +93,116 @@ namespace MySynch.Monitor.MVVM.ViewModels
             MapChannels=new ObservableCollection<MapChannelViewModel>();
             AllAvailablePublishers=new ObservableCollection<string>();
             AllAvailableSubscribers=new ObservableCollection<string>();
+            if (searchNetwork)
+            {
+                BackgroundWorker backgroundWorker = new BackgroundWorker();
+                backgroundWorker.DoWork += DoWork;
+                backgroundWorker.RunWorkerCompleted += RunWorkerCompleted;
+                backgroundWorker.ProgressChanged += ProgressChanged;
+                backgroundWorker.RunWorkerAsync();
+            }
             foreach(var mapChannel in mapChannels)
             {
                 MapChannels.Add(mapChannel);
                 MapChannelViewModel channel = mapChannel;
-                if(!AllAvailablePublishers.Any(p=>p==channel.MapChannelPublisherTitle))
+                lock (_publisherLock)
                 {
-                    AllAvailablePublishers.Add(mapChannel.MapChannelPublisherTitle);
+                    if (!AllAvailablePublishers.Any(p => p == channel.MapChannelPublisherTitle))
+                    {
+                        AllAvailablePublishers.Add(mapChannel.MapChannelPublisherTitle);
+                    }
                 }
-                if(!AllAvailableSubscribers.Any(s=>s==mapChannel.MapChannelSubscriberTitle))
+                lock(_subscriberLock)
                 {
-                    AllAvailableSubscribers.Add(mapChannel.MapChannelSubscriberTitle);
+                    if(!AllAvailableSubscribers.Any(s=>s==channel.MapChannelSubscriberTitle))
+                    {
+                        AllAvailableSubscribers.Add(mapChannel.MapChannelSubscriberTitle);
+                    }
                 }
             }
-            
+            if (searchNetwork)
+            {
+                lock(_publisherLock)
+                {
+                    AllAvailablePublishers.Add(PlaceHolderLoading);
+                }
+                lock(_subscriberLock)
+                {
+                    AllAvailableSubscribers.Add(PlaceHolderLoading);
+                }
+            }
+        }
+
+        private void ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            return;
+        }
+
+        private void RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            lock(_publisherLock)
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke((Action)(() => AllAvailablePublishers.Remove(PlaceHolderLoading)));
+            }
+            lock(_subscriberLock)
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke((Action)(() => AllAvailableSubscribers.Remove(PlaceHolderLoading)));
+            }
+        }
+
+        private void DoWork(object sender, DoWorkEventArgs e)
+        {
+            GetAllPublishers();
+            GetAllSubscribers();
+        }
+
+        private void GetAllSubscribers()
+        {
+            var subscribers = DiscoveryHelper.FindServices<ISubscriber>();
+            lock (_subscriberLock)
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke((Action)(() => LoadSubscriberInformation(subscribers)));
+            }
+        }
+
+        private void LoadSubscriberInformation(IEnumerable<EndpointDiscoveryMetadata> subscribers)
+        {
+            foreach (var subscriber in subscribers)
+            {
+                var newSubscriber = "ISubscriber.Remote:" + subscriber.Address.Uri.Port;
+                if (!AllAvailableSubscribers.Any(s => s == newSubscriber))
+                {
+                    AllAvailableSubscribers.Remove(PlaceHolderLoading);
+                    AllAvailableSubscribers.Add(newSubscriber);
+                    AllAvailableSubscribers.Add(PlaceHolderLoading);
+                }
+            }
+        }
+
+        private void GetAllPublishers()
+        {
+            var publishers = DiscoveryHelper.FindServices<IPublisher>();
+
+            lock (_publisherLock)
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke((Action)(() => LoadPublisherInformation(publishers)));
+            }
+        }
+
+        private void LoadPublisherInformation(IEnumerable<EndpointDiscoveryMetadata> publishers)
+        {
+
+            foreach (var publisher in publishers)
+            {
+                var newPublisher = "IPublisher.Remote:" + publisher.Address.Uri.Port;
+
+                if (!AllAvailablePublishers.Any(p => p == newPublisher))
+                {
+                    AllAvailablePublishers.Remove(PlaceHolderLoading);
+                    AllAvailablePublishers.Add(newPublisher);
+                    AllAvailablePublishers.Add(PlaceHolderLoading);
+                }
+            }
         }
     }
 }

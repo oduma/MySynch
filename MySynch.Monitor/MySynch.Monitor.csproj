@@ -63,6 +63,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Discovery" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -94,7 +95,6 @@
     <Compile Include="MVVM\ViewModels\NotificationDetailsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\StatusToIconFileNameConverter.cs" />
     <Compile Include="MVVM\ViewModels\ViewModelBase.cs" />
-    <Compile Include="Utils\ThreadSafeObservableCollection.cs" />
     <Compile Include="Utils\WPFControlThreadingExtensions.cs" />
     <Compile Include="Window1.xaml.cs">
       <DependentUpon>Window1.xaml</DependentUpon>

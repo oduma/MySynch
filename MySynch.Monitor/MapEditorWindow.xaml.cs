@@ -17,8 +17,9 @@ namespace MySynch.Monitor
                 InitializeComponent();
                 try
                 {
-
-                    this.DataContext = new MapEditorViewModel();
+                    var mapEditorViewModel = new MapEditorViewModel();
+                    mapEditorViewModel.InitiateView();
+                    this.DataContext = mapEditorViewModel;
 
                 }
                 catch (Exception ex)
