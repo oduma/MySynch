@@ -244,4 +244,9 @@
         <Setter Property="FrameworkElement.MaxWidth" Value="124"/>
         <Setter Property="FrameworkElement.Margin" Value="10 10 10 10"/>
     </Style>
+    <Style x:Key="MessageStyle">
+        <Setter Property="FrameworkElement.Height" Value="32"/>
+        <Setter Property="FrameworkElement.MaxWidth" Value="124"/>
+        <Setter Property="FrameworkElement.Margin" Value="50 50 50 50"/>
+    </Style>
 </ResourceDictionary>

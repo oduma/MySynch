@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<ArrayOfAvailableChannel xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<?xml version="1.0"?>
+<ArrayOfAvailableChannel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <AvailableChannel>
     <PublisherInfo>
       <InstanceName>IPublisher.Remote</InstanceName>
@@ -10,4 +10,4 @@
       <Port>8767</Port>
     </SubscriberInfo>
   </AvailableChannel>
-</ArrayOfAvailableChannel> 
+</ArrayOfAvailableChannel>

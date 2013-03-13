@@ -7,11 +7,15 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.ServiceModel.Discovery;
+using System.ServiceProcess;
+using System.Threading;
+using System.Windows;
 using System.Windows.Input;
 using MySynch.Common.Serialization;
 using MySynch.Contracts;
 using MySynch.Core.DataTypes;
 using MySynch.Core.WCF.Clients.Discovery;
+using MySynch.Monitor.Utils;
 
 namespace MySynch.Monitor.MVVM.ViewModels
 {
@@ -19,6 +23,62 @@ namespace MySynch.Monitor.MVVM.ViewModels
     {
         private const string PlaceHolderLoading = "Still loading...";
         private string _distributorMapFile;
+
+        private bool _uiAvailable=true;
+        public bool UIAvailable
+        {
+            get
+            {
+                return this._uiAvailable;
+            }
+
+            set
+            {
+                if (value != _uiAvailable)
+                {
+                    _uiAvailable = value;
+                    RaisePropertyChanged("UIAvailable");
+                }
+            }
+        }
+
+        private Visibility _messageVisible=Visibility.Hidden;
+        public Visibility MessageVisible
+        {
+            get
+            {
+                return this._messageVisible;
+            }
+
+            set
+            {
+                if (value != _messageVisible)
+                {
+                    _messageVisible = value;
+                    RaisePropertyChanged("MessageVisible");
+                }
+            }
+        }
+
+        private string _workingMessage;
+        public string WorkingMessage
+        {
+            get
+            {
+                return this._workingMessage;
+            }
+
+            set
+            {
+                if (value != _workingMessage)
+                {
+                    _workingMessage = value;
+                    RaisePropertyChanged("WorkingMessage");
+                }
+            }
+        }
+
+
         private ObservableCollection<MapChannelViewModel> _mapChannels;
         private object _publisherLock=new object();
         private object _subscriberLock = new object();
@@ -51,7 +111,6 @@ namespace MySynch.Monitor.MVVM.ViewModels
             }
         }
 
-
         private ObservableCollection<string> _allAvailableSubscribers;
 
         public ObservableCollection<string> AllAvailableSubscribers
@@ -68,7 +127,6 @@ namespace MySynch.Monitor.MVVM.ViewModels
         }
 
         public ICommand SaveAndRestart { get; private set; }
-
 
         public MapEditorViewModel()
         {
@@ -141,31 +199,60 @@ namespace MySynch.Monitor.MVVM.ViewModels
 
         internal void PerformSaveAnRestart()
         {
+            BackgroundWorker backgroundWorker = new BackgroundWorker();
+            backgroundWorker.DoWork += DoSaveWork;
+            backgroundWorker.RunWorkerCompleted += DoSaveWorkCompleted;
+            backgroundWorker.ProgressChanged += DoSaveWorkProgressChanged;
+            backgroundWorker.RunWorkerAsync();
+
             BlockTheUI();
-            StopDistributor();
-            Serializer.SerializeToFile(MapChannels.ConvertToChannels().Where(c => c != null).ToList(),_distributorMapFile);
+        }
+
+        private void DoSaveWorkProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            WorkingMessage = e.UserState.ToString();
+            return;
+        }
+
+        private void DoSaveWorkCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
             StartDistributor();
             UnblockTheUI();
         }
 
+        private void DoSaveWork(object sender, DoWorkEventArgs e)
+        {
+            StopDistributor();
+            DoSaveWorkProgressChanged(this, new ProgressChangedEventArgs(0, "Saving changes."));
+            Serializer.SerializeToFile(MapChannels.ConvertToChannels().ToList(), _distributorMapFile);
+            DoSaveWorkProgressChanged(this, new ProgressChangedEventArgs(0, "Changes saved."));
+        }
+
         internal virtual void StartDistributor()
         {
-            throw new NotImplementedException();
+            DoSaveWorkProgressChanged(this, new ProgressChangedEventArgs(0, "Starting the Distributor."));
+            DoSaveWorkProgressChanged(this, new ProgressChangedEventArgs(0, ServiceHelper.StartDistributor()));
+            return;
         }
 
         internal virtual void StopDistributor()
         {
-            throw new NotImplementedException();
+            DoSaveWorkProgressChanged(this, new ProgressChangedEventArgs(0, "Stopping the Distributor."));
+            DoSaveWorkProgressChanged(this, new ProgressChangedEventArgs(0, ServiceHelper.StopDistributor()));
+            return;
         }
 
         private void UnblockTheUI()
         {
-            throw new NotImplementedException();
+            UIAvailable = true;
+            MessageVisible = Visibility.Hidden;
         }
 
         private void BlockTheUI()
         {
-            throw new NotImplementedException();
+            DoSaveWorkProgressChanged(this, new ProgressChangedEventArgs(0, "Stopping the UI."));
+            UIAvailable = false;
+            MessageVisible = Visibility.Visible;
         }
 
         private void ProgressChanged(object sender, ProgressChangedEventArgs e)
