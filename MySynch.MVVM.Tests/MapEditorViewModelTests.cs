@@ -11,6 +11,7 @@ namespace MySynch.MVVM.Tests
         public void LoadTheMap_Ok()
         {
             MapEditorViewModel mapEditorViewModel= new MapEditorViewModel();
+            mapEditorViewModel.InitiateView(false);
             Assert.IsNotNull(mapEditorViewModel.MapChannels);
             Assert.AreEqual(3,mapEditorViewModel.MapChannels.Count);
 
@@ -25,7 +26,8 @@ namespace MySynch.MVVM.Tests
                 File.Delete(@"Data\map\distributormap.xml");
             }
             MapEditorViewModel mapEditorViewModel = new MapEditorViewModel();
-            Assert.IsNull(mapEditorViewModel.MapChannels);
+            mapEditorViewModel.InitiateView(false);
+            Assert.IsEmpty(mapEditorViewModel.MapChannels);
             if (File.Exists(@"Data\map\distributormap1.xml"))
             {
                 File.Copy(@"Data\map\distributormap1.xml", @"Data\map\distributormap.xml", true);
@@ -43,10 +45,10 @@ namespace MySynch.MVVM.Tests
                 File.Copy(@"Data\map\distributormap2.xml",@"Data\map\distributormap.xml",true);
             }
             MapEditorViewModel mapEditorViewModel = new MapEditorViewModel();
-            Assert.IsEmpty(mapEditorViewModel.MapChannels);
+            Assert.IsNull(mapEditorViewModel.MapChannels);
             if (File.Exists(@"Data\map\distributormap1.xml"))
             {
-                File.Copy(@"Data\map\distributormap.xml", @"Data\map\distributormap1.xml", true);
+                File.Copy(@"Data\map\distributormap1.xml", @"Data\map\distributormap.xml", true);
                 File.Delete(@"Data\map\distributormap1.xml");
             }
 

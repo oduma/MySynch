@@ -143,14 +143,9 @@ namespace MySynch.Monitor.MVVM.ViewModels
         {
             BlockTheUI();
             StopDistributor();
-            SaveChannelsToDistributorMap(MapChannels.ConvertToChannels().Where(c => c != null),_distributorMapFile);
+            Serializer.SerializeToFile(MapChannels.ConvertToChannels().Where(c => c != null).ToList(),_distributorMapFile);
             StartDistributor();
             UnblockTheUI();
-        }
-
-        internal virtual void SaveChannelsToDistributorMap(IEnumerable<AvailableChannel> availableChannels, string distributorMapFile)
-        {
-            throw new NotImplementedException();
         }
 
         internal virtual void StartDistributor()
