@@ -187,7 +187,7 @@ namespace MySynch.Core.WCF.Clients.Discovery
                                              {
                                                  EndpointAddress = baseAddress
             };
-            endpointChannelFactory.ChannelFactory = new ChannelFactory<T>(ClientServerBindingHelper.GetBinding(),
+            endpointChannelFactory.ChannelFactory = new ChannelFactory<T>(ClientServerBindingHelper.GetBinding().ApplyClientBinding(),
                                                                           endpointChannelFactory.EndpointAddress);
             endpointChannelFactory.ChannelFactory.Endpoint.Behaviors.Add(new MySynchAuditBehavior());
 

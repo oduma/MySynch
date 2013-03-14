@@ -69,6 +69,18 @@ namespace MySynch.Tests.Integration
         }
 
         [Test]
+        [Ignore(@"Requires the file C:\MySynch.Source.Test.Root\bigFile.big to be present")]
+        public void DayaSourceTransferBigFile()
+        {
+
+            ISourceOfDataProxy sourceOfDataProxy = new SourceOfDataClient();
+            sourceOfDataProxy.InitiateUsingPort(8765);
+            var data = sourceOfDataProxy.GetData(new RemoteRequest { FileName = @"C:\MySynch.Source.Test.Root\bigFile.big" });
+            Assert.IsNotNull(data);
+            Assert.IsNotNull(data.Data);
+        }
+
+        [Test]
         [Ignore(@"Assumes presence of C:\MySynch.Source.Test.Root\File1.xml")]
         public void TestOnlyRemoteDataSource_Ok()
         {

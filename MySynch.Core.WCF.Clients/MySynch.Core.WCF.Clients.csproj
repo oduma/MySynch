@@ -49,6 +49,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Discovery" />
     <Reference Include="System.Xml.Linq" />
@@ -63,6 +64,7 @@
     <Compile Include="Discovery\BaseClient.cs" />
     <Compile Include="Discovery\ChannelFactoryPool.cs" />
     <Compile Include="Discovery\DiscoveryHelper.cs" />
+    <Compile Include="Discovery\ExtensionMethods.cs" />
     <Compile Include="Discovery\IInitiateClient.cs" />
     <Compile Include="Duplex\BaseClient.cs" />
     <Compile Include="Duplex\ChannelFactoryPool.cs" />
@@ -105,7 +107,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" />
+      <UserProperties BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
