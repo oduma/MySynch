@@ -224,7 +224,7 @@ namespace MySynch.Monitor.MVVM.ViewModels
         {
             StopDistributor();
             DoSaveWorkProgressChanged(this, new ProgressChangedEventArgs(0, "Saving changes."));
-            Serializer.SerializeToFile(MapChannels.ConvertToChannels().ToList(), _distributorMapFile);
+            Serializer.SerializeToFile(MapChannels.ConvertToChannels().Distinct(new ChannelEqualityComparer()).ToList(), _distributorMapFile);
             DoSaveWorkProgressChanged(this, new ProgressChangedEventArgs(0, "Changes saved."));
         }
 

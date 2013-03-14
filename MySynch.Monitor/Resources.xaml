@@ -246,7 +246,16 @@
     </Style>
     <Style x:Key="MessageStyle">
         <Setter Property="FrameworkElement.Height" Value="32"/>
-        <Setter Property="FrameworkElement.MaxWidth" Value="124"/>
-        <Setter Property="FrameworkElement.Margin" Value="50 50 50 50"/>
+        <Setter Property="FrameworkElement.MaxWidth" Value="224"/>
+        <Setter Property="FrameworkElement.Margin" Value="50 20 50 20"/>
+    </Style>
+    <Style x:Key="GridCellStyle" TargetType="{x:Type DataGridCell}">
+        <!--<Setter Property="BorderBrush" Value="Aqua"/>-->
+    </Style>
+    <Style x:Key="GridStyle" TargetType="{x:Type DataGrid}">
+        <Setter Property="BorderBrush" Value="Blue"/>
+        <Setter Property="CellStyle" Value="{StaticResource GridCellStyle}"/>
+        <Setter Property="HorizontalGridLinesBrush" Value="CornflowerBlue"/>
+        <Setter Property="VerticalGridLinesBrush" Value="CornflowerBlue"/>
     </Style>
 </ResourceDictionary>

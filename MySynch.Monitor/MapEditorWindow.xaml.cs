@@ -29,10 +29,5 @@ namespace MySynch.Monitor
                 }
             }
         }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }
