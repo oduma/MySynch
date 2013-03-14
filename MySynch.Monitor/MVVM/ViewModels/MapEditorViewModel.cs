@@ -128,6 +128,8 @@ namespace MySynch.Monitor.MVVM.ViewModels
 
         public ICommand SaveAndRestart { get; private set; }
 
+        public ICommand Close { get; private set; }
+
         public MapEditorViewModel()
         {
             var key = ConfigurationManager.AppSettings.AllKeys.FirstOrDefault(k => k == "DistributorMap");
@@ -156,7 +158,7 @@ namespace MySynch.Monitor.MVVM.ViewModels
             AllAvailablePublishers=new ObservableCollection<string>();
             AllAvailableSubscribers=new ObservableCollection<string>();
             SaveAndRestart = new RelayCommand(PerformSaveAnRestart);
-
+            Close = new RelayCommand(PerformClose);
             if (searchNetwork)
             {
                 BackgroundWorker backgroundWorker = new BackgroundWorker();
@@ -195,6 +197,11 @@ namespace MySynch.Monitor.MVVM.ViewModels
                     AllAvailableSubscribers.Add(PlaceHolderLoading);
                 }
             }
+        }
+
+        private void PerformClose()
+        {
+            Application.Current.Shutdown();
         }
 
         internal void PerformSaveAnRestart()

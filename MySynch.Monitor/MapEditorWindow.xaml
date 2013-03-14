@@ -59,7 +59,7 @@
                 Style="{StaticResource ButtonsStyle}" Command="{Binding SaveAndRestart}"
                 IsEnabled="{Binding UIAvailable}"/>
         <Button Grid.Column="2" Grid.Row="1" Content="Close"  Style="{StaticResource ButtonsStyle}"
-                IsEnabled="{Binding UIAvailable}"/>
+                IsEnabled="{Binding UIAvailable}" Command="{Binding Close}"/>
         <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" 
                Content="{Binding WorkingMessage}" 
                Visibility="{Binding MessageVisible}" Style="{StaticResource MessageStyle}"/>
