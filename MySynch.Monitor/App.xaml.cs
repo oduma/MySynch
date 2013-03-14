@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
 using System.Windows;
-using Hardcodet.Wpf.TaskbarNotification;
+using MySynch.Common.Logging;
 
 namespace MySynch.Monitor
 {
@@ -19,6 +15,20 @@ namespace MySynch.Monitor
         {
             //initialize NotifyIcon
             //tb = (TaskbarIcon)FindResource("MyNotifyIcon");
+        }
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            try
+            {
+                MessageBox.Show(Environment.GetCommandLineArgs()[1]);
+                var mainView = new MapEditorWindow();
+                mainView.Show();
+            }
+            catch (Exception ex)
+            {
+                LoggingManager.LogMySynchSystemError(ex);
+            }
         }
     }
 }
