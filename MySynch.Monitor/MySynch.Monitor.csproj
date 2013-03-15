@@ -89,6 +89,9 @@
     <Compile Include="MapEditorWindow.xaml.cs">
       <DependentUpon>MapEditorWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MonitorView.xaml.cs">
+      <DependentUpon>MonitorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MVVM\ViewModels\ChannelEqualityComparer.cs" />
     <Compile Include="MVVM\ViewModels\ComponentType.cs" />
     <Compile Include="MVVM\ViewModels\ComponentTypeToIconFileNameConverter.cs" />
@@ -118,6 +121,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="MapEditorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MonitorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -22,7 +22,17 @@ namespace MySynch.Monitor
             //initialize NotifyIcon
             tb = (TaskbarIcon)FindResource("MyNotifyIcon");
             ((MenuItem)tb.ContextMenu.Items[0]).Command=new RelayCommand(LaunchMapEditor);
+            ((MenuItem)tb.ContextMenu.Items[1]).Command = new RelayCommand(LaunchMonitor);
 
+
+        }
+
+        private MonitorView _monitorView;
+        private void LaunchMonitor()
+        {
+            if (_monitorView == null)
+                _monitorView = new MonitorView();
+            _monitorView.Show();
         }
 
         private MapEditorWindow _mapEditorView; 

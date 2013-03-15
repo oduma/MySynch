@@ -8,10 +8,11 @@
     <!-- Globally declared notify icon -->
     <tb:TaskbarIcon x:Key="MyNotifyIcon"
 				  IconSource="Icons/refresh.ico"
-				  ToolTipText="hello world">
+				  ToolTipText="MySynch">
         <tb:TaskbarIcon.ContextMenu>
             <ContextMenu>
                 <MenuItem Header="Settings"/>
+                <MenuItem Header="Current ACtivity"/>
             </ContextMenu>
         </tb:TaskbarIcon.ContextMenu>
 
