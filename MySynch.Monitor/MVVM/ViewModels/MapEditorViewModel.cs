@@ -129,9 +129,12 @@ namespace MySynch.Monitor.MVVM.ViewModels
         public ICommand SaveAndRestart { get; private set; }
 
         public ICommand Close { get; private set; }
+        
+        private bool _closeOnlyWindow;
 
-        public MapEditorViewModel()
+        public MapEditorViewModel(bool closeOnlyWindow = false)
         {
+            _closeOnlyWindow = closeOnlyWindow;
             var key = ConfigurationManager.AppSettings.AllKeys.FirstOrDefault(k => k == "DistributorMap");
             if (key == null)
                 _distributorMapFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"map\distributormap.xml");
@@ -201,7 +204,13 @@ namespace MySynch.Monitor.MVVM.ViewModels
 
         private void PerformClose()
         {
-            Application.Current.Shutdown();
+            if(!_closeOnlyWindow)
+                Application.Current.Shutdown();
+            else
+            {
+                if (RequestHide != null)
+                    RequestHide(this, null);
+            }
         }
 
         internal void PerformSaveAnRestart()
@@ -333,5 +342,7 @@ namespace MySynch.Monitor.MVVM.ViewModels
                 }
             }
         }
+
+        public event Action<object, object> RequestHide;
     }
 }

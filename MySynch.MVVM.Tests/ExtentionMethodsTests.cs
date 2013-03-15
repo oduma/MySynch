@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using MySynch.Monitor.MVVM.ViewModels;
+using MySynch.Monitor.Utils;
 using NUnit.Framework;
 
 namespace MySynch.MVVM.Tests

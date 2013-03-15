@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using MySynch.Core.DataTypes;
 using System.Linq;
+using MySynch.Core.DataTypes;
+using MySynch.Monitor.MVVM.ViewModels;
 
-namespace MySynch.Monitor.MVVM.ViewModels
+namespace MySynch.Monitor.Utils
 {
     public static class ExtensionMethods
     {
@@ -48,6 +49,12 @@ namespace MySynch.Monitor.MVVM.ViewModels
                     }
                 }
             }
+        }
+
+        internal static IEnumerable<string> ShiftLeft(this string[] source, int step)
+        {
+            for (int i = step; i < source.Count(); i++)
+                yield return source[i];
         }
     }
 }

@@ -6,9 +6,16 @@
     <converters:ComponentTypeToIconFileNameConverter x:Key="ComponentTypeIconConverter"/>
     <converters:StatusToIconFileNameConverter x:Key="StatusIconConverter"/>
     <!-- Globally declared notify icon -->
-	<tb:TaskbarIcon x:Key="MyNotifyIcon"
+    <tb:TaskbarIcon x:Key="MyNotifyIcon"
 				  IconSource="Icons/refresh.ico"
-				  ToolTipText="hello world" />
+				  ToolTipText="hello world">
+        <tb:TaskbarIcon.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="Settings"/>
+            </ContextMenu>
+        </tb:TaskbarIcon.ContextMenu>
+
+    </tb:TaskbarIcon>
 
     <HierarchicalDataTemplate x:Key="NotificationTemplate"
                               ItemsSource="{Binding NotificationDetailsCollection}">

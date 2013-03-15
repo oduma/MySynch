@@ -10,15 +10,16 @@ namespace MySynch.Monitor
     /// </summary>
     public partial class MapEditorWindow : Window
     {
-        public MapEditorWindow()
+        public MapEditorWindow(bool closeOnlyWindow=false)
         {
             using (LoggingManager.LogMySynchPerformance())
             {
                 InitializeComponent();
                 try
                 {
-                    var mapEditorViewModel = new MapEditorViewModel();
+                    var mapEditorViewModel = new MapEditorViewModel(closeOnlyWindow);
                     mapEditorViewModel.InitiateView();
+                    mapEditorViewModel.RequestHide += (s, e) => this.Hide();
                     this.DataContext = mapEditorViewModel;
 
                 }
