@@ -1,15 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using MySynch.Common.Logging;
+using MySynch.Monitor.MVVM.ViewModels;
 
 namespace MySynch.Monitor
 {
@@ -21,6 +13,18 @@ namespace MySynch.Monitor
         public MonitorView()
         {
             InitializeComponent();
+            try
+            {
+                var monitorViewModel = new MonitorViewModel();
+                monitorViewModel.InitiateView();
+                this.DataContext = monitorViewModel;
+
+            }
+            catch (Exception ex)
+            {
+                LoggingManager.LogMySynchSystemError(ex);
+                throw;
+            }
         }
     }
 }

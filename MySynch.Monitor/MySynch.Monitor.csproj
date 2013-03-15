@@ -97,6 +97,7 @@
     <Compile Include="MVVM\ViewModels\ComponentTypeToIconFileNameConverter.cs" />
     <Compile Include="MVVM\ViewModels\MapChannelViewModel.cs" />
     <Compile Include="MVVM\ViewModels\MapEditorViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\MonitorViewModel.cs" />
     <Compile Include="MVVM\ViewModels\NotificationDetailsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\RelayCommand.cs" />
     <Compile Include="MVVM\ViewModels\StatusToIconFileNameConverter.cs" />
