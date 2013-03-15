@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,6 +24,7 @@ namespace MySynch.Monitor
             tb = (TaskbarIcon)FindResource("MyNotifyIcon");
             ((MenuItem)tb.ContextMenu.Items[0]).Command=new RelayCommand(LaunchMapEditor);
             ((MenuItem)tb.ContextMenu.Items[1]).Command = new RelayCommand(LaunchMonitor);
+            Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
 
         }
@@ -31,15 +33,27 @@ namespace MySynch.Monitor
         private void LaunchMonitor()
         {
             if (_monitorView == null)
+            {
                 _monitorView = new MonitorView();
+                _monitorView.Closing += ViewsClosing;
+            }
             _monitorView.Show();
+        }
+
+        void ViewsClosing(object sender, CancelEventArgs e)
+        {
+            e.Cancel = true;
+            ((Window)sender).Hide();
         }
 
         private MapEditorWindow _mapEditorView; 
         private void LaunchMapEditor()
         {
             if(_mapEditorView==null)
+            {
                 _mapEditorView = new MapEditorWindow(true);
+                _mapEditorView.Closing += ViewsClosing;
+            }
             _mapEditorView.Show();
         }
 
