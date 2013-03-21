@@ -17,21 +17,20 @@ namespace MySynch.Tests.Integration
         {
             IDistributorMonitorProxy distributorMonitorProxy = new DistributorMonitorClient();
             distributorMonitorProxy.InitiateUsingPort(8765);
-            var listOfComponents = distributorMonitorProxy.ListAvailableComponentsTree();
-            Assert.IsNotNull(listOfComponents);
-            Assert.AreEqual("SCIENDO-LAPTOP", listOfComponents.Name);
-            Assert.AreEqual(1, listOfComponents.AvailablePublishers.Count);
-            Assert.AreEqual("IPublisher.Remote.8765", listOfComponents.AvailablePublishers[0].Name);
-            Assert.AreEqual(Status.Ok, listOfComponents.AvailablePublishers[0].Status);
-            Assert.False(listOfComponents.AvailablePublishers[0].IsLocal);
-            Assert.IsNull(listOfComponents.AvailablePublishers[0].Packages);
-            Assert.AreEqual(1, listOfComponents.AvailablePublishers[0].DependentComponents.Count);
-            Assert.AreEqual("ISubscriber.Remote.8767", listOfComponents.AvailablePublishers[0].DependentComponents[0].Name);
-            Assert.AreEqual(Status.Ok, listOfComponents.AvailablePublishers[0].DependentComponents[0].Status);
-            Assert.AreEqual(Status.Ok, listOfComponents.AvailablePublishers[0].DependentComponents[0].DataSourceStatus);
-            Assert.False(listOfComponents.AvailablePublishers[0].DependentComponents[0].IsLocal);
-            Assert.AreEqual(@"C:\MySynch.Dest.Test.Root\", listOfComponents.AvailablePublishers[0].DependentComponents[0].RootPath);
-            Assert.IsNull(listOfComponents.AvailablePublishers[0].DependentComponents[0].Packages);
+            var listAvailableChannels = distributorMonitorProxy.ListAvailableChannels();
+            Assert.IsNotNull(listAvailableChannels);
+            Assert.AreEqual("SCIENDO-LAPTOP", listAvailableChannels.Name);
+            Assert.AreEqual(1, listAvailableChannels.Channels.Count);
+            Assert.AreEqual("IPublisher.Remote", listAvailableChannels.Channels[0].PublisherInfo.InstanceName);
+            Assert.AreEqual(8765, listAvailableChannels.Channels[0].PublisherInfo.Port);
+            Assert.AreEqual(Status.Ok, listAvailableChannels.Channels[0].Status);
+            Assert.IsNull(listAvailableChannels.Channels[0].PublisherInfo.Packages);
+            Assert.IsNotNull(listAvailableChannels.Channels[0].SubscriberInfo);
+            Assert.AreEqual("ISubscriber.Remote", listAvailableChannels.Channels[0].SubscriberInfo.InstanceName);
+            Assert.AreEqual(8765,listAvailableChannels.Channels[0].SubscriberInfo.Port);
+            Assert.AreEqual(Status.Ok, listAvailableChannels.Channels[0].SubscriberInfo.Status);
+            Assert.AreEqual(@"C:\MySynch.Dest.Test.Root\", listAvailableChannels.Channels[0].SubscriberInfo.RootPath);
+            Assert.IsNull(listAvailableChannels.Channels[0].SubscriberInfo.Packages);
         }
 
         [Test]
@@ -41,7 +40,7 @@ namespace MySynch.Tests.Integration
                 File.Delete(@"C:\MySynch.Dest.Test.Root\File1.xml");
             IDistributorMonitorProxy distributorMonitorProxy = new DistributorMonitorClient();
             distributorMonitorProxy.InitiateUsingPort(8765);
-            var listOfComponents = distributorMonitorProxy.ListAvailableComponentsTree();
+            var listOfComponents = distributorMonitorProxy.ListAvailableChannels();
             Assert.IsNotNull(listOfComponents);
             File.Copy(@"Data\File1.xml", @"C:\MySynch.Source.Test.Root\File1.xml", true);
             

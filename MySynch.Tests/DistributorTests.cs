@@ -199,20 +199,17 @@ namespace MySynch.Tests
         }
 
         [Test]
-        public void ListAllComponents_Ok()
+        public void ListAllAvailableChannels_Ok()
         {
             Distributor distributor = new Distributor();
             distributor.InitiateDistributionMap(@"Data\distributormap.xml", _componentResolver);
-            var compo = distributor.ListAvailableComponentsTree();
+            var compo = distributor.ListAvailableChannels();
             Assert.IsNotNull(compo);
-            Assert.AreEqual(2,compo.AvailablePublishers.Count);
-            Assert.IsNotNull(compo.AvailablePublishers[0].DependentComponents);
-            Assert.IsNotNull(compo.AvailablePublishers[1].DependentComponents);
-            Assert.AreEqual(2,compo.AvailablePublishers[0].DependentComponents.Count);
-            foreach(var c1 in compo.AvailablePublishers[0].DependentComponents)
+            Assert.AreEqual(3,compo.Channels.Count);
+            Assert.IsNotNull(compo.Channels[0].SubscriberInfo);
+            Assert.IsNotNull(compo.Channels[1].SubscriberInfo);
+            foreach(var c1 in compo.Channels)
                 Assert.AreEqual(Status.Ok,c1.Status);
-            Assert.AreEqual(1, compo.AvailablePublishers[1].DependentComponents.Count);
-
         }
 
         [Test]
@@ -229,22 +226,18 @@ namespace MySynch.Tests
             changePublisher.PublishPackage();
             MockAllTheSubscribers(distributor.AvailableChannels,changePublisher.PublishedPackageNotDistributed[0]);
             distributor.DistributeMessages();
-            var compo = distributor.ListAvailableComponentsTree();
+            var compo = distributor.ListAvailableChannels();
             Assert.IsNotNull(compo);
-            Assert.AreEqual(1, compo.AvailablePublishers.Count);
-            Assert.IsNotNull(compo.AvailablePublishers[0].DependentComponents);
-            Assert.AreEqual(1, compo.AvailablePublishers[0].DependentComponents.Count);
-            Assert.AreEqual(1,compo.AvailablePublishers[0].Packages.Count(p=>p.State==State.Removed));
-            Assert.AreEqual(1, compo.AvailablePublishers[0].Packages[0].PackageMessages.Count(m => m.AbsolutePath == @"root folder\Item One"));
-            Assert.AreEqual(2, compo.AvailablePublishers[0].Packages[0].PackageMessages.Count(m => m.OperationType==OperationType.Insert));
-            Assert.AreEqual(1, compo.AvailablePublishers[0].DependentComponents[0].Packages.Count(p => p.State == State.Removed));
-            //Assert.AreEqual(1, compo.AvailablePublishers[0].DependentComponents[0].Packages[0].PackageMessages.Count(m => m.AbsolutePath == @"destination root folder\Item One"));
-            //Assert.AreEqual(2, compo.AvailablePublishers[0].DependentComponents[0].Packages[0].PackageMessages.Count(m => m.OperationType==OperationType.Insert));
-
+            Assert.AreEqual(1, compo.Channels.Count);
+            Assert.IsNotNull(compo.Channels[0].SubscriberInfo);
+            Assert.AreEqual(1,compo.Channels[0].PublisherInfo.Packages.Count(p=>p.State==State.Removed));
+            Assert.AreEqual(1, compo.Channels[0].PublisherInfo.Packages[0].PackageMessages.Count(m => m.AbsolutePath == @"root folder\Item One"));
+            Assert.AreEqual(2, compo.Channels[0].PublisherInfo.Packages[0].PackageMessages.Count(m => m.OperationType==OperationType.Insert));
+            Assert.AreEqual(1, compo.Channels[0].SubscriberInfo.Packages.Count(p => p.State == State.Removed));
         }
 
         [Test]
-        public void ListAllComponents_RegisterAndUnRegisterMessages_Ok()
+        public void ListAllAvailableChannels_RegisterAndUnRegisterMessages_Ok()
         {
             Distributor distributor = new Distributor();
             distributor.InitiateDistributionMap(@"Data\distributormap5.xml", _componentResolver);
@@ -257,14 +250,13 @@ namespace MySynch.Tests
             changePublisher.PublishPackage();
             MockAllTheSubscribers(distributor.AvailableChannels,changePublisher.PublishedPackageNotDistributed[0]);
             distributor.DistributeMessages();
-            var compo = distributor.ListAvailableComponentsTree();
+            var compo = distributor.ListAvailableChannels();
             distributor.DistributeMessages();
             Assert.IsNotNull(compo);
-            Assert.AreEqual(1, compo.AvailablePublishers.Count);
-            Assert.IsNotNull(compo.AvailablePublishers[0].DependentComponents);
-            Assert.AreEqual(1, compo.AvailablePublishers[0].DependentComponents.Count);
-            Assert.AreEqual(0, compo.AvailablePublishers[0].Packages.Count);
-            Assert.AreEqual(0, compo.AvailablePublishers[0].DependentComponents[0].Packages.Count);
+            Assert.AreEqual(1, compo.Channels.Count);
+            Assert.IsNotNull(compo.Channels[0].SubscriberInfo);
+            Assert.AreEqual(0, compo.Channels[0].PublisherInfo.Packages.Count);
+            Assert.AreEqual(0, compo.Channels[0].SubscriberInfo.Packages.Count);
         }
 
         private void MockAllTheSubscribers(List<AvailableChannel> availableChannels, PublishPackageRequestResponse publishPackageRequestResponse)

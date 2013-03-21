@@ -78,10 +78,10 @@ namespace MySynch.Monitor.MVVM.ViewModels
             }
         }
 
+        private object _publisherLock = new object();
+        private object _subscriberLock = new object();
 
         private ObservableCollection<MapChannelViewModel> _mapChannels;
-        private object _publisherLock=new object();
-        private object _subscriberLock = new object();
 
         public ObservableCollection<MapChannelViewModel> MapChannels
         {

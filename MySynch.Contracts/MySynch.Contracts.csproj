@@ -59,16 +59,17 @@
   <ItemGroup>
     <Compile Include="ISourceOfData.cs" />
     <Compile Include="Messages\ApplyChangePackageResponse.cs" />
-    <Compile Include="Messages\AvailableComponent.cs" />
     <Compile Include="ISubscriber.cs" />
     <Compile Include="ICommunicationComponent.cs" />
     <Compile Include="IDistributorMonitor.cs" />
     <Compile Include="IPublisher.cs" />
     <Compile Include="Messages\ChangePushItem.cs" />
     <Compile Include="Messages\GetTargetFolderResponse.cs" />
+    <Compile Include="Messages\MapChannel.cs" />
+    <Compile Include="Messages\MapChannelComponent.cs" />
     <Compile Include="Messages\PublishPackageRequestResponse.cs" />
     <Compile Include="Messages\Package.cs" />
-    <Compile Include="Messages\ListAvailableComponentsTreeResponse.cs" />
+    <Compile Include="Messages\ListAvailableChannelsResponse.cs" />
     <Compile Include="Messages\GetHeartbeatResponse.cs" />
     <Compile Include="Messages\OperationType.cs" />
     <Compile Include="Messages\RemoteRequest.cs" />
@@ -104,7 +105,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" BuildVersion_UseGlobalSettings="True" BuildVersion_BuildVersioningStyle="None.None.None.None" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.None" BuildVersion_UseGlobalSettings="True" BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -12,6 +12,7 @@
     <AssemblyName>MySynch.MVVM.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -24,7 +25,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -83,6 +83,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MySynch.Contracts\MySynch.Contracts.csproj">
+      <Project>{EE4C1C53-0F1E-40D1-ACAB-0BF493593424}</Project>
+      <Name>MySynch.Contracts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MySynch.Core\MySynch.Core.csproj">
       <Project>{EB0395B1-04DE-4402-AB45-4AE7693326A8}</Project>
       <Name>MySynch.Core</Name>

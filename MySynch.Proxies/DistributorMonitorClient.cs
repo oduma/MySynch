@@ -38,15 +38,15 @@ namespace MySynch.Proxies
 			return  response; 
 
 		}
-		public MySynch.Contracts.Messages.ListAvailableComponentsTreeResponse ListAvailableComponentsTree() 
+		public MySynch.Contracts.Messages.ListAvailableChannelsResponse ListAvailableChannels() 
 		{
-		MySynch.Contracts.Messages.ListAvailableComponentsTreeResponse response = new MySynch.Contracts.Messages.ListAvailableComponentsTreeResponse(); 
+		MySynch.Contracts.Messages.ListAvailableChannelsResponse response = new MySynch.Contracts.Messages.ListAvailableChannelsResponse(); 
 		try
 		{
 		                using (new OperationContextScope((IContextChannel)Proxy))
                 {
 				 response =  
-					Proxy.ListAvailableComponentsTree();
+					Proxy.ListAvailableChannels();
 				}
 		}
 		catch (CommunicationException e)

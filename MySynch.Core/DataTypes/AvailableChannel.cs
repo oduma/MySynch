@@ -13,9 +13,6 @@ namespace MySynch.Core.DataTypes
         public ISubscriber Subscriber { get; set; }
 
         [XmlIgnore]
-        public Status Status { get; set; }
-
-        [XmlIgnore]
         public int NoOfFailedAttempts { get; set; }
 
     }

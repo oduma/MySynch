@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using MySynch.Contracts.Messages;
 using MySynch.Core.DataTypes;
 using MySynch.Monitor.MVVM.ViewModels;
 

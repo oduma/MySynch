@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Configuration;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.ServiceProcess;
-using MySynch.Proxies;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using MySynch.Contracts.Messages;
 using MySynch.Proxies.Interfaces;
 
 namespace MySynch.Monitor.MVVM.ViewModels
@@ -12,23 +9,63 @@ namespace MySynch.Monitor.MVVM.ViewModels
     internal class MonitorViewModel:ViewModelBase
     {
         private IDistributorMonitorProxy _distributorMonitorProxy;
-        private int _localDsitributorPort;
 
-        public MonitorViewModel()
+        private string _distributorName;
+        public string DistributorName
         {
-            _distributorMonitorProxy = new DistributorMonitorClient();
+            get
+            {
+                return this._distributorName;
+            }
 
-            var key = ConfigurationManager.AppSettings.AllKeys.FirstOrDefault(k => k == "LocalDistributorPort");
-            if (key != null)
-                _localDsitributorPort= Convert.ToInt32(ConfigurationManager.AppSettings[key]);
-            else
-                _localDsitributorPort = 0;
+            set
+            {
+                if (value != _distributorName)
+                {
+                    _distributorName = value;
+                    RaisePropertyChanged("DistributorName");
+                }
+            }
+        }
+
+        private ObservableCollection<MapChannelViewModel> _availableComponents;
+
+        public ObservableCollection<MapChannelViewModel> AvailableComponents
+        {
+            get { return _availableComponents; }
+            set
+            {
+                if (_availableComponents != value)
+                {
+                    _availableComponents = value;
+                    RaisePropertyChanged(() => AvailableComponents);
+                }
+            }
+        }
+
+
+        public MonitorViewModel(IDistributorMonitorProxy distributorMonitorProxy,ListAvailableChannelsResponse listAvailableComponentsTreeResponse)
+        {
+            _distributorMonitorProxy = distributorMonitorProxy;
+            DistributorName = listAvailableComponentsTreeResponse.Name;
+            AvailableComponents=new ObservableCollection<MapChannelViewModel>();
+            ReadComponents(listAvailableComponentsTreeResponse.Channels);
         }
 
         public void InitiateView()
         {
-            _distributorMonitorProxy.InitiateUsingPort(_localDsitributorPort);
-            //_distributorMonitorProxy.
+            var availableComponents= _distributorMonitorProxy.ListAvailableChannels();
+            DistributorName = availableComponents.Name;
+            AvailableComponents= new ObservableCollection<MapChannelViewModel>();
+            ReadComponents(availableComponents.Channels);
+
+
+        }
+
+        private void ReadComponents(List<MapChannel> availableComponents)
+        {
+            foreach(var availableComponent in availableComponents)
+                AvailableComponents.Add(new MapChannelViewModel{MapChannelPublisherTitle=availableComponent.PublisherInfo.InstanceName});
         }
     }
 }

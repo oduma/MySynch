@@ -7,7 +7,7 @@ namespace MySynch.Contracts
     public interface IDistributorMonitor:ICommunicationComponent
     {
         [OperationContract]
-        ListAvailableComponentsTreeResponse ListAvailableComponentsTree();
+        ListAvailableChannelsResponse ListAvailableChannels();
 
         [OperationContract]
         void ReEvaluateAllChannels();

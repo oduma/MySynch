@@ -155,19 +155,19 @@ namespace MySynch.Monitor.MVVM.ViewModels
 
         private void GetAllPublishers()
         {
-            var distributorInformation = _distributorMonitorProxy.ListAvailableComponentsTree();
+            var distributorInformation = _distributorMonitorProxy.ListAvailableChannels();
 
             ////a bit of test for the packages
-            //distributorInformation.AvailablePublishers[0].Packages= new List<Package>();
-            //distributorInformation.AvailablePublishers[0].Packages.Add(new Package{Id=Guid.NewGuid(),State=Contracts.Messages.State.Published});
-            //distributorInformation.AvailablePublishers[0].Packages.Add(new Package { Id = Guid.NewGuid(), State = Contracts.Messages.State.Published });
-            //distributorInformation.AvailablePublishers[0].Packages.Add(new Package { Id = Guid.NewGuid(), State = Contracts.Messages.State.Published });
+            //distributorInformation.Channels[0].Packages= new List<Package>();
+            //distributorInformation.Channels[0].Packages.Add(new Package{Id=Guid.NewGuid(),State=Contracts.Messages.State.Published});
+            //distributorInformation.Channels[0].Packages.Add(new Package { Id = Guid.NewGuid(), State = Contracts.Messages.State.Published });
+            //distributorInformation.Channels[0].Packages.Add(new Package { Id = Guid.NewGuid(), State = Contracts.Messages.State.Published });
 
             ////a bit of test for the packages
-            //distributorInformation.AvailablePublishers[0].DependentComponents[0].Packages = new List<Package>();
-            //distributorInformation.AvailablePublishers[0].DependentComponents[0].Packages.Add(new Package { Id = Guid.NewGuid(), State = Contracts.Messages.State.Published });
-            //distributorInformation.AvailablePublishers[0].DependentComponents[0].Packages.Add(new Package { Id = Guid.NewGuid(), State = Contracts.Messages.State.Published });
-            //distributorInformation.AvailablePublishers[0].DependentComponents[0].Packages.Add(new Package { Id = Guid.NewGuid(), State = Contracts.Messages.State.Published });
+            //distributorInformation.Channels[0].DependentComponents[0].Packages = new List<Package>();
+            //distributorInformation.Channels[0].DependentComponents[0].Packages.Add(new Package { Id = Guid.NewGuid(), State = Contracts.Messages.State.Published });
+            //distributorInformation.Channels[0].DependentComponents[0].Packages.Add(new Package { Id = Guid.NewGuid(), State = Contracts.Messages.State.Published });
+            //distributorInformation.Channels[0].DependentComponents[0].Packages.Add(new Package { Id = Guid.NewGuid(), State = Contracts.Messages.State.Published });
 
             NotificationDetailsCollection = new ObservableCollection<NotificationDetailsViewModel>();
             System.Windows.Application.Current.Dispatcher.Invoke((Action)(() =>
@@ -176,51 +176,51 @@ namespace MySynch.Monitor.MVVM.ViewModels
                                                                                 }));
         }
 
-        private void ParseDistributorInformation(ListAvailableComponentsTreeResponse distributorInformation)
+        private void ParseDistributorInformation(ListAvailableChannelsResponse distributorInformation)
         {
             var currentNode = new NotificationDetailsViewModel
                                   {Name = distributorInformation.Name, Type = ComponentType.Distributor,IsExpanded=true,TypeColor=Brushes.Peru};
             NotificationDetailsCollection.Add(currentNode);
-            ParsePublishersInformation(currentNode, distributorInformation.AvailablePublishers);
+            //ParsePublishersInformation(currentNode, distributorInformation.Channels);
         }
 
-        private void ParsePublishersInformation(NotificationDetailsViewModel currentNode, List<AvailableComponent> availablePublishers)
-        {
-            currentNode.NotificationDetailsCollection=new ObservableCollection<NotificationDetailsViewModel>();
-            foreach(var publisher in availablePublishers)
-            {
-                var currentPublisherNode = new NotificationDetailsViewModel
-                                               {
-                                                   Name = publisher.Name,
-                                                   Type = ComponentType.Publisher,
-                                                   IsExpanded=true,
-                                                   TypeColor=Brushes.SeaGreen,
-                                                   Status=publisher.Status
-                                               };
-                currentNode.NotificationDetailsCollection.Add(currentPublisherNode);
-                currentPublisherNode.NotificationDetailsCollection= new ObservableCollection<NotificationDetailsViewModel>();
-                ParsePackagesInformation(currentPublisherNode.NotificationDetailsCollection, publisher.Packages,ComponentType.PublisherPackage);
-                ParseSubscriberInformation(currentPublisherNode.NotificationDetailsCollection, publisher.DependentComponents);
-            }
-        }
+        //private void ParsePublishersInformation(NotificationDetailsViewModel currentNode, List<ChannelComponent> availablePublishers)
+        //{
+        //    currentNode.NotificationDetailsCollection=new ObservableCollection<NotificationDetailsViewModel>();
+        //    foreach(var publisher in availablePublishers)
+        //    {
+        //        var currentPublisherNode = new NotificationDetailsViewModel
+        //                                       {
+        //                                           Name = publisher.InstanceName,
+        //                                           Type = ComponentType.Publisher,
+        //                                           IsExpanded=true,
+        //                                           TypeColor=Brushes.SeaGreen,
+        //                                           Status=publisher.Status
+        //                                       };
+        //        currentNode.NotificationDetailsCollection.Add(currentPublisherNode);
+        //        currentPublisherNode.NotificationDetailsCollection= new ObservableCollection<NotificationDetailsViewModel>();
+        //        ParsePackagesInformation(currentPublisherNode.NotificationDetailsCollection, publisher.Packages,ComponentType.PublisherPackage);
+        //        ParseSubscriberInformation(currentPublisherNode.NotificationDetailsCollection, publisher.DependentComponents);
+        //    }
+        //}
 
-        private void ParseSubscriberInformation(ObservableCollection<NotificationDetailsViewModel> notificationDetailsCollection, List<AvailableComponent> dependentComponents)
-        {
-            foreach (var subscriber in dependentComponents)
-            {
-                var currentSubscriberNode = new NotificationDetailsViewModel
-                                                {
-                                                    Name = subscriber.Name,
-                                                    Type = ComponentType.Subscriber,
-                                                    IsExpanded=true,
-                                                    TypeColor=Brushes.SkyBlue,
-                                                    Status=subscriber.Status
-                                                };
-                notificationDetailsCollection.Add(currentSubscriberNode);
-                currentSubscriberNode.NotificationDetailsCollection= new ObservableCollection<NotificationDetailsViewModel>();
-                ParsePackagesInformation(currentSubscriberNode.NotificationDetailsCollection,subscriber.Packages,ComponentType.SubscriberPackage);
-            }
-        }
+        //private void ParseSubscriberInformation(ObservableCollection<NotificationDetailsViewModel> notificationDetailsCollection, List<ChannelComponent> dependentComponents)
+        //{
+        //    foreach (var subscriber in dependentComponents)
+        //    {
+        //        var currentSubscriberNode = new NotificationDetailsViewModel
+        //                                        {
+        //                                            Name = subscriber.InstanceName,
+        //                                            Type = ComponentType.Subscriber,
+        //                                            IsExpanded=true,
+        //                                            TypeColor=Brushes.SkyBlue,
+        //                                            Status=subscriber.Status
+        //                                        };
+        //        notificationDetailsCollection.Add(currentSubscriberNode);
+        //        currentSubscriberNode.NotificationDetailsCollection= new ObservableCollection<NotificationDetailsViewModel>();
+        //        ParsePackagesInformation(currentSubscriberNode.NotificationDetailsCollection,subscriber.Packages,ComponentType.SubscriberPackage);
+        //    }
+        //}
 
         private void ParsePackagesInformation(ObservableCollection<NotificationDetailsViewModel> notificationDetailsCollection,
             List<Package> packages,ComponentType packageType)

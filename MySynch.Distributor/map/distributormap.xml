@@ -7,7 +7,7 @@
     </PublisherInfo>
     <SubscriberInfo>
       <InstanceName>ISubscriber.Remote</InstanceName>
-      <Port>8767</Port>
+      <Port>8765</Port>
     </SubscriberInfo>
   </AvailableChannel>
 </ArrayOfAvailableChannel>

@@ -4,13 +4,13 @@ using System.Runtime.Serialization;
 namespace MySynch.Contracts.Messages
 {
     [DataContract]
-    public class ListAvailableComponentsTreeResponse
+    public class ListAvailableChannelsResponse
     {
 
         [DataMember]
         public string Name { get; set; }
 
         [DataMember]
-        public List<AvailableComponent> AvailablePublishers { get; set; }
+        public List<MapChannel> Channels { get; set; }
     }
 }

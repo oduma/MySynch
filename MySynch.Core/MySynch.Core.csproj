@@ -101,8 +101,6 @@
   <ItemGroup>
     <Compile Include="ComponentNotRegieteredException.cs" />
     <Compile Include="ComponentResolver.cs" />
-    <Compile Include="DataTypes\MapChannel.cs" />
-    <Compile Include="DataTypes\MapChannelComponent.cs" />
     <Compile Include="DataTypes\SynchItem.cs" />
     <Compile Include="DataTypes\SynchItemData.cs" />
     <Compile Include="Distributor\Distributor.cs" />
@@ -173,7 +171,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" />
+      <UserProperties BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

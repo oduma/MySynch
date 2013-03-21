@@ -139,7 +139,7 @@ namespace MySynch.Tests.Integration
             publisherProxy.InitiateUsingPort(8765);
             var publishedPackage = publisherProxy.PublishPackage();
             Assert.IsNotNull(publishedPackage);
-            Assert.AreEqual(2,publishedPackage.ChangePushItems.Count);
+            Assert.AreEqual(3,publishedPackage.ChangePushItems.Count);
             Assert.AreEqual(1,
                             publishedPackage.ChangePushItems.Count(
                                 i =>
