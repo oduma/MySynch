@@ -52,6 +52,21 @@ namespace MySynch.Monitor.Utils
             }
         }
 
+        internal static ObservableCollection<AvailableChannelViewModel> AddToChannels(this IEnumerable<MapChannel> inCollection, ObservableCollection<AvailableChannelViewModel> beforeImage)
+        {
+            foreach (var mapChannel in inCollection)
+            {
+                AvailableChannelViewModel availableChannelViewModel = new AvailableChannelViewModel
+                                                                          {
+                                                                              MapChannelPublisherTitle =
+                                                                                  mapChannel.PublisherInfo.InstanceName,
+                                                                              MapChannelSubscriberTitle =
+                                                                                  mapChannel.SubscriberInfo.InstanceName
+                                                                          };
+                if(beforeImage.Contains())
+            }
+        }
+
         internal static IEnumerable<string> ShiftLeft(this string[] source, int step)
         {
             for (int i = step; i < source.Count(); i++)

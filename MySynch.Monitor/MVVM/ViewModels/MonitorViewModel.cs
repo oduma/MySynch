@@ -28,17 +28,17 @@ namespace MySynch.Monitor.MVVM.ViewModels
             }
         }
 
-        private ObservableCollection<MapChannelViewModel> _availableComponents;
+        private ObservableCollection<AvailableChannelViewModel> _availableChannels;
 
-        public ObservableCollection<MapChannelViewModel> AvailableComponents
+        public ObservableCollection<AvailableChannelViewModel> AvailableChannels
         {
-            get { return _availableComponents; }
+            get { return _availableChannels; }
             set
             {
-                if (_availableComponents != value)
+                if (_availableChannels != value)
                 {
-                    _availableComponents = value;
-                    RaisePropertyChanged(() => AvailableComponents);
+                    _availableChannels = value;
+                    RaisePropertyChanged(() => AvailableChannels);
                 }
             }
         }
@@ -48,24 +48,24 @@ namespace MySynch.Monitor.MVVM.ViewModels
         {
             _distributorMonitorProxy = distributorMonitorProxy;
             DistributorName = listAvailableComponentsTreeResponse.Name;
-            AvailableComponents=new ObservableCollection<MapChannelViewModel>();
+            AvailableChannels = new ObservableCollection<AvailableChannelViewModel>();
             ReadComponents(listAvailableComponentsTreeResponse.Channels);
         }
 
         public void InitiateView()
         {
-            var availableComponents= _distributorMonitorProxy.ListAvailableChannels();
-            DistributorName = availableComponents.Name;
-            AvailableComponents= new ObservableCollection<MapChannelViewModel>();
-            ReadComponents(availableComponents.Channels);
+            var availableChannels= _distributorMonitorProxy.ListAvailableChannels();
+            DistributorName = availableChannels.Name;
+            AvailableChannels = new ObservableCollection<AvailableChannelViewModel>();
+            ReadComponents(availableChannels.Channels);
 
 
         }
 
-        private void ReadComponents(List<MapChannel> availableComponents)
+        private void ReadComponents(List<MapChannel> availableChannels)
         {
-            foreach(var availableComponent in availableComponents)
-                AvailableComponents.Add(new MapChannelViewModel{MapChannelPublisherTitle=availableComponent.PublisherInfo.InstanceName});
+            foreach(var availableChannel in availableChannels)
+                AvailableChannels.Add(new AvailableChannelViewModel { MapChannelPublisherTitle = availableChannel.PublisherInfo.InstanceName, MapChannelSubscriberTitle = availableChannel.SubscriberInfo.InstanceName });
         }
     }
 }
