@@ -40,5 +40,41 @@ namespace MySynch.Monitor.MVVM.ViewModels
             }
         }
 
+        private string _publisherRootPath;
+        /// <summary>
+        /// Gets/sets whether the TreeViewItem 
+        /// associated with this object is expanded.
+        /// </summary>
+        public string PublisherRootPath
+        {
+            get { return _publisherRootPath; }
+            set
+            {
+                if (value != _publisherRootPath)
+                {
+                    _publisherRootPath = value;
+                    RaisePropertyChanged(() => PublisherRootPath);
+                }
+            }
+        }
+
+        private string _subscriberRootPath;
+        /// <summary>
+        /// Gets/sets whether the TreeViewItem 
+        /// associated with this object is expanded.
+        /// </summary>
+        public string SubscriberRootPath
+        {
+            get { return _subscriberRootPath; }
+            set
+            {
+                if (value != _subscriberRootPath)
+                {
+                    _subscriberRootPath = value;
+                    RaisePropertyChanged(() => SubscriberRootPath);
+                }
+            }
+        }
+
     }
 }

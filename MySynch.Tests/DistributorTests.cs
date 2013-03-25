@@ -209,7 +209,11 @@ namespace MySynch.Tests
             Assert.IsNotNull(compo.Channels[0].SubscriberInfo);
             Assert.IsNotNull(compo.Channels[1].SubscriberInfo);
             foreach(var c1 in compo.Channels)
+            {
                 Assert.AreEqual(Status.Ok,c1.Status);
+                //Assert.IsNotNull(c1.PublisherInfo.RootPath);
+                Assert.IsNotNull(c1.SubscriberInfo.RootPath);
+            }
         }
 
         [Test]

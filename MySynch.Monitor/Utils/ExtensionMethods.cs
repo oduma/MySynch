@@ -63,9 +63,11 @@ namespace MySynch.Monitor.Utils
                                                                               MapChannelPublisherTitle =
                                                                                   mapChannel.PublisherInfo.InstanceName + ":" + mapChannel.PublisherInfo.Port,
                                                                                   PublisherStatus=mapChannel.PublisherInfo.Status,
+                                                                                  PublisherRootPath="Cannot determine before data communication.",
                                                                               MapChannelSubscriberTitle =
                                                                                   mapChannel.SubscriberInfo.InstanceName + ":" + mapChannel.SubscriberInfo.Port,
-                                                                                  SubscriberStatus=mapChannel.SubscriberInfo.Status
+                                                                                  SubscriberStatus=mapChannel.SubscriberInfo.Status,
+                                                                                  SubscriberRootPath=mapChannel.SubscriberInfo.RootPath
                                                                           };
                 if (!beforeImage.Contains(availableChannelViewModel, new AvailableChannelViewModelEqualityComparer()))
                 {
@@ -82,6 +84,8 @@ namespace MySynch.Monitor.Utils
                     {
                         existingItem.PublisherStatus = mapChannel.PublisherInfo.Status;
                         existingItem.SubscriberStatus = mapChannel.SubscriberInfo.Status;
+                        existingItem.PublisherRootPath = "Cannot determine before data communication.";
+                        existingItem.SubscriberRootPath = mapChannel.SubscriberInfo.RootPath;
                     }
 
                 }

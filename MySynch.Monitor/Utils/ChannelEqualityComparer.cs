@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using MySynch.Core.DataTypes;
 
-namespace MySynch.Monitor.MVVM.ViewModels
+namespace MySynch.Monitor.Utils
 {
     internal class ChannelEqualityComparer:IEqualityComparer<AvailableChannel>
     {

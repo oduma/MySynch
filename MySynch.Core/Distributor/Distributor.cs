@@ -327,11 +327,11 @@ namespace MySynch.Core.Distributor
         public ListAvailableChannelsResponse ListAvailableChannels()
         {
             LoggingManager.Debug("Listing all available channels");
-            List<MapChannel> mapChannels = AvailableChannels.Select(c => ConvertToMapChannel(c)).ToList();
+            List<MapChannel> mapChannels = AvailableChannels.Select(ConvertToMapChannel).ToList();
             return new ListAvailableChannelsResponse {Name = Environment.MachineName, Channels = mapChannels};
         }
 
-        private MapChannel ConvertToMapChannel(AvailableChannel availableChannel)
+        private static MapChannel ConvertToMapChannel(AvailableChannel availableChannel)
         {
             return new MapChannel
                        {

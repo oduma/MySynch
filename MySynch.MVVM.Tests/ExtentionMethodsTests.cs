@@ -138,8 +138,10 @@ namespace MySynch.MVVM.Tests
                                           {
                                               MapChannelPublisherTitle = "IPublisher.Remote:3585",
                                               PublisherStatus=Status.OfflineTemporary,
+                                              PublisherRootPath="path1",
                                               MapChannelSubscriberTitle = "ISubscriber.Remote:2344",
-                                              SubscriberStatus=Status.Ok
+                                              SubscriberStatus=Status.Ok,
+                                              SubscriberRootPath="path2"
                                           }
                                   };
             var observableChannels =
@@ -147,8 +149,8 @@ namespace MySynch.MVVM.Tests
                      {
                          new MapChannel
                              {
-                                 PublisherInfo= new MapChannelComponent{InstanceName="IPublisher.Remote",Port=3586,Status=Status.Ok},
-                                 SubscriberInfo=new MapChannelComponent{InstanceName="ISubscriber.Remote",Port=2345,Status=Status.Ok}
+                                 PublisherInfo= new MapChannelComponent{InstanceName="IPublisher.Remote",Port=3586,Status=Status.Ok,RootPath="path3"},
+                                 SubscriberInfo=new MapChannelComponent{InstanceName="ISubscriber.Remote",Port=2345,Status=Status.Ok,RootPath="path4"}
                              }
                      }).AddToChannels(beforeImage);
             Assert.IsNotNull(observableChannels);
@@ -156,6 +158,8 @@ namespace MySynch.MVVM.Tests
             Assert.AreEqual(1,observableChannels.Count(o=>o.MapChannelPublisherTitle=="IPublisher.Remote:3586" && o.MapChannelSubscriberTitle=="ISubscriber.Remote:2345"));
             Assert.AreEqual(2,observableChannels.Count(o=>o.SubscriberStatus==Status.Ok));
             Assert.AreEqual(1,observableChannels.Count(o=>o.PublisherStatus==Status.Ok));
+            Assert.AreEqual(0,observableChannels.Count(o=>string.IsNullOrEmpty(o.PublisherRootPath)));
+            Assert.AreEqual(0,observableChannels.Count(o=>string.IsNullOrEmpty(o.SubscriberRootPath)));
         }
 
         [Test]
@@ -167,8 +171,10 @@ namespace MySynch.MVVM.Tests
                                           {
                                               MapChannelPublisherTitle = "IPublisher.Remote:3585",
                                               PublisherStatus=Status.OfflinePermanent,
+                                              PublisherRootPath="path1",
                                               MapChannelSubscriberTitle = "ISubscriber.Remote:2344",
-                                              SubscriberStatus=Status.Ok
+                                              SubscriberStatus=Status.Ok,
+                                              SubscriberRootPath="path2"
                                           }
                                   };
             var observableChannels =
@@ -178,6 +184,8 @@ namespace MySynch.MVVM.Tests
             Assert.AreEqual(1, observableChannels.Count(o => o.MapChannelPublisherTitle == "IPublisher.Remote:3585" && o.MapChannelSubscriberTitle == "ISubscriber.Remote:2344"));
             Assert.AreEqual(Status.OfflinePermanent,observableChannels[0].PublisherStatus);
             Assert.AreEqual(Status.Ok,observableChannels[0].SubscriberStatus);
+            Assert.AreEqual(0, observableChannels.Count(o => string.IsNullOrEmpty(o.PublisherRootPath)));
+            Assert.AreEqual(0, observableChannels.Count(o => string.IsNullOrEmpty(o.SubscriberRootPath)));
         }
 
         [Test]

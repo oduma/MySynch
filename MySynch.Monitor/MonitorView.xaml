@@ -28,11 +28,15 @@
                                         SortDirection="Ascending" SortMemberPath="MapChannelPublisherTitle">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
+                            <StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="{Binding PublisherStatus, Converter={StaticResource StatusIconConverter}}" 
                                        ToolTip="{Binding PublisherStatus}"
                                        Height="16" Width="16"/>
                                 <Label Content="{Binding MapChannelPublisherTitle}" />
+                            </StackPanel>
+                                <Label Content="Source Root Path:"/>
+                                <Label Content="{Binding PublisherRootPath}"/>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -41,10 +45,14 @@
                                         SortDirection="Ascending" SortMemberPath="MapChannelSubscriberTitle">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
+                            <StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="{Binding SubscriberStatus, Converter={StaticResource StatusIconConverter}}" 
                                        ToolTip="{Binding SubscriberStatus}" Width="16" Height="16"/>
                                 <Label Content="{Binding MapChannelSubscriberTitle}" />
+                            </StackPanel>
+                                <Label Content="Destination Root Path:"/>
+                                <Label Content="{Binding SubscriberRootPath}"/>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -54,9 +62,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-
             </DataGrid.Columns>
-
         </DataGrid>
     </Grid>
 </Window>
