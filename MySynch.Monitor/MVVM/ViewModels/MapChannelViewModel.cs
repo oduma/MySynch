@@ -2,7 +2,7 @@
 
 namespace MySynch.Monitor.MVVM.ViewModels
 {
-    internal class MapChannelViewModel
+    internal class MapChannelViewModel:ViewModelBase
     {
         public string MapChannelPublisherTitle { get; set; }
 

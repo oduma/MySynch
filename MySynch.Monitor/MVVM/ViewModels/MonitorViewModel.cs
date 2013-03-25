@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using MySynch.Contracts.Messages;
+using MySynch.Monitor.Utils;
 using MySynch.Proxies.Interfaces;
 
 namespace MySynch.Monitor.MVVM.ViewModels
@@ -48,8 +49,7 @@ namespace MySynch.Monitor.MVVM.ViewModels
         {
             _distributorMonitorProxy = distributorMonitorProxy;
             DistributorName = listAvailableComponentsTreeResponse.Name;
-            AvailableChannels = new ObservableCollection<AvailableChannelViewModel>();
-            ReadComponents(listAvailableComponentsTreeResponse.Channels);
+            
         }
 
         public void InitiateView()
@@ -57,15 +57,9 @@ namespace MySynch.Monitor.MVVM.ViewModels
             var availableChannels= _distributorMonitorProxy.ListAvailableChannels();
             DistributorName = availableChannels.Name;
             AvailableChannels = new ObservableCollection<AvailableChannelViewModel>();
-            ReadComponents(availableChannels.Channels);
+            AvailableChannels= availableChannels.Channels.AddToChannels(AvailableChannels);
 
 
-        }
-
-        private void ReadComponents(List<MapChannel> availableChannels)
-        {
-            foreach(var availableChannel in availableChannels)
-                AvailableChannels.Add(new AvailableChannelViewModel { MapChannelPublisherTitle = availableChannel.PublisherInfo.InstanceName, MapChannelSubscriberTitle = availableChannel.SubscriberInfo.InstanceName });
         }
     }
 }

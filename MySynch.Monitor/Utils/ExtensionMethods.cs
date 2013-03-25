@@ -54,17 +54,39 @@ namespace MySynch.Monitor.Utils
 
         internal static ObservableCollection<AvailableChannelViewModel> AddToChannels(this IEnumerable<MapChannel> inCollection, ObservableCollection<AvailableChannelViewModel> beforeImage)
         {
+            if(beforeImage==null)
+                beforeImage=new ObservableCollection<AvailableChannelViewModel>();
             foreach (var mapChannel in inCollection)
             {
                 AvailableChannelViewModel availableChannelViewModel = new AvailableChannelViewModel
                                                                           {
                                                                               MapChannelPublisherTitle =
-                                                                                  mapChannel.PublisherInfo.InstanceName,
+                                                                                  mapChannel.PublisherInfo.InstanceName + ":" + mapChannel.PublisherInfo.Port,
+                                                                                  PublisherStatus=mapChannel.PublisherInfo.Status,
                                                                               MapChannelSubscriberTitle =
-                                                                                  mapChannel.SubscriberInfo.InstanceName
+                                                                                  mapChannel.SubscriberInfo.InstanceName + ":" + mapChannel.SubscriberInfo.Port,
+                                                                                  SubscriberStatus=mapChannel.SubscriberInfo.Status
                                                                           };
-                if(beforeImage.Contains())
+                if (!beforeImage.Contains(availableChannelViewModel, new AvailableChannelViewModelEqualityComparer()))
+                {
+                    beforeImage.Add(availableChannelViewModel);
+                }
+                else
+                {
+                    var existingItem = beforeImage.FirstOrDefault(
+                        b =>
+                        b.MapChannelPublisherTitle ==
+                        mapChannel.PublisherInfo.InstanceName + ":" + mapChannel.PublisherInfo.Port
+                        && b.MapChannelSubscriberTitle==mapChannel.SubscriberInfo.InstanceName + ":" +mapChannel.SubscriberInfo.Port);
+                    if (existingItem != null)
+                    {
+                        existingItem.PublisherStatus = mapChannel.PublisherInfo.Status;
+                        existingItem.SubscriberStatus = mapChannel.SubscriberInfo.Status;
+                    }
+
+                }
             }
+            return beforeImage;
         }
 
         internal static IEnumerable<string> ShiftLeft(this string[] source, int step)
