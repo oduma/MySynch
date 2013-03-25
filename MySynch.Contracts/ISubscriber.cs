@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ServiceModel;
+﻿using System.ServiceModel;
 using MySynch.Contracts.Messages;
 
 namespace MySynch.Contracts
@@ -9,9 +8,6 @@ namespace MySynch.Contracts
     {
         [OperationContract]
         ApplyChangePackageResponse ApplyChangePackage(PublishPackageRequestResponse publishPackageRequestResponse);
-
-        [OperationContract]
-        GetTargetFolderResponse GetTargetRootFolder();
 
         [OperationContract]
         TryOpenChannelResponse TryOpenChannel(TryOpenChannelRequest sourceOfDataEndpointName);

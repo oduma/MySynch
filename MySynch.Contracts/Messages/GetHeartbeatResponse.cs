@@ -7,5 +7,8 @@ namespace MySynch.Contracts.Messages
     {
         [DataMember]
         public bool Status { get; set; }
+
+        [DataMember]
+        public string RootPath { get; set; }
     }
 }

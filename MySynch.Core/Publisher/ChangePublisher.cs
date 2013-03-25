@@ -4,7 +4,6 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.ServiceModel;
-using MySynch.Common;
 using MySynch.Common.Logging;
 using MySynch.Common.Serialization;
 using MySynch.Contracts.Messages;
@@ -252,7 +251,7 @@ namespace MySynch.Core.Publisher
         public GetHeartbeatResponse GetHeartbeat()
         {
             LoggingManager.Debug("GetHeartbeat will return true.");
-            return new GetHeartbeatResponse {Status = true};
+            return new GetHeartbeatResponse {Status = true, RootPath=_sourceRootName};
         }
 
         internal List<PublishPackageRequestResponse> PublishedPackageNotDistributed { get; set; }

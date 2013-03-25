@@ -30,11 +30,6 @@ namespace MySynch.Tests.Stubs
             return new ApplyChangePackageResponse {Status = result};
         }
 
-        public GetTargetFolderResponse GetTargetRootFolder()
-        {
-            return new GetTargetFolderResponse {RootFolder = targetRootFolder};
-        }
-
         public TryOpenChannelResponse TryOpenChannel(TryOpenChannelRequest sourceOfDataEndpointName)
         {
             return new TryOpenChannelResponse {Status = true};

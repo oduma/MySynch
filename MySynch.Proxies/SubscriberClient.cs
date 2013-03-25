@@ -65,33 +65,6 @@ namespace MySynch.Proxies
 			return  response; 
 
 		}
-		public MySynch.Contracts.Messages.GetTargetFolderResponse GetTargetRootFolder() 
-		{
-		MySynch.Contracts.Messages.GetTargetFolderResponse response = new MySynch.Contracts.Messages.GetTargetFolderResponse(); 
-		try
-		{
-		                using (new OperationContextScope((IContextChannel)Proxy))
-                {
-				 response =  
-					Proxy.GetTargetRootFolder();
-				}
-		}
-		catch (CommunicationException e)
-            {
-                OnCommunicationException(e);
-            }
-            catch (TimeoutException e)
-            {
-                OnTimeoutException(e);
-            }
-            catch (Exception e)
-            {
-                OnException(e);
-            }
-
-			return  response; 
-
-		}
 		public MySynch.Contracts.Messages.TryOpenChannelResponse TryOpenChannel(MySynch.Contracts.Messages.TryOpenChannelRequest sourceOfDataEndpointName) 
 		{
 		MySynch.Contracts.Messages.TryOpenChannelResponse response = new MySynch.Contracts.Messages.TryOpenChannelResponse(); 

@@ -38,11 +38,6 @@ namespace MySynch.Core.Subscriber
             return new ApplyChangePackageResponse {Status = TryApplyChanges(publishPackageRequestResponse)};
         }
 
-        public GetTargetFolderResponse GetTargetRootFolder()
-        {
-            return new GetTargetFolderResponse {RootFolder = _targetRootFolder};
-        }
-
         public TryOpenChannelResponse TryOpenChannel(TryOpenChannelRequest request)
         {
             if (request == null)
@@ -134,7 +129,7 @@ namespace MySynch.Core.Subscriber
         public GetHeartbeatResponse GetHeartbeat()
         {
             LoggingManager.Debug("GetHeartbeat will return true.");
-            return new GetHeartbeatResponse {Status = true};
+            return new GetHeartbeatResponse {Status = true,RootPath=_targetRootFolder};
         }
     }
 }

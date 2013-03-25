@@ -211,8 +211,6 @@ namespace MySynch.Tests
             foreach(var c1 in compo.Channels)
             {
                 Assert.AreEqual(Status.Ok,c1.Status);
-                //Assert.IsNotNull(c1.PublisherInfo.RootPath);
-                Assert.IsNotNull(c1.SubscriberInfo.RootPath);
             }
         }
 
@@ -272,8 +270,7 @@ namespace MySynch.Tests
         private void MockTheSubscriber(AvailableChannel channel, PublishPackageRequestResponse publishPackageRequestResponse)
         {
             var mockSubscriber = new Mock<ISubscriber>();
-            mockSubscriber.Setup(m => m.GetHeartbeat()).Returns(new GetHeartbeatResponse {Status = true});
-            mockSubscriber.Setup(m => m.GetTargetRootFolder()).Returns(new GetTargetFolderResponse{RootFolder=@"destination root folder\Item One"});
+            mockSubscriber.Setup(m => m.GetHeartbeat()).Returns(new GetHeartbeatResponse { Status = true, RootPath = @"destination root folder\Item One" });
             mockSubscriber.Setup(m => m.TryOpenChannel(null)).Returns(new TryOpenChannelResponse{Status=true});
             mockSubscriber.Setup(m => m.ApplyChangePackage(publishPackageRequestResponse)).Returns(new ApplyChangePackageResponse{Status=true});
             channel.Subscriber = mockSubscriber.Object;

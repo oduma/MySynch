@@ -22,11 +22,6 @@ namespace MySynch.Tests.Stubs
             throw new NotImplementedException();
         }
 
-        public GetTargetFolderResponse GetTargetRootFolder()
-        {
-            throw new NotImplementedException();
-        }
-
         public TryOpenChannelResponse TryOpenChannel(TryOpenChannelRequest sourceOfDataEndpointName)
         {
             throw new NotImplementedException();

@@ -305,13 +305,13 @@ namespace MySynch.Core.Distributor
                                       component.InstanceName,
                                       component.Port);
                 }
-                if (!componentInstance.GetHeartbeat().Status)
+                var heartbeatResponse = componentInstance.GetHeartbeat();
+                if (!heartbeatResponse.Status)
                 {
                     component.Status = Status.OfflineTemporary;
                     return null;
                 }
-                if(component.InstanceName.Contains("ISubscriber"))
-                    component.RootPath = ((ISubscriber)componentInstance).GetTargetRootFolder().RootFolder;
+                component.RootPath = heartbeatResponse.RootPath;
                 component.Status = Status.Ok;
                 return componentInstance;
             }
