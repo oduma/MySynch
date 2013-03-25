@@ -6,7 +6,7 @@ using MySynch.Proxies.Interfaces;
 
 namespace MySynch.Tests.Stubs
 {
-    public class MockRemoteSubscriberNotPresent:ISubscriberProxy
+    internal class MockRemoteSubscriberNotPresent:ISubscriberProxy
     {
         public GetHeartbeatResponse GetHeartbeat()
         {
@@ -24,6 +24,11 @@ namespace MySynch.Tests.Stubs
         }
 
         public void InitiateUsingPort(int port)
+        {
+            return;
+        }
+
+        public void DestroyAtPort(int port)
         {
             return;
         }

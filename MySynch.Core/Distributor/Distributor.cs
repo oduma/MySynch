@@ -341,11 +341,6 @@ namespace MySynch.Core.Distributor
                        };
         }
 
-        public void ReEvaluateAllChannels()
-        {
-            AvailableChannels.Where(c => c.Status != Status.Ok || c.Status != Status.NotChecked).ToList().ForEach(c => c.Status = Status.NotChecked);
-        }
-
         public IEnumerable<MapChannel> GetCurrentMap()
         {
             LoggingManager.Debug("Trying to get the map");

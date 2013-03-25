@@ -12,12 +12,12 @@ namespace MySynch.Monitor
     /// </summary>
     public partial class MonitorView : Window
     {
-        public MonitorView(IDistributorMonitorProxy distributorProxy=null,ListAvailableChannelsResponse listAvailableComponentsTreeResponse=null)
+        public MonitorView(int localDistributorPort,IDistributorMonitorProxy distributorProxy=null,ListAvailableChannelsResponse listAvailableComponentsTreeResponse=null)
         {
             InitializeComponent();
             try
             {
-                var monitorViewModel = new MonitorViewModel(distributorProxy,listAvailableComponentsTreeResponse);
+                var monitorViewModel = new MonitorViewModel(distributorProxy,listAvailableComponentsTreeResponse,localDistributorPort);
                 monitorViewModel.InitiateView();
                 this.DataContext = monitorViewModel;
 

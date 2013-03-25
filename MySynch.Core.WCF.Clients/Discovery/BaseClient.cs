@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.ServiceModel;
-using System.Text;
-using MySynch.Common;
 using MySynch.Common.Logging;
 
 namespace MySynch.Core.WCF.Clients.Discovery
@@ -88,6 +84,28 @@ namespace MySynch.Core.WCF.Clients.Discovery
                 Proxy = channelFactory.CreateChannel();
 
                 _channel = (ICommunicationObject)Proxy;
+            }
+        }
+
+        public void DestroyAtPort(int port)
+        {
+            using (LoggingManager.LogMySynchPerformance())
+            {
+
+                ChannelFactory<T> channelFactory;
+                try
+                {
+                    ChannelFactoryPool.Instance.DeleteChannelFactory<T>(port);
+                }
+                catch (Exception ex)
+                {
+
+                    throw ex;
+                }
+
+                Proxy = default(T);
+
+                _channel = null;
             }
         }
     }

@@ -45,6 +45,5 @@ namespace MySynch.Tests.Integration
             File.Copy(@"Data\File1.xml", @"C:\MySynch.Source.Test.Root\File1.xml", true);
             
         }
-
     }
 }

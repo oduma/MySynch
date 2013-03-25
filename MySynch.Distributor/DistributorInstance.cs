@@ -61,7 +61,8 @@ namespace MySynch.Distributor
             if (_noOfSpins == 10)
             {
                 _noOfSpins = 0;
-                _distributor.ReEvaluateAllChannels();
+                //[TODO:] will have to have it working at one moment
+                //_distributor.ReEvaluateAllChannels();
             }
             _distributor.DistributeMessages();
             _noOfSpins++;

@@ -8,8 +8,5 @@ namespace MySynch.Contracts
     {
         [OperationContract]
         ListAvailableChannelsResponse ListAvailableChannels();
-
-        [OperationContract]
-        void ReEvaluateAllChannels();
     }
 }

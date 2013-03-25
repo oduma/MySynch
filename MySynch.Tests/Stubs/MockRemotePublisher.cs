@@ -25,5 +25,10 @@ namespace MySynch.Tests.Stubs
         {
             return;
         }
+
+        public void DestroyAtPort(int port)
+        {
+            return;
+        }
     }
 }

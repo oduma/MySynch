@@ -21,7 +21,7 @@ namespace MySynch.Monitor
     public partial class App : Application
     {
         private TaskbarIcon tb;
-        private int _localDsitributorPort;
+        private int _localDistributorPort;
         private IDistributorMonitorProxy _distributorMonitorProxy;
         private ListAvailableChannelsResponse _availableComponents;
 
@@ -66,19 +66,11 @@ namespace MySynch.Monitor
         {
             var key = ConfigurationManager.AppSettings.AllKeys.FirstOrDefault(k => k == "LocalDistributorPort");
             if (key != null)
-                _localDsitributorPort = Convert.ToInt32(ConfigurationManager.AppSettings[key]);
+                _localDistributorPort = Convert.ToInt32(ConfigurationManager.AppSettings[key]);
             else
-                _localDsitributorPort = 0;
-            ProgressChanged(this,new ProgressChangedEventArgs(0,"Connecting to Distributor at port: "+ _localDsitributorPort));
-            _distributorMonitorProxy = new DistributorMonitorClient();
-            _distributorMonitorProxy.InitiateUsingPort(_localDsitributorPort);
-            ProgressChanged(this, new ProgressChangedEventArgs(0, "Connected to Distributor at port: " + _localDsitributorPort + " checking registrations..."));
-            _availableComponents = _distributorMonitorProxy.ListAvailableChannels();
-            ProgressChanged(this,
-                            new ProgressChangedEventArgs(0,
-                                                         string.Format(
-                                                             "{0} channels registered at the distributor",
-                                                             _availableComponents.Channels.Count())));
+                _localDistributorPort = 0;
+
+            new ClientHelper().ConnectToADistributor(ProgressChanged,_localDistributorPort, out _distributorMonitorProxy, out _availableComponents);
         }
 
         private MonitorView _monitorView;
@@ -86,7 +78,7 @@ namespace MySynch.Monitor
         {
             if (_monitorView == null)
             {
-                _monitorView = new MonitorView(_distributorMonitorProxy,_availableComponents);
+                _monitorView = new MonitorView(_localDistributorPort, _distributorMonitorProxy,_availableComponents);
                 _monitorView.Closing += ViewsClosing;
             }
             _monitorView.Show();

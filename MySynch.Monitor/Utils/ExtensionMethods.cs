@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using MySynch.Contracts.Messages;
@@ -71,7 +72,7 @@ namespace MySynch.Monitor.Utils
                                                                           };
                 if (!beforeImage.Contains(availableChannelViewModel, new AvailableChannelViewModelEqualityComparer()))
                 {
-                    beforeImage.Add(availableChannelViewModel);
+                    System.Windows.Application.Current.Dispatcher.Invoke((Action)(() => beforeImage.Add(availableChannelViewModel)));
                 }
                 else
                 {

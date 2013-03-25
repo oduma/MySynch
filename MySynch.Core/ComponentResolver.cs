@@ -1,4 +1,5 @@
-﻿using Castle.MicroKernel.Registration;
+﻿using System;
+using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using MySynch.Common;
 using MySynch.Common.Logging;
@@ -20,6 +21,22 @@ namespace MySynch.Core
             }
         }
 
+        public void UnRegister<T>(string name, int port)
+        {
+            try
+            {
+                LoggingManager.Debug("Unregistering for " + name);
+                
+                using(LoggingManager.LogMySynchPerformance())
+                {
+                    T component = Resolve<T>(name, port);
+                    _container.Release(component);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+        }
         public T Resolve<T>(string name)
         {
             try

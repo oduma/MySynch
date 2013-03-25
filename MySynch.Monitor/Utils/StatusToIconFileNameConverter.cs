@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows.Data;
 using MySynch.Contracts.Messages;
 
-namespace MySynch.Monitor.MVVM.ViewModels
+namespace MySynch.Monitor.Utils
 {
     [ValueConversion(typeof(Status), typeof(string))]
     public class StatusToIconFileNameConverter : IValueConverter

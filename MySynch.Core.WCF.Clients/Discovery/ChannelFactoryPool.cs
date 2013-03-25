@@ -198,5 +198,17 @@ namespace MySynch.Core.WCF.Clients.Discovery
             return clientEndpoint;
         }
 
+        public void DeleteChannelFactory<T>(int port)
+        {
+            _readerWriterLock.AcquireReaderLock(1000);
+            try
+            {
+                _clientEndpoints.Remove(typeof (T).Name + port);
+            }
+            finally
+            {
+                _readerWriterLock.ReleaseReaderLock();
+            }
+        }
     }
 }

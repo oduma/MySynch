@@ -38,7 +38,7 @@ namespace MySynch.Monitor.Utils
                 ServiceController serviceController = new ServiceController(_distributorServiceName);
 
                 serviceController.Start();
-                TimeSpan timeout = TimeSpan.FromSeconds(45);
+                TimeSpan timeout = TimeSpan.FromSeconds(90);
                 serviceController.WaitForStatus(ServiceControllerStatus.Running, timeout);
                 return "Service started.";
             }

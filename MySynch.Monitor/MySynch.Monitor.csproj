@@ -93,6 +93,7 @@
     <Compile Include="MonitorView.xaml.cs">
       <DependentUpon>MonitorView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MVVM\ViewModels\AsynchViewModelBase.cs" />
     <Compile Include="MVVM\ViewModels\AvailableChannelViewModel.cs" />
     <Compile Include="MVVM\ViewModels\ComponentType.cs" />
     <Compile Include="MVVM\ViewModels\ComponentTypeToIconFileNameConverter.cs" />
@@ -101,12 +102,13 @@
     <Compile Include="MVVM\ViewModels\MonitorViewModel.cs" />
     <Compile Include="MVVM\ViewModels\NotificationDetailsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\RelayCommand.cs" />
-    <Compile Include="MVVM\ViewModels\StatusToIconFileNameConverter.cs" />
     <Compile Include="MVVM\ViewModels\ViewModelBase.cs" />
     <Compile Include="Utils\AvailableChannelViewModelEqualityComparer.cs" />
     <Compile Include="Utils\ChannelEqualityComparer.cs" />
+    <Compile Include="Utils\ClientHelper.cs" />
     <Compile Include="Utils\ExtensionMethods.cs" />
     <Compile Include="Utils\ServiceHelper.cs" />
+    <Compile Include="Utils\StatusToIconFileNameConverter.cs" />
     <Compile Include="Utils\WPFControlThreadingExtensions.cs" />
     <Compile Include="Window1.xaml.cs">
       <DependentUpon>Window1.xaml</DependentUpon>
@@ -179,8 +181,8 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\Ok.png" />
-    <Resource Include="Icons\PermanentOffline.png" />
-    <Resource Include="Icons\TemporaryOffline.png" />
+    <Resource Include="Icons\OfflinePermanent.png" />
+    <Resource Include="Icons\OfflineTemporary.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">

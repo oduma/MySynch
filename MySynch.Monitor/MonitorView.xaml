@@ -12,7 +12,7 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="48"/>
+            <RowDefinition Height="64"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -20,7 +20,9 @@
             <ColumnDefinition Width="124"/>
         </Grid.ColumnDefinitions>
         <Label Grid.Column="0" Grid.Row="0" Content="{Binding DistributorName}"/>
-        <Button Grid.Column="1" Grid.Row="0" Content="Re-evaluate"/>
+        <Button Grid.Column="1" Grid.Row="0" Content="Re-evaluate"
+                Style="{StaticResource ButtonsStyle}" Command="{Binding Reevaluate}"
+                IsEnabled="{Binding UIAvailable}"/>
         <DataGrid ItemsSource="{Binding AvailableChannels}" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" 
                   AutoGenerateColumns="false" CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="true">
             <DataGrid.Columns>
@@ -64,5 +66,9 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
+        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" 
+               Content="{Binding WorkingMessage}" 
+               Visibility="{Binding MessageVisible}" Style="{StaticResource MessageStyle}"/>
+
     </Grid>
 </Window>
