@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using MySynch.Contracts.Messages;
 using MySynch.Monitor.MVVM.ViewModels;
@@ -235,6 +236,83 @@ namespace MySynch.MVVM.Tests
             Assert.AreEqual(1, observableChannels.Count(o => o.MapChannelPublisherTitle == "IPublisher.Remote:3586" && o.MapChannelSubscriberTitle == "ISubscriber.Remote:2345"));
             Assert.AreEqual(Status.OfflineTemporary,observableChannels[0].SubscriberStatus);
             Assert.AreEqual(Status.Ok,observableChannels[0].PublisherStatus);
+
+        }
+
+
+        [Test]
+        public void AddToPackages_Ok()
+        {
+            var beforeImage = new ObservableCollection<PackageViewModel>
+                                  {
+                                      new PackageViewModel
+                                          {
+                                              PackageId = Guid.NewGuid()
+                                          }
+                                  };
+            var observablePackages =
+                (new[]
+                     {
+                         new Package
+                             {
+                                 Id=Guid.NewGuid()
+                             }
+                     }).AddToPackages(beforeImage);
+            Assert.IsNotNull(observablePackages);
+            Assert.AreEqual(2, observablePackages.Count);
+            Assert.AreNotEqual(observablePackages[0].PackageId, observablePackages[1].PackageId);
+        }
+
+        [Test]
+        public void AddToPackages_EmptyInCollection()
+        {
+            var beforeImage = new ObservableCollection<PackageViewModel>
+                                  {
+                                      new PackageViewModel
+                                          {
+PackageId=Guid.NewGuid()                                          }
+                                  };
+            var observablePackages =
+                (new List<Package>()).AddToPackages(beforeImage);
+            Assert.IsNotNull(observablePackages);
+            Assert.AreEqual(1, observablePackages.Count);
+        }
+
+        [Test]
+        public void AddToPackages_NothingNewToAdd()
+        {
+            var packageId = Guid.NewGuid();
+            var beforeImage = new ObservableCollection<PackageViewModel>
+                                  {
+                                      new PackageViewModel
+                                          {
+                                              PackageId=packageId
+                                          }
+                                  };
+            var observablePackages =
+                (new[]
+                     {
+                         new Package
+                             {
+                                 Id=packageId }
+                     }).AddToPackages(beforeImage);
+            Assert.IsNotNull(observablePackages);
+            Assert.AreEqual(1, observablePackages.Count);
+        }
+
+        [Test]
+        public void AddToPackages_NoBeforeImage()
+        {
+
+            var observablePackages =
+                (new[]
+                     {
+                         new Package
+                             {
+Id=Guid.NewGuid()                             }
+                     }).AddToPackages();
+            Assert.IsNotNull(observablePackages);
+            Assert.AreEqual(1, observablePackages.Count);
 
         }
     }

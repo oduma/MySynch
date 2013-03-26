@@ -36,9 +36,10 @@
                                        ToolTip="{Binding PublisherStatus}"
                                        Height="16" Width="16"/>
                                 <Label Content="{Binding MapChannelPublisherTitle}" />
-                            </StackPanel>
-                                <Label Content="Source Root Path:"/>
-                                <Label Content="{Binding PublisherRootPath}"/>
+                                    <Label Content="Publishing from:"/>
+                                    <Label Content="{Binding PublisherRootPath}"/>
+                                </StackPanel>
+                                <DataGrid ItemsSource="{Binding PackagesAtPublisher}" AutoGenerateColumns="True"/>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -52,9 +53,11 @@
                                 <Image Source="{Binding SubscriberStatus, Converter={StaticResource StatusIconConverter}}" 
                                        ToolTip="{Binding SubscriberStatus}" Width="16" Height="16"/>
                                 <Label Content="{Binding MapChannelSubscriberTitle}" />
-                            </StackPanel>
-                                <Label Content="Destination Root Path:"/>
-                                <Label Content="{Binding SubscriberRootPath}"/>
+                                    <Label Content="Applying changes to:"/>
+                                    <Label Content="{Binding SubscriberRootPath}"/>
+                                </StackPanel>
+                                <DataGrid ItemsSource="{Binding PackagesAtSubscriber}" AutoGenerateColumns="True"/>
+
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

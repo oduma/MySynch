@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 using MySynch.Contracts.Messages;
 using MySynch.Core.DataTypes;
 using MySynch.Monitor.MVVM.ViewModels;
@@ -57,6 +58,8 @@ namespace MySynch.Monitor.Utils
         {
             if(beforeImage==null)
                 beforeImage=new ObservableCollection<AvailableChannelViewModel>();
+            if(inCollection==null)
+                return beforeImage;
             foreach (var mapChannel in inCollection)
             {
                 AvailableChannelViewModel availableChannelViewModel = new AvailableChannelViewModel
@@ -65,14 +68,19 @@ namespace MySynch.Monitor.Utils
                                                                                   mapChannel.PublisherInfo.InstanceName + ":" + mapChannel.PublisherInfo.Port,
                                                                                   PublisherStatus=mapChannel.PublisherInfo.Status,
                                                                                   PublisherRootPath=mapChannel.PublisherInfo.RootPath,
+                                                                                  PackagesAtPublisher=mapChannel.PublisherInfo.Packages.AddToPackages(),
                                                                               MapChannelSubscriberTitle =
                                                                                   mapChannel.SubscriberInfo.InstanceName + ":" + mapChannel.SubscriberInfo.Port,
                                                                                   SubscriberStatus=mapChannel.SubscriberInfo.Status,
-                                                                                  SubscriberRootPath=mapChannel.SubscriberInfo.RootPath
+                                                                                  SubscriberRootPath=mapChannel.SubscriberInfo.RootPath,
+                                                                                  PackagesAtSubscriber=mapChannel.SubscriberInfo.Packages.AddToPackages()
                                                                           };
                 if (!beforeImage.Contains(availableChannelViewModel, new AvailableChannelViewModelEqualityComparer()))
                 {
-                    System.Windows.Application.Current.Dispatcher.Invoke((Action)(() => beforeImage.Add(availableChannelViewModel)));
+                    if(Application.Current==null)
+                        beforeImage.Add(availableChannelViewModel);
+                    else
+                        Application.Current.Dispatcher.Invoke((Action)(() => beforeImage.Add(availableChannelViewModel)));
                 }
                 else
                 {
@@ -87,6 +95,10 @@ namespace MySynch.Monitor.Utils
                         existingItem.SubscriberStatus = mapChannel.SubscriberInfo.Status;
                         existingItem.PublisherRootPath = mapChannel.PublisherInfo.RootPath;
                         existingItem.SubscriberRootPath = mapChannel.SubscriberInfo.RootPath;
+                        existingItem.PackagesAtPublisher =
+                            mapChannel.PublisherInfo.Packages.AddToPackages(existingItem.PackagesAtPublisher);
+                        existingItem.PackagesAtSubscriber =
+                            mapChannel.SubscriberInfo.Packages.AddToPackages(existingItem.PackagesAtSubscriber);
                     }
 
                 }
@@ -94,6 +106,25 @@ namespace MySynch.Monitor.Utils
             return beforeImage;
         }
 
+        internal static ObservableCollection<PackageViewModel> AddToPackages(this IEnumerable<Package> inCollection, ObservableCollection<PackageViewModel> beforeImage=null)
+        {
+            if (beforeImage == null)
+                beforeImage = new ObservableCollection<PackageViewModel>();
+            if(inCollection==null)
+                return beforeImage;
+            foreach (var package in inCollection)
+            {
+                PackageViewModel packageViewModel = new PackageViewModel {PackageId = package.Id};
+                if (!beforeImage.Contains(packageViewModel, new PackageViewModelEqualityComparer()))
+                {
+                    if (Application.Current == null)
+                        beforeImage.Add(packageViewModel);
+                    else
+                        Application.Current.Dispatcher.Invoke((Action)(() => beforeImage.Add(packageViewModel)));
+                }
+            }
+            return beforeImage;
+        }
         internal static IEnumerable<string> ShiftLeft(this string[] source, int step)
         {
             for (int i = step; i < source.Count(); i++)

@@ -31,11 +31,12 @@ namespace MySynch.Monitor.MVVM.ViewModels
             }
         }
 
-        private ObservableCollection<AvailableChannelViewModel> _availableChannels;
         private Timer _timer;
         private int _localDistributorPort;
 
         public ICommand Reevaluate { get; private set; }
+
+        private ObservableCollection<AvailableChannelViewModel> _availableChannels;
 
         public ObservableCollection<AvailableChannelViewModel> AvailableChannels
         {

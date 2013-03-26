@@ -101,12 +101,14 @@
     <Compile Include="MVVM\ViewModels\MapEditorViewModel.cs" />
     <Compile Include="MVVM\ViewModels\MonitorViewModel.cs" />
     <Compile Include="MVVM\ViewModels\NotificationDetailsViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\PackageViewModel.cs" />
     <Compile Include="MVVM\ViewModels\RelayCommand.cs" />
     <Compile Include="MVVM\ViewModels\ViewModelBase.cs" />
     <Compile Include="Utils\AvailableChannelViewModelEqualityComparer.cs" />
     <Compile Include="Utils\ChannelEqualityComparer.cs" />
     <Compile Include="Utils\ClientHelper.cs" />
     <Compile Include="Utils\ExtensionMethods.cs" />
+    <Compile Include="Utils\PackageViewModelEqualityComparer.cs" />
     <Compile Include="Utils\ServiceHelper.cs" />
     <Compile Include="Utils\StatusToIconFileNameConverter.cs" />
     <Compile Include="Utils\WPFControlThreadingExtensions.cs" />

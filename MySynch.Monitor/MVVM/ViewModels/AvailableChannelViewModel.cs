@@ -1,4 +1,5 @@
-﻿using MySynch.Contracts.Messages;
+﻿using System.Collections.ObjectModel;
+using MySynch.Contracts.Messages;
 
 namespace MySynch.Monitor.MVVM.ViewModels
 {
@@ -75,6 +76,37 @@ namespace MySynch.Monitor.MVVM.ViewModels
                 }
             }
         }
+
+        private ObservableCollection<PackageViewModel> _packagesAtPublisher;
+
+        public ObservableCollection<PackageViewModel> PackagesAtPublisher
+        {
+            get { return _packagesAtPublisher; }
+            set
+            {
+                if (_packagesAtPublisher != value)
+                {
+                    _packagesAtPublisher = value;
+                    RaisePropertyChanged(() => PackagesAtPublisher);
+                }
+            }
+        }
+
+        private ObservableCollection<PackageViewModel> _packagesAtSubscriber;
+
+        public ObservableCollection<PackageViewModel> PackagesAtSubscriber
+        {
+            get { return _packagesAtSubscriber; }
+            set
+            {
+                if (_packagesAtSubscriber != value)
+                {
+                    _packagesAtSubscriber = value;
+                    RaisePropertyChanged(() => PackagesAtSubscriber);
+                }
+            }
+        }
+
 
     }
 }
