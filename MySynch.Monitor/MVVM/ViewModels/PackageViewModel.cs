@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MySynch.Contracts.Messages;
 
 namespace MySynch.Monitor.MVVM.ViewModels
 {
@@ -25,6 +26,23 @@ namespace MySynch.Monitor.MVVM.ViewModels
             }
         }
 
+        private State _packageState;
+        /// <summary>
+        /// Gets/sets whether the TreeViewItem 
+        /// associated with this object is expanded.
+        /// </summary>
+        public State PackageState
+        {
+            get { return _packageState; }
+            set
+            {
+                if (value != _packageState)
+                {
+                    _packageState = value;
+                    RaisePropertyChanged(() => PackageState);
+                }
+            }
+        }
 
     }
 }

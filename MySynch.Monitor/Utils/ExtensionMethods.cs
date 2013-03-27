@@ -112,9 +112,22 @@ namespace MySynch.Monitor.Utils
                 beforeImage = new ObservableCollection<PackageViewModel>();
             if(inCollection==null)
                 return beforeImage;
+            var previouslyRemoved = beforeImage.Where(b => b.PackageState == State.Removed).ToList();
+            foreach (var removedItem in previouslyRemoved)
+            {
+                if (Application.Current == null)
+                {
+                    beforeImage.Remove(removedItem);
+                }
+                else
+                {
+                    PackageViewModel item = removedItem;
+                    Application.Current.Dispatcher.Invoke((Action)(() => beforeImage.Remove(item)));
+                }
+            }
             foreach (var package in inCollection)
             {
-                PackageViewModel packageViewModel = new PackageViewModel {PackageId = package.Id};
+                PackageViewModel packageViewModel = new PackageViewModel {PackageId = package.Id, PackageState=package.State};
                 if (!beforeImage.Contains(packageViewModel, new PackageViewModelEqualityComparer()))
                 {
                     if (Application.Current == null)
@@ -122,9 +135,21 @@ namespace MySynch.Monitor.Utils
                     else
                         Application.Current.Dispatcher.Invoke((Action)(() => beforeImage.Add(packageViewModel)));
                 }
+                else
+                {
+                    var existingItem = beforeImage.FirstOrDefault(
+                        b =>
+                        b.PackageId == packageViewModel.PackageId);
+                    if (existingItem != null)
+                    {
+                        existingItem.PackageState = packageViewModel.PackageState;
+                    }
+
+                }
             }
             return beforeImage;
         }
+
         internal static IEnumerable<string> ShiftLeft(this string[] source, int step)
         {
             for (int i = step; i < source.Count(); i++)

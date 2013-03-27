@@ -39,7 +39,20 @@
                                     <Label Content="Publishing from:"/>
                                     <Label Content="{Binding PublisherRootPath}"/>
                                 </StackPanel>
-                                <DataGrid ItemsSource="{Binding PackagesAtPublisher}" AutoGenerateColumns="True"/>
+                                <DataGrid ItemsSource="{Binding PackagesAtPublisher}" AutoGenerateColumns="false" CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="true">
+                                    <DataGrid.Columns>
+                                    <DataGridTemplateColumn Header="Packages" Width="SizeToCells" IsReadOnly="true">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Label Content="{Binding PackageState}"/>
+                                                    <Label Content="{Binding PackageId}"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -56,7 +69,20 @@
                                     <Label Content="Applying changes to:"/>
                                     <Label Content="{Binding SubscriberRootPath}"/>
                                 </StackPanel>
-                                <DataGrid ItemsSource="{Binding PackagesAtSubscriber}" AutoGenerateColumns="True"/>
+                                <DataGrid ItemsSource="{Binding PackagesAtSubscriber}" AutoGenerateColumns="false" CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="true">
+                                    <DataGrid.Columns>
+                                    <DataGridTemplateColumn Header="Packages" Width="SizeToCells" IsReadOnly="true">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Label Content="{Binding PackageState}"/>
+                                                    <Label Content="{Binding PackageId}"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
 
                             </StackPanel>
                         </DataTemplate>

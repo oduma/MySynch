@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls;
 using MySynch.Common.Logging;
 using MySynch.Contracts.Messages;
 using MySynch.Monitor.MVVM.ViewModels;
@@ -20,7 +21,6 @@ namespace MySynch.Monitor
                 var monitorViewModel = new MonitorViewModel(distributorProxy,listAvailableComponentsTreeResponse,localDistributorPort);
                 monitorViewModel.InitiateView();
                 this.DataContext = monitorViewModel;
-
             }
             catch (Exception ex)
             {
