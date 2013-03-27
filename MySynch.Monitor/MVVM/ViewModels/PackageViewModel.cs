@@ -44,5 +44,24 @@ namespace MySynch.Monitor.MVVM.ViewModels
             }
         }
 
+        private int _totalNumberOfMessages;
+        /// <summary>
+        /// Gets/sets whether the TreeViewItem 
+        /// associated with this object is expanded.
+        /// </summary>
+        public int TotalNumberOfMessages
+        {
+            get { return _totalNumberOfMessages; }
+            set
+            {
+                if (value != _totalNumberOfMessages)
+                {
+                    _totalNumberOfMessages = value;
+                    RaisePropertyChanged(() => TotalNumberOfMessages);
+                }
+            }
+        }
+
+
     }
 }

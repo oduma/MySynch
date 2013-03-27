@@ -112,7 +112,7 @@ namespace MySynch.Monitor.Utils
                 beforeImage = new ObservableCollection<PackageViewModel>();
             if(inCollection==null)
                 return beforeImage;
-            var previouslyRemoved = beforeImage.Where(b => b.PackageState == State.Removed).ToList();
+            var previouslyRemoved = beforeImage.Where(b => b.PackageState == State.Done).ToList();
             foreach (var removedItem in previouslyRemoved)
             {
                 if (Application.Current == null)

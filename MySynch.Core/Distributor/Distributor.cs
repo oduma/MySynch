@@ -63,9 +63,9 @@ namespace MySynch.Core.Distributor
                                                  State.Distributed);
                         currentPublisher.RemovePackage(packagePublished);
                         RegisterPackageForComponent(currentPublisherInfo, packagePublished,
-                                                 State.Removed);
+                                                 State.Done);
                         foreach (var channel in publisherGroup)
-                            RegisterPackageForComponent(channel.SubscriberInfo, packagePublished, State.Removed);
+                            RegisterPackageForComponent(channel.SubscriberInfo, packagePublished, State.Done);
                         LoggingManager.Debug("Dsitributed all available messages.");
                     }
                     else
@@ -135,9 +135,9 @@ namespace MySynch.Core.Distributor
 
         private static void UnregisterPackagesForComponent(MapChannelComponent component)
         {
-            if (component.Packages != null && component.Packages.Count(p => p.State == State.Removed) > 0)
+            if (component.Packages != null && component.Packages.Count(p => p.State == State.Done) > 0)
             {
-                foreach (var removedPackage in component.Packages.Where(p => p.State == State.Removed).ToList())
+                foreach (var removedPackage in component.Packages.Where(p => p.State == State.Done).ToList())
                 {
                     LoggingManager.Debug("Trying to remove package:" + removedPackage.Id + " from component: " +
                                          component.InstanceName);

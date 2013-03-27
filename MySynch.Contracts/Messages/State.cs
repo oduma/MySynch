@@ -12,6 +12,6 @@ namespace MySynch.Contracts.Messages
         [EnumMember]
         Distributed,
         [EnumMember]
-        Removed
+        Done
     }
 }

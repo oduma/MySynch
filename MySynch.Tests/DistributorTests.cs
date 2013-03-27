@@ -232,10 +232,10 @@ namespace MySynch.Tests
             Assert.IsNotNull(compo);
             Assert.AreEqual(1, compo.Channels.Count);
             Assert.IsNotNull(compo.Channels[0].SubscriberInfo);
-            Assert.AreEqual(1,compo.Channels[0].PublisherInfo.Packages.Count(p=>p.State==State.Removed));
+            Assert.AreEqual(1,compo.Channels[0].PublisherInfo.Packages.Count(p=>p.State==State.Done));
             Assert.AreEqual(1, compo.Channels[0].PublisherInfo.Packages[0].PackageMessages.Count(m => m.AbsolutePath == @"root folder\Item One"));
             Assert.AreEqual(2, compo.Channels[0].PublisherInfo.Packages[0].PackageMessages.Count(m => m.OperationType==OperationType.Insert));
-            Assert.AreEqual(1, compo.Channels[0].SubscriberInfo.Packages.Count(p => p.State == State.Removed));
+            Assert.AreEqual(1, compo.Channels[0].SubscriberInfo.Packages.Count(p => p.State == State.Done));
         }
 
         [Test]
