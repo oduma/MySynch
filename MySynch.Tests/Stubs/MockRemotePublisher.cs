@@ -30,5 +30,10 @@ namespace MySynch.Tests.Stubs
         {
             return;
         }
+
+        public void InitiateDuplexUsingPort<TCallback>(TCallback callbackInstance, int port)
+        {
+            return;
+        }
     }
 }

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using Moq;
 using MySynch.Contracts.Messages;
-using MySynch.Core;
-using MySynch.Core.DataTypes;
 using MySynch.Core.Interfaces;
 using MySynch.Core.Subscriber;
 using NUnit.Framework;
@@ -24,7 +22,7 @@ namespace MySynch.Tests
         [Test]
         public void ApplyChanges_Upserts_Ok()
         {
-            Subscriber changeApplyer= new Subscriber();
+            Subscriber changeApplyer = new Subscriber();
 
             PublishPackageRequestResponse insertPackageRequestResponse = new PublishPackageRequestResponse
                                                   {
@@ -55,7 +53,7 @@ namespace MySynch.Tests
             var mockCopyStrategy = MockCopyStrategy();
             changeApplyer.CopyStrategy = mockCopyStrategy;
             Assert.True(changeApplyer.TryApplyChanges(insertPackageRequestResponse));
-            Assert.AreEqual(3,_noOfUpserts);
+            Assert.AreEqual(3, _noOfUpserts);
         }
 
         private bool fakeMethod(string arg1, string arg2)
@@ -95,7 +93,7 @@ namespace MySynch.Tests
                                                               }
             };
             changeApplyer.Initialize(@"Data\Output\Test\");
-            var mockCopyStrategy= MockCopyStrategy();
+            var mockCopyStrategy = MockCopyStrategy();
             changeApplyer.CopyStrategy = mockCopyStrategy;
             Assert.False(changeApplyer.TryApplyChanges(insertPackageRequestResponse));
             Assert.AreEqual(2, _noOfUpserts);
@@ -192,15 +190,7 @@ namespace MySynch.Tests
             Assert.False(File.Exists(@"Data\Output\Test\F12\F13.xml"));
 
         }
-        
-        [Test]
-        public void ApplyChanges_NoChangePackage()
-        {
-            Subscriber changeApplyer = new Subscriber();
-            changeApplyer.TryOpenChannel(null);
-            Assert.False( changeApplyer.ApplyChangePackage(null).Status);
-        }
-        
+
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
         public void Initialize_Target_NotSent()

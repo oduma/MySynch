@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
-using System.ServiceModel.Description;
-using System.ServiceModel.Discovery;
 using System.Threading;
-using MySynch.Common;
 using MySynch.Common.Logging;
 using MySynch.Common.WCF;
 
@@ -69,6 +65,25 @@ namespace MySynch.Core.WCF.Clients.Discovery
         }
 
         /// <summary>
+        /// returns a channelFactory that connects to a service of contract type T
+        /// identified by the given endpointName
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public DuplexChannelFactory<T> GetDuplexChannelFactory<T,TCallBack>(TCallBack callbackInstance, int port)
+        {
+            LoggingManager.Debug("Trying to get channelfactory for endpoint: " + port);
+            DuplexChannelFactory<T> channelFactory;
+
+            if (!TryGetChannelFactory(port, out channelFactory))
+            {
+                channelFactory = CreateAndCache<T,TCallBack>(callbackInstance, port);
+            }
+            LoggingManager.Debug("Got channel factory for:" + channelFactory.Endpoint.Address);
+            return channelFactory;
+        }
+
+        /// <summary>
         /// Tries to populate the channelFactory out parameter if a channelFactory can be found
         /// for the contract type T identified by a enpointName.
         /// If there is not channelfactory for the type the parameter will be set to null
@@ -104,6 +119,34 @@ namespace MySynch.Core.WCF.Clients.Discovery
                 _readerWriterLock.ReleaseReaderLock();
             }
         }
+
+        private bool TryGetChannelFactory<T>(int port, out DuplexChannelFactory<T> channelFactory)
+        {
+            _readerWriterLock.AcquireReaderLock(1000);
+            try
+            {
+                ClientEndpoint duplexClientEndpoint;
+
+                if (_clientEndpoints.TryGetValue(typeof(T).Name + port, out duplexClientEndpoint))
+                {
+                    EndpointChannelFactory endpointChannelFactory = duplexClientEndpoint.Endpoint;
+
+                    channelFactory = endpointChannelFactory.ChannelFactory as DuplexChannelFactory<T>;
+
+                    return true;
+                }
+                else
+                {
+                    channelFactory = null;
+                    return false;
+                }
+            }
+            finally
+            {
+                _readerWriterLock.ReleaseReaderLock();
+            }
+        }
+
 
         /// <summary>
         /// Will create the channelFactory and will cache for furthe calls
@@ -161,6 +204,57 @@ namespace MySynch.Core.WCF.Clients.Discovery
             }
         }
 
+        private DuplexChannelFactory<T> CreateAndCache<T,TCallback>(TCallback callbackInstance, int port)
+        {
+            //Only one thread at a time can enter the upgradeable lock, 
+            //and he has the right to upgrade to write
+            //while in upgradeable mode, other threads can still read
+            //- but he can change to write mode and block all readers
+            _readerWriterLock.AcquireReaderLock(1000);
+
+            try
+            {
+                ClientEndpoint duplexClientEndpoint;
+                EndpointChannelFactory endpointChannelFactory;
+
+                if (_clientEndpoints.TryGetValue(typeof(T).Name + port, out duplexClientEndpoint))
+                {
+                    //already there so no need to create it
+                    endpointChannelFactory = duplexClientEndpoint.Endpoint;
+
+                    return endpointChannelFactory.ChannelFactory as DuplexChannelFactory<T>;
+                }
+                else
+                {
+                    //it doesn't exist so populate it, put it in the cache and return it
+                    _readerWriterLock.UpgradeToWriterLock(1000);
+                    try
+                    {
+                        EndpointAddress baseAddress;
+                        if (FindService<T>(port, out baseAddress))
+                        {
+                            duplexClientEndpoint = GetClientEndpoint<T,TCallback>(callbackInstance, typeof(T).Name + port, baseAddress);
+
+                            _clientEndpoints.Add(typeof(T).Name + port, duplexClientEndpoint);
+
+                            endpointChannelFactory = duplexClientEndpoint.Endpoint;
+                            return endpointChannelFactory.ChannelFactory as DuplexChannelFactory<T>;
+
+                        }
+                        return null;
+                    }
+                    finally
+                    {
+                        _readerWriterLock.ReleaseWriterLock();
+                    }
+                }
+            }
+            finally
+            {
+                _readerWriterLock.ReleaseLock();
+            }
+        }
+
         internal bool FindService<T>(int port, out EndpointAddress baseAddress)
         {
             LoggingManager.Debug("Looking for service of type " + typeof(T).FullName + " listening at port: " + port);
@@ -187,7 +281,26 @@ namespace MySynch.Core.WCF.Clients.Discovery
                                              {
                                                  EndpointAddress = baseAddress
             };
-            endpointChannelFactory.ChannelFactory = new ChannelFactory<T>(ClientServerBindingHelper.GetBinding().ApplyClientBinding(),
+            endpointChannelFactory.ChannelFactory = new ChannelFactory<T>(ClientServerBindingHelper.GetBinding(false).ApplyClientBinding(),
+                                                                          endpointChannelFactory.EndpointAddress);
+            endpointChannelFactory.ChannelFactory.Endpoint.Behaviors.Add(new MySynchAuditBehavior());
+
+            endpointChannelFactory.ChannelFactory.Open();
+
+            clientEndpoint.Endpoint = endpointChannelFactory;
+
+            return clientEndpoint;
+        }
+
+        private ClientEndpoint GetClientEndpoint<T,TCallback>(TCallback callbackInstance, string clientEndpointName, EndpointAddress baseAddress)
+        {
+            var clientEndpoint = new ClientEndpoint(typeof(T), clientEndpointName);
+
+            var endpointChannelFactory = new EndpointChannelFactory
+            {
+                EndpointAddress = baseAddress
+            };
+            endpointChannelFactory.ChannelFactory = new DuplexChannelFactory<T>(callbackInstance,ClientServerBindingHelper.GetBinding(true),
                                                                           endpointChannelFactory.EndpointAddress);
             endpointChannelFactory.ChannelFactory.Endpoint.Behaviors.Add(new MySynchAuditBehavior());
 

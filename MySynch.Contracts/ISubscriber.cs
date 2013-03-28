@@ -3,13 +3,19 @@ using MySynch.Contracts.Messages;
 
 namespace MySynch.Contracts
 {
-    [ServiceContract]
+    [ServiceContract(CallbackContract=typeof(ISubscriberFeedback))]
     public interface ISubscriber:ICommunicationComponent
     {
-        [OperationContract]
-        ApplyChangePackageResponse ApplyChangePackage(PublishPackageRequestResponse publishPackageRequestResponse);
+        [OperationContract(IsOneWay=true)]
+        void ConsumePackage(PublishPackageRequestResponse publishPackageRequestResponse);
 
         [OperationContract]
         TryOpenChannelResponse TryOpenChannel(TryOpenChannelRequest sourceOfDataEndpointName);
+
+        /// <summary>
+        /// For test only
+        /// </summary>
+        /// <param name="SubscriberFeedback"></param>
+        void ForceSetTheSubscriberFeedback(ISubscriberFeedback SubscriberFeedback);
     }
 }

@@ -239,26 +239,26 @@ namespace MySynch.Monitor.MVVM.ViewModels
                                                  };
                     notificationDetailsCollection.Add(currentPackageNode);
                     currentPackageNode.NotificationDetailsCollection= new ObservableCollection<NotificationDetailsViewModel>();
-                    ParseMessagesInformation(currentPackageNode.NotificationDetailsCollection, package.PackageMessages);
+                    //ParseMessagesInformation(currentPackageNode.NotificationDetailsCollection, package.PackageMessages);
                 }
             }
         }
 
-        private void ParseMessagesInformation(ObservableCollection<NotificationDetailsViewModel> notificationDetailsCollection, List<ChangePushItem> packageMessages)
-        {
-            if (packageMessages != null)
-            {
-                foreach (var packageMessage in packageMessages)
-                {
-                    var currentPackageMessageNode = new NotificationDetailsViewModel
-                    {
-                        Name = packageMessage.AbsolutePath,
-                        State = Enum.GetName(typeof(OperationType), packageMessage.OperationType),
-                        TypeColor = Brushes.YellowGreen
-                    };
-                    notificationDetailsCollection.Add(currentPackageMessageNode);
-                }
-            }
-        }
+        //private void ParseMessagesInformation(ObservableCollection<NotificationDetailsViewModel> notificationDetailsCollection, List<ChangePushItem> packageMessages)
+        //{
+        //    if (packageMessages != null)
+        //    {
+        //        foreach (var packageMessage in packageMessages)
+        //        {
+        //            var currentPackageMessageNode = new NotificationDetailsViewModel
+        //            {
+        //                Name = packageMessage.AbsolutePath,
+        //                State = Enum.GetName(typeof(OperationType), packageMessage.OperationType),
+        //                TypeColor = Brushes.YellowGreen
+        //            };
+        //            notificationDetailsCollection.Add(currentPackageMessageNode);
+        //        }
+        //    }
+        //}
     }
 }

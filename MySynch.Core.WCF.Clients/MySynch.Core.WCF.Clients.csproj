@@ -66,11 +66,6 @@
     <Compile Include="Discovery\DiscoveryHelper.cs" />
     <Compile Include="Discovery\ExtensionMethods.cs" />
     <Compile Include="Discovery\IInitiateClient.cs" />
-    <Compile Include="Duplex\BaseClient.cs" />
-    <Compile Include="Duplex\ChannelFactoryPool.cs" />
-    <Compile Include="Duplex\ClientEndpoint.cs" />
-    <Compile Include="Duplex\EndpointChannelFactroy.cs" />
-    <Compile Include="Duplex\IInitiateClient.cs" />
     <Compile Include="EndpointChannelFactory.cs" />
     <Compile Include="IInitiateClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -105,8 +105,7 @@ namespace MySynch.Tests.Integration
                                                                  }
             };
             Assert.True(subscriber.TryOpenChannel(new TryOpenChannelRequest{SourceOfDataPort=8765}).Status);
-            var result = subscriber.ApplyChangePackage(publishedPackageRequestResponse);
-            Assert.True(result.Status);
+            subscriber.ConsumePackage(publishedPackageRequestResponse);
             Assert.True(File.Exists(@"Data\Output\File1.xml"));
         }
 

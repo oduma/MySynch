@@ -8,5 +8,6 @@ namespace MySynch.Contracts
     {
         [OperationContract]
         ListAvailableChannelsResponse ListAvailableChannels();
+
     }
 }

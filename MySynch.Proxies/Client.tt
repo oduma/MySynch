@@ -2,6 +2,7 @@
 <#@ include file="T4Toolbox.tt" #>
 <#@ VolatileAssembly processor="T4Toolbox.VolatileAssemblyProcessor" Name="$(SolutionDir)\Assemblies\MySynch.Contracts.dll" #>
 <#@ Assembly Name="System.Core.dll" #>
+<#@ Assembly Name="System.ServiceModel.dll" #>
 <#@ import namespace="System" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Collections" #>
@@ -12,7 +13,7 @@
 	var contractsAssembly=AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a=>a.GetName().Name=="MySynch.Contracts");
 	if(contractsAssembly!=null)
     {
-		var interfaces=contractsAssembly.GetTypes().Where(t=>t.IsInterface);
+		var interfaces=contractsAssembly.GetTypes().Where(t=>t.IsInterface && t.GetCustomAttributes(typeof(System.ServiceModel.ServiceContractAttribute),false).Count()>0);
 		var notUsedInterfaces= interfaces.Select(i=>i.Name).Except(interfaces.SelectMany(t=>t.GetInterfaces()).Select(t=>t.Name).Distinct());
 		foreach(var interfaceType in notUsedInterfaces)
         {

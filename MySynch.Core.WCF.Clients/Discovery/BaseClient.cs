@@ -108,5 +108,27 @@ namespace MySynch.Core.WCF.Clients.Discovery
                 _channel = null;
             }
         }
+
+        public void InitiateDuplexUsingPort<TCallback>(TCallback callbackInstance, int port)
+        {
+            using (LoggingManager.LogMySynchPerformance())
+            {
+
+                DuplexChannelFactory<T> channelFactory;
+                try
+                {
+                    channelFactory = ChannelFactoryPool.Instance.GetDuplexChannelFactory<T,TCallback>(callbackInstance, port);
+                }
+                catch (Exception ex)
+                {
+
+                    throw ex;
+                }
+
+                Proxy = channelFactory.CreateChannel();
+
+                _channel = (ICommunicationObject)Proxy;
+            }
+        }
     }
 }

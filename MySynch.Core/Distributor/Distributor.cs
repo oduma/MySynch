@@ -13,9 +13,11 @@ using MySynch.Proxies.Interfaces;
 namespace MySynch.Core.Distributor
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
-    public class Distributor : IDistributorMonitor
+    public class Distributor : IDistributorMonitor,ISubscriberFeedback
     {
         private ComponentResolver _componentResolver = new ComponentResolver();
+        internal bool StillProcessing;
+        internal bool AllProcessedOk;
         private const int MaxNoOfFailedAttempts = 3;
         public List<AvailableChannel> AvailableChannels { get; private set; }
 
@@ -97,9 +99,11 @@ namespace MySynch.Core.Distributor
                                                {
                                                    Id = packageRequestResponse.PackageId,
                                                    State = state,
-                                                   PackageMessages = (component.InstanceName.Contains("IPublisher")) ? packageRequestResponse.ChangePushItems : GetMessagesForSubscriber(packageRequestResponse.ChangePushItems,
-                                             component.RootPath,
-                                             packageRequestResponse.SourceRootName)
+                                                   PackageMessages = (component.InstanceName.Contains("IPublisher")) ? packageRequestResponse.ChangePushItems.Select(p=>new FeedbackMessage{AbsolutePath=p.AbsolutePath,OperationType=p.OperationType,
+                                                   Processed=false}).ToList() :new List<FeedbackMessage>() 
+                                             //      GetMessagesForSubscriber(packageRequestResponse.ChangePushItems,
+                                             //component.RootPath,
+                                             //packageRequestResponse.SourceRootName)
                                                });
             LoggingManager.Debug("Registered new package: " + packageRequestResponse.PackageId + " on component: " + componentName +
                                  " with state: " + state);
@@ -164,12 +168,12 @@ namespace MySynch.Core.Distributor
                 try
                 {
                     RegisterPackageForComponent(channel.SubscriberInfo, packageRequestResponse, State.InProgress);
-                    if (channel.Subscriber.ApplyChangePackage(packageRequestResponse).Status)
-                    {
-                        RegisterPackageForComponent(channel.SubscriberInfo, packageRequestResponse, State.Distributed);
-                    }
-                    else
-                        result = false;
+                    StillProcessing = true;
+                    AllProcessedOk = true;
+                    channel.Subscriber.ConsumePackage(packageRequestResponse);
+                    while(StillProcessing){;}
+                    RegisterPackageForComponent(channel.SubscriberInfo, packageRequestResponse, State.Distributed);
+                    result = AllProcessedOk;
                 }
                 catch (Exception ex)
                 {
@@ -180,19 +184,20 @@ namespace MySynch.Core.Distributor
             LoggingManager.Debug(((result) ? "Message distributed: " : "Message not distributed: ") + packageRequestResponse.PackageId);
             return result;
         }
-        private static List<ChangePushItem> GetMessagesForSubscriber(List<ChangePushItem> changePushItems,
-                                                              string targetRootPath, string sourceRootPath)
-        {
-            var resultPushItems = new List<ChangePushItem>();
-            changePushItems.ForEach(c => resultPushItems.Add(new ChangePushItem
-                                                                   {
-                                                                       AbsolutePath =
-                                                                           c.AbsolutePath.Replace(sourceRootPath,
-                                                                                                  targetRootPath),
-                                                                       OperationType = c.OperationType
-                                                                   }));
-            return resultPushItems;
-        }
+        
+        //private static List<ChangePushItem> GetMessagesForSubscriber(List<ChangePushItem> changePushItems,
+        //                                                      string targetRootPath, string sourceRootPath)
+        //{
+        //    var resultPushItems = new List<ChangePushItem>();
+        //    changePushItems.ForEach(c => resultPushItems.Add(new ChangePushItem
+        //                                                           {
+        //                                                               AbsolutePath =
+        //                                                                   c.AbsolutePath.Replace(sourceRootPath,
+        //                                                                                          targetRootPath),
+        //                                                               OperationType = c.OperationType
+        //                                                           }));
+        //    return resultPushItems;
+        //}
 
         public void InitiateDistributionMap(string mapFile, ComponentResolver componentResolver)
         {
@@ -234,7 +239,7 @@ namespace MySynch.Core.Distributor
                 return;
             }
             availableChannel.Subscriber = InitiateComponent<ISubscriber, ISubscriberProxy>(
-                availableChannel.SubscriberInfo, availableChannel.Subscriber);
+                availableChannel.SubscriberInfo, availableChannel.Subscriber,true);
             if (availableChannel.Subscriber==null)
             {
                 SetChannelOfflineStatus(availableChannel);
@@ -286,7 +291,7 @@ namespace MySynch.Core.Distributor
         }
 
 
-        private T InitiateComponent<T,TProxy>(MapChannelComponent component,T componentInstance) where T:class,ICommunicationComponent where TProxy:T 
+        private T InitiateComponent<T,TProxy>(MapChannelComponent component,T componentInstance, bool useDuplexVersion=false) where T:class,ICommunicationComponent where TProxy:T 
         {
             try
             {
@@ -300,10 +305,22 @@ namespace MySynch.Core.Distributor
                 else
                 {
                     if (componentInstance == null)
-                        componentInstance =
+                    {
+                        if(!useDuplexVersion)
+                        {
+                            componentInstance =
                                   _componentResolver.Resolve<TProxy>(
                                       component.InstanceName,
                                       component.Port);
+                        }
+                        else
+                        {
+                            componentInstance =
+                                  _componentResolver.Resolve<TProxy,ISubscriberFeedback>(this,
+                                      component.InstanceName,
+                                      component.Port);
+                        }
+                    }
                 }
                 var heartbeatResponse = componentInstance.GetHeartbeat();
                 if (!heartbeatResponse.Status)
@@ -329,6 +346,34 @@ namespace MySynch.Core.Distributor
             LoggingManager.Debug("Listing all available channels");
             List<MapChannel> mapChannels = AvailableChannels.Select(ConvertToMapChannel).ToList();
             return new ListAvailableChannelsResponse {Name = Environment.MachineName, Channels = mapChannels};
+        }
+
+        public void SubscriberFeedback(SubscriberFeedbackMessage message)
+        {
+            StillProcessing = (message.ItemsProcessed != message.TotalItemsInThePackage);
+            AllProcessedOk = (AllProcessedOk) ? message.Success : false;
+            RegisterMessageInPackage(message);
+        }
+
+        private void RegisterMessageInPackage(SubscriberFeedbackMessage message)
+        {
+            var subscriberPackage = AvailableChannels.SelectMany(c => c.SubscriberInfo.Packages).FirstOrDefault(p => p.Id == message.PackageId);
+            if (subscriberPackage != null)
+            {
+                var existingMessage =
+                    subscriberPackage.PackageMessages.FirstOrDefault(m => m.AbsolutePath == message.TargetAbsolutePath);
+                if (existingMessage != null)
+                    existingMessage.Processed = message.Success;
+                else
+                {
+                    subscriberPackage.PackageMessages.Add(new FeedbackMessage
+                                                              {
+                                                                  AbsolutePath = message.TargetAbsolutePath,
+                                                                  OperationType = message.OperationType,
+                                                                  Processed = message.Success
+                                                              });
+                }
+            }
         }
 
         private static MapChannel ConvertToMapChannel(AvailableChannel availableChannel)

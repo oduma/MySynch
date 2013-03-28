@@ -18,27 +18,37 @@ namespace MySynch.Core.Subscriber
     {
         private ICopyStrategy _copyStrategy;
         private string _targetRootFolder;
+        internal ISubscriberFeedback SubscriberFeedback { get; set; }
 
         internal ICopyStrategy CopyStrategy
         {
             set { _copyStrategy = value; }
         }
-        public ApplyChangePackageResponse ApplyChangePackage(PublishPackageRequestResponse publishPackageRequestResponse)
+
+        public virtual void ConsumePackage(PublishPackageRequestResponse publishPackageRequestResponse)
         {
             LoggingManager.Debug("Trying to apply some changes to: " + _targetRootFolder);
-            if(publishPackageRequestResponse==null || publishPackageRequestResponse.ChangePushItems==null || publishPackageRequestResponse.ChangePushItems.Count<=0)
+            if (OperationContext.Current != null)
+            {
+                LoggingManager.Debug("In a service so setting the feedback to caller");
+                SubscriberFeedback = OperationContext.Current.GetCallbackChannel<ISubscriberFeedback>();
+            }
+            else
+                LoggingManager.Debug("Not in a service so the feedback should be forceibly");
+
+            if (publishPackageRequestResponse == null || publishPackageRequestResponse.ChangePushItems == null || publishPackageRequestResponse.ChangePushItems.Count <= 0)
             {
                 LoggingManager.Debug("Nothing to apply.");
-                return new ApplyChangePackageResponse {Status = false};
+                return;
             }
             if (_copyStrategy == null)
             {
-                throw new SourceOfDataSetupException("","No source of data established");
+                throw new SourceOfDataSetupException("", "No source of data established");
             }
-            return new ApplyChangePackageResponse {Status = TryApplyChanges(publishPackageRequestResponse)};
+            TryApplyChanges(publishPackageRequestResponse);
         }
 
-        public TryOpenChannelResponse TryOpenChannel(TryOpenChannelRequest request)
+        public virtual TryOpenChannelResponse TryOpenChannel(TryOpenChannelRequest request)
         {
             if (request == null)
                 request = new TryOpenChannelRequest {SourceOfDataPort = 0};
@@ -71,24 +81,32 @@ namespace MySynch.Core.Subscriber
             }
         }
 
+        public virtual void ForceSetTheSubscriberFeedback(ISubscriberFeedback SubscriberFeedback)
+        {
+            this.SubscriberFeedback = SubscriberFeedback;
+        }
+
         internal bool TryApplyChanges(PublishPackageRequestResponse publishPackageRequestResponse)
         {
-            var response = ApplyUpserts(publishPackageRequestResponse.ChangePushItems.Where(i => i.OperationType == OperationType.Insert || i.OperationType == OperationType.Update),
-                                      _targetRootFolder, publishPackageRequestResponse.SourceRootName) &&
+            var upserts =
+                publishPackageRequestResponse.ChangePushItems.Where(
+                    i => i.OperationType == OperationType.Insert || i.OperationType == OperationType.Update);
+            var response = ApplyUpserts(upserts,
+                                      _targetRootFolder, publishPackageRequestResponse.SourceRootName, publishPackageRequestResponse.ChangePushItems.Count,publishPackageRequestResponse.PackageId) &&
                          ApplyDeletes(publishPackageRequestResponse.ChangePushItems.Where(i => i.OperationType == OperationType.Delete),
-                                      _targetRootFolder, publishPackageRequestResponse.SourceRootName);
+                                      _targetRootFolder, publishPackageRequestResponse.SourceRootName, publishPackageRequestResponse.ChangePushItems.Count,upserts.Count(),publishPackageRequestResponse.PackageId);
             LoggingManager.Debug("Result of applying changes is: " +response);
             return response;
         }
 
-        public void Initialize(string targetRootFolder)
+        public virtual void Initialize(string targetRootFolder)
         {
             if (string.IsNullOrEmpty(targetRootFolder))
                 throw new ArgumentNullException("targetRootFolder");
             _targetRootFolder = targetRootFolder;
         }
 
-        private bool ApplyDeletes(IEnumerable<ChangePushItem> deletes, string targetRootFolder, string sourceRootName)
+        private bool ApplyDeletes(IEnumerable<ChangePushItem> deletes, string targetRootFolder, string sourceRootName, int totalItemsToProcess, int itemsPreviouslyProcessed, Guid packageId)
         {
             LoggingManager.Debug("Applying deletes to " + targetRootFolder);
 
@@ -96,25 +114,65 @@ namespace MySynch.Core.Subscriber
 
             foreach (ChangePushItem delete in deletes)
             {
-                var targetFileName = delete.AbsolutePath.Replace(sourceRootName, targetRootFolder);
+                delete.AbsolutePath = delete.AbsolutePath.Replace(sourceRootName, targetRootFolder);
 
-                if (File.Exists(targetFileName))
-                    File.Delete(targetFileName);
+                var subscriberFeedbackMessage = new SubscriberFeedbackMessage
+                                                    {
+                                                        TargetAbsolutePath = delete.AbsolutePath,
+                                                        OperationType=OperationType.Delete,
+                                                        ItemsProcessed = itemsPreviouslyProcessed,
+                                                        TotalItemsInThePackage = totalItemsToProcess,
+                                                        PackageId=packageId
+                                                    };
+                if (File.Exists(delete.AbsolutePath))
+                {
+                    if(SubscriberFeedback!=null)
+                        SubscriberFeedback.SubscriberFeedback( subscriberFeedbackMessage);
+                    File.Delete(delete.AbsolutePath);
+                    subscriberFeedbackMessage.Success = true;
+                    subscriberFeedbackMessage.ItemsProcessed = itemsPreviouslyProcessed++;
+                    if (SubscriberFeedback != null)
+                        SubscriberFeedback.SubscriberFeedback(subscriberFeedbackMessage);
+                }
                 else
+                {
+                    if(SubscriberFeedback!=null)
+                        SubscriberFeedback.SubscriberFeedback(subscriberFeedbackMessage);
                     result = false;
+                    subscriberFeedbackMessage.ItemsProcessed = itemsPreviouslyProcessed++;
+                    if (SubscriberFeedback != null)
+                        SubscriberFeedback.SubscriberFeedback(subscriberFeedbackMessage);
+                }
             }
             LoggingManager.Debug("Apply deletes returns " + result);
 
             return result;
         }
 
-        private bool ApplyUpserts(IEnumerable<ChangePushItem> upserts, string targetRootFolder, string sourceRootName)
+        private bool ApplyUpserts(IEnumerable<ChangePushItem> upserts, string targetRootFolder, string sourceRootName,int totalItemsToProcess, Guid packageId)
         {
             LoggingManager.Debug("Applying upserts from " + sourceRootName + " to " +targetRootFolder);
             bool result = true;
+            var itemsProcessed = 0;
             foreach (ChangePushItem upsert in upserts)
             {
-                var tempResult = _copyStrategy.Copy(upsert.AbsolutePath,Path.Combine(targetRootFolder,upsert.AbsolutePath.Replace(sourceRootName,"")));
+                var subscriberFeedbackMessage = new SubscriberFeedbackMessage
+                                                    {
+                                                        ItemsProcessed = itemsProcessed,
+                                                        OperationType = upsert.OperationType,
+                                                        TargetAbsolutePath =
+                                                            Path.Combine(targetRootFolder,
+                                                                         upsert.AbsolutePath.Replace(sourceRootName, "")),
+                                                        TotalItemsInThePackage = totalItemsToProcess,
+                                                        PackageId=packageId
+                                                    };
+                if (SubscriberFeedback != null)
+                    SubscriberFeedback.SubscriberFeedback(subscriberFeedbackMessage);
+                var tempResult = _copyStrategy.Copy(upsert.AbsolutePath,subscriberFeedbackMessage.TargetAbsolutePath);
+                subscriberFeedbackMessage.Success = tempResult;
+                subscriberFeedbackMessage.ItemsProcessed = itemsProcessed++;
+                if (SubscriberFeedback != null)
+                    SubscriberFeedback.SubscriberFeedback(subscriberFeedbackMessage);
                 result = result && tempResult;
             }
             LoggingManager.Debug("Apply upserts returns "+ result);
@@ -126,7 +184,7 @@ namespace MySynch.Core.Subscriber
             get { return Environment.MachineName; }
         }
 
-        public GetHeartbeatResponse GetHeartbeat()
+        public virtual GetHeartbeatResponse GetHeartbeat()
         {
             LoggingManager.Debug("GetHeartbeat will return true.");
             return new GetHeartbeatResponse {Status = true,RootPath=_targetRootFolder};

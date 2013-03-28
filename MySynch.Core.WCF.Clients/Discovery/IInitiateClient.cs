@@ -5,5 +5,8 @@
         void InitiateUsingPort(int port);
 
         void DestroyAtPort(int port);
+
+        void InitiateDuplexUsingPort<TCallback>(TCallback callbackInstance, int port);
+
     }
 }

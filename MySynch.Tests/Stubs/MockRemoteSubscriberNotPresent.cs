@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MySynch.Contracts;
 using MySynch.Contracts.Messages;
 using MySynch.Proxies;
 using MySynch.Proxies.Interfaces;
@@ -13,7 +14,7 @@ namespace MySynch.Tests.Stubs
             return new GetHeartbeatResponse {Status = false};
         }
 
-        public ApplyChangePackageResponse ApplyChangePackage(PublishPackageRequestResponse publishPackageRequestResponse)
+        public void ConsumePackage(PublishPackageRequestResponse publishPackageRequestResponse)
         {
             throw new NotImplementedException();
         }
@@ -23,12 +24,22 @@ namespace MySynch.Tests.Stubs
             throw new NotImplementedException();
         }
 
+        public void ForceSetTheSubscriberFeedback(ISubscriberFeedback SubscriberFeedback)
+        {
+            return;
+        }
+
         public void InitiateUsingPort(int port)
         {
             return;
         }
 
         public void DestroyAtPort(int port)
+        {
+            return;
+        }
+
+        public void InitiateDuplexUsingPort<TCallback>(TCallback callbackInstance, int port)
         {
             return;
         }

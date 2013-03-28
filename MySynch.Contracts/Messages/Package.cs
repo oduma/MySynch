@@ -14,6 +14,6 @@ namespace MySynch.Contracts.Messages
         public State State { get; set; }
 
         [DataMember]
-        public List<ChangePushItem> PackageMessages { get; set; }
+        public List<FeedbackMessage> PackageMessages { get; set; }
     }
 }

@@ -74,17 +74,17 @@ namespace MySynch.Core
             }
         }
 
-        public T Resolve<T, TCallBack>(TCallBack callbackInstance, string name, string endpointName) where TCallBack : class
+        public T Resolve<T, TCallBack>(TCallBack callbackInstance, string name, int port) where TCallBack : class
         {
             try
             {
-                LoggingManager.Debug("Resolving for " + name + " and endpoint " + endpointName);
+                LoggingManager.Debug("Resolving for " + name + " and port " + port);
                 using (LoggingManager.LogMySynchPerformance())
                 {
 
                     T result = _container.Resolve<T>(name);
-                    ((MySynch.Core.WCF.Clients.Duplex.IInitiateClient<TCallBack>) result).InitiateUsingEndpoint(
-                        callbackInstance, endpointName);
+                    ((IInitiateClient) result).InitiateDuplexUsingPort(
+                        callbackInstance, port);
                     return result;
                 }
             }

@@ -29,12 +29,14 @@ namespace MySynch.Tests.Integration
         }
 
         [Test]
+        [Ignore("Two services with discovery has to be running")]
         public void Find_Services_All_Distributors_Ok()
         {
             Assert.AreEqual(2, DiscoveryHelper.FindServices<IDistributorMonitor>().Count());
         }
 
         [Test]
+        [Ignore("No services with discovery has to be running")]
         public void FindServices_All_Something_NothingFound()
         {
             Assert.IsNull(DiscoveryHelper.FindServices<IDistributorMonitor>());

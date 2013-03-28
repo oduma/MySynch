@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
+using MySynch.Contracts;
 using MySynch.Contracts.Messages;
-using MySynch.Proxies;
 using MySynch.Proxies.Interfaces;
 
 namespace MySynch.Tests.Stubs
@@ -9,15 +8,16 @@ namespace MySynch.Tests.Stubs
     public class MockRemoteSubscriber:ISubscriberProxy
     {
         private string targetRootFolder;
+        private ISubscriberFeedback _subscriberFeedBack;
 
         public GetHeartbeatResponse GetHeartbeat()
         {
             return new GetHeartbeatResponse {Status = true};
         }
 
-        public ApplyChangePackageResponse ApplyChangePackage(PublishPackageRequestResponse publishPackageRequestResponse)
+        public void ConsumePackage(PublishPackageRequestResponse publishPackageRequestResponse)
         {
-            if(targetRootFolder=="wrong folder")
+            if (targetRootFolder == "wrong folder")
                 throw new Exception();
             bool result = true;
 
@@ -25,14 +25,24 @@ namespace MySynch.Tests.Stubs
             {
                 var tempResult = copyMethod(upsert.AbsolutePath,
                                              upsert.AbsolutePath.Replace(publishPackageRequestResponse.SourceRootName, targetRootFolder));
-                result = result && tempResult;
+                _subscriberFeedBack.SubscriberFeedback(new SubscriberFeedbackMessage
+                {
+                    ItemsProcessed = 1,
+                    OperationType = OperationType.None,
+                    PackageId = publishPackageRequestResponse.PackageId,
+                    Success = true
+                });
             }
-            return new ApplyChangePackageResponse {Status = result};
         }
 
         public TryOpenChannelResponse TryOpenChannel(TryOpenChannelRequest sourceOfDataEndpointName)
         {
             return new TryOpenChannelResponse {Status = true};
+        }
+
+        public void ForceSetTheSubscriberFeedback(ISubscriberFeedback SubscriberFeedback)
+        {
+            _subscriberFeedBack = SubscriberFeedback;
         }
 
         private bool copyMethod(string absolutePath, string replace)
@@ -46,6 +56,11 @@ namespace MySynch.Tests.Stubs
         }
 
         public void DestroyAtPort(int port)
+        {
+            return;
+        }
+
+        public void InitiateDuplexUsingPort<TCallback>(TCallback callbackInstance, int port)
         {
             return;
         }

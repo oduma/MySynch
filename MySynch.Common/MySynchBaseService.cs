@@ -71,7 +71,7 @@ namespace MySynch.Common
         {
             var serviceHost = new ServiceHost(typeof (TInstance),baseAddress);
             
-            var serviceEndPoint = serviceHost.AddServiceEndpoint(typeof(TContract), ClientServerBindingHelper.GetBinding(),string.Empty);
+            var serviceEndPoint = serviceHost.AddServiceEndpoint(typeof(TContract), ClientServerBindingHelper.GetBinding(false),string.Empty);
             serviceEndPoint.Behaviors.Add(new MySynchAuditBehavior());
 
             // ** DISCOVERY ** //
@@ -91,10 +91,10 @@ namespace MySynch.Common
             return serviceHost;
         }
 
-        protected ServiceHost CreateAndConfigureServiceHost<T>(T serviceInstance, Uri baseAddress)
+        protected ServiceHost CreateAndConfigureServiceHost<T>(T serviceInstance, Uri baseAddress,bool isDuplex=false)
         {
             var serviceHost = new ServiceHost(serviceInstance, baseAddress);
-            var serviceEndPoint = serviceHost.AddServiceEndpoint(typeof(T), ClientServerBindingHelper.GetBinding(), string.Empty);
+            var serviceEndPoint = serviceHost.AddServiceEndpoint(typeof(T), ClientServerBindingHelper.GetBinding(isDuplex), string.Empty);
 
             serviceEndPoint.Behaviors.Add(new MySynchAuditBehavior());
 

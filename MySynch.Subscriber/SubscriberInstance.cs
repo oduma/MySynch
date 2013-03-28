@@ -35,7 +35,7 @@ namespace MySynch.Subscriber
                 var changeApplyer = new Core.Subscriber.Subscriber();
                 changeApplyer.Initialize(_rootFolder);
                 _serviceHosts.Add(CreateAndConfigureServiceHost<ISubscriber>(changeApplyer, new Uri(string.Format("http://{0}:{1}/subscriber/{2}/",
-        System.Net.Dns.GetHostName(), _instancePort, Guid.NewGuid().ToString()))));
+        System.Net.Dns.GetHostName(), _instancePort, Guid.NewGuid().ToString())),true));
                 LoggingManager.Debug("Subscriber Initialized.");
             }
         }

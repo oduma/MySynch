@@ -19,10 +19,9 @@ namespace MySynch.Tests.Integration
             ISubscriberProxy subscriberProxy = new SubscriberClient();
             subscriberProxy.InitiateUsingPort(8765);
             Assert.True(subscriberProxy.TryOpenChannel(new TryOpenChannelRequest { SourceOfDataPort = 8765 }).Status);
-            var result = subscriberProxy.ApplyChangePackage(new PublishPackageRequestResponse());
-            Assert.False(result.Status);
-
+            subscriberProxy.ConsumePackage(new PublishPackageRequestResponse());
         }
+
         [Test]
         [Ignore(@"Requires Subscriber service to be defined on the root folder: C:\MySynch.Dest.Test.Root\")]
         public void SubscriberApplyChanges_Ok()
@@ -48,8 +47,7 @@ namespace MySynch.Tests.Integration
                                                                  }
             };
             Assert.True(subscriberProxy.TryOpenChannel(new TryOpenChannelRequest { SourceOfDataPort = 8765 }).Status);
-            var result = subscriberProxy.ApplyChangePackage(publishedPackageRequestResponse);
-            Assert.True(result.Status);
+            subscriberProxy.ConsumePackage(publishedPackageRequestResponse);
             Assert.True(File.Exists(@"C:\MySynch.Dest.Test.Root\File1.xml"));
 
         }

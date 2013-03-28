@@ -1,4 +1,5 @@
 ﻿using System.ServiceModel;
+using System.ServiceModel.Channels;
 
 namespace MySynch.Core.WCF.Clients.Discovery
 {
@@ -12,11 +13,11 @@ namespace MySynch.Core.WCF.Clients.Discovery
         /// </summary>
         /// <param name="basicHttpBinding"></param>
         /// <returns></returns>
-        public static BasicHttpBinding ApplyClientBinding(this BasicHttpBinding basicHttpBinding)
+        public static BasicHttpBinding ApplyClientBinding(this Binding basicHttpBinding)
         {
-            basicHttpBinding.MaxReceivedMessageSize = 650000000;
-            basicHttpBinding.ReaderQuotas.MaxArrayLength = 650000000;
-            return basicHttpBinding;
+            ((BasicHttpBinding)basicHttpBinding).MaxReceivedMessageSize = 650000000;
+            ((BasicHttpBinding)basicHttpBinding).ReaderQuotas.MaxArrayLength = 650000000;
+            return (BasicHttpBinding)basicHttpBinding;
         }
     }
 }
