@@ -27,7 +27,7 @@ namespace MySynch.Core.Distributor
             {
                 LoggingManager.Debug("Starting to distribute messages ...");
                 //For test only keep old trace
-                UnRegisterOldPackages(AvailableChannels);
+                AvailableChannels.ForEach((c)=>c.PublisherInfo.CurrentPackage = c.SubscriberInfo.CurrentPackage = null);
                 //Recheck the AvailableChannels
                 AvailableChannels.ForEach(CheckChannel);
 
@@ -86,25 +86,20 @@ namespace MySynch.Core.Distributor
             string componentName = GetInstanceName(component);
             LoggingManager.Debug("Register package: " + packageRequestResponse.PackageId + " with component: " + componentName);
 
-            if (component.Packages == null)
-                component.Packages = new List<Package>();
-            var existingPackage = component.Packages.FirstOrDefault(p => p.Id == packageRequestResponse.PackageId);
-            if (existingPackage != null)
-            {
-                existingPackage.State = state;
-                LoggingManager.Debug("Package exists updating state to: " + state);
-                return;
-            }
-            component.Packages.Add(new Package
-                                               {
-                                                   Id = packageRequestResponse.PackageId,
-                                                   State = state,
-                                                   PackageMessages = (component.InstanceName.Contains("IPublisher")) ? packageRequestResponse.ChangePushItems.Select(p=>new FeedbackMessage{AbsolutePath=p.AbsolutePath,OperationType=p.OperationType,
-                                                   Processed=false}).ToList() :new List<FeedbackMessage>() 
-                                             //      GetMessagesForSubscriber(packageRequestResponse.ChangePushItems,
-                                             //component.RootPath,
-                                             //packageRequestResponse.SourceRootName)
-                                               });
+            if (component.CurrentPackage == null)
+                component.CurrentPackage = new Package {Id = packageRequestResponse.PackageId,State=state};
+            else
+                component.CurrentPackage.State = state;
+
+            component.CurrentPackage.PackageMessages = (component.InstanceName.Contains("IPublisher"))
+                                                           ? packageRequestResponse.ChangePushItems.Select(
+                                                               p => new FeedbackMessage
+                                                                        {
+                                                                            AbsolutePath = p.AbsolutePath,
+                                                                            OperationType = p.OperationType,
+                                                                            Processed = false
+                                                                        }).ToList()
+                                                           : new List<FeedbackMessage>();
             LoggingManager.Debug("Registered new package: " + packageRequestResponse.PackageId + " on component: " + componentName +
                                  " with state: " + state);
         }
@@ -121,35 +116,6 @@ namespace MySynch.Core.Distributor
                                        baseInfo.
                                            Port);
         }
-
-
-        private static void UnRegisterOldPackages(IEnumerable<AvailableChannel> channels)
-        {
-            LoggingManager.Debug("Trying to unregister packages from channels");
-            foreach (var channel in channels)
-            {
-                LoggingManager.Debug("Trying to unregister packages from component:" + channel.PublisherInfo.InstanceName);
-                UnregisterPackagesForComponent(channel.PublisherInfo);
-
-                UnregisterPackagesForComponent(channel.SubscriberInfo);
-                LoggingManager.Debug("Unregistered packages from component:" + channel.PublisherInfo.InstanceName);
-            }
-            LoggingManager.Debug("Unregistered all packages");
-        }
-
-        private static void UnregisterPackagesForComponent(MapChannelComponent component)
-        {
-            if (component.Packages != null && component.Packages.Count(p => p.State == State.Done) > 0)
-            {
-                foreach (var removedPackage in component.Packages.Where(p => p.State == State.Done).ToList())
-                {
-                    LoggingManager.Debug("Trying to remove package:" + removedPackage.Id + " from component: " +
-                                         component.InstanceName);
-                    component.Packages.Remove(removedPackage);
-                }
-            }
-        }
-
 
 
         private bool DistributeMessages(IEnumerable<AvailableChannel> channelsFromAPublisher, PublishPackageRequestResponse packageRequestResponse)
@@ -185,20 +151,6 @@ namespace MySynch.Core.Distributor
             return result;
         }
         
-        //private static List<ChangePushItem> GetMessagesForSubscriber(List<ChangePushItem> changePushItems,
-        //                                                      string targetRootPath, string sourceRootPath)
-        //{
-        //    var resultPushItems = new List<ChangePushItem>();
-        //    changePushItems.ForEach(c => resultPushItems.Add(new ChangePushItem
-        //                                                           {
-        //                                                               AbsolutePath =
-        //                                                                   c.AbsolutePath.Replace(sourceRootPath,
-        //                                                                                          targetRootPath),
-        //                                                               OperationType = c.OperationType
-        //                                                           }));
-        //    return resultPushItems;
-        //}
-
         public void InitiateDistributionMap(string mapFile, ComponentResolver componentResolver)
         {
             if (componentResolver == null)
@@ -357,16 +309,16 @@ namespace MySynch.Core.Distributor
 
         private void RegisterMessageInPackage(SubscriberFeedbackMessage message)
         {
-            var subscriberPackage = AvailableChannels.SelectMany(c => c.SubscriberInfo.Packages).FirstOrDefault(p => p.Id == message.PackageId);
+            var subscriberPackage = AvailableChannels.FirstOrDefault(c => c.SubscriberInfo.CurrentPackage.Id == message.PackageId);
             if (subscriberPackage != null)
             {
                 var existingMessage =
-                    subscriberPackage.PackageMessages.FirstOrDefault(m => m.AbsolutePath == message.TargetAbsolutePath);
+                    subscriberPackage.SubscriberInfo.CurrentPackage.PackageMessages.FirstOrDefault(m => m.AbsolutePath == message.TargetAbsolutePath);
                 if (existingMessage != null)
                     existingMessage.Processed = message.Success;
                 else
                 {
-                    subscriberPackage.PackageMessages.Add(new FeedbackMessage
+                    subscriberPackage.SubscriberInfo.CurrentPackage.PackageMessages.Add(new FeedbackMessage
                                                               {
                                                                   AbsolutePath = message.TargetAbsolutePath,
                                                                   OperationType = message.OperationType,

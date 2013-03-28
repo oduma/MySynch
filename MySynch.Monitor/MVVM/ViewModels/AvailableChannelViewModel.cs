@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using MySynch.Contracts.Messages;
 
 namespace MySynch.Monitor.MVVM.ViewModels
@@ -77,35 +78,93 @@ namespace MySynch.Monitor.MVVM.ViewModels
             }
         }
 
-        private ObservableCollection<PackageViewModel> _packagesAtPublisher;
 
-        public ObservableCollection<PackageViewModel> PackagesAtPublisher
+        private ObservableCollection<MessageViewModel> _subscriberMessagesProcessed;
+
+        public ObservableCollection<MessageViewModel> SubscriberMessagesProcessed
         {
-            get { return _packagesAtPublisher; }
+            get { return _subscriberMessagesProcessed; }
             set
             {
-                if (_packagesAtPublisher != value)
+                if (_subscriberMessagesProcessed != value)
                 {
-                    _packagesAtPublisher = value;
-                    RaisePropertyChanged(() => PackagesAtPublisher);
+                    _subscriberMessagesProcessed = value;
+                    RaisePropertyChanged(() => SubscriberMessagesProcessed);
                 }
             }
         }
 
-        private ObservableCollection<PackageViewModel> _packagesAtSubscriber;
-
-        public ObservableCollection<PackageViewModel> PackagesAtSubscriber
+        private State _publisherPackageState;
+        /// <summary>
+        /// Gets/sets whether the TreeViewItem 
+        /// associated with this object is expanded.
+        /// </summary>
+        public State PublisherPackageState
         {
-            get { return _packagesAtSubscriber; }
+            get { return _publisherPackageState; }
             set
             {
-                if (_packagesAtSubscriber != value)
+                if (value != _publisherPackageState)
                 {
-                    _packagesAtSubscriber = value;
-                    RaisePropertyChanged(() => PackagesAtSubscriber);
+                    _publisherPackageState = value;
+                    RaisePropertyChanged(() => PublisherPackageState);
                 }
             }
         }
+
+
+
+        private ObservableCollection<MessageViewModel> _publisherMessagesProcessed;
+
+        public ObservableCollection<MessageViewModel> PublisherMessagesProcessed
+        {
+            get { return _publisherMessagesProcessed; }
+            set
+            {
+                if (_publisherMessagesProcessed != value)
+                {
+                    _publisherMessagesProcessed = value;
+                    RaisePropertyChanged(() => PublisherMessagesProcessed);
+                }
+            }
+        }
+
+        private Guid _packageId;
+        /// <summary>
+        /// Gets/sets whether the TreeViewItem 
+        /// associated with this object is expanded.
+        /// </summary>
+        public Guid PackageId
+        {
+            get { return _packageId; }
+            set
+            {
+                if (value != _packageId)
+                {
+                    _packageId = value;
+                    RaisePropertyChanged(() => PackageId);
+                }
+            }
+        }
+
+        private State _subscriberPackageState;
+        /// <summary>
+        /// Gets/sets whether the TreeViewItem 
+        /// associated with this object is expanded.
+        /// </summary>
+        public State SubscriberPackageState
+        {
+            get { return _subscriberPackageState; }
+            set
+            {
+                if (value != _subscriberPackageState)
+                {
+                    _subscriberPackageState = value;
+                    RaisePropertyChanged(() => SubscriberPackageState);
+                }
+            }
+        }
+
 
 
     }

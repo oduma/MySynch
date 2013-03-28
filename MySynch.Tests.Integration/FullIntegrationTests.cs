@@ -24,13 +24,13 @@ namespace MySynch.Tests.Integration
             Assert.AreEqual("IPublisher.Remote", listAvailableChannels.Channels[0].PublisherInfo.InstanceName);
             Assert.AreEqual(8765, listAvailableChannels.Channels[0].PublisherInfo.Port);
             Assert.AreEqual(Status.Ok, listAvailableChannels.Channels[0].Status);
-            Assert.IsNull(listAvailableChannels.Channels[0].PublisherInfo.Packages);
+            Assert.IsNull(listAvailableChannels.Channels[0].PublisherInfo.CurrentPackage);
             Assert.IsNotNull(listAvailableChannels.Channels[0].SubscriberInfo);
             Assert.AreEqual("ISubscriber.Remote", listAvailableChannels.Channels[0].SubscriberInfo.InstanceName);
             Assert.AreEqual(8765,listAvailableChannels.Channels[0].SubscriberInfo.Port);
             Assert.AreEqual(Status.Ok, listAvailableChannels.Channels[0].SubscriberInfo.Status);
             Assert.AreEqual(@"C:\MySynch.Dest.Test.Root\", listAvailableChannels.Channels[0].SubscriberInfo.RootPath);
-            Assert.IsNull(listAvailableChannels.Channels[0].SubscriberInfo.Packages);
+            Assert.IsNull(listAvailableChannels.Channels[0].SubscriberInfo.CurrentPackage);
         }
 
         [Test]

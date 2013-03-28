@@ -68,12 +68,15 @@ namespace MySynch.Monitor.Utils
                                                                                   mapChannel.PublisherInfo.InstanceName + ":" + mapChannel.PublisherInfo.Port,
                                                                                   PublisherStatus=mapChannel.PublisherInfo.Status,
                                                                                   PublisherRootPath=mapChannel.PublisherInfo.RootPath,
-                                                                                  PackagesAtPublisher=mapChannel.PublisherInfo.Packages.AddToPackages(),
+                                                                                  PackageId=mapChannel.PublisherInfo.CurrentPackage.Id,
+                                                                                  PublisherPackageState=mapChannel.PublisherInfo.CurrentPackage.State,
+                                                                                  PublisherMessagesProcessed=mapChannel.PublisherInfo.CurrentPackage.PackageMessages.AddToMessages(),
                                                                               MapChannelSubscriberTitle =
                                                                                   mapChannel.SubscriberInfo.InstanceName + ":" + mapChannel.SubscriberInfo.Port,
                                                                                   SubscriberStatus=mapChannel.SubscriberInfo.Status,
                                                                                   SubscriberRootPath=mapChannel.SubscriberInfo.RootPath,
-                                                                                  PackagesAtSubscriber=mapChannel.SubscriberInfo.Packages.AddToPackages()
+                                                                                  SubscriberPackageState=mapChannel.SubscriberInfo.CurrentPackage.State,
+                                                                                  SubscriberMessagesProcessed=mapChannel.SubscriberInfo.CurrentPackage.PackageMessages.AddToMessages()
                                                                           };
                 if (!beforeImage.Contains(availableChannelViewModel, new AvailableChannelViewModelEqualityComparer()))
                 {
@@ -95,59 +98,55 @@ namespace MySynch.Monitor.Utils
                         existingItem.SubscriberStatus = mapChannel.SubscriberInfo.Status;
                         existingItem.PublisherRootPath = mapChannel.PublisherInfo.RootPath;
                         existingItem.SubscriberRootPath = mapChannel.SubscriberInfo.RootPath;
-                        existingItem.PackagesAtPublisher =
-                            mapChannel.PublisherInfo.Packages.AddToPackages(existingItem.PackagesAtPublisher);
-                        existingItem.PackagesAtSubscriber =
-                            mapChannel.SubscriberInfo.Packages.AddToPackages(existingItem.PackagesAtSubscriber);
+                        existingItem.PackageId = mapChannel.PublisherInfo.CurrentPackage.Id;
+                        existingItem.PublisherPackageState = mapChannel.PublisherInfo.CurrentPackage.State;
+                        existingItem.PublisherMessagesProcessed=
+                            mapChannel.PublisherInfo.CurrentPackage.PackageMessages.AddToMessages(existingItem.PublisherMessagesProcessed);
+                        existingItem.SubscriberMessagesProcessed =
+                            mapChannel.SubscriberInfo.CurrentPackage.PackageMessages.AddToMessages(existingItem.SubscriberMessagesProcessed);
+                        existingItem.SubscriberPackageState = mapChannel.SubscriberInfo.CurrentPackage.State;
                     }
-
                 }
             }
             return beforeImage;
         }
 
-        internal static ObservableCollection<PackageViewModel> AddToPackages(this IEnumerable<Package> inCollection, ObservableCollection<PackageViewModel> beforeImage=null)
+        internal static ObservableCollection<MessageViewModel> AddToMessages( this IEnumerable<FeedbackMessage> inCollection,ObservableCollection<MessageViewModel> beforeImage=null)
         {
             if (beforeImage == null)
-                beforeImage = new ObservableCollection<PackageViewModel>();
-            if(inCollection==null)
+                beforeImage = new ObservableCollection<MessageViewModel>();
+            if (inCollection == null)
                 return beforeImage;
-            var previouslyRemoved = beforeImage.Where(b => b.PackageState == State.Done).ToList();
-            foreach (var removedItem in previouslyRemoved)
+            foreach (var message in inCollection)
             {
-                if (Application.Current == null)
-                {
-                    beforeImage.Remove(removedItem);
-                }
-                else
-                {
-                    PackageViewModel item = removedItem;
-                    Application.Current.Dispatcher.Invoke((Action)(() => beforeImage.Remove(item)));
-                }
-            }
-            foreach (var package in inCollection)
-            {
-                PackageViewModel packageViewModel = new PackageViewModel {PackageId = package.Id, PackageState=package.State};
-                if (!beforeImage.Contains(packageViewModel, new PackageViewModelEqualityComparer()))
+                MessageViewModel messageViewModel = new MessageViewModel
+                                                        {
+                                                            FullTargetPath = message.AbsolutePath,
+                                                            Done = message.Processed,
+                                                            OperationType = message.OperationType
+                                                        };
+                if (!beforeImage.Contains(messageViewModel, new MessageViewModelEqualityComparer()))
                 {
                     if (Application.Current == null)
-                        beforeImage.Add(packageViewModel);
+                        beforeImage.Add(messageViewModel);
                     else
-                        Application.Current.Dispatcher.Invoke((Action)(() => beforeImage.Add(packageViewModel)));
+                        Application.Current.Dispatcher.Invoke((Action)(() => beforeImage.Add(messageViewModel)));
                 }
                 else
                 {
                     var existingItem = beforeImage.FirstOrDefault(
                         b =>
-                        b.PackageId == packageViewModel.PackageId);
+                        b.FullTargetPath == messageViewModel.FullTargetPath);
                     if (existingItem != null)
                     {
-                        existingItem.PackageState = packageViewModel.PackageState;
+                        existingItem.Done = messageViewModel.Done;
+                        existingItem.OperationType = messageViewModel.OperationType;
                     }
 
                 }
             }
             return beforeImage;
+
         }
 
         internal static IEnumerable<string> ShiftLeft(this string[] source, int step)

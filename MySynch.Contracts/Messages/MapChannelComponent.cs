@@ -15,7 +15,7 @@ namespace MySynch.Contracts.Messages
 
         [DataMember]
         [XmlIgnore]
-        public List<Package> Packages { get; set; }
+        public Package CurrentPackage { get; set; }
 
         [DataMember]
         [XmlIgnore]

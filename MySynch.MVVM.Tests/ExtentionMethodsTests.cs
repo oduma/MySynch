@@ -239,81 +239,91 @@ namespace MySynch.MVVM.Tests
 
         }
 
-
         [Test]
-        public void AddToPackages_Ok()
+        public void AddToMessages_Ok()
         {
-            var beforeImage = new ObservableCollection<PackageViewModel>
+            var beforeImage = new ObservableCollection<MessageViewModel>
                                   {
-                                      new PackageViewModel
+                                      new MessageViewModel
                                           {
-                                              PackageId = Guid.NewGuid()
+                                              FullTargetPath = "old item"
                                           }
                                   };
-            var observablePackages =
+            var observableMessages =
                 (new[]
                      {
-                         new Package
+                         new FeedbackMessage
                              {
-                                 Id=Guid.NewGuid()
+                                 AbsolutePath= "new item",
+                                 OperationType=OperationType.Insert,
+                                 Processed=true
                              }
-                     }).AddToPackages(beforeImage);
-            Assert.IsNotNull(observablePackages);
-            Assert.AreEqual(2, observablePackages.Count);
-            Assert.AreNotEqual(observablePackages[0].PackageId, observablePackages[1].PackageId);
+                     }).AddToMessages(beforeImage);
+            Assert.IsNotNull(observableMessages);
+            Assert.AreEqual(2, observableMessages.Count);
+            Assert.AreNotEqual(observableMessages[0].FullTargetPath, observableMessages[1].FullTargetPath);
         }
 
         [Test]
-        public void AddToPackages_EmptyInCollection()
+        public void AddToMessages_EmptyInCollection()
         {
-            var beforeImage = new ObservableCollection<PackageViewModel>
+            var beforeImage = new ObservableCollection<MessageViewModel>
                                   {
-                                      new PackageViewModel
+                                      new MessageViewModel
                                           {
-PackageId=Guid.NewGuid()                                          }
+FullTargetPath="old item"                                          }
                                   };
-            var observablePackages =
-                (new List<Package>()).AddToPackages(beforeImage);
-            Assert.IsNotNull(observablePackages);
-            Assert.AreEqual(1, observablePackages.Count);
+            var messageViewModels =
+                (new List<FeedbackMessage>()).AddToMessages(beforeImage);
+            Assert.IsNotNull(messageViewModels);
+            Assert.AreEqual(1, messageViewModels.Count);
         }
 
         [Test]
-        public void AddToPackages_NothingNewToAdd()
+        public void AddToMessages_NothingNewToAdd()
         {
-            var packageId = Guid.NewGuid();
-            var beforeImage = new ObservableCollection<PackageViewModel>
+            var beforeImage = new ObservableCollection<MessageViewModel>
                                   {
-                                      new PackageViewModel
+                                      new MessageViewModel
                                           {
-                                              PackageId=packageId
+                                              FullTargetPath="old item",
+                                              OperationType=OperationType.Insert,
+                                              Done=false
                                           }
                                   };
-            var observablePackages =
+            var observableMessages =
                 (new[]
                      {
-                         new Package
+                         new FeedbackMessage
                              {
-                                 Id=packageId }
-                     }).AddToPackages(beforeImage);
-            Assert.IsNotNull(observablePackages);
-            Assert.AreEqual(1, observablePackages.Count);
+                                 AbsolutePath="old item",
+                                 OperationType=OperationType.Update,
+                                 Processed=true
+                             }
+                     }).AddToMessages(beforeImage);
+            Assert.IsNotNull(observableMessages);
+            Assert.AreEqual(1, observableMessages.Count);
+            Assert.True(observableMessages[0].Done);
         }
 
         [Test]
-        public void AddToPackages_NoBeforeImage()
+        public void AddToMessages_NoBeforeImage()
         {
 
-            var observablePackages =
+            var observableMessages =
                 (new[]
                      {
-                         new Package
+                         new FeedbackMessage
                              {
-Id=Guid.NewGuid()                             }
-                     }).AddToPackages();
-            Assert.IsNotNull(observablePackages);
-            Assert.AreEqual(1, observablePackages.Count);
+                                 AbsolutePath= "new item",
+                                 OperationType=OperationType.Insert,
+                                 Processed=true
+                             }
+                     }).AddToMessages(null);
+            Assert.IsNotNull(observableMessages);
+            Assert.AreEqual(1, observableMessages.Count);
 
         }
+
     }
 }

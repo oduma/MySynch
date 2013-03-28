@@ -243,10 +243,10 @@ namespace MySynch.Tests
             Assert.IsNotNull(compo);
             Assert.AreEqual(1, compo.Channels.Count);
             Assert.IsNotNull(compo.Channels[0].SubscriberInfo);
-            Assert.AreEqual(1,compo.Channels[0].PublisherInfo.Packages.Count(p=>p.State==State.Done));
-            Assert.AreEqual(1, compo.Channels[0].PublisherInfo.Packages[0].PackageMessages.Count(m => m.AbsolutePath == @"root folder\Item One"));
-            Assert.AreEqual(2, compo.Channels[0].PublisherInfo.Packages[0].PackageMessages.Count(m => m.OperationType==OperationType.Insert));
-            Assert.AreEqual(1, compo.Channels[0].SubscriberInfo.Packages.Count(p => p.State == State.Done));
+            Assert.AreEqual(State.Done, compo.Channels[0].PublisherInfo.CurrentPackage.State);
+            Assert.AreEqual(1, compo.Channels[0].PublisherInfo.CurrentPackage.PackageMessages.Count(m => m.AbsolutePath == @"root folder\Item One"));
+            Assert.AreEqual(2, compo.Channels[0].PublisherInfo.CurrentPackage.PackageMessages.Count(m => m.OperationType==OperationType.Insert));
+            Assert.AreEqual(State.Done, compo.Channels[0].SubscriberInfo.CurrentPackage.State);
         }
 
         [Test]
@@ -268,8 +268,8 @@ namespace MySynch.Tests
             Assert.IsNotNull(compo);
             Assert.AreEqual(1, compo.Channels.Count);
             Assert.IsNotNull(compo.Channels[0].SubscriberInfo);
-            Assert.AreEqual(0, compo.Channels[0].PublisherInfo.Packages.Count);
-            Assert.AreEqual(0, compo.Channels[0].SubscriberInfo.Packages.Count);
+            Assert.IsNull(compo.Channels[0].PublisherInfo.CurrentPackage);
+            Assert.IsNull(compo.Channels[0].SubscriberInfo.CurrentPackage);
         }
 
         private void MockAllTheSubscribers(List<AvailableChannel> availableChannels, PublishPackageRequestResponse publishPackageRequestResponse, 

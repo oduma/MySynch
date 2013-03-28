@@ -99,16 +99,16 @@
     <Compile Include="MVVM\ViewModels\ComponentTypeToIconFileNameConverter.cs" />
     <Compile Include="MVVM\ViewModels\MapChannelViewModel.cs" />
     <Compile Include="MVVM\ViewModels\MapEditorViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\MessageViewModel.cs" />
     <Compile Include="MVVM\ViewModels\MonitorViewModel.cs" />
     <Compile Include="MVVM\ViewModels\NotificationDetailsViewModel.cs" />
-    <Compile Include="MVVM\ViewModels\PackageViewModel.cs" />
     <Compile Include="MVVM\ViewModels\RelayCommand.cs" />
     <Compile Include="MVVM\ViewModels\ViewModelBase.cs" />
     <Compile Include="Utils\AvailableChannelViewModelEqualityComparer.cs" />
     <Compile Include="Utils\ChannelEqualityComparer.cs" />
     <Compile Include="Utils\ClientHelper.cs" />
     <Compile Include="Utils\ExtensionMethods.cs" />
-    <Compile Include="Utils\PackageViewModelEqualityComparer.cs" />
+    <Compile Include="Utils\MessageViewModelEqualityComparer.cs" />
     <Compile Include="Utils\ServiceHelper.cs" />
     <Compile Include="Utils\StatusToIconFileNameConverter.cs" />
     <Compile Include="Utils\WPFControlThreadingExtensions.cs" />
@@ -211,7 +211,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" />
+      <UserProperties BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
