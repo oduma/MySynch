@@ -13,6 +13,7 @@
             <ContextMenu>
                 <MenuItem Header="Settings"/>
                 <MenuItem Header="Connecting ..." IsEnabled="False"/>
+                <MenuItem Header="Exit"/>
             </ContextMenu>
         </tb:TaskbarIcon.ContextMenu>
 

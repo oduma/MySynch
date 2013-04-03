@@ -4,13 +4,11 @@ using System.Configuration;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using Hardcodet.Wpf.TaskbarNotification;
 using MySynch.Common.Logging;
 using MySynch.Contracts.Messages;
 using MySynch.Monitor.MVVM.ViewModels;
 using MySynch.Monitor.Utils;
-using MySynch.Proxies;
 using MySynch.Proxies.Interfaces;
 
 namespace MySynch.Monitor
@@ -34,9 +32,15 @@ namespace MySynch.Monitor
             StartTheMonitor();
             ((MenuItem)tb.ContextMenu.Items[0]).Command=new RelayCommand(LaunchMapEditor);
             ((MenuItem)tb.ContextMenu.Items[1]).Command = new RelayCommand(LaunchMonitor);
+            ((MenuItem)tb.ContextMenu.Items[2]).Command = new RelayCommand(CloseAll);
             Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
 
+        }
+
+        private void CloseAll()
+        {
+            App.Current.Shutdown();
         }
 
         private void StartTheMonitor()
