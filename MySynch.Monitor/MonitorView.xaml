@@ -24,10 +24,14 @@
                 Style="{StaticResource ButtonsStyle}" Command="{Binding Reevaluate}"
                 IsEnabled="{Binding UIAvailable}"/>
         <DataGrid ItemsSource="{Binding AvailableChannels}" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" 
-                  AutoGenerateColumns="false" CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="true">
+                  AutoGenerateColumns="false" 
+                  CanUserAddRows="False" 
+                  CanUserDeleteRows="False" 
+                  IsReadOnly="true">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Publisher" Width="SizeToCells" IsReadOnly="False" 
-                                        SortDirection="Ascending" SortMemberPath="MapChannelPublisherTitle">
+                                        SortDirection="Ascending" 
+                                        SortMemberPath="MapChannelPublisherTitle">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Vertical">
@@ -38,16 +42,28 @@
                                 <Label Content="{Binding MapChannelPublisherTitle}" />
                                     <Label Content="Publishing from:"/>
                                     <Label Content="{Binding PublisherRootPath}"/>
+                            </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="{Binding PublisherPackageState}"/>
+                                    <Label Content=" Package: "/>
+                                    <Label Content="{Binding PackageId}"/>
+                                    <Label Content=" ("/>
+                                    <Label Content="{Binding MessagesProcessed.Count}"/>
+                                    <Label Content=")"/>
                                 </StackPanel>
-                                <DataGrid ItemsSource="{Binding PackagesAtPublisher}" AutoGenerateColumns="false" CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="true">
+                                <DataGrid ItemsSource="{Binding MessagesProcessed}" IsReadOnly="True" AutoGenerateColumns="False">
                                     <DataGrid.Columns>
-                                    <DataGridTemplateColumn Header="Packages" Width="SizeToCells" IsReadOnly="true">
+                                    <DataGridTemplateColumn Header="Item Published" Width="SizeToCells" IsReadOnly="true">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Label Content="{Binding PackageState}"/>
-                                                    <Label Content="{Binding PackageId}"/>
-                                                </StackPanel>
+                                                <Label Content="{Binding RelativePath}"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="Operation Requested" Width="SizeToCells" IsReadOnly="true">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Label Content="{Binding OperationType}"/>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
@@ -69,29 +85,43 @@
                                     <Label Content="Applying changes to:"/>
                                     <Label Content="{Binding SubscriberRootPath}"/>
                                 </StackPanel>
-                                <DataGrid ItemsSource="{Binding PackagesAtSubscriber}" AutoGenerateColumns="false" CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="true">
+                                    <StackPanel Orientation="Horizontal">
+                                    <Label Content="{Binding SubscriberPackageState}"/>
+                                        <Label Content=" Package: "/>
+                                        <Label Content="{Binding PackageId}"/>
+                                    <Label Content=" ("/>
+                                    <Label Content="{Binding MessagesProcessed.Count}"/>
+                                    <Label Content=")"/>
+
+                                </StackPanel>
+                                <DataGrid ItemsSource="{Binding MessagesProcessed}" IsReadOnly="True" AutoGenerateColumns="False">
                                     <DataGrid.Columns>
-                                    <DataGridTemplateColumn Header="Packages" Width="SizeToCells" IsReadOnly="true">
+                                    <DataGridTemplateColumn Header="Item" Width="SizeToCells" IsReadOnly="true">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Label Content="{Binding PackageState}"/>
-                                                    <Label Content="{Binding PackageId}"/>
-                                                </StackPanel>
+                                                <Label Content="{Binding RelativePath}"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="Operation" Width="SizeToCells" IsReadOnly="true">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Label Content="{Binding OperationType}"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="Applied" Width="SizeToCells" IsReadOnly="true">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Label Content="{Binding Done}"/>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
                                     </DataGrid.Columns>
                                 </DataGrid>
-
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
-                    <DataGridTemplateColumn.CellEditingTemplate>
-                        <DataTemplate>
-                            <ComboBox ItemsSource="{Binding Path=DataContext.AllAvailableSubscribers, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" SelectedValue="{Binding MapChannelSubscriberTitle}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>

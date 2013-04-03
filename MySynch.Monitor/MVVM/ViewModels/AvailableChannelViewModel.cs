@@ -78,22 +78,6 @@ namespace MySynch.Monitor.MVVM.ViewModels
             }
         }
 
-
-        private ObservableCollection<MessageViewModel> _subscriberMessagesProcessed;
-
-        public ObservableCollection<MessageViewModel> SubscriberMessagesProcessed
-        {
-            get { return _subscriberMessagesProcessed; }
-            set
-            {
-                if (_subscriberMessagesProcessed != value)
-                {
-                    _subscriberMessagesProcessed = value;
-                    RaisePropertyChanged(() => SubscriberMessagesProcessed);
-                }
-            }
-        }
-
         private State _publisherPackageState;
         /// <summary>
         /// Gets/sets whether the TreeViewItem 
@@ -114,17 +98,17 @@ namespace MySynch.Monitor.MVVM.ViewModels
 
 
 
-        private ObservableCollection<MessageViewModel> _publisherMessagesProcessed;
+        private ObservableCollection<MessageViewModel> _messagesProcessed;
 
-        public ObservableCollection<MessageViewModel> PublisherMessagesProcessed
+        public ObservableCollection<MessageViewModel> MessagesProcessed
         {
-            get { return _publisherMessagesProcessed; }
+            get { return _messagesProcessed; }
             set
             {
-                if (_publisherMessagesProcessed != value)
+                if (_messagesProcessed != value)
                 {
-                    _publisherMessagesProcessed = value;
-                    RaisePropertyChanged(() => PublisherMessagesProcessed);
+                    _messagesProcessed = value;
+                    RaisePropertyChanged(() => MessagesProcessed);
                 }
             }
         }

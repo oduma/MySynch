@@ -4,20 +4,21 @@ namespace MySynch.Monitor.MVVM.ViewModels
 {
     internal class MessageViewModel:ViewModelBase
     {
-        private string _fullTargetPath;
+
+        private string _relativePath;
         /// <summary>
         /// Gets/sets whether the TreeViewItem 
         /// associated with this object is expanded.
         /// </summary>
-        public string FullTargetPath
+        public string RelativePath
         {
-            get { return _fullTargetPath; }
+            get { return _relativePath; }
             set
             {
-                if (value != _fullTargetPath)
+                if (value != _relativePath)
                 {
-                    _fullTargetPath = value;
-                    RaisePropertyChanged(() => FullTargetPath);
+                    _relativePath = value;
+                    RaisePropertyChanged(() => RelativePath);
                 }
             }
         }

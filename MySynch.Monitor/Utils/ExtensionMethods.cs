@@ -70,13 +70,12 @@ namespace MySynch.Monitor.Utils
                                                                                   PublisherRootPath=mapChannel.PublisherInfo.RootPath,
                                                                                   PackageId=mapChannel.PublisherInfo.CurrentPackage.Id,
                                                                                   PublisherPackageState=mapChannel.PublisherInfo.CurrentPackage.State,
-                                                                                  PublisherMessagesProcessed=mapChannel.PublisherInfo.CurrentPackage.PackageMessages.AddToMessages(),
+                                                                                  MessagesProcessed=mapChannel.PublisherInfo.CurrentPackage.PackageMessages.AddToMessages(mapChannel.SubscriberInfo.CurrentPackage.PackageMessages,mapChannel.PublisherInfo.RootPath,mapChannel.SubscriberInfo.RootPath),
                                                                               MapChannelSubscriberTitle =
                                                                                   mapChannel.SubscriberInfo.InstanceName + ":" + mapChannel.SubscriberInfo.Port,
                                                                                   SubscriberStatus=mapChannel.SubscriberInfo.Status,
                                                                                   SubscriberRootPath=mapChannel.SubscriberInfo.RootPath,
-                                                                                  SubscriberPackageState=mapChannel.SubscriberInfo.CurrentPackage.State,
-                                                                                  SubscriberMessagesProcessed=mapChannel.SubscriberInfo.CurrentPackage.PackageMessages.AddToMessages()
+                                                                                  SubscriberPackageState=mapChannel.SubscriberInfo.CurrentPackage.State
                                                                           };
                 if (!beforeImage.Contains(availableChannelViewModel, new AvailableChannelViewModelEqualityComparer()))
                 {
@@ -100,10 +99,9 @@ namespace MySynch.Monitor.Utils
                         existingItem.SubscriberRootPath = mapChannel.SubscriberInfo.RootPath;
                         existingItem.PackageId = mapChannel.PublisherInfo.CurrentPackage.Id;
                         existingItem.PublisherPackageState = mapChannel.PublisherInfo.CurrentPackage.State;
-                        existingItem.PublisherMessagesProcessed=
-                            mapChannel.PublisherInfo.CurrentPackage.PackageMessages.AddToMessages(existingItem.PublisherMessagesProcessed);
-                        existingItem.SubscriberMessagesProcessed =
-                            mapChannel.SubscriberInfo.CurrentPackage.PackageMessages.AddToMessages(existingItem.SubscriberMessagesProcessed);
+                        existingItem.MessagesProcessed=
+                            mapChannel.PublisherInfo.CurrentPackage.PackageMessages.AddToMessages(mapChannel.SubscriberInfo.CurrentPackage.PackageMessages,mapChannel.PublisherInfo.RootPath,mapChannel.SubscriberInfo.RootPath,
+                            existingItem.MessagesProcessed);
                         existingItem.SubscriberPackageState = mapChannel.SubscriberInfo.CurrentPackage.State;
                     }
                 }
@@ -111,7 +109,7 @@ namespace MySynch.Monitor.Utils
             return beforeImage;
         }
 
-        internal static ObservableCollection<MessageViewModel> AddToMessages( this IEnumerable<FeedbackMessage> inCollection,ObservableCollection<MessageViewModel> beforeImage=null)
+        internal static ObservableCollection<MessageViewModel> AddToMessages( this IEnumerable<FeedbackMessage> inCollection,IEnumerable<FeedbackMessage> subscriberProcessedMessages, string sourceRootPath, string destinationRootPath, ObservableCollection<MessageViewModel> beforeImage=null)
         {
             if (beforeImage == null)
                 beforeImage = new ObservableCollection<MessageViewModel>();
@@ -119,10 +117,13 @@ namespace MySynch.Monitor.Utils
                 return beforeImage;
             foreach (var message in inCollection)
             {
+                var subscriberMessage =
+                    subscriberProcessedMessages.FirstOrDefault(
+                        s => s.AbsolutePath.Replace(destinationRootPath, sourceRootPath) == message.AbsolutePath);
                 MessageViewModel messageViewModel = new MessageViewModel
                                                         {
-                                                            FullTargetPath = message.AbsolutePath,
-                                                            Done = message.Processed,
+                                                            RelativePath = message.AbsolutePath.Replace(sourceRootPath,""),
+                                                            Done = (subscriberMessage==null)?false:subscriberMessage.Processed,
                                                             OperationType = message.OperationType
                                                         };
                 if (!beforeImage.Contains(messageViewModel, new MessageViewModelEqualityComparer()))
@@ -136,7 +137,7 @@ namespace MySynch.Monitor.Utils
                 {
                     var existingItem = beforeImage.FirstOrDefault(
                         b =>
-                        b.FullTargetPath == messageViewModel.FullTargetPath);
+                        b.RelativePath == messageViewModel.RelativePath);
                     if (existingItem != null)
                     {
                         existingItem.Done = messageViewModel.Done;

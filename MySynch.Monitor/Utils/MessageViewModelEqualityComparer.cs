@@ -7,9 +7,9 @@ namespace MySynch.Monitor.Utils
     {
         public bool Equals(MessageViewModel x, MessageViewModel y)
         {
-            if (x == null || string.IsNullOrEmpty(x.FullTargetPath) || y == null || string.IsNullOrEmpty(y.FullTargetPath))
+            if (x == null || string.IsNullOrEmpty(x.RelativePath) || y == null || string.IsNullOrEmpty(y.RelativePath))
                 return false;
-            return (x.FullTargetPath == y.FullTargetPath);
+            return (x.RelativePath == y.RelativePath);
         }
 
         public int GetHashCode(MessageViewModel obj)
