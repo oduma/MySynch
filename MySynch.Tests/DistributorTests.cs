@@ -159,7 +159,7 @@ namespace MySynch.Tests
             distributor.InitiateDistributionMap(@"Data\distributormaplocal2local.xml", _componentResolver);
             ChangePublisher changePublisher = InitiateLocalPublisher();
             changePublisher.PublishPackage();
-            MockAllTheSubscribers(distributor.AvailableChannels,changePublisher.PublishedPackageNotDistributed[0],new FakeSubscriberFeedback{DistributorInstance = distributor});
+            MockAllTheSubscribers(distributor.AvailableChannels,changePublisher.PublishedPackageNotDistributed[0]);
             distributor.DistributeMessages();
             Assert.AreEqual(0, changePublisher.PublishedPackageNotDistributed.Count);
         }
@@ -182,7 +182,7 @@ namespace MySynch.Tests
             distributor.InitiateDistributionMap(@"Data\distributormaplocal2localandremote.xml", _componentResolver);
             ChangePublisher changePublisher = InitiateLocalPublisher();
             changePublisher.PublishPackage();
-            MockAllTheSubscribers(distributor.AvailableChannels, changePublisher.PublishedPackageNotDistributed[0], new FakeSubscriberFeedback { DistributorInstance = distributor });
+            MockAllTheSubscribers(distributor.AvailableChannels, changePublisher.PublishedPackageNotDistributed[0]);
             distributor.DistributeMessages();
             Assert.AreEqual(0, changePublisher.PublishedPackageNotDistributed.Count);
         }
@@ -195,15 +195,6 @@ namespace MySynch.Tests
 
             ChangePublisher changePublisher = InitiateLocalPublisher();
             
-            distributor.AvailableChannels.ForEach((c)=>
-                                                      {
-                                                          if(c.Subscriber!=null)
-                                                          {
-                                                              c.Subscriber.ForceSetTheSubscriberFeedback(
-                                                                  new FakeSubscriberFeedback
-                                                                      {DistributorInstance = distributor});
-                                                          }
-                                                      });
             distributor.DistributeMessages();
             Assert.AreEqual(1, changePublisher.PublishedPackageNotDistributed.Count);
             Assert.AreEqual(2, changePublisher.PublishedPackageNotDistributed[0].ChangePushItems.Count);
@@ -237,7 +228,7 @@ namespace MySynch.Tests
             changePublisher.QueueInsert(@"root folder\Item One");
             changePublisher.QueueInsert(@"root folder\ItemTwo");
             changePublisher.PublishPackage();
-            MockAllTheSubscribers(distributor.AvailableChannels, changePublisher.PublishedPackageNotDistributed[0], new FakeSubscriberFeedback { DistributorInstance = distributor });
+            MockAllTheSubscribers(distributor.AvailableChannels, changePublisher.PublishedPackageNotDistributed[0]);
             distributor.DistributeMessages();
             var compo = distributor.ListAvailableChannels();
             Assert.IsNotNull(compo);
@@ -261,7 +252,7 @@ namespace MySynch.Tests
             changePublisher.QueueInsert(@"root folder\Item One");
             changePublisher.QueueInsert(@"root folder\ItemTwo");
             changePublisher.PublishPackage();
-            MockAllTheSubscribers(distributor.AvailableChannels, changePublisher.PublishedPackageNotDistributed[0], new FakeSubscriberFeedback { DistributorInstance = distributor });
+            MockAllTheSubscribers(distributor.AvailableChannels, changePublisher.PublishedPackageNotDistributed[0]);
             distributor.DistributeMessages();
             var compo = distributor.ListAvailableChannels();
             distributor.DistributeMessages();
@@ -272,20 +263,32 @@ namespace MySynch.Tests
             Assert.IsNull(compo.Channels[0].SubscriberInfo.CurrentPackage);
         }
 
-        private void MockAllTheSubscribers(List<AvailableChannel> availableChannels, PublishPackageRequestResponse publishPackageRequestResponse, 
-            ISubscriberFeedback fakeSubscriberFeedback)
+        private void MockAllTheSubscribers(List<AvailableChannel> availableChannels, PublishPackageRequestResponse publishPackageRequestResponse)
         {
             foreach (var availableChannel in availableChannels)
             {
-                MockTheSubscriber(availableChannel,publishPackageRequestResponse,fakeSubscriberFeedback);
+                MockTheSubscriber(availableChannel,publishPackageRequestResponse);
             }
         }
 
-        private void MockTheSubscriber(AvailableChannel channel, PublishPackageRequestResponse publishPackageRequestResponse, ISubscriberFeedback fakeSubscriberFeedback)
+        private void MockTheSubscriber(AvailableChannel channel, PublishPackageRequestResponse publishPackageRequestResponse)
         {
-            var mockSubscriber = new FakeSubscriber();
-            mockSubscriber.ForceSetTheSubscriberFeedback(fakeSubscriberFeedback);
-            channel.Subscriber = mockSubscriber;
+            //var mockSubscriber = new Mock<ISubscriber>();
+            //mockSubscriber.Setup(m => m.GetHeartbeat()).Returns(new GetHeartbeatResponse { Status = true, RootPath = @"destination root folder\Item One" });
+            //mockSubscriber.Setup(m => m.TryOpenChannel(null)).Returns(new TryOpenChannelResponse{Status=true});
+            //foreach(var changePushItem in publishPackageRequestResponse.ChangePushItems)
+            //{
+            //    mockSubscriber.Setup(
+            //        m =>
+            //        m.ApplyChangePushItem(new ApplyChangePushItemRequest
+            //                                  {
+            //                                      ChangePushItem = changePushItem,
+            //                                      SourceRootName = publishPackageRequestResponse.SourceRootName
+            //                                  })).Returns(
+            //                                      new ApplyChangePushItemResponse
+            //                                          {ChangePushItem = changePushItem, Success = true});
+            //}
+	       channel.Subscriber = new MockRemoteSubscriber();
         }
 
         [Test]

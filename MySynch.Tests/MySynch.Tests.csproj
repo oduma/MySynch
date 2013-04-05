@@ -88,8 +88,6 @@
     <Compile Include="Stubs\ChangeApplyerNotPresent.cs" />
     <Compile Include="Stubs\ChangePublisherNotPresent.cs" />
     <Compile Include="Stubs\ClientImplementation.cs" />
-    <Compile Include="Stubs\FakeSubscriber.cs" />
-    <Compile Include="Stubs\FakeSubscriberFeedback.cs" />
     <Compile Include="Stubs\ITest1.cs" />
     <Compile Include="Stubs\ITest1Proxy.cs" />
     <Compile Include="Stubs\MockRemotePublisher.cs" />

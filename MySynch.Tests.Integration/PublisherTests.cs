@@ -105,7 +105,7 @@ namespace MySynch.Tests.Integration
                                                                  }
             };
             Assert.True(subscriber.TryOpenChannel(new TryOpenChannelRequest{SourceOfDataPort=8765}).Status);
-            subscriber.ConsumePackage(publishedPackageRequestResponse);
+            Assert.True(subscriber.ApplyChangePushItem(new ApplyChangePushItemRequest{ChangePushItem = publishedPackageRequestResponse.ChangePushItems[0],SourceRootName=publishedPackageRequestResponse.SourceRootName}).Success);
             Assert.True(File.Exists(@"Data\Output\File1.xml"));
         }
 
@@ -138,7 +138,7 @@ namespace MySynch.Tests.Integration
             publisherProxy.InitiateUsingPort(8765);
             var publishedPackage = publisherProxy.PublishPackage();
             Assert.IsNotNull(publishedPackage);
-            Assert.AreEqual(3,publishedPackage.ChangePushItems.Count);
+            Assert.AreEqual(5,publishedPackage.ChangePushItems.Count);
             Assert.AreEqual(1,
                             publishedPackage.ChangePushItems.Count(
                                 i =>

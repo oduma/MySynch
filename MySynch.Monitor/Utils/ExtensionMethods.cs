@@ -68,15 +68,23 @@ namespace MySynch.Monitor.Utils
                                                                                   mapChannel.PublisherInfo.InstanceName + ":" + mapChannel.PublisherInfo.Port,
                                                                                   PublisherStatus=mapChannel.PublisherInfo.Status,
                                                                                   PublisherRootPath=mapChannel.PublisherInfo.RootPath,
-                                                                                  PackageId=mapChannel.PublisherInfo.CurrentPackage.Id,
-                                                                                  PublisherPackageState=mapChannel.PublisherInfo.CurrentPackage.State,
-                                                                                  MessagesProcessed=mapChannel.PublisherInfo.CurrentPackage.PackageMessages.AddToMessages(mapChannel.SubscriberInfo.CurrentPackage.PackageMessages,mapChannel.PublisherInfo.RootPath,mapChannel.SubscriberInfo.RootPath),
-                                                                              MapChannelSubscriberTitle =
+                                                                                  MapChannelSubscriberTitle =
                                                                                   mapChannel.SubscriberInfo.InstanceName + ":" + mapChannel.SubscriberInfo.Port,
                                                                                   SubscriberStatus=mapChannel.SubscriberInfo.Status,
-                                                                                  SubscriberRootPath=mapChannel.SubscriberInfo.RootPath,
-                                                                                  SubscriberPackageState=mapChannel.SubscriberInfo.CurrentPackage.State
+                                                                                  SubscriberRootPath=mapChannel.SubscriberInfo.RootPath
                                                                           };
+                if(mapChannel.PublisherInfo.CurrentPackage!=null)
+                {
+                    availableChannelViewModel.PackageId = mapChannel.PublisherInfo.CurrentPackage.Id;
+                    availableChannelViewModel.PublisherPackageState = mapChannel.PublisherInfo.CurrentPackage.State;
+                    availableChannelViewModel.MessagesProcessed =
+                        mapChannel.PublisherInfo.CurrentPackage.PackageMessages.AddToMessages((mapChannel.SubscriberInfo.CurrentPackage==null)?null:
+                            mapChannel.SubscriberInfo.CurrentPackage.PackageMessages, mapChannel.PublisherInfo.RootPath,
+                            mapChannel.SubscriberInfo.RootPath);
+                }
+                if(mapChannel.SubscriberInfo.CurrentPackage!=null)
+                    availableChannelViewModel.SubscriberPackageState = mapChannel.SubscriberInfo.CurrentPackage.State;
+
                 if (!beforeImage.Contains(availableChannelViewModel, new AvailableChannelViewModelEqualityComparer()))
                 {
                     if(Application.Current==null)
@@ -97,12 +105,17 @@ namespace MySynch.Monitor.Utils
                         existingItem.SubscriberStatus = mapChannel.SubscriberInfo.Status;
                         existingItem.PublisherRootPath = mapChannel.PublisherInfo.RootPath;
                         existingItem.SubscriberRootPath = mapChannel.SubscriberInfo.RootPath;
-                        existingItem.PackageId = mapChannel.PublisherInfo.CurrentPackage.Id;
-                        existingItem.PublisherPackageState = mapChannel.PublisherInfo.CurrentPackage.State;
-                        existingItem.MessagesProcessed=
-                            mapChannel.PublisherInfo.CurrentPackage.PackageMessages.AddToMessages(mapChannel.SubscriberInfo.CurrentPackage.PackageMessages,mapChannel.PublisherInfo.RootPath,mapChannel.SubscriberInfo.RootPath,
+                        if(mapChannel.PublisherInfo.CurrentPackage!=null)
+                        {
+                            existingItem.PackageId = mapChannel.PublisherInfo.CurrentPackage.Id;
+                            existingItem.PublisherPackageState = mapChannel.PublisherInfo.CurrentPackage.State;
+                            existingItem.MessagesProcessed=
+                                mapChannel.PublisherInfo.CurrentPackage.PackageMessages.AddToMessages((mapChannel.SubscriberInfo.CurrentPackage==null)?null:mapChannel.SubscriberInfo.CurrentPackage.PackageMessages,mapChannel.PublisherInfo.RootPath,mapChannel.SubscriberInfo.RootPath,
                             existingItem.MessagesProcessed);
-                        existingItem.SubscriberPackageState = mapChannel.SubscriberInfo.CurrentPackage.State;
+
+                        }
+                        if(mapChannel.SubscriberInfo.CurrentPackage!=null)
+                            existingItem.SubscriberPackageState = mapChannel.SubscriberInfo.CurrentPackage.State;
                     }
                 }
             }
@@ -117,12 +130,16 @@ namespace MySynch.Monitor.Utils
                 return beforeImage;
             foreach (var message in inCollection)
             {
-                var subscriberMessage =
-                    subscriberProcessedMessages.FirstOrDefault(
-                        s => s.AbsolutePath.Replace(destinationRootPath, sourceRootPath) == message.AbsolutePath);
+
+                FeedbackMessage subscriberMessage = null;
+                if(subscriberProcessedMessages!=null)
+                {
+                    subscriberMessage = subscriberProcessedMessages.FirstOrDefault(
+                        s => (string)((string.IsNullOrEmpty(destinationRootPath))?s.AbsolutePath:s.AbsolutePath.Replace(destinationRootPath, sourceRootPath)) == message.AbsolutePath);
+                }
                 MessageViewModel messageViewModel = new MessageViewModel
                                                         {
-                                                            RelativePath = message.AbsolutePath.Replace(sourceRootPath,""),
+                                                            RelativePath = (string.IsNullOrEmpty(sourceRootPath))?message.AbsolutePath:message.AbsolutePath.Replace(sourceRootPath,""),
                                                             Done = (subscriberMessage==null)?false:subscriberMessage.Processed,
                                                             OperationType = message.OperationType
                                                         };

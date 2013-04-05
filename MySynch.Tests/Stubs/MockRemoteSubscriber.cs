@@ -8,41 +8,31 @@ namespace MySynch.Tests.Stubs
     public class MockRemoteSubscriber:ISubscriberProxy
     {
         private string targetRootFolder;
-        private ISubscriberFeedback _subscriberFeedBack;
 
         public GetHeartbeatResponse GetHeartbeat()
         {
             return new GetHeartbeatResponse {Status = true};
         }
-
-        public void ConsumePackage(PublishPackageRequestResponse publishPackageRequestResponse)
+        public ApplyChangePushItemResponse ApplyChangePushItem(ApplyChangePushItemRequest applyChangePushItemRequest)
         {
             if (targetRootFolder == "wrong folder")
                 throw new Exception();
-            bool result = true;
-
-            foreach (ChangePushItem upsert in publishPackageRequestResponse.ChangePushItems)
-            {
-                var tempResult = copyMethod(upsert.AbsolutePath,
-                                             upsert.AbsolutePath.Replace(publishPackageRequestResponse.SourceRootName, targetRootFolder));
-                _subscriberFeedBack.SubscriberFeedback(new SubscriberFeedbackMessage
-                {
-                    ItemsProcessed = 1,
-                    OperationType = OperationType.None,
-                    PackageId = publishPackageRequestResponse.PackageId,
-                    Success = true
-                });
-            }
+            return new ApplyChangePushItemResponse
+                       {
+                           ChangePushItem =
+                               new ChangePushItem
+                                   {
+                                       AbsolutePath =
+                                           applyChangePushItemRequest.ChangePushItem.AbsolutePath.Replace(
+                                               applyChangePushItemRequest.SourceRootName, targetRootFolder)
+                                   },
+                           Success = copyMethod("abc", "def")
+                       };
         }
 
         public TryOpenChannelResponse TryOpenChannel(TryOpenChannelRequest sourceOfDataEndpointName)
         {
             return new TryOpenChannelResponse {Status = true};
-        }
-
-        public void ForceSetTheSubscriberFeedback(ISubscriberFeedback SubscriberFeedback)
-        {
-            _subscriberFeedBack = SubscriberFeedback;
         }
 
         private bool copyMethod(string absolutePath, string replace)

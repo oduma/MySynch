@@ -91,10 +91,10 @@ namespace MySynch.Common
             return serviceHost;
         }
 
-        protected ServiceHost CreateAndConfigureServiceHost<T>(T serviceInstance, Uri baseAddress,bool isDuplex=false)
+        protected ServiceHost CreateAndConfigureServiceHost<T>(T serviceInstance, Uri baseAddress)
         {
             var serviceHost = new ServiceHost(serviceInstance, baseAddress);
-            var serviceEndPoint = serviceHost.AddServiceEndpoint(typeof(T), ClientServerBindingHelper.GetBinding(isDuplex), string.Empty);
+            var serviceEndPoint = serviceHost.AddServiceEndpoint(typeof(T), ClientServerBindingHelper.GetBinding(false), string.Empty);
 
             serviceEndPoint.Behaviors.Add(new MySynchAuditBehavior());
 

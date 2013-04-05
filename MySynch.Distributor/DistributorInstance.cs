@@ -39,7 +39,7 @@ namespace MySynch.Distributor
             LoggingManager.Debug("Initializing distributor with map:" + _distributorMapFile);
             _distributor = new Core.Distributor.Distributor();
             _timer = new Timer();
-            _timer.Interval = 60000;
+            _timer.Interval = 10000;
             ComponentResolver componentResolver = new ComponentResolver();
             componentResolver.RegisterAll(new MySynchInstaller());
 

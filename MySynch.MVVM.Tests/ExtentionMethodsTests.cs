@@ -246,7 +246,7 @@ namespace MySynch.MVVM.Tests
                                   {
                                       new MessageViewModel
                                           {
-                                              FullTargetPath = "old item"
+                                              RelativePath = "old item"
                                           }
                                   };
             var observableMessages =
@@ -258,10 +258,10 @@ namespace MySynch.MVVM.Tests
                                  OperationType=OperationType.Insert,
                                  Processed=true
                              }
-                     }).AddToMessages(beforeImage);
+                     }).AddToMessages(null,"","",beforeImage);
             Assert.IsNotNull(observableMessages);
             Assert.AreEqual(2, observableMessages.Count);
-            Assert.AreNotEqual(observableMessages[0].FullTargetPath, observableMessages[1].FullTargetPath);
+            Assert.AreNotEqual(observableMessages[0].RelativePath, observableMessages[1].RelativePath);
         }
 
         [Test]
@@ -271,10 +271,10 @@ namespace MySynch.MVVM.Tests
                                   {
                                       new MessageViewModel
                                           {
-FullTargetPath="old item"                                          }
+RelativePath="old item"                                          }
                                   };
             var messageViewModels =
-                (new List<FeedbackMessage>()).AddToMessages(beforeImage);
+                (new List<FeedbackMessage>()).AddToMessages(null,"","",beforeImage);
             Assert.IsNotNull(messageViewModels);
             Assert.AreEqual(1, messageViewModels.Count);
         }
@@ -286,7 +286,7 @@ FullTargetPath="old item"                                          }
                                   {
                                       new MessageViewModel
                                           {
-                                              FullTargetPath="old item",
+                                              RelativePath="old item",
                                               OperationType=OperationType.Insert,
                                               Done=false
                                           }
@@ -298,9 +298,14 @@ FullTargetPath="old item"                                          }
                              {
                                  AbsolutePath="old item",
                                  OperationType=OperationType.Update,
-                                 Processed=true
+                                 Processed=false
                              }
-                     }).AddToMessages(beforeImage);
+                     }).AddToMessages(new[] { new FeedbackMessage
+                             {
+                                 AbsolutePath="old item",
+                                 OperationType=OperationType.Update,
+                                 Processed=true
+                             }}, "", "", beforeImage);
             Assert.IsNotNull(observableMessages);
             Assert.AreEqual(1, observableMessages.Count);
             Assert.True(observableMessages[0].Done);
@@ -319,7 +324,7 @@ FullTargetPath="old item"                                          }
                                  OperationType=OperationType.Insert,
                                  Processed=true
                              }
-                     }).AddToMessages(null);
+                     }).AddToMessages(null,"","");
             Assert.IsNotNull(observableMessages);
             Assert.AreEqual(1, observableMessages.Count);
 

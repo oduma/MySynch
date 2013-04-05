@@ -19,7 +19,12 @@ namespace MySynch.Tests.Integration
             ISubscriberProxy subscriberProxy = new SubscriberClient();
             subscriberProxy.InitiateUsingPort(8765);
             Assert.True(subscriberProxy.TryOpenChannel(new TryOpenChannelRequest { SourceOfDataPort = 8765 }).Status);
-            subscriberProxy.ConsumePackage(new PublishPackageRequestResponse());
+            Assert.False(
+                subscriberProxy.ApplyChangePushItem(new ApplyChangePushItemRequest
+                                                        {
+                                                            ChangePushItem = new ChangePushItem(),
+                                                            SourceRootName = string.Empty
+                                                        }).Success);
         }
 
         [Test]
@@ -30,24 +35,19 @@ namespace MySynch.Tests.Integration
                 File.Delete(@"C:\MySynch.Dest.Test.Root\File1.xml");
             ISubscriberProxy subscriberProxy = new SubscriberClient();
             subscriberProxy.InitiateUsingPort(8765);
-            PublishPackageRequestResponse publishedPackageRequestResponse = new PublishPackageRequestResponse
+            ApplyChangePushItemRequest applyChangePushItemRequest = new ApplyChangePushItemRequest
             {
-                PackageId = Guid.NewGuid(),
-                Source = "SCIENDO-LAPTOP",
                 SourceRootName = @"C:\MySynch.Source.Test.Root\",
-                ChangePushItems =
-                    new List<ChangePushItem>
-                                                                 {
+                ChangePushItem =
                                                                      new ChangePushItem
                                                                          {
                                                                              AbsolutePath =
                                                                                  @"C:\MySynch.Source.Test.Root\File1.xml",
                                                                              OperationType = OperationType.Insert
                                                                          }
-                                                                 }
             };
             Assert.True(subscriberProxy.TryOpenChannel(new TryOpenChannelRequest { SourceOfDataPort = 8765 }).Status);
-            subscriberProxy.ConsumePackage(publishedPackageRequestResponse);
+            subscriberProxy.ApplyChangePushItem(applyChangePushItemRequest);
             Assert.True(File.Exists(@"C:\MySynch.Dest.Test.Root\File1.xml"));
 
         }

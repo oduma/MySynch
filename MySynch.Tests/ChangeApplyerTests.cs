@@ -12,12 +12,6 @@ namespace MySynch.Tests
     [TestFixture]
     public class ChangeApplyerTests
     {
-        private int _noOfUpserts;
-        [SetUp]
-        public void SetUp()
-        {
-            _noOfUpserts = 0;
-        }
 
         [Test]
         public void ApplyChanges_Upserts_Ok()
@@ -52,14 +46,17 @@ namespace MySynch.Tests
             changeApplyer.Initialize(@"Data\Output\Test\");
             var mockCopyStrategy = MockCopyStrategy();
             changeApplyer.CopyStrategy = mockCopyStrategy;
-            Assert.True(changeApplyer.TryApplyChanges(insertPackageRequestResponse));
-            Assert.AreEqual(3, _noOfUpserts);
-        }
-
-        private bool fakeMethod(string arg1, string arg2)
-        {
-            _noOfUpserts++;
-            return true;
+            foreach(var changePushItem in insertPackageRequestResponse.ChangePushItems)
+            {
+                var response =
+                    changeApplyer.TryApplyChange(new ApplyChangePushItemRequest
+                                                     {
+                                                         ChangePushItem = changePushItem,
+                                                         SourceRootName = insertPackageRequestResponse.SourceRootName
+                                                     });
+                Assert.True(response.Success);
+                Assert.AreNotEqual(changePushItem.AbsolutePath,response.ChangePushItem.AbsolutePath);
+            }
         }
 
         [Test]
@@ -95,25 +92,32 @@ namespace MySynch.Tests
             changeApplyer.Initialize(@"Data\Output\Test\");
             var mockCopyStrategy = MockCopyStrategy();
             changeApplyer.CopyStrategy = mockCopyStrategy;
-            Assert.False(changeApplyer.TryApplyChanges(insertPackageRequestResponse));
-            Assert.AreEqual(2, _noOfUpserts);
+            foreach (var changePushItem in insertPackageRequestResponse.ChangePushItems)
+            {
+                var response =
+                    changeApplyer.TryApplyChange(new ApplyChangePushItemRequest
+                    {
+                        ChangePushItem = changePushItem,
+                        SourceRootName = insertPackageRequestResponse.SourceRootName
+                    });
+                if (response.ChangePushItem.AbsolutePath == @"Data\Output\Test\F1\F13\F12.xml")
+                    Assert.False(response.Success);
+                else
+                    Assert.True(response.Success);
+                Assert.AreNotEqual(changePushItem.AbsolutePath, response.ChangePushItem.AbsolutePath);
+            }
         }
 
         private ICopyStrategy MockCopyStrategy()
         {
             var mockCopyStrategy = new Mock<ICopyStrategy>();
-            mockCopyStrategy.Setup(m => m.Copy(@"Data\Test\F1\F12\F12.xml", @"Data\Output\Test\F1\F12\F12.xml")).Callback(updateNo).Returns(true);
-            mockCopyStrategy.Setup(m => m.Copy(@"Data\Test\F1\F13\F13.xml", @"Data\Output\Test\F1\F13\F13.xml")).Callback(updateNo).Returns(true);
+            mockCopyStrategy.Setup(m => m.Copy(@"Data\Test\F1\F12\F12.xml", @"Data\Output\Test\F1\F12\F12.xml")).Returns(true);
+            mockCopyStrategy.Setup(m => m.Copy(@"Data\Test\F1\F13\F13.xml", @"Data\Output\Test\F1\F13\F13.xml")).Returns(true);
             mockCopyStrategy.Setup(m => m.Copy(@"Data\Test\F1\F13\F12.xml", @"Data\Output\Test\F1\F13\F12.xml")).Returns(false);
-            mockCopyStrategy.Setup(m => m.Copy(@"Data\Test\F1\F12\F11.xml", @"Data\Output\Test\F1\F12\F11.xml")).Callback(updateNo).Returns(true);
+            mockCopyStrategy.Setup(m => m.Copy(@"Data\Test\F1\F12\F11.xml", @"Data\Output\Test\F1\F12\F11.xml")).Returns(true);
             mockCopyStrategy.Setup(m => m.Copy(@"root folder\Item One", @"destination root folder\Item One")).Returns(true);
             mockCopyStrategy.Setup(m => m.Copy(@"root folder\ItemTwo", @"destination root folder\ItemTwo")).Returns(true);
             return mockCopyStrategy.Object;
-        }
-
-        private void updateNo()
-        {
-            _noOfUpserts++;
         }
 
         [Test]
@@ -145,7 +149,17 @@ namespace MySynch.Tests
             Assert.True(File.Exists(@"Data\Output\Test\F1\F12\F121.xml"));
             var mockCopyStrategy = MockCopyStrategy();
             changeApplyer.CopyStrategy = mockCopyStrategy;
-            Assert.True(changeApplyer.TryApplyChanges(deletePackageRequestResponse));
+            foreach (var changePushItem in deletePackageRequestResponse.ChangePushItems)
+            {
+                var response =
+                    changeApplyer.TryApplyChange(new ApplyChangePushItemRequest
+                    {
+                        ChangePushItem = changePushItem,
+                        SourceRootName = deletePackageRequestResponse.SourceRootName
+                    });
+                Assert.True(response.Success);
+                Assert.AreNotEqual(changePushItem.AbsolutePath, response.ChangePushItem.AbsolutePath);
+            }
             Assert.False(File.Exists(@"Data\Output\Test\F1\F12\F12.xml"));
             Assert.False(File.Exists(@"Data\Output\Test\F1\F12\F121.xml"));
 
@@ -185,7 +199,17 @@ namespace MySynch.Tests
             Assert.False(File.Exists(@"Data\Output\Test\F12\F13.xml"));
             var mockCopyStrategy = MockCopyStrategy();
             changeApplyer.CopyStrategy = mockCopyStrategy;
-            Assert.False(changeApplyer.TryApplyChanges(deletePackageRequestResponse));
+            foreach (var changePushItem in deletePackageRequestResponse.ChangePushItems)
+            {
+                var response =
+                    changeApplyer.TryApplyChange(new ApplyChangePushItemRequest
+                    {
+                        ChangePushItem = changePushItem,
+                        SourceRootName = deletePackageRequestResponse.SourceRootName
+                    });
+                Assert.True(response.Success);
+                Assert.AreNotEqual(changePushItem.AbsolutePath, response.ChangePushItem.AbsolutePath);
+            }
             Assert.False(File.Exists(@"Data\Output\Test\F1\F12\F122.xml"));
             Assert.False(File.Exists(@"Data\Output\Test\F12\F13.xml"));
 

@@ -14,7 +14,7 @@ namespace MySynch.Tests.Stubs
             return new GetHeartbeatResponse {Status = false};
         }
 
-        public void ConsumePackage(PublishPackageRequestResponse publishPackageRequestResponse)
+        public ApplyChangePushItemResponse ApplyChangePushItem(ApplyChangePushItemRequest applyChangePushItemRequest)
         {
             throw new NotImplementedException();
         }
@@ -24,10 +24,6 @@ namespace MySynch.Tests.Stubs
             throw new NotImplementedException();
         }
 
-        public void ForceSetTheSubscriberFeedback(ISubscriberFeedback SubscriberFeedback)
-        {
-            return;
-        }
 
         public void InitiateUsingPort(int port)
         {

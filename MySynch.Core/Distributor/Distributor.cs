@@ -13,7 +13,7 @@ using MySynch.Proxies.Interfaces;
 namespace MySynch.Core.Distributor
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
-    public class Distributor : IDistributorMonitor,ISubscriberFeedback
+    public class Distributor : IDistributorMonitor
     {
         private ComponentResolver _componentResolver = new ComponentResolver();
         internal bool StillProcessing;
@@ -134,10 +134,20 @@ namespace MySynch.Core.Distributor
                 try
                 {
                     RegisterPackageForComponent(channel.SubscriberInfo, packageRequestResponse, State.InProgress);
-                    StillProcessing = true;
                     AllProcessedOk = true;
-                    channel.Subscriber.ConsumePackage(packageRequestResponse);
-                    while(StillProcessing){;}
+                    foreach (var changePushItem in packageRequestResponse.ChangePushItems)
+                    {
+                        var response = channel.Subscriber.ApplyChangePushItem(new ApplyChangePushItemRequest
+                        {
+                            ChangePushItem = changePushItem,
+                            SourceRootName =
+                                packageRequestResponse.SourceRootName
+                        });
+                        AllProcessedOk = (AllProcessedOk) ? response.Success : false;
+                        RegisterMessageInPackage(response,packageRequestResponse.PackageId);
+                    }
+
+
                     RegisterPackageForComponent(channel.SubscriberInfo, packageRequestResponse, State.Distributed);
                     result = AllProcessedOk;
                 }
@@ -268,7 +278,7 @@ namespace MySynch.Core.Distributor
                         else
                         {
                             componentInstance =
-                                  _componentResolver.Resolve<TProxy,ISubscriberFeedback>(this,
+                                  _componentResolver.Resolve<TProxy>(
                                       component.InstanceName,
                                       component.Port);
                         }
@@ -300,28 +310,22 @@ namespace MySynch.Core.Distributor
             return new ListAvailableChannelsResponse {Name = Environment.MachineName, Channels = mapChannels};
         }
 
-        public void SubscriberFeedback(SubscriberFeedbackMessage message)
-        {
-            StillProcessing = (message.ItemsProcessed != message.TotalItemsInThePackage);
-            AllProcessedOk = (AllProcessedOk) ? message.Success : false;
-            RegisterMessageInPackage(message);
-        }
 
-        private void RegisterMessageInPackage(SubscriberFeedbackMessage message)
+        private void RegisterMessageInPackage(ApplyChangePushItemResponse message, Guid packageId)
         {
-            var subscriberPackage = AvailableChannels.FirstOrDefault(c => c.SubscriberInfo.CurrentPackage.Id == message.PackageId);
+            var subscriberPackage = AvailableChannels.FirstOrDefault(c => c.SubscriberInfo.CurrentPackage.Id == packageId);
             if (subscriberPackage != null)
             {
                 var existingMessage =
-                    subscriberPackage.SubscriberInfo.CurrentPackage.PackageMessages.FirstOrDefault(m => m.AbsolutePath == message.TargetAbsolutePath);
+                    subscriberPackage.SubscriberInfo.CurrentPackage.PackageMessages.FirstOrDefault(m => m.AbsolutePath == message.ChangePushItem.AbsolutePath);
                 if (existingMessage != null)
                     existingMessage.Processed = message.Success;
                 else
                 {
                     subscriberPackage.SubscriberInfo.CurrentPackage.PackageMessages.Add(new FeedbackMessage
                                                               {
-                                                                  AbsolutePath = message.TargetAbsolutePath,
-                                                                  OperationType = message.OperationType,
+                                                                  AbsolutePath = message.ChangePushItem.AbsolutePath,
+                                                                  OperationType = message.ChangePushItem.OperationType,
                                                                   Processed = message.Success
                                                               });
                 }

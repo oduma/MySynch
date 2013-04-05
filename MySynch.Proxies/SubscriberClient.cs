@@ -38,15 +38,15 @@ namespace MySynch.Proxies
 			return  response; 
 
 		}
-		public void ConsumePackage(MySynch.Contracts.Messages.PublishPackageRequestResponse publishPackageRequestResponse) 
+		public MySynch.Contracts.Messages.ApplyChangePushItemResponse ApplyChangePushItem(MySynch.Contracts.Messages.ApplyChangePushItemRequest applyChangePushItemRequest) 
 		{
-		 
+		MySynch.Contracts.Messages.ApplyChangePushItemResponse response = new MySynch.Contracts.Messages.ApplyChangePushItemResponse(); 
 		try
 		{
 		                using (new OperationContextScope((IContextChannel)Proxy))
                 {
-				 
-					Proxy.ConsumePackage(publishPackageRequestResponse);
+				 response =  
+					Proxy.ApplyChangePushItem(applyChangePushItemRequest);
 				}
 		}
 		catch (CommunicationException e)
@@ -62,7 +62,7 @@ namespace MySynch.Proxies
                 OnException(e);
             }
 
-			return ; 
+			return  response; 
 
 		}
 		public MySynch.Contracts.Messages.TryOpenChannelResponse TryOpenChannel(MySynch.Contracts.Messages.TryOpenChannelRequest sourceOfDataEndpointName) 
@@ -90,33 +90,6 @@ namespace MySynch.Proxies
             }
 
 			return  response; 
-
-		}
-		public void ForceSetTheSubscriberFeedback(MySynch.Contracts.ISubscriberFeedback SubscriberFeedback) 
-		{
-		 
-		try
-		{
-		                using (new OperationContextScope((IContextChannel)Proxy))
-                {
-				 
-					Proxy.ForceSetTheSubscriberFeedback(SubscriberFeedback);
-				}
-		}
-		catch (CommunicationException e)
-            {
-                OnCommunicationException(e);
-            }
-            catch (TimeoutException e)
-            {
-                OnTimeoutException(e);
-            }
-            catch (Exception e)
-            {
-                OnException(e);
-            }
-
-			return ; 
 
 		}
 	}
