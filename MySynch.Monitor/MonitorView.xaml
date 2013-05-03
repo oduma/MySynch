@@ -43,7 +43,7 @@
                                     <Label Content="Publishing from:"/>
                                     <Label Content="{Binding PublisherRootPath}"/>
                             </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding MessagesVisible}">
                                     <Label Content="{Binding PublisherPackageState}"/>
                                     <Label Content=" Package: "/>
                                     <Label Content="{Binding PackageId}"/>
@@ -51,7 +51,7 @@
                                     <Label Content="{Binding MessagesProcessed.Count}"/>
                                     <Label Content=")"/>
                                 </StackPanel>
-                                <DataGrid ItemsSource="{Binding MessagesProcessed}" IsReadOnly="True" AutoGenerateColumns="False">
+                                <DataGrid ItemsSource="{Binding MessagesProcessed}" IsReadOnly="True" AutoGenerateColumns="False"  Visibility="{Binding MessagesVisible}">
                                     <DataGrid.Columns>
                                     <DataGridTemplateColumn Header="Item Published" Width="SizeToCells" IsReadOnly="true">
                                         <DataGridTemplateColumn.CellTemplate>
@@ -85,7 +85,7 @@
                                     <Label Content="Applying changes to:"/>
                                     <Label Content="{Binding SubscriberRootPath}"/>
                                 </StackPanel>
-                                    <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Horizontal"  Visibility="{Binding MessagesVisible}">
                                     <Label Content="{Binding SubscriberPackageState}"/>
                                         <Label Content=" Package: "/>
                                         <Label Content="{Binding PackageId}"/>
@@ -94,7 +94,7 @@
                                     <Label Content=")"/>
 
                                 </StackPanel>
-                                <DataGrid ItemsSource="{Binding MessagesProcessed}" IsReadOnly="True" AutoGenerateColumns="False">
+                                <DataGrid ItemsSource="{Binding MessagesProcessed}" IsReadOnly="True" AutoGenerateColumns="False"  Visibility="{Binding MessagesVisible}">
                                     <DataGrid.Columns>
                                     <DataGridTemplateColumn Header="Item" Width="SizeToCells" IsReadOnly="true">
                                         <DataGridTemplateColumn.CellTemplate>

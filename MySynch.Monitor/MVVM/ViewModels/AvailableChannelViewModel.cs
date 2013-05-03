@@ -1,11 +1,36 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Windows;
 using MySynch.Contracts.Messages;
 
 namespace MySynch.Monitor.MVVM.ViewModels
 {
     internal class AvailableChannelViewModel:MapChannelViewModel
     {
+        public int NoOfTimesPresentedDone
+        {
+            get;
+            set;
+        }
+
+        private Visibility _messagesVisible;
+        public Visibility MessagesVisible
+        {
+            get
+            {
+                return this._messagesVisible;
+            }
+
+            set
+            {
+                if (value != _messagesVisible)
+                {
+                    _messagesVisible = value;
+                    RaisePropertyChanged(()=>MessagesVisible);
+                }
+            }
+        }
+
         private Status _publisherStatus;
         /// <summary>
         /// Gets/sets whether the TreeViewItem 

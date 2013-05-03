@@ -56,8 +56,12 @@ namespace MySynch.Monitor.Utils
 
         internal static ObservableCollection<AvailableChannelViewModel> AddToChannels(this IEnumerable<MapChannel> inCollection, ObservableCollection<AvailableChannelViewModel> beforeImage)
         {
-            if(beforeImage==null)
-                beforeImage=new ObservableCollection<AvailableChannelViewModel>();
+            if (beforeImage == null)
+                beforeImage = new ObservableCollection<AvailableChannelViewModel>();
+            else
+            {
+                RemoveAllDonePackages(beforeImage);
+            }
             if(inCollection==null)
                 return beforeImage;
             foreach (var mapChannel in inCollection)
@@ -73,6 +77,7 @@ namespace MySynch.Monitor.Utils
                                                                                   SubscriberStatus=mapChannel.SubscriberInfo.Status,
                                                                                   SubscriberRootPath=mapChannel.SubscriberInfo.RootPath
                                                                           };
+                availableChannelViewModel.MessagesVisible = Visibility.Hidden;
                 if(mapChannel.PublisherInfo.CurrentPackage!=null)
                 {
                     availableChannelViewModel.PackageId = mapChannel.PublisherInfo.CurrentPackage.Id;
@@ -81,6 +86,9 @@ namespace MySynch.Monitor.Utils
                         mapChannel.PublisherInfo.CurrentPackage.PackageMessages.AddToMessages((mapChannel.SubscriberInfo.CurrentPackage==null)?null:
                             mapChannel.SubscriberInfo.CurrentPackage.PackageMessages, mapChannel.PublisherInfo.RootPath,
                             mapChannel.SubscriberInfo.RootPath);
+                    availableChannelViewModel.MessagesVisible = (availableChannelViewModel.MessagesProcessed.Count == 0)
+                                                                    ? Visibility.Hidden
+                                                                    : Visibility.Visible;
                 }
                 if(mapChannel.SubscriberInfo.CurrentPackage!=null)
                     availableChannelViewModel.SubscriberPackageState = mapChannel.SubscriberInfo.CurrentPackage.State;
@@ -112,14 +120,42 @@ namespace MySynch.Monitor.Utils
                             existingItem.MessagesProcessed=
                                 mapChannel.PublisherInfo.CurrentPackage.PackageMessages.AddToMessages((mapChannel.SubscriberInfo.CurrentPackage==null)?null:mapChannel.SubscriberInfo.CurrentPackage.PackageMessages,mapChannel.PublisherInfo.RootPath,mapChannel.SubscriberInfo.RootPath,
                             existingItem.MessagesProcessed);
-
                         }
+                        else
+                        {
+                            RemovePackagesFromChannel(existingItem);    
+                        }
+                        availableChannelViewModel.MessagesVisible = (availableChannelViewModel.PackageId ==Guid.Empty)
+                                            ? Visibility.Hidden
+                                            : Visibility.Visible;
+
                         if(mapChannel.SubscriberInfo.CurrentPackage!=null)
                             existingItem.SubscriberPackageState = mapChannel.SubscriberInfo.CurrentPackage.State;
                     }
                 }
             }
             return beforeImage;
+        }
+
+        private static void RemoveAllDonePackages(ObservableCollection<AvailableChannelViewModel> beforeImage)
+        {
+            foreach (var channel in beforeImage.Where(i => i.PublisherPackageState == i.SubscriberPackageState && i.PublisherPackageState == State.Done))
+            {
+                RemovePackagesFromChannel(channel);
+            }
+        }
+
+        private static void RemovePackagesFromChannel(AvailableChannelViewModel channel)
+        {
+            if (channel.NoOfTimesPresentedDone < 5)
+            {
+                channel.NoOfTimesPresentedDone++;
+            }
+            else
+            {
+                channel.PackageId = Guid.Empty;
+                channel.MessagesProcessed = null;
+            }
         }
 
         internal static ObservableCollection<MessageViewModel> AddToMessages( this IEnumerable<FeedbackMessage> inCollection,IEnumerable<FeedbackMessage> subscriberProcessedMessages, string sourceRootPath, string destinationRootPath, ObservableCollection<MessageViewModel> beforeImage=null)
