@@ -59,11 +59,12 @@ namespace MySynch.Monitor.Utils
             if (beforeImage == null)
                 beforeImage = new ObservableCollection<AvailableChannelViewModel>();
             else
-            {
                 RemoveAllDonePackages(beforeImage);
-            }
             if(inCollection==null)
+            {
+                MakeNullChannelsInvisible(beforeImage);
                 return beforeImage;
+            }
             foreach (var mapChannel in inCollection)
             {
                 AvailableChannelViewModel availableChannelViewModel = new AvailableChannelViewModel
@@ -77,7 +78,7 @@ namespace MySynch.Monitor.Utils
                                                                                   SubscriberStatus=mapChannel.SubscriberInfo.Status,
                                                                                   SubscriberRootPath=mapChannel.SubscriberInfo.RootPath
                                                                           };
-                availableChannelViewModel.MessagesVisible = Visibility.Hidden;
+                //availableChannelViewModel.MessagesVisible = Visibility.Hidden;
                 if(mapChannel.PublisherInfo.CurrentPackage!=null)
                 {
                     availableChannelViewModel.PackageId = mapChannel.PublisherInfo.CurrentPackage.Id;
@@ -86,9 +87,9 @@ namespace MySynch.Monitor.Utils
                         mapChannel.PublisherInfo.CurrentPackage.PackageMessages.AddToMessages((mapChannel.SubscriberInfo.CurrentPackage==null)?null:
                             mapChannel.SubscriberInfo.CurrentPackage.PackageMessages, mapChannel.PublisherInfo.RootPath,
                             mapChannel.SubscriberInfo.RootPath);
-                    availableChannelViewModel.MessagesVisible = (availableChannelViewModel.MessagesProcessed.Count == 0)
-                                                                    ? Visibility.Hidden
-                                                                    : Visibility.Visible;
+                    //availableChannelViewModel.MessagesVisible = (availableChannelViewModel.MessagesProcessed.Count == 0)
+                    //                                                ? Visibility.Hidden
+                    //                                                : Visibility.Visible;
                 }
                 if(mapChannel.SubscriberInfo.CurrentPackage!=null)
                     availableChannelViewModel.SubscriberPackageState = mapChannel.SubscriberInfo.CurrentPackage.State;
@@ -125,16 +126,26 @@ namespace MySynch.Monitor.Utils
                         {
                             RemovePackagesFromChannel(existingItem);    
                         }
-                        availableChannelViewModel.MessagesVisible = (availableChannelViewModel.PackageId ==Guid.Empty)
-                                            ? Visibility.Hidden
-                                            : Visibility.Visible;
+                        //availableChannelViewModel.MessagesVisible = (availableChannelViewModel.PackageId ==Guid.Empty)
+                        //                    ? Visibility.Hidden
+                        //                    : Visibility.Visible;
 
                         if(mapChannel.SubscriberInfo.CurrentPackage!=null)
                             existingItem.SubscriberPackageState = mapChannel.SubscriberInfo.CurrentPackage.State;
                     }
                 }
             }
+            MakeNullChannelsInvisible(beforeImage);
             return beforeImage;
+        }
+
+        private static void MakeNullChannelsInvisible(ObservableCollection<AvailableChannelViewModel> beforeImage)
+        {
+            foreach (var channel in beforeImage)
+                if(channel.PackageId==Guid.Empty)
+                    channel.MessagesVisible = Visibility.Hidden;
+                else
+                    channel.MessagesVisible = Visibility.Visible;
         }
 
         private static void RemoveAllDonePackages(ObservableCollection<AvailableChannelViewModel> beforeImage)

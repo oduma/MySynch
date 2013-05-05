@@ -58,10 +58,8 @@ namespace MySynch.Core.Publisher
         private void fsWatcher_Deleted(object sender, FileSystemEventArgs e)
         {
             LoggingManager.Debug("A file deleted: " + e.FullPath);
-            //if it is a directory ignore it
-            if (!File.Exists(e.FullPath))
+            if (Directory.Exists(e.FullPath))
                 return;
-            //queue a delete
             _changePublisher.QueueDelete(e.FullPath);
         }
 
