@@ -28,20 +28,31 @@
         <fire:FirewallException Id="DistributorFWRuleTCP" Name="My Synch Distributor TCP Port [DSTPORTVAL]" Port="[DSTPORTVAL]" Protocol="tcp" Scope="any"/>
         <fire:FirewallException Id="DistributorFWRuleUDP" Name="My Synch Distributor All Access" Program="[#MySynch.Distributor.exe]" Scope="any"/>
       </Component>
+      <Component Id="MySynch.Monitor.exe.config" Directory="DISTRIBUTOR" Guid="{3CDED0A3-ACF6-4FF0-8952-1A9BAE9A9D21}">
+        <File Id="MySynch.Monitor.exe.config" KeyPath="yes" Source="$(var.DistributorConfigSource)\MySynch.Monitor.exe.config" />
+        <util:XmlFile Id="SetMonitorInstancePort"
+                      Action="setValue"
+                      ElementPath="//appSettings/add[\[]@key='LocalDistributorPort'[\]]/@value"
+                      Value="[DSTPORTVAL]"
+                      File="[#MySynch.Monitor.exe.config]" />
+      </Component>
+      <Component Id="MySynch.Monitor" Directory="DISTRIBUTOR" Guid="{BB26C907-F32D-41F9-9B94-B706C28E3213}">
+        <File Id="MySynch.Monitor.exe" Name="MySynch.Monitor.exe" Source="$(var.DistributorExeSource)\MySynch.Monitor.exe" Vital="yes" KeyPath="yes"/>
+      </Component>
     </ComponentGroup>
     <ComponentGroup Id="PublisherGroupConf">
       <Component Id="MySynch.Publisher.exe.config" Directory="PUBLISHER" Guid="{7C74FEB9-2A53-4E73-86A9-C1D001FEAAF5}">
         <File Id="MySynch.Publisher.exe.config" KeyPath="yes" Source="$(var.PublisherConfigSource)\MySynch.Publisher.exe.config" />
         <util:XmlFile Id="SetPublisherInstancePort"
-	                    Action="setValue"
-	                    ElementPath="//appSettings/add[\[]@key='InstancePort'[\]]/@value"
-	                    Value="[PUBPORTVAL]"
-	                    File="[#MySynch.Publisher.exe.config]" />
+                      Action="setValue"
+                      ElementPath="//appSettings/add[\[]@key='InstancePort'[\]]/@value"
+                      Value="[PUBPORTVAL]"
+                      File="[#MySynch.Publisher.exe.config]" />
         <util:XmlFile Id="SetPublisherRootFolder"
-	                    Action="setValue"
-	                    ElementPath="//appSettings/add[\[]@key='LocalRootFolder'[\]]/@value"
-	                    Value="[SRCROOTDIRVAL]"
-	                    File="[#MySynch.Publisher.exe.config]" />
+                      Action="setValue"
+                      ElementPath="//appSettings/add[\[]@key='LocalRootFolder'[\]]/@value"
+                      Value="[SRCROOTDIRVAL]"
+                      File="[#MySynch.Publisher.exe.config]" />
 
       </Component>
       <Component Id="MySynch.Publisher.Service" Directory="PUBLISHER" Guid="{A57774C4-F4E5-4E14-9B4B-09C8BD6EFCAC}">
@@ -67,15 +78,15 @@
       <Component Id="MySynch.Subscriber.exe.config" Directory="SUBSCRIBER" Guid="{D2661E8D-426A-4D56-9050-4BC57AC42F8A}">
         <File Id="MySynch.Subscriber.exe.config" KeyPath="yes" Source="$(var.SubscriberConfigSource)\MySynch.Subscriber.exe.config" />
         <util:XmlFile Id="SetSubscriberInstancePort"
-	                    Action="setValue"
-	                    ElementPath="//appSettings/add[\[]@key='InstancePort'[\]]/@value"
-	                    Value="[SUBPORTVAL]"
-	                    File="[#MySynch.Subscriber.exe.config]" />
+                      Action="setValue"
+                      ElementPath="//appSettings/add[\[]@key='InstancePort'[\]]/@value"
+                      Value="[SUBPORTVAL]"
+                      File="[#MySynch.Subscriber.exe.config]" />
         <util:XmlFile Id="SetSubscriberRootFolder"
-	                    Action="setValue"
-	                    ElementPath="//appSettings/add[\[]@key='LocalRootFolder'[\]]/@value"
-	                    Value="[DSTROOTDIRVAL]"
-	                    File="[#MySynch.Subscriber.exe.config]" />
+                      Action="setValue"
+                      ElementPath="//appSettings/add[\[]@key='LocalRootFolder'[\]]/@value"
+                      Value="[DSTROOTDIRVAL]"
+                      File="[#MySynch.Subscriber.exe.config]" />
 
 
       </Component>

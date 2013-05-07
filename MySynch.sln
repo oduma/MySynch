@@ -30,6 +30,17 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySynch.Tests.Integration", "MySynch.Tests.Integration\MySynch.Tests.Integration.csproj", "{12F4C0B3-87F4-4F2D-A75E-A2FED4C49698}"
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "MySynch.Services.Installer", "MySynch.Services.Installer\MySynch.Services.Installer.wixproj", "{36FE7C56-E471-422F-91ED-BE6FCA8BEF03}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EE4C1C53-0F1E-40D1-ACAB-0BF493593424} = {EE4C1C53-0F1E-40D1-ACAB-0BF493593424}
+		{F8F55F65-CAA1-44C6-96AC-BB7E9A85DFD0} = {F8F55F65-CAA1-44C6-96AC-BB7E9A85DFD0}
+		{8D80CB73-070E-4500-BE9D-6B3FCA18FD22} = {8D80CB73-070E-4500-BE9D-6B3FCA18FD22}
+		{39D279A7-FAF1-4801-A847-F4BD472C5002} = {39D279A7-FAF1-4801-A847-F4BD472C5002}
+		{9E007CA9-F233-4DF1-8A18-A4E3411FDD32} = {9E007CA9-F233-4DF1-8A18-A4E3411FDD32}
+		{EB0395B1-04DE-4402-AB45-4AE7693326A8} = {EB0395B1-04DE-4402-AB45-4AE7693326A8}
+		{9723BCD3-C1ED-4DCF-A585-86D4CCF16BEA} = {9723BCD3-C1ED-4DCF-A585-86D4CCF16BEA}
+		{9E784DE1-3012-4822-9125-33F3808D30A0} = {9E784DE1-3012-4822-9125-33F3808D30A0}
+		{9C0061E1-9FF4-4BEC-A050-C2D21908354B} = {9C0061E1-9FF4-4BEC-A050-C2D21908354B}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySynch.MVVM.Tests", "MySynch.MVVM.Tests\MySynch.MVVM.Tests.csproj", "{986815A7-C827-4316-B91D-5D178839196F}"
 EndProject
@@ -177,8 +188,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		BuildVersion_BuildVersioningStyle = None.None.None.None
-		BuildVersion_UpdateFileVersion = False
 		BuildVersion_UpdateAssemblyVersion = False
+		BuildVersion_UpdateFileVersion = False
+		BuildVersion_BuildVersioningStyle = None.None.None.None
 	EndGlobalSection
 EndGlobal

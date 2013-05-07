@@ -3,11 +3,11 @@
   <AvailableChannel>
     <PublisherInfo>
       <InstanceName>IPublisher.Remote</InstanceName>
-      <Port>8765</Port>
+      <Port>8999</Port>
     </PublisherInfo>
     <SubscriberInfo>
       <InstanceName>ISubscriber.Remote</InstanceName>
-      <Port>8765</Port>
+      <Port>8999</Port>
     </SubscriberInfo>
   </AvailableChannel>
 </ArrayOfAvailableChannel>

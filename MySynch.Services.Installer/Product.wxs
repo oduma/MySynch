@@ -38,5 +38,12 @@
         <ComponentGroupRef Id="DistributorGroupConf"/>
       </Feature>
 		</Feature>
-	</Product>
+    <!--<Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Edit the distributor map" />
+    <Property Id="WixShellExecTarget" Value="[#MySynch.Monitor.exe]" />-->
+    <CustomAction Id="LaunchApplication" FileKey="MySynch.Monitor.exe"
+	ExeCommand="mapEditorOnly" Execute="immediate" Return="asyncNoWait" />
+    <InstallExecuteSequence>
+      <Custom Action='LaunchApplication' After='InstallFinalize' />
+    </InstallExecuteSequence>
+  </Product>
 </Wix>
