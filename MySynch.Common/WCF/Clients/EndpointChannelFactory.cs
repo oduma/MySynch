@@ -1,6 +1,6 @@
 ﻿using System.ServiceModel;
 
-namespace MySynch.Core.WCF.Clients
+namespace MySynch.Common.WCF.Clients
 {
     public class EndpointChannelFactory
     {

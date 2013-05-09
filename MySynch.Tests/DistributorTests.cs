@@ -20,7 +20,7 @@ namespace MySynch.Tests
     [TestFixture]
     public class DistributorTests
     {
-        private ComponentResolver _componentResolver;
+        private MySynchComponentResolver _componentResolver;
 
         [SetUp]
         public void SetUp()
@@ -31,7 +31,7 @@ namespace MySynch.Tests
                 File.Delete("backup.xml");
             }
 
-            _componentResolver=new ComponentResolver();
+            _componentResolver=new MySynchComponentResolver();
             _componentResolver.RegisterAll(new TestInstaller());
         }
 
@@ -148,7 +148,7 @@ namespace MySynch.Tests
         public void LoadDistributorNoRegisteredPublishers()
         {
             Distributor distributor = new Distributor();
-            distributor.InitiateDistributionMap(@"Data\distributormap.xml", new ComponentResolver());
+            distributor.InitiateDistributionMap(@"Data\distributormap.xml", new MySynchComponentResolver());
             Assert.AreEqual(0, distributor.AvailableChannels.Count(c => c.Status == Status.Ok));
         }
         [Test]

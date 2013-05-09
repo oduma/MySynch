@@ -1,23 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Discovery;
-using System.ServiceProcess;
-using MySynch.Common.Logging;
 using MySynch.Common.WCF;
 
 namespace MySynch.Common
 {
-    public abstract class MySynchBaseService: ServiceBase
+    public abstract class MySynchBaseService: WcfHostServiceBase
     {
         protected string _rootFolder;
         protected string _distributorMapFile;
         protected int _instancePort;
 
-        protected List<ServiceHost> _serviceHosts = new List<ServiceHost>();
 
         protected void ReadTheNodeConfiguration()
         {
@@ -40,31 +36,6 @@ namespace MySynch.Common
 
         }
 
-        protected void CloseAllServiceHosts()
-        {
-            if (_serviceHosts != null)
-            {
-                _serviceHosts.ForEach(CloseServiceHost);
-            }
-
-        }
-
-        protected void OpenAllServiceHosts()
-        {
-            _serviceHosts.ForEach(OpenServiceHost);
-        }
-
-        private void OpenServiceHost(ServiceHost serviceHost)
-        {
-            serviceHost.Open();
-            LoggingManager.Debug("Opened Host: " + serviceHost.BaseAddresses[0].ToString());
-        }
-
-        private void CloseServiceHost(ServiceHost serviceHost)
-        {
-            LoggingManager.Debug("Closed Host: " + serviceHost.BaseAddresses[0].ToString());
-            serviceHost.Close();
-        }
 
 
         protected ServiceHost CreateAndConfigureServiceHost<TContract,TInstance>(Uri baseAddress)
@@ -91,7 +62,7 @@ namespace MySynch.Common
             return serviceHost;
         }
 
-        protected ServiceHost CreateAndConfigureServiceHost<T>(T serviceInstance, Uri baseAddress)
+        protected override ServiceHost CreateAndConfigureServiceHost<T>(T serviceInstance, Uri baseAddress)
         {
             var serviceHost = new ServiceHost(serviceInstance, baseAddress);
             var serviceEndPoint = serviceHost.AddServiceEndpoint(typeof(T), ClientServerBindingHelper.GetBinding(false), string.Empty);
@@ -113,7 +84,5 @@ namespace MySynch.Common
 
             return serviceHost;
         }
-
-
     }
 }

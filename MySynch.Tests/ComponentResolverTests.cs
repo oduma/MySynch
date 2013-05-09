@@ -13,7 +13,7 @@ namespace MySynch.Tests
         [Test]
         public void RegisterAllOnce_Ok()
         {
-            ComponentResolver componentResolver=new ComponentResolver();
+            MySynchComponentResolver componentResolver=new MySynchComponentResolver();
             componentResolver.RegisterAll(new MySynchInstaller());
             var publisher = componentResolver.Resolve<IPublisher>("IPublisher.Local");
             Assert.IsInstanceOf(typeof(ChangePublisher),publisher);
@@ -22,12 +22,12 @@ namespace MySynch.Tests
         [Test]
         public void RegisterAllTwice_Ok()
         {
-            ComponentResolver componentResolver = new ComponentResolver();
+            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
             componentResolver.RegisterAll(new MySynchInstaller());
             var publisher = componentResolver.Resolve<IPublisher>("IPublisher.Local");
             Assert.IsInstanceOf(typeof(ChangePublisher), publisher);
 
-            ComponentResolver componentResolver1 = new ComponentResolver();
+            MySynchComponentResolver componentResolver1 = new MySynchComponentResolver();
             componentResolver.RegisterAll(new MySynchInstaller());
             var publisher1 = componentResolver.Resolve<IPublisher>("IPublisher.Local");
             Assert.IsInstanceOf(typeof(ChangePublisher), publisher1);

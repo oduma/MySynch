@@ -1,4 +1,5 @@
-﻿using MySynch.Core.WCF.Clients;
+﻿using MySynch.Common.WCF.Clients;
+using MySynch.Core.WCF.Clients;
 using MySynch.Tests.Stubs;
 using NUnit.Framework;
 

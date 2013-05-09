@@ -71,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseClientTests.cs" />
+    <Compile Include="BrokerTests.cs" />
     <Compile Include="BugsProof.cs" />
     <Compile Include="ChangeApplyerTests.cs" />
     <Compile Include="ChangePublisherGetOfflineChangesTests.cs" />
@@ -85,9 +86,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SameSystemCopierTests.cs" />
     <Compile Include="SourceOfDataTests.cs" />
+    <Compile Include="Stubs\AllStoresInstaller.cs" />
     <Compile Include="Stubs\ChangeApplyerNotPresent.cs" />
     <Compile Include="Stubs\ChangePublisherNotPresent.cs" />
     <Compile Include="Stubs\ClientImplementation.cs" />
+    <Compile Include="Stubs\DeffectiveStores.cs" />
     <Compile Include="Stubs\ITest1.cs" />
     <Compile Include="Stubs\ITest1Proxy.cs" />
     <Compile Include="Stubs\MockRemotePublisher.cs" />
@@ -173,6 +176,9 @@
     <Content Include="Data\Output\Test\F1\F13\F131.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Data\storetest.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Data\test.xml" />
     <Content Include="Data\Test\F1\F11\F12\F12.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -194,6 +200,9 @@
     </Content>
     <Content Include="Data\Test\F3\F3A.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\storetestget.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>

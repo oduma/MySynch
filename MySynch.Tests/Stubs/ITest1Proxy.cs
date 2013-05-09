@@ -1,4 +1,5 @@
-﻿using MySynch.Core.WCF.Clients;
+﻿
+using MySynch.Common.WCF.Clients;
 
 namespace MySynch.Tests.Stubs
 {

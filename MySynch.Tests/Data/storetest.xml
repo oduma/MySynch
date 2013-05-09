@@ -1,0 +1,34 @@
+﻿<?xml version="1.0"?>
+<ArrayOfRegistration xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Registration>
+    <ServiceUrl>Service Url</ServiceUrl>
+    <MessageMethod>Message Method 1</MessageMethod>
+    <OperationTypes>
+      <OperationType>Insert</OperationType>
+      <OperationType>Update</OperationType>
+      <OperationType>Delete</OperationType>
+    </OperationTypes>
+    <ServiceRole>Publisher</ServiceRole>
+  </Registration>
+  <Registration>
+    <ServiceUrl>Service Url1</ServiceUrl>
+    <MessageMethod>Message Method 1</MessageMethod>
+    <OperationTypes>
+      <OperationType>Insert</OperationType>
+      <OperationType>Update</OperationType>
+      <OperationType>Delete</OperationType>
+    </OperationTypes>
+    <ServiceRole>Publisher</ServiceRole>
+  </Registration>
+  <Registration>
+    <ServiceUrl>Service Url2</ServiceUrl>
+    <MessageMethod>Message Method 1</MessageMethod>
+    <OperationTypes>
+      <OperationType>Insert</OperationType>
+      <OperationType>Update</OperationType>
+      <OperationType>Delete</OperationType>
+    </OperationTypes>
+    <ServiceRole>Publisher</ServiceRole>
+  </Registration>
+
+</ArrayOfRegistration>

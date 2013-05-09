@@ -40,7 +40,7 @@ namespace MySynch.Distributor
             _distributor = new Core.Distributor.Distributor();
             _timer = new Timer();
             _timer.Interval = 60000;
-            ComponentResolver componentResolver = new ComponentResolver();
+            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
             componentResolver.RegisterAll(new MySynchInstaller());
 
             _distributor.InitiateDistributionMap(_distributorMapFile, componentResolver);

@@ -59,17 +59,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseClient.cs" />
-    <Compile Include="ChannelFactoryPool.cs" />
     <Compile Include="Discovery\BaseClient.cs" />
     <Compile Include="Discovery\ChannelFactoryPool.cs" />
+    <Compile Include="Discovery\ClientEndpoint.cs" />
     <Compile Include="Discovery\DiscoveryHelper.cs" />
-    <Compile Include="Discovery\ExtensionMethods.cs" />
     <Compile Include="Discovery\IInitiateClient.cs" />
-    <Compile Include="EndpointChannelFactory.cs" />
-    <Compile Include="IInitiateClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ClientEndpoint.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MySynch.Common\MySynch.Common.csproj">

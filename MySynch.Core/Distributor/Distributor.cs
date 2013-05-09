@@ -15,7 +15,7 @@ namespace MySynch.Core.Distributor
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class Distributor : IDistributorMonitor
     {
-        private ComponentResolver _componentResolver = new ComponentResolver();
+        private MySynchComponentResolver _componentResolver = new MySynchComponentResolver();
         internal bool StillProcessing;
         internal bool AllProcessedOk;
         private const int MaxNoOfFailedAttempts = 3;
@@ -161,7 +161,7 @@ namespace MySynch.Core.Distributor
             return result;
         }
         
-        public void InitiateDistributionMap(string mapFile, ComponentResolver componentResolver)
+        public void InitiateDistributionMap(string mapFile, MySynchComponentResolver componentResolver)
         {
             if (componentResolver == null)
                 throw new ArgumentNullException("componentResolver");

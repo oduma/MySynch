@@ -3,19 +3,14 @@ using System.Configuration;
 using System.ServiceModel;
 using System.ServiceModel.Configuration;
 using System.Threading;
-using MySynch.Common;
 using MySynch.Common.Logging;
-using MySynch.Common.WCF;
 
-namespace MySynch.Core.WCF.Clients
+namespace MySynch.Common.WCF.Clients
 {
     public class ChannelFactoryPool
     {
-        private static readonly ClientSection _clientSection =
-            (ClientSection)ConfigurationManager.GetSection("system.serviceModel/client");
-
         private readonly ReaderWriterLock _readerWriterLock = new ReaderWriterLock();
-        private readonly Dictionary<string, ClientEndpoint> _clientEndpoints;
+        internal readonly Dictionary<string, ClientEndpoint> ClientEndpoints;
 
         #region SINGLETON
 
@@ -24,7 +19,7 @@ namespace MySynch.Core.WCF.Clients
 
         private ChannelFactoryPool()
         {
-            _clientEndpoints = new Dictionary<string, ClientEndpoint>(_clientSection.Endpoints.Count);
+            ClientEndpoints = new Dictionary<string, ClientEndpoint>();
         }
 
         public static ChannelFactoryPool Instance
@@ -52,16 +47,14 @@ namespace MySynch.Core.WCF.Clients
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public ChannelFactory<T> GetChannelFactory<T>(string endpointName)
+        public ChannelFactory<T> GetChannelFactory<T>(string serverAddress)
         {
-            LoggingManager.Debug("Trying to get channelfactory for endpoint: " + endpointName);
+            LoggingManager.Debug("Trying to get channelfactory for endpoint: " + serverAddress);
 
             ChannelFactory<T> channelFactory;
 
-            if (!TryGetChannelFactory(endpointName, out channelFactory))
-            {
-                channelFactory = CreateAndCache<T>(endpointName);
-            }
+            if (!TryGetChannelFactory(serverAddress, out channelFactory))
+                channelFactory = CreateAndCache<T>(serverAddress);
             LoggingManager.Debug("Got channel factory for:" + channelFactory.Endpoint.Address);
 
             return channelFactory;
@@ -77,14 +70,14 @@ namespace MySynch.Core.WCF.Clients
         /// <typeparam name="T"></typeparam>
         /// <param name="channelFactory"></param>
         /// <returns></returns>
-        private bool TryGetChannelFactory<T>(string endpointName, out ChannelFactory<T> channelFactory)
+        private bool TryGetChannelFactory<T>(string serverAddress, out ChannelFactory<T> channelFactory)
         {
             _readerWriterLock.AcquireReaderLock(1000);
             try
             {
                 ClientEndpoint clientEndpoint;
 
-                if (_clientEndpoints.TryGetValue(typeof(T).Name + endpointName, out clientEndpoint))
+                if (ClientEndpoints.TryGetValue(typeof(T).Name + serverAddress, out clientEndpoint))
                 {
                     EndpointChannelFactory endpointChannelFactory = clientEndpoint.Endpoint;
 
@@ -109,7 +102,7 @@ namespace MySynch.Core.WCF.Clients
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        private ChannelFactory<T> CreateAndCache<T>(string endpointName)
+        private ChannelFactory<T> CreateAndCache<T>(string serverAddress)
         {
             //Only one thread at a time can enter the upgradeable lock, 
             //and he has the right to upgrade to write
@@ -122,7 +115,7 @@ namespace MySynch.Core.WCF.Clients
                 ClientEndpoint clientEndpoint;
                 EndpointChannelFactory endpointChannelFactory;
 
-                if (_clientEndpoints.TryGetValue(typeof(T).Name + endpointName, out clientEndpoint))
+                if (ClientEndpoints.TryGetValue(typeof(T).Name + serverAddress, out clientEndpoint))
                 {
                     //already there so no need to create it
                     endpointChannelFactory = clientEndpoint.Endpoint;
@@ -135,9 +128,9 @@ namespace MySynch.Core.WCF.Clients
                     _readerWriterLock.UpgradeToWriterLock(1000);
                     try
                     {
-                        clientEndpoint = GetClientEndpoint<T>(endpointName);
+                        clientEndpoint = GetClientEndpoint<T>(serverAddress);
 
-                        _clientEndpoints.Add(typeof(T).Name + endpointName, clientEndpoint);
+                        ClientEndpoints.Add(typeof(T).Name + serverAddress, clientEndpoint);
 
                         endpointChannelFactory = clientEndpoint.Endpoint;
 
@@ -160,27 +153,18 @@ namespace MySynch.Core.WCF.Clients
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        private ClientEndpoint GetClientEndpoint<T>(string endpointName)
+        private static ClientEndpoint GetClientEndpoint<T>(string serverAddress)
         {
-            ChannelEndpointElement endpointConfigElement = null;
-            var clientEndpoint = new ClientEndpoint(typeof(T),endpointName);
-            for(int i=0;i<_clientSection.Endpoints.Count;i++)
-            {
-                if(_clientSection.Endpoints[i].Name==endpointName && _clientSection.Endpoints[i].Contract==typeof(T).FullName)
-                {
-                    endpointConfigElement = _clientSection.Endpoints[i];
-                    
-                }
-            }
+            EndpointAddress baseAddress= new EndpointAddress(serverAddress);
+
+            var clientEndpoint = new ClientEndpoint(typeof(T), serverAddress);
+
             var endpointChannelFactory = new EndpointChannelFactory
             {
-                EndpointAddress = new EndpointAddress(endpointConfigElement.Address)
+                EndpointAddress = baseAddress
             };
-            endpointChannelFactory.ChannelFactory = new ChannelFactory<T>(endpointConfigElement.Name,
+            endpointChannelFactory.ChannelFactory = new ChannelFactory<T>(ClientServerBindingHelper.GetBinding(false).ApplyClientBinding(),
                                                                           endpointChannelFactory.EndpointAddress);
-
-            //endpointChannelFactory.ChannelFactory.Endpoint.Behaviors.Add(new ErgoSecurityBehavior());
-
             endpointChannelFactory.ChannelFactory.Endpoint.Behaviors.Add(new MySynchAuditBehavior());
 
             endpointChannelFactory.ChannelFactory.Open();

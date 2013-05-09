@@ -1,13 +1,13 @@
 ﻿using System;
 
-namespace MySynch.Core.WCF.Clients
+namespace MySynch.Common.WCF.Clients
 {
     internal class ClientEndpoint
     {
 
-        public ClientEndpoint(Type endpointType, string endpointName)
+        public ClientEndpoint(Type endpointType, string serverAddress)
         {
-            EndpointIdentifier = endpointType.Name + endpointName;
+            EndpointIdentifier = endpointType.Name + serverAddress;
         }
 
         public EndpointChannelFactory Endpoint { get; set; }

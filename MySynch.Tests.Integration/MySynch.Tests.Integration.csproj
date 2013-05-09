@@ -61,8 +61,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BrokerAttachDetachTests.cs" />
     <Compile Include="DiscoveryTests.cs" />
     <Compile Include="FullIntegrationTests.cs" />
+    <Compile Include="Helpers\BrokerClientBuild.cs" />
     <Compile Include="PublisherTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SubscriberTests.cs" />

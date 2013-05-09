@@ -1,25 +1,24 @@
 ﻿using System;
 using System.ServiceModel;
-using MySynch.Common;
 using MySynch.Common.Logging;
 
-namespace MySynch.Core.WCF.Clients
+namespace MySynch.Common.WCF.Clients
 {
     public abstract class BaseClient<T> : IDisposable,IInitiateClient
     {
         private ICommunicationObject _channel;
         public T Proxy;
 
-        public void InitiateUsingEndpoint(string endpointName)
+        public void InitiateUsingServerAddress(string serverAddress)
         {
-            LoggingManager.Debug("Initating using endpoint: " + endpointName);
+            LoggingManager.Debug("Initating using serverAddress: " + serverAddress);
             using (LoggingManager.LogMySynchPerformance())
             {
 
                 ChannelFactory<T> channelFactory;
                 try
                 {
-                    channelFactory = ChannelFactoryPool.Instance.GetChannelFactory<T>(endpointName);
+                    channelFactory = ChannelFactoryPool.Instance.GetChannelFactory<T>(serverAddress);
                 }
                 catch (Exception ex)
                 {

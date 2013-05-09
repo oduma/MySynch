@@ -1,11 +1,10 @@
-﻿using System;
-using Castle.MicroKernel.Registration;
+﻿using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
-using MySynch.Common;
 using MySynch.Common.Logging;
+using MySynch.Common.Serialization;
 using MySynch.Contracts;
-using MySynch.Core.Interfaces;
+using MySynch.Contracts.Messages;
 using MySynch.Core.Publisher;
 using MySynch.Proxies;
 using MySynch.Proxies.Interfaces;
@@ -27,7 +26,8 @@ namespace MySynch.Core
                     Component.For<IPublisherProxy>().ImplementedBy<PublisherClient>().Named("IPublisher.Remote"),
                     Component.For<ISubscriberProxy>().ImplementedBy<SubscriberClient>().Named("ISubscriber.Remote"),
                     Component.For<ISourceOfDataProxy>().ImplementedBy<SourceOfDataClient>().Named(
-                        "ISourceOfData.Remote")
+                        "ISourceOfData.Remote"),
+                    Component.For<IStore<Registration>>().ImplementedBy<FileSystemStore<Registration>>().Named("IStore.Registration.FileSystemStore")
                     );
             }
         }

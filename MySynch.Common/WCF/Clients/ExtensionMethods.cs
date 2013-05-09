@@ -1,7 +1,7 @@
 ﻿using System.ServiceModel;
 using System.ServiceModel.Channels;
 
-namespace MySynch.Core.WCF.Clients.Discovery
+namespace MySynch.Common.WCF.Clients
 {
     public static class ExtensionMethods
     {
