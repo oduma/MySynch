@@ -101,6 +101,9 @@
   <ItemGroup>
     <Compile Include="Broker\Broker.cs" />
     <Compile Include="Broker\ExtensionMethods.cs" />
+    <Compile Include="ConfigurationHelper.cs" />
+    <Compile Include="DataTypes\PublisherConfig.cs" />
+    <Compile Include="Interfaces\IPushPublisher.cs" />
     <Compile Include="MySynchComponentResolver.cs" />
     <Compile Include="DataTypes\SynchItem.cs" />
     <Compile Include="DataTypes\SynchItemData.cs" />
@@ -111,6 +114,7 @@
     <Compile Include="Publisher\ItemDiscoverer.cs" />
     <Compile Include="Publisher\LocalSourceOfData.cs" />
     <Compile Include="Publisher\PublisherSetupException.cs" />
+    <Compile Include="Publisher\PushPublisher.cs" />
     <Compile Include="Publisher\SynchItemDataEqualityComparer.cs" />
     <Compile Include="Publisher\SynchItemManager.cs" />
     <Compile Include="Publisher\RemoteSourceOfData.cs" />
@@ -172,7 +176,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" />
+      <UserProperties BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

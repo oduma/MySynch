@@ -102,6 +102,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DelayStartingService.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="IOC\ComponentNotRegieteredException.cs" />
     <Compile Include="IOC\ComponentResolver.cs" />
     <Compile Include="Logging\Log4NetExtensions.cs" />

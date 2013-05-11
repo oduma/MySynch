@@ -1,11 +1,9 @@
 ﻿using System;
-using System.ServiceModel;
 using System.Timers;
 using MySynch.Common;
 using MySynch.Common.Logging;
 using MySynch.Contracts;
 using MySynch.Core;
-using MySynch.Core.DataTypes;
 
 namespace MySynch.Distributor
 {

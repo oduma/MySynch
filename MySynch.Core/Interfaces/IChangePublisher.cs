@@ -1,6 +1,4 @@
-﻿using System;
-using MySynch.Contracts;
-using MySynch.Core.DataTypes;
+﻿using MySynch.Contracts;
 using MySynch.Core.Publisher;
 
 namespace MySynch.Core.Interfaces

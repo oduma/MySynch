@@ -6,6 +6,7 @@ using MySynch.Common.Logging;
 using MySynch.Common.Serialization;
 using MySynch.Contracts;
 using MySynch.Core;
+using MySynch.Core.Broker;
 
 namespace MySynch.Broker
 {
@@ -19,7 +20,7 @@ namespace MySynch.Broker
         {
             LoggingManager.Debug("Initializing service");
             InitializeComponent();
-            _storeType = Helper.ReadTheNodeConfiguration();
+            _storeType = ConfigurationHelper.ReadBrokerNodeConfiguration();
             LoggingManager.Debug("Initializion will be using StoreName: " + _storeType.StoreName + " of type: " +
                                  _storeType.StoreTypeName);
         }
