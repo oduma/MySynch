@@ -7,9 +7,7 @@ namespace MySynch.Contracts
     public interface IPublisher:ICommunicationComponent
     {
         [OperationContract]
-        PublishPackageRequestResponse PublishPackage();
+        GetDataResponse GetData(GetDataRequest request);
 
-        [OperationContract]
-        void RemovePackage(PublishPackageRequestResponse packageRequestResponsePublished);
     }
 }

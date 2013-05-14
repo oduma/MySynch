@@ -38,15 +38,15 @@ namespace MySynch.Proxies
 			return  response; 
 
 		}
-		public MySynch.Contracts.Messages.PublishPackageRequestResponse PublishPackage() 
+		public MySynch.Contracts.Messages.GetDataResponse GetData(MySynch.Contracts.Messages.GetDataRequest request) 
 		{
-		MySynch.Contracts.Messages.PublishPackageRequestResponse response = new MySynch.Contracts.Messages.PublishPackageRequestResponse(); 
+		MySynch.Contracts.Messages.GetDataResponse response = new MySynch.Contracts.Messages.GetDataResponse(); 
 		try
 		{
 		                using (new OperationContextScope((IContextChannel)Proxy))
                 {
 				 response =  
-					Proxy.PublishPackage();
+					Proxy.GetData(request);
 				}
 		}
 		catch (CommunicationException e)
@@ -63,33 +63,6 @@ namespace MySynch.Proxies
             }
 
 			return  response; 
-
-		}
-		public void RemovePackage(MySynch.Contracts.Messages.PublishPackageRequestResponse packageRequestResponsePublished) 
-		{
-		 
-		try
-		{
-		                using (new OperationContextScope((IContextChannel)Proxy))
-                {
-				 
-					Proxy.RemovePackage(packageRequestResponsePublished);
-				}
-		}
-		catch (CommunicationException e)
-            {
-                OnCommunicationException(e);
-            }
-            catch (TimeoutException e)
-            {
-                OnTimeoutException(e);
-            }
-            catch (Exception e)
-            {
-                OnException(e);
-            }
-
-			return ; 
 
 		}
 	}

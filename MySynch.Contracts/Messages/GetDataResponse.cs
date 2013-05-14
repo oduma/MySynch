@@ -3,9 +3,10 @@
 namespace MySynch.Contracts.Messages
 {
     [MessageContract]
-    public class RemoteRequest
+    public class GetDataResponse
     {
-        [MessageHeader]
-        public string FileName { get; set; }
+        [MessageBodyMember]
+        public byte[] Data { get; set; }
+
     }
 }

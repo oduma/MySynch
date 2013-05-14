@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Configuration;
-using System.Linq;
 using MySynch.Common;
 using MySynch.Common.Logging;
 using MySynch.Common.Serialization;
 using MySynch.Contracts;
 using MySynch.Core;
-using MySynch.Core.Broker;
 
 namespace MySynch.Broker
 {

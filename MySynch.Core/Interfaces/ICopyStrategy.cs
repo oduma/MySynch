@@ -6,6 +6,6 @@ namespace MySynch.Core.Interfaces
     {
         bool Copy(string source, string target);
 
-        void Initialize(ISourceOfData sourceOfData);
+        void Initialize(IPublisher publisher);
     }
 }

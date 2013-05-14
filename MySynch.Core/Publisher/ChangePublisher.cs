@@ -8,12 +8,11 @@ using MySynch.Common.Logging;
 using MySynch.Common.Serialization;
 using MySynch.Contracts.Messages;
 using MySynch.Core.DataTypes;
-using MySynch.Core.Interfaces;
 
 namespace MySynch.Core.Publisher
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
-    public class ChangePublisher: IChangePublisher
+    public class ChangePublisher
     {
         private SortedList<string,OperationType> _temporaryStore;
         private object _lock= new object();

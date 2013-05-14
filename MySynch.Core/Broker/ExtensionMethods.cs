@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MySynch.Common.Logging;
 using MySynch.Contracts.Messages;
+using MySynch.Core.DataTypes;
 
 namespace MySynch.Core.Broker
 {
@@ -42,6 +43,12 @@ namespace MySynch.Core.Broker
                 LoggingManager.LogMySynchSystemError(ex);
                 throw;
             }
+        }
+
+        internal static BrokerMessage ConvertToBrokerMessage (this PublisherMessage publisherMessage)
+        {
+            var brokerMessage = (BrokerMessage) publisherMessage;
+            return brokerMessage;
         }
     }
 }

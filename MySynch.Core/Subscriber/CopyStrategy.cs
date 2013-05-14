@@ -10,7 +10,7 @@ namespace MySynch.Core.Subscriber
 {
     public class CopyStrategy:ICopyStrategy
     {
-        private ISourceOfData _sourceOfData;
+        private IPublisher _publisher;
 
         public bool Copy(string source, string target)
         {
@@ -56,13 +56,13 @@ namespace MySynch.Core.Subscriber
             if (!Directory.Exists(Path.GetDirectoryName(temporaryTarget)))
                 Directory.CreateDirectory(Path.GetDirectoryName(temporaryTarget));
 
-            if (_sourceOfData==null || _sourceOfData.GetType().ToString()=="MySynch.Core.LocalSourceOfData")
+            if (_publisher==null || _publisher.GetType().ToString()=="MySynch.Core.LocalSourceOfData")
                 if(File.Exists(source))
                 {
                     File.Copy(source, temporaryTarget);
                     return;
                 }
-            var response = _sourceOfData.GetData(new RemoteRequest { FileName = source });
+            var response = _publisher.GetData(new GetDataRequest { FileName = source });
             using (var stream = File.Create(temporaryTarget))
             {
                 stream.Write(response.Data, 0, response.Data.Length);
@@ -70,9 +70,9 @@ namespace MySynch.Core.Subscriber
             }
         }
 
-        public void Initialize(ISourceOfData sourceOfData)
+        public void Initialize(IPublisher publisher)
         {
-            _sourceOfData = sourceOfData;
+            _publisher = publisher;
         }
     }
 }

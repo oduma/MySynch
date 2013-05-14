@@ -77,9 +77,6 @@
     <Compile Include="Interfaces\IPublisherProxy.cs">
       <DependentUpon>ProxyInterfaces.tt</DependentUpon>
     </Compile>
-    <Compile Include="Interfaces\ISourceOfDataProxy.cs">
-      <DependentUpon>ProxyInterfaces.tt</DependentUpon>
-    </Compile>
     <Compile Include="Interfaces\ISubscriberProxy.cs">
       <DependentUpon>ProxyInterfaces.tt</DependentUpon>
     </Compile>
@@ -90,9 +87,6 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PublisherClient.cs">
-      <DependentUpon>Client.tt</DependentUpon>
-    </Compile>
-    <Compile Include="SourceOfDataClient.cs">
       <DependentUpon>Client.tt</DependentUpon>
     </Compile>
     <Compile Include="SubscriberClient.cs">
@@ -149,7 +143,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
