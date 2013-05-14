@@ -24,7 +24,7 @@ namespace MySynch.Core
             return new StoreType { StoreName = storeName, StoreTypeName = storeTypeName };
         }
 
-        public static PublisherConfig ReadPublisherNodeConfiguration()
+        public static LocalComponentConfig ReadLocalComponentConfiguration()
         {
             var key = Enumerable.FirstOrDefault<string>(ConfigurationManager.AppSettings.AllKeys, k => k == "BrokerName");
             string brokerName;
@@ -39,7 +39,7 @@ namespace MySynch.Core
             else
                 rootFolder = ConfigurationManager.AppSettings[key];
 
-            return new PublisherConfig {BrokerName = brokerName, RootFolder = rootFolder};
+            return new LocalComponentConfig {BrokerName = brokerName, RootFolder = rootFolder};
 
         }
 

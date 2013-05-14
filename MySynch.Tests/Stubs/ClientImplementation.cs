@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ServiceModel.Description;
 using MySynch.Common.WCF.Clients;
 using MySynch.Contracts.Messages;
 
@@ -12,6 +14,11 @@ namespace MySynch.Tests.Stubs
         }
 
         public GetHeartbeatResponse GetHeartbeat()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override List<IEndpointBehavior> GetEndpointBehaviors()
         {
             throw new NotImplementedException();
         }

@@ -102,9 +102,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DelayStartingService.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="IOC\ComponentNotRegieteredException.cs" />
     <Compile Include="IOC\ComponentResolver.cs" />
     <Compile Include="Logging\Log4NetExtensions.cs" />
@@ -128,8 +125,10 @@
     <Compile Include="WCF\Clients\EndpointChannelFactory.cs" />
     <Compile Include="WCF\Clients\ExtensionMethods.cs" />
     <Compile Include="WCF\Clients\IInitiateClient.cs" />
+    <Compile Include="WCF\Clients\MySynchCustomClientMessageInspector.cs" />
     <Compile Include="WCF\MySynchAuditBehavior.cs" />
     <Compile Include="WCF\MySynchAuditMessageInspector.cs" />
+    <Compile Include="WCF\MySynchCustomBehavior.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">

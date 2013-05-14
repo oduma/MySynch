@@ -1,49 +1,76 @@
 ﻿using System;
-using System.ServiceModel;
-using MySynch.Common;
+using System.Collections.Generic;
+using System.IO;
 using MySynch.Common.Logging;
 using MySynch.Contracts;
+using MySynch.Contracts.Messages;
 using MySynch.Core;
 
 namespace MySynch.Subscriber
 {
-    public partial class SubscriberInstance : MySynchBaseService
+    public partial class SubscriberInstance : MySynchServiceBase
     {
         public SubscriberInstance()
         {
             LoggingManager.Debug("Initializing service");
+            CurrentAttachRequest = new AttachRequest
+            {
+                RegistrationRequest =
+                    new Registration
+                    {
+                        MessageMethod = "temp placeholder 1",
+                        OperationTypes =
+                            new List<OperationType>
+                                                                 {
+                                                                     OperationType.Delete,
+                                                                     OperationType.Insert,
+                                                                     OperationType.Update
+                                                                 },
+                        ServiceRole = ServiceRole.Subscriber,
+                        ServiceUrl = HostUrl
+                    }
+            };
+            HostUrl = string.Format("http://{0}/subscriber/",
+                        System.Net.Dns.
+                            GetHostName().ToLower());
+
             InitializeComponent();
-            ReadTheNodeConfiguration();
-            LoggingManager.Debug("Initializion Ok subscriber.");
+            LoggingManager.Debug("Will Initialize subscribing changes to folder: " + LocalComponentConfig.RootFolder);
         }
 
         protected override void OnStart(string[] args)
         {
             LoggingManager.Debug("Starting service");
             CloseAllServiceHosts();
-            InitializeLocalSubscriber();
+            if (InitializeLocalComponent())
+                StartTimer(60000, TimerElapseMethod);
             OpenAllServiceHosts();
             LoggingManager.Debug("Service started.");
 
         }
 
-        private void InitializeLocalSubscriber()
+        public override bool InitializeLocalComponent()
         {
-            if (!string.IsNullOrEmpty(_rootFolder))
-            {
-                LoggingManager.Debug("Initializing Subscriber with "+ _rootFolder);
-                var changeApplyer = new Core.Subscriber.Subscriber();
-                changeApplyer.Initialize(_rootFolder);
-                _serviceHosts.Add(CreateAndConfigureServiceHost<ISubscriber>(changeApplyer, new Uri(string.Format("http://{0}:{1}/subscriber/{2}/",
-        System.Net.Dns.GetHostName(), _instancePort, Guid.NewGuid().ToString()))));
-                LoggingManager.Debug("Subscriber Initialized.");
-            }
+            if (string.IsNullOrEmpty(LocalComponentConfig.RootFolder) || !Directory.Exists(LocalComponentConfig.RootFolder))
+                return false;
+            MySynchComponentResolver componentResolver=new MySynchComponentResolver();
+            componentResolver.RegisterAll(new MySynchInstaller());
+            LocalComponent = new Core.Subscriber.Subscriber(componentResolver);
+
+            _serviceHosts.Add(CreateAndConfigureServiceHost<ISubscriber>((ISubscriber)LocalComponent,
+                                                                     new Uri(HostUrl)));
+            LoggingManager.Debug("Subscriber Initialized.");
+            
+            return true;
+
         }
 
         protected override void OnStop()
         {
             LoggingManager.Debug("Stoping service");
             CloseAllServiceHosts();
+            DetachFromBroker();
+            LocalComponent.Close();
             LoggingManager.Debug("Service stoped.");
 
         }

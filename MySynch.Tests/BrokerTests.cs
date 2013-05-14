@@ -306,6 +306,7 @@ namespace MySynch.Tests
         }
         #endregion
 
+        #region Attach and Detach 
         [Test]
         public void ListAllRegistrations_Ok()
         {
@@ -315,8 +316,8 @@ namespace MySynch.Tests
             Broker broker = new Broker(storeType, componentResolver);
             var response = broker.ListAllRegistrations();
             Assert.IsNotNull(response.Registrations);
-            Assert.AreEqual(3,response.Registrations.Count);
-            Assert.False(response.Registrations.Any(r=>r.ServiceRole==ServiceRole.Subscriber));
+            Assert.AreEqual(3, response.Registrations.Count);
+            Assert.False(response.Registrations.Any(r => r.ServiceRole == ServiceRole.Subscriber));
         }
         [Test]
         public void ListAllRegistrations_After_AnInsert()
@@ -361,7 +362,7 @@ namespace MySynch.Tests
 
             var response = broker.ListAllRegistrations();
             Assert.IsNotNull(response.Registrations);
-            Assert.AreEqual(2, response.Registrations.Count(r=>r.ServiceRole==ServiceRole.Publisher));
+            Assert.AreEqual(2, response.Registrations.Count(r => r.ServiceRole == ServiceRole.Publisher));
         }
         [Test]
         public void ListAllRegistrations_Error()
@@ -386,6 +387,52 @@ namespace MySynch.Tests
             Assert.AreEqual(0, response.Registrations.Count);
         }
 
+        #endregion
 
+        [Test]
+        public void ReceiveAndDistributeMessage_Ok()
+        {
+            StoreType storeType = new StoreType { StoreName = "store1.xml", StoreTypeName = "IStore.Registration.FileSystemStore" };
+            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            componentResolver.RegisterAll(new AllStoresInstaller());
+            Broker broker = new Broker(storeType, componentResolver);
+            AttachRequest request = new AttachRequest
+            {
+                RegistrationRequest =
+                    new Registration
+                    {
+                        MessageMethod = "Message Method 1",
+                        OperationTypes =
+                            new List<OperationType>
+                                                                {
+                                                                    OperationType.Insert,
+                                                                    OperationType.Update,
+                                                                    OperationType.Delete
+                                                                },
+                        ServiceRole = ServiceRole.Publisher,
+                        ServiceUrl = "Service Url"
+                    }
+            };
+            ReceiveAndDistributeMessageRequest mRequest = new ReceiveAndDistributeMessageRequest
+                                                              {
+                                                                  PublisherMessage = 
+                                                                      new PublisherMessage
+                                                                          {
+                                                                              AbsolutePath = "abc",
+                                                                              OperationType = OperationType.Insert
+                                                                          }
+                                                              };
+            broker.ReceiveAndDistributeMessage(mRequest);
+            var mResponse = broker.ListAllMessages();
+            Assert.IsNotNull(mResponse);
+            Assert.IsNotNull(mResponse.AvailableMessages);
+            Assert.AreEqual(1,mResponse.AvailableMessages.Count);
+        }
+
+        [Test]
+        public void ListAllMessages_Ok()
+        {
+            Assert.Fail();
+        }
     }
 }

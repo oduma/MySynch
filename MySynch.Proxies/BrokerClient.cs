@@ -119,6 +119,60 @@ namespace MySynch.Proxies
 			return  response; 
 
 		}
+		public void ReceiveAndDistributeMessage(MySynch.Contracts.Messages.ReceiveAndDistributeMessageRequest request) 
+		{
+		 
+		try
+		{
+		                using (new OperationContextScope((IContextChannel)Proxy))
+                {
+				 
+					Proxy.ReceiveAndDistributeMessage(request);
+				}
+		}
+		catch (CommunicationException e)
+            {
+                OnCommunicationException(e);
+            }
+            catch (TimeoutException e)
+            {
+                OnTimeoutException(e);
+            }
+            catch (Exception e)
+            {
+                OnException(e);
+            }
+
+			return ; 
+
+		}
+		public MySynch.Contracts.Messages.ListAllMessagesResponse ListAllMessages() 
+		{
+		MySynch.Contracts.Messages.ListAllMessagesResponse response = new MySynch.Contracts.Messages.ListAllMessagesResponse(); 
+		try
+		{
+		                using (new OperationContextScope((IContextChannel)Proxy))
+                {
+				 response =  
+					Proxy.ListAllMessages();
+				}
+		}
+		catch (CommunicationException e)
+            {
+                OnCommunicationException(e);
+            }
+            catch (TimeoutException e)
+            {
+                OnTimeoutException(e);
+            }
+            catch (Exception e)
+            {
+                OnException(e);
+            }
+
+			return  response; 
+
+		}
 	}
 }
 		

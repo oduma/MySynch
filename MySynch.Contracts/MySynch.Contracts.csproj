@@ -57,19 +57,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplyCustomClientBehavior.cs" />
+    <Compile Include="Messages\BrokerMessage.cs" />
+    <Compile Include="Messages\Destination.cs" />
+    <Compile Include="Messages\ListAllMessagesResponse.cs" />
     <Compile Include="Messages\ListAllRegistrationsResponse.cs" />
     <Compile Include="Messages\DetachRequest.cs" />
     <Compile Include="Messages\DetachResponse.cs" />
     <Compile Include="Messages\AttachResponse.cs" />
     <Compile Include="IBroker.cs" />
     <Compile Include="Messages\AttachRequest.cs" />
-    <Compile Include="ISourceOfData.cs" />
     <Compile Include="ISubscriber.cs" />
     <Compile Include="ICommunicationComponent.cs" />
     <Compile Include="IDistributorMonitor.cs" />
     <Compile Include="IPublisher.cs" />
-    <Compile Include="Messages\ApplyChangePushItemRequest.cs" />
-    <Compile Include="Messages\ApplyChangePushItemResponse.cs" />
+    <Compile Include="Messages\ReceiveMessageRequest.cs" />
+    <Compile Include="Messages\ReceiveMessageResponse.cs" />
+    <Compile Include="Messages\PublisherMessage.cs" />
+    <Compile Include="Messages\ReceiveAndDistributeMessageRequest.cs" />
     <Compile Include="Messages\Registration.cs" />
     <Compile Include="Messages\ChangePushItem.cs" />
     <Compile Include="Messages\FeedbackMessage.cs" />
@@ -81,12 +86,10 @@
     <Compile Include="Messages\GetHeartbeatResponse.cs" />
     <Compile Include="Messages\OperationType.cs" />
     <Compile Include="Messages\ServiceRole.cs" />
-    <Compile Include="Messages\RemoteRequest.cs" />
-    <Compile Include="Messages\RemoteResponse.cs" />
+    <Compile Include="Messages\GetDataRequest.cs" />
+    <Compile Include="Messages\GetDataResponse.cs" />
     <Compile Include="Messages\State.cs" />
     <Compile Include="Messages\Status.cs" />
-    <Compile Include="Messages\TryOpenChannelRequest.cs" />
-    <Compile Include="Messages\TryOpenChannelResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

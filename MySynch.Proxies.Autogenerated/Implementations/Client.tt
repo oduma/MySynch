@@ -8,6 +8,7 @@
 <#@ import namespace="System.Collections" #>
 <#@ import namespace="System.Collections.Generic" #> 
 <#@ import namespace="System.Reflection" #> 
+<#@ import namespace="MySynch.Contracts"#> 
 <#@ include file="ClientTemplate.tt" #>
 <#
 	var contractsAssembly=AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a=>a.GetName().Name=="MySynch.Contracts");

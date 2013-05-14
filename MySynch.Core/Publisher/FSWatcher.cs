@@ -1,9 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
-using MySynch.Common;
 using MySynch.Common.Logging;
-using MySynch.Core.Interfaces;
 
 namespace MySynch.Core.Publisher
 {
@@ -11,16 +9,20 @@ namespace MySynch.Core.Publisher
     {
         public string Path { get; private set; }
 
-        private IChangePublisher _changePublisher;
+        private Action<string> _queueInsert;
+        private Action<string> _queueUpdate;
+        private Action<string> _queueDelete;
 
-        public FSWatcher(IChangePublisher changePublisher)
+        public FSWatcher(string localRootFolder,Action<string> queueInsert, Action<string> queueUpdate, Action<string> queueDelete)
         {
-            LoggingManager.Debug("Initializing the FS Watcher with publisher: " + changePublisher.RootFolder);
-            if(changePublisher==null || string.IsNullOrEmpty(changePublisher.RootFolder))
-                throw new ArgumentNullException("changePublisher");
-            _changePublisher = changePublisher;
+            LoggingManager.Debug("Initializing the FS Watcher with publisher: " +localRootFolder);
+            if(string.IsNullOrEmpty(localRootFolder))
+                throw new ArgumentNullException("localRootFolder");
+            _queueInsert = queueInsert;
+            _queueUpdate = queueUpdate;
+            _queueDelete = queueDelete;
 
-            FileSystemWatcher fsWatcher = new FileSystemWatcher(changePublisher.RootFolder);
+            FileSystemWatcher fsWatcher = new FileSystemWatcher(localRootFolder);
             fsWatcher.IncludeSubdirectories = true;
             
 
@@ -33,6 +35,7 @@ namespace MySynch.Core.Publisher
             fsWatcher.EnableRaisingEvents = true;
             LoggingManager.Debug("Initilization done waiting for changes in the FS.");
         }
+
 
         private void fsWatcher_Renamed(object sender, RenamedEventArgs e)
         {
@@ -50,8 +53,8 @@ namespace MySynch.Core.Publisher
 
             //queue a delete
             //queue an insert
-            _changePublisher.QueueDelete(e.OldFullPath);
-            _changePublisher.QueueInsert(e.FullPath);
+            _queueDelete(e.OldFullPath);
+            _queueInsert(e.FullPath);
 
         }
 
@@ -60,7 +63,7 @@ namespace MySynch.Core.Publisher
             LoggingManager.Debug("A file deleted: " + e.FullPath);
             if (Directory.Exists(e.FullPath))
                 return;
-            _changePublisher.QueueDelete(e.FullPath);
+            _queueDelete(e.FullPath);
         }
 
         private void fsWatcher_Changed(object sender, FileSystemEventArgs e)
@@ -77,7 +80,7 @@ namespace MySynch.Core.Publisher
                 Thread.Sleep(500);
             }
             //queue an update;
-            _changePublisher.QueueUpdate(e.FullPath);
+            _queueUpdate(e.FullPath);
         }
 
         private void fsWatcher_Created(object sender, FileSystemEventArgs e)
@@ -93,7 +96,7 @@ namespace MySynch.Core.Publisher
             {
                 Thread.Sleep(500);
             }
-            _changePublisher.QueueInsert(e.FullPath);
+            _queueInsert(e.FullPath);
         }
 
         static bool IsFileLocked(FileInfo file)

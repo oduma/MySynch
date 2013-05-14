@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using MySynch.Common;
 using MySynch.Common.Logging;
 using MySynch.Core.DataTypes;
 

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ServiceModel;
+using System.ServiceModel.Description;
 using MySynch.Common.Logging;
 
 namespace MySynch.Common.WCF.Clients
@@ -8,6 +10,7 @@ namespace MySynch.Common.WCF.Clients
     {
         private ICommunicationObject _channel;
         public T Proxy;
+        protected abstract List<IEndpointBehavior> GetEndpointBehaviors();
 
         public void InitiateUsingServerAddress(string serverAddress)
         {
@@ -18,7 +21,7 @@ namespace MySynch.Common.WCF.Clients
                 ChannelFactory<T> channelFactory;
                 try
                 {
-                    channelFactory = ChannelFactoryPool.Instance.GetChannelFactory<T>(serverAddress);
+                    channelFactory = ChannelFactoryPool.Instance.GetChannelFactory<T>(serverAddress, GetEndpointBehaviors());
                 }
                 catch (Exception ex)
                 {

@@ -4,6 +4,7 @@ using MySynch.Contracts.Messages;
 namespace MySynch.Contracts
 {
     [ServiceContract]
+    //[ApplyCustomClientBehavior(BehaviorType="Publisher")]
     public interface IBroker:ICommunicationComponent
     {
 
@@ -15,6 +16,12 @@ namespace MySynch.Contracts
 
         [OperationContract]
         ListAllRegistrationsResponse ListAllRegistrations();
+
+        [OperationContract(IsOneWay=true)]
+        void ReceiveAndDistributeMessage(ReceiveAndDistributeMessageRequest request);
+
+        [OperationContract]
+        ListAllMessagesResponse ListAllMessages();
 
     }
 }
