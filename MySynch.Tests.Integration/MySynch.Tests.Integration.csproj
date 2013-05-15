@@ -46,6 +46,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Windsor, Version=3.1.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL" />
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.1\lib\nunit.framework.dll</HintPath>
     </Reference>
@@ -63,7 +64,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BrokerAttachDetachTests.cs" />
-    <Compile Include="DiscoveryTests.cs" />
     <Compile Include="FullIntegrationTests.cs" />
     <Compile Include="PublisherTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

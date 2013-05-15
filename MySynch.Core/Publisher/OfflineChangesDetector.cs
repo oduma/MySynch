@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using MySynch.Common.Logging;
@@ -16,8 +17,10 @@ namespace MySynch.Core.Publisher
             LoggingManager.Debug("Getting the offline changes based on file: " + oldRepositoryFileName);
             if (newRepository == null)
                 throw new ArgumentNullException("currentRepository");
-            var oldRepository = Serializer.DeserializeFromFile<SynchItem>(oldRepositoryFileName);
+            if(string.IsNullOrEmpty(oldRepositoryFileName) || File.Exists(oldRepositoryFileName))
+                return new SortedList<string, OperationType>();
 
+            var oldRepository = Serializer.DeserializeFromFile<SynchItem>(oldRepositoryFileName);
             if (oldRepository.Count == 0)
                 return new SortedList<string, OperationType>();
             return GetDifferencesBetweenTrees(newRepository, (oldRepository.Count == 0) ? new SynchItem() : oldRepository[0]);

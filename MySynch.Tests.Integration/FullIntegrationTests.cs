@@ -11,6 +11,61 @@ namespace MySynch.Tests.Integration
     //[Ignore("Start the services at the specified address and after that this should run")]
     //public class FullIntegrationTests
     //{
+        //    [Test]
+        //public void PublisherStartsWithoutABackupFile()
+        //{
+        //    ServiceController serviceController = new ServiceController("MySynch.Publisher.Debug");
+        //    serviceController.Stop();
+        //    serviceController.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(10));
+
+        //    if (File.Exists(@"C:\Code\Sciendo\MySynch\MySynch.Publisher\bin\Debug\backup.xml"))
+        //        File.Delete(@"C:\Code\Sciendo\MySynch\MySynch.Publisher\bin\Debug\backup.xml");
+
+        //    serviceController.Start();
+        //    serviceController.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(10));
+
+        //    BrokerClient publisherProxy = new BrokerClient();
+        //    publisherProxy.InitiateUsingServerAddress(@"http://localhost/publisher");
+        //    var publishedPackage = publisherProxy.PublishPackage();
+        //    Assert.IsNull(publishedPackage);
+
+        //}
+
+        //[Test]
+        //public void PublisherStartsWithABackupFile()
+        //{
+        //    ServiceController serviceController = new ServiceController("MySynch.Publisher.Debug");
+        //    serviceController.Stop();
+        //    serviceController.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(10));
+
+        //    File.Copy(@"Data\XMLFile2.xml", @"C:\MySynch.Source.Test.Root\XMLFile2.xml", true);
+
+        //    File.Copy(@"Data\backup.xml", @"C:\Code\Sciendo\MySynch\MySynch.Publisher\bin\Debug\backup.xml", true);
+        //    serviceController.Start();
+        //    serviceController.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(10));
+
+        //    IPublisherProxy publisherProxy = new PublisherClient();
+        //    publisherProxy.InitiateUsingPort(8765);
+        //    var publishedPackage = publisherProxy.PublishPackage();
+        //    Assert.IsNotNull(publishedPackage);
+        //    Assert.AreEqual(5, publishedPackage.ChangePushItems.Count);
+        //    Assert.AreEqual(1,
+        //                    publishedPackage.ChangePushItems.Count(
+        //                        i =>
+        //                        i.OperationType == OperationType.Update &&
+        //                        i.AbsolutePath == @"C:\MySynch.Source.Test.Root\abc\abc def\def feg\abc cba.txt"));
+        //    Assert.AreEqual(1,
+        //                    publishedPackage.ChangePushItems.Count(
+        //                        i =>
+        //                        i.OperationType == OperationType.Insert &&
+        //                        i.AbsolutePath == @"C:\MySynch.Source.Test.Root\XMLFile2.xml"));
+
+        //    serviceController.Stop();
+        //    serviceController.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(10));
+        //    File.Delete(@"C:\Code\Sciendo\MySynch\MySynch.Publisher\bin\Debug\backup.xml");
+        //    File.Delete(@"C:\MySynch.Source.Test.Root\XMLFile2.xml");
+        //}
+
     //    [Test]
     //    [Ignore(@"Requires Subscriber service to be defined on the root folder: C:\MySynch.Dest.Test.Root\ and publisher on C:\MySynch.Source.Test.Root\")]
     //    public void DistributorUpAndAccessible()

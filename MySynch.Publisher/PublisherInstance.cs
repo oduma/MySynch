@@ -13,7 +13,7 @@ namespace MySynch.Publisher
     public partial class PublisherInstance : MySynchServiceBase
     {
         private bool _firstTimeRunningAfterRestart;
-        private const string BackupFileName = "backup.xml";
+        private readonly string _backupFileName = AppDomain.CurrentDomain.BaseDirectory + "backup.xml";
 
 
         public PublisherInstance()
@@ -64,7 +64,7 @@ namespace MySynch.Publisher
             {
                 if (_firstTimeRunningAfterRestart)
                 {
-                    OfflineChangesDetector.ForcePublishAllOfflineChanges((PushPublisher) LocalComponent,BackupFileName,
+                    OfflineChangesDetector.ForcePublishAllOfflineChanges((PushPublisher) LocalComponent,_backupFileName,
                                                                          LocalComponentConfig.RootFolder);
                     _firstTimeRunningAfterRestart = false;
                 }
@@ -91,7 +91,7 @@ namespace MySynch.Publisher
         {
             LoggingManager.Debug("Stoping service");
             CloseAllServiceHosts();
-            LocalComponent.Close(BackupFileName);
+            LocalComponent.Close(_backupFileName);
             DetachFromBroker();
             LoggingManager.Debug("Service stoped.");
         }

@@ -21,6 +21,30 @@ namespace MySynch.Tests.Integration
     //                                                    }).Success);
     //    }
 
+        //[Test]
+        //[Ignore(@"Assumes presence of C:\MySynch.Source.Test.Root\File1.xml")]
+        //public void TestOnlyRemoteDataSource_Ok()
+        //{
+        //    if (File.Exists(@"Data\Output\File1.xml"))
+        //        File.Delete(@"Data\Output\File1.xml");
+        //    MySynchComponentResolver mySynchComponentResolver = new MySynchComponentResolver();
+        //    mySynchComponentResolver.RegisterAll(new MySynchInstaller());
+        //    Subscriber subscriber = new Subscriber(mySynchComponentResolver);
+        //    subscriber.Initialize(null,
+        //                          new LocalComponentConfig { BrokerName = "Broker name", RootFolder = @"Data\Output" }, "");
+        //    PublisherMessage publisherMessage = new PublisherMessage
+        //    {
+        //        SourceOfMessageUrl = @"http://localhost/publisher",
+        //        SourcePathRootName = @"C:\MySynch.Source.Test.Root\",
+        //        AbsolutePath = @"C:\MySynch.Source.Test.Root\File1.xml",
+        //        OperationType = OperationType.Insert
+        //    };
+
+        //    Assert.True(subscriber.ReceiveMessage(new ReceiveMessageRequest { PublisherMessage = publisherMessage }).Success);
+        //    Assert.True(File.Exists(@"Data\Output\File1.xml"));
+        //}
+
+
     //    [Test]
     //    [Ignore(@"Requires Subscriber service to be defined on the root folder: C:\MySynch.Dest.Test.Root\")]
     //    public void SubscriberApplyChanges_Ok()
