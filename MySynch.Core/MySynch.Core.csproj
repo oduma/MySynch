@@ -112,9 +112,9 @@
     <Compile Include="MySynchServiceBase.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Publisher\ChangePublisher.cs" />
     <Compile Include="Publisher\FSWatcher.cs" />
     <Compile Include="Publisher\ItemDiscoverer.cs" />
+    <Compile Include="Publisher\OfflineChangesDetector.cs" />
     <Compile Include="Publisher\PublisherSetupException.cs" />
     <Compile Include="Publisher\PushPublisher.cs" />
     <Compile Include="Publisher\SynchItemDataEqualityComparer.cs" />

@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using MySynch.Common.Logging;
+using MySynch.Common.Serialization;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
 using MySynch.Core.DataTypes;
@@ -14,8 +17,11 @@ namespace MySynch.Core.Publisher
         private IBrokerProxy _brokerClient;
         private FSWatcher _fsWatcher;
         private string _hostUrl;
+        private object _lock= new object();
 
         #region Initialization Logic
+
+        internal SynchItem CurrentRepository { get; set; }
 
         public void Initialize(IBrokerProxy brokerClient, LocalComponentConfig localComponentConfiguration, string hostUrl)
         {
@@ -29,12 +35,16 @@ namespace MySynch.Core.Publisher
         }
         #endregion
 
-        private void QueueInsert(string absolutePath)
+        #region Push Logic
+        internal void QueueInsert(string absolutePath)
         {
             if (string.IsNullOrEmpty(absolutePath))
                 return;
             LoggingManager.Debug("Will queue an insert for: " + absolutePath);
             PublishMessage(absolutePath, OperationType.Insert);
+            lock (_lock)
+                UpdateCurrentRepository(absolutePath, OperationType.Insert);
+
         }
 
         private void PublishMessage(string absolutePath, OperationType operationType)
@@ -53,27 +63,33 @@ namespace MySynch.Core.Publisher
             _brokerClient.ReceiveAndDistributeMessage(request);
         }
 
-        private void QueueUpdate(string absolutePath)
+        internal void QueueUpdate(string absolutePath)
         {
             if (string.IsNullOrEmpty(absolutePath))
                 return;
             LoggingManager.Debug("Will queue an update for: " + absolutePath);
             PublishMessage(absolutePath, OperationType.Update);
+            lock (_lock)
+                UpdateCurrentRepository(absolutePath, OperationType.Update);
         }
 
-        private void QueueDelete(string absolutePath)
+        internal void QueueDelete(string absolutePath)
         {
             if (string.IsNullOrEmpty(absolutePath))
                 return;
             LoggingManager.Debug("Will queue a delete for: " + absolutePath);
             PublishMessage(absolutePath, OperationType.Delete);
+            lock (_lock)
+                UpdateCurrentRepository(absolutePath, OperationType.Delete);
         }
+        #endregion
 
-        public void Close()
+        public void Close(object backupFileName=null)
         {
-            return;
+            Serializer.SerializeToFile(new List<SynchItem> { CurrentRepository }, (string)backupFileName);
         }
 
+        #region Pull Logic
         public GetDataResponse GetData(GetDataRequest request)
         {
             if (request == null || string.IsNullOrEmpty(request.FileName))
@@ -96,5 +112,30 @@ namespace MySynch.Core.Publisher
         {
             throw new NotImplementedException();
         }
+        #endregion
+
+        #region Persist traces for offline changes logic
+
+        private void UpdateCurrentRepository(string absolutePath, OperationType operationType)
+        {
+            LoggingManager.Debug("Updating CurrentRepository with " + absolutePath);
+            switch (operationType)
+            {
+                case OperationType.Insert:
+                    SynchItemManager.AddItem(CurrentRepository, absolutePath, ItemDiscoverer.GetSize(absolutePath));
+                    return;
+                case OperationType.Update:
+                    SynchItemManager.UpdateExistingItem(CurrentRepository, absolutePath, ItemDiscoverer.GetSize(absolutePath));
+                    return;
+                case OperationType.Delete:
+                    SynchItemManager.DeleteItem(CurrentRepository, absolutePath);
+                    return;
+
+            }
+        }
+
+
+
+        #endregion
     }
 }

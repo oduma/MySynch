@@ -28,7 +28,7 @@ namespace MySynch.Core
         }
 
 
-        protected void TimerElapseMethod(object sender, ElapsedEventArgs e)
+        protected virtual void TimerElapseMethod(object sender, ElapsedEventArgs e)
         {
             LoggingManager.Debug("Timer kicked in again.");
             Timer.Enabled = false;

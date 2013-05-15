@@ -6,9 +6,9 @@ using MySynch.Core.DataTypes;
 
 namespace MySynch.Core.Publisher
 {
-    public class ItemDiscoverer
+    public static class ItemDiscoverer
     {
-        public virtual SynchItem DiscoverFromFolder(string path)
+        public static SynchItem DiscoverFromFolder(string path)
         {
             LoggingManager.Debug("Discovering from root folder:" +path);
             if(string.IsNullOrEmpty(path))
@@ -26,12 +26,12 @@ namespace MySynch.Core.Publisher
                                              };
         }
 
-        public virtual long GetSize(string filePath)
+        public static long GetSize(string filePath)
         {
             return new FileInfo(filePath).Length;
         }
 
-        private List<SynchItem> GetSubFoldersOrFiles(string path)
+        private static List<SynchItem> GetSubFoldersOrFiles(string path)
         {
             LoggingManager.Debug("Getting sub folders or files "+path);
             List<SynchItem> list= new List<SynchItem>();

@@ -20,7 +20,7 @@ namespace MySynch.Tests.Stubs
 
         protected override List<IEndpointBehavior> GetEndpointBehaviors()
         {
-            throw new NotImplementedException();
+            return new List<IEndpointBehavior>();
         }
     }
 }

@@ -106,7 +106,7 @@ namespace MySynch.Core.Subscriber
             _brokerClient = brokerClient;
         }
 
-        public void Close()
+        public void Close(object objectState=null)
         {
             throw new NotImplementedException();
         }

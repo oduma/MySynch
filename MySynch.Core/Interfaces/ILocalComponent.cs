@@ -7,6 +7,6 @@ namespace MySynch.Core.Interfaces
     {
         void Initialize(IBrokerProxy brokerClient, LocalComponentConfig localComponentConfig, string hostUrl);
 
-        void Close();
+        void Close(object objectState=null);
     }
 }

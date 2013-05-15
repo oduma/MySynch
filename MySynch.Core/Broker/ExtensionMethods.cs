@@ -47,8 +47,13 @@ namespace MySynch.Core.Broker
 
         internal static BrokerMessage ConvertToBrokerMessage (this PublisherMessage publisherMessage)
         {
-            var brokerMessage = (BrokerMessage) publisherMessage;
-            return brokerMessage;
+            return new BrokerMessage
+                                    {
+                                        AbsolutePath = publisherMessage.AbsolutePath,
+                                        OperationType = publisherMessage.OperationType,
+                                        SourceOfMessageUrl = publisherMessage.SourceOfMessageUrl,
+                                        SourcePathRootName = publisherMessage.SourcePathRootName
+                                    };
         }
     }
 }

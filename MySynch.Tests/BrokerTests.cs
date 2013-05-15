@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using MySynch.Common.Serialization;
 using MySynch.Contracts.Messages;
@@ -12,6 +13,11 @@ namespace MySynch.Tests
     [TestFixture]
     public class BrokerTests
     {
+        [SetUp]
+        public void SetUp()
+        {
+            File.Copy(@"..\..\Data\storetestget.xml",@"Data\storetestget.xml",true);
+        }
         #region Attach an Related
         [Test]
         public void AddRegistration_Ok()
@@ -432,7 +438,41 @@ namespace MySynch.Tests
         [Test]
         public void ListAllMessages_Ok()
         {
-            Assert.Fail();
+            StoreType storeType = new StoreType { StoreName = "store1.xml", StoreTypeName = "IStore.Registration.FileSystemStore" };
+            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            componentResolver.RegisterAll(new AllStoresInstaller());
+            Broker broker = new Broker(storeType, componentResolver);
+            AttachRequest request = new AttachRequest
+            {
+                RegistrationRequest =
+                    new Registration
+                    {
+                        MessageMethod = "Message Method 1",
+                        OperationTypes =
+                            new List<OperationType>
+                                                                {
+                                                                    OperationType.Insert,
+                                                                    OperationType.Update,
+                                                                    OperationType.Delete
+                                                                },
+                        ServiceRole = ServiceRole.Publisher,
+                        ServiceUrl = "Service Url"
+                    }
+            };
+            ReceiveAndDistributeMessageRequest mRequest = new ReceiveAndDistributeMessageRequest
+            {
+                PublisherMessage =
+                    new PublisherMessage
+                    {
+                        AbsolutePath = "abc",
+                        OperationType = OperationType.Insert
+                    }
+            };
+            broker.ReceiveAndDistributeMessage(mRequest);
+            var mResponse = broker.ListAllMessages();
+            Assert.IsNotNull(mResponse);
+            Assert.IsNotNull(mResponse.AvailableMessages);
+            Assert.AreEqual(1, mResponse.AvailableMessages.Count);
         }
     }
 }

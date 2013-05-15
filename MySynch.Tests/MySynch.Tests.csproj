@@ -72,21 +72,18 @@
   <ItemGroup>
     <Compile Include="BaseClientTests.cs" />
     <Compile Include="BrokerTests.cs" />
-    <Compile Include="BugsProof.cs" />
-    <Compile Include="ChangeApplyerTests.cs" />
-    <Compile Include="ChangePublisherGetOfflineChangesTests.cs" />
+    <Compile Include="SubscriberTests.cs" />
+    <Compile Include="OfflineChangesDetectorTests.cs" />
     <Compile Include="ComponentResolverTests.cs" />
     <Compile Include="EndpointFactoryTests.cs" />
-    <Compile Include="GenerateADistributorMapFile.cs" />
     <Compile Include="ItemDiscovererTests.cs" />
     <Compile Include="LoggingManagerTests.cs" />
     <Compile Include="MockTestHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SameSystemCopierTests.cs" />
-    <Compile Include="SourceOfDataTests.cs" />
+    <Compile Include="PublisherPullLogicTests.cs" />
     <Compile Include="Stubs\AllStoresInstaller.cs" />
     <Compile Include="Stubs\ChangeApplyerNotPresent.cs" />
-    <Compile Include="Stubs\ChangePublisherNotPresent.cs" />
+    <Compile Include="Stubs\PushPublisherNotPresent.cs" />
     <Compile Include="Stubs\ClientImplementation.cs" />
     <Compile Include="Stubs\DeffectiveStores.cs" />
     <Compile Include="Stubs\ITest1.cs" />
@@ -126,35 +123,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="backup.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\distributormap.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\distributormap1.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\distributormap2.xml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\distributormap3.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\distributormap4.xml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\distributormap5.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\distributormaplocal2local.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\distributormaplocal2localandremote.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\distributormaplocal2localandremoteNP.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\items.xml" />

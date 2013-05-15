@@ -15,7 +15,7 @@ namespace MySynch.Tests.Stubs
         {
             container.Register(Component.For<IPublisher>().ImplementedBy<PushPublisher>().Named("IPublisher.Local"),
                                Component.For<ISubscriber>().ImplementedBy<Subscriber>().Named("ISubScriber.Local"),
-                               Component.For<IPublisher>().ImplementedBy<ChangePublisherNotPresent>().Named("IPublisher.NotPresent"),
+                               Component.For<IPublisher>().ImplementedBy<PushPublisherNotPresent>().Named("IPublisher.NotPresent"),
                                Component.For<ISubscriber>().ImplementedBy<ChangeApplyerNotPresent>().Named("ISubScriber.NotPresent"),
                                Component.For<IPublisherProxy>().ImplementedBy<MockRemotePublisher>().Named("IPublisher.Remote"),
                                Component.For<ISubscriberProxy>().ImplementedBy<MockRemoteSubscriber>().Named("ISubScriber.Remote"),

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using MySynch.Core.Publisher;
 using NUnit.Framework;
-using MySynch.Core;
 using MySynch.Core.DataTypes;
 
 namespace MySynch.Tests

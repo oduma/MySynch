@@ -4,7 +4,7 @@ using MySynch.Contracts.Messages;
 
 namespace MySynch.Tests.Stubs
 {
-    public class ChangePublisherNotPresent:IPublisher
+    public class PushPublisherNotPresent:IPublisher
     {
         public GetHeartbeatResponse GetHeartbeat()
         {

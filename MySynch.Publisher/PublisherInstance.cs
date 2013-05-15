@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Timers;
 using MySynch.Common.Logging;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
@@ -11,6 +12,9 @@ namespace MySynch.Publisher
 {
     public partial class PublisherInstance : MySynchServiceBase
     {
+        private bool _firstTimeRunningAfterRestart;
+        private const string BackupFileName = "backup.xml";
+
 
         public PublisherInstance()
         {
@@ -44,11 +48,34 @@ namespace MySynch.Publisher
         protected override void OnStart(string[] args)
         {
             LoggingManager.Debug("Starting service");
+            _firstTimeRunningAfterRestart = true;
             CloseAllServiceHosts();
             if(InitializeLocalComponent())
                 StartTimer(60000,TimerElapseMethod);
             OpenAllServiceHosts();
             LoggingManager.Debug("Service started.");
+        }
+
+        protected override void TimerElapseMethod(object sender, ElapsedEventArgs e)
+        {
+            LoggingManager.Debug("Timer kicked in again.");
+            Timer.Enabled = false;
+            if (TryMakeComponentKnown(LocalComponentConfig.BrokerName))
+            {
+                if (_firstTimeRunningAfterRestart)
+                {
+                    OfflineChangesDetector.ForcePublishAllOfflineChanges((PushPublisher) LocalComponent,BackupFileName,
+                                                                         LocalComponentConfig.RootFolder);
+                    _firstTimeRunningAfterRestart = false;
+                }
+                Timer.Interval = 120000;
+                Timer.Enabled = true;
+                return;
+            }
+            Timer.Interval = 60000;
+            Timer.Enabled = true;
+            LoggingManager.Debug("Starting timer again.");
+
         }
 
         public override bool InitializeLocalComponent()
@@ -64,7 +91,7 @@ namespace MySynch.Publisher
         {
             LoggingManager.Debug("Stoping service");
             CloseAllServiceHosts();
-            LocalComponent.Close();
+            LocalComponent.Close(BackupFileName);
             DetachFromBroker();
             LoggingManager.Debug("Service stoped.");
         }
