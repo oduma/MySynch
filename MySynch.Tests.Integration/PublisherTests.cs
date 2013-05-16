@@ -98,5 +98,26 @@ namespace MySynch.Tests.Integration
             serviceController.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(300));
 
         }
+
+        [Test]
+        public void PublisherStartsWithoutABackupFile()
+        {
+            ServiceController serviceController = new ServiceController("MySynch.Publisher.Debug");
+            serviceController.Stop();
+            serviceController.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(100));
+
+            if (File.Exists(@"C:\Code\Sciendo\MySynch\MySynch.Publisher\bin\Debug\backup.xml"))
+                File.Delete(@"C:\Code\Sciendo\MySynch\MySynch.Publisher\bin\Debug\backup.xml");
+
+            serviceController.Start();
+            serviceController.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(300));
+            Thread.Sleep(20); //warm up
+            serviceController.Stop();
+            serviceController.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(300));
+            Assert.True(File.Exists(@"C:\Code\Sciendo\MySynch\MySynch.Publisher\bin\Debug\backup.xml"));
+            FileInfo fInfo = new FileInfo(@"C:\Code\Sciendo\MySynch\MySynch.Publisher\bin\Debug\backup.xml");
+            Assert.AreEqual(0, fInfo.Length);
+        }
+
     }
 }
