@@ -13,12 +13,13 @@ namespace MySynch.Tests.Stubs
 
         public GetDataResponse GetData(GetDataRequest request)
         {
-            throw new NotImplementedException();
+            byte[] somebytes= new byte[2]{65,76};
+            return new GetDataResponse {Data = somebytes};
         }
 
         public void InitiateUsingServerAddress(string serverAddress)
         {
-            throw new NotImplementedException();
+            return;
         }
     }
 }

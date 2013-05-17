@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using MySynch.Common;
 using MySynch.Common.Logging;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
@@ -18,20 +17,19 @@ namespace MySynch.Core.Subscriber
                 throw new ArgumentNullException("source");
             if (string.IsNullOrEmpty(target))
                 throw new ArgumentNullException("target");
-            string backupFileName = Path.GetDirectoryName(target) + @"\" + Guid.NewGuid().ToString();
-            string temporaryTarget = Path.GetDirectoryName(target) + @"\" + Guid.NewGuid().ToString();
+            string backupFileName = Path.GetDirectoryName(target) + @"\" + "cpsb" + Guid.NewGuid().ToString();
+            string temporaryTarget = Path.GetDirectoryName(target) + @"\" + "cpst" + Guid.NewGuid().ToString();
             if (File.Exists(target))
             {
                 File.Copy(target, backupFileName);
             }
             try
             {
-                CopytoTemporaryFile(source, temporaryTarget);
-                if (File.Exists(target))
-                    File.Delete(target);
-                if (File.Exists(temporaryTarget))
+                if (CopytoTemporaryFile(source, temporaryTarget))
                 {
-                    File.Copy(temporaryTarget, target,true);
+                    if (File.Exists(target))
+                        File.Delete(target);
+                    File.Copy(temporaryTarget, target, true);
                     File.Delete(temporaryTarget);
                     return true;
                 }
@@ -51,23 +49,21 @@ namespace MySynch.Core.Subscriber
             }
         }
 
-        private void CopytoTemporaryFile(string source, string temporaryTarget)
+        private bool CopytoTemporaryFile(string source, string temporaryTarget)
         {
             if (!Directory.Exists(Path.GetDirectoryName(temporaryTarget)))
                 Directory.CreateDirectory(Path.GetDirectoryName(temporaryTarget));
 
-            if (_publisher==null || _publisher.GetType().ToString()=="MySynch.Core.LocalSourceOfData")
-                if(File.Exists(source))
-                {
-                    File.Copy(source, temporaryTarget);
-                    return;
-                }
+            if (_publisher == null)
+                return false;
+
             var response = _publisher.GetData(new GetDataRequest { FileName = source });
             using (var stream = File.Create(temporaryTarget))
             {
                 stream.Write(response.Data, 0, response.Data.Length);
                 stream.Flush();
             }
+            return true;
         }
 
         public void Initialize(IPublisher publisher)

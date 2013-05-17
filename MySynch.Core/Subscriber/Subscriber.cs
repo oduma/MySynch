@@ -75,10 +75,12 @@ namespace MySynch.Core.Subscriber
                        };
         }
 
-        private ICopyStrategy GetOrCreateCopyStrategy(string sourceOfMessageUrl)
+        internal ICopyStrategy GetOrCreateCopyStrategy(string sourceOfMessageUrl)
         {
             lock (_lock)
             {
+                if(InitiatedCopyStrategies==null)
+                    InitiatedCopyStrategies= new SortedList<string, ICopyStrategy>();
                 if (InitiatedCopyStrategies.ContainsKey(sourceOfMessageUrl))
                     return InitiatedCopyStrategies[sourceOfMessageUrl];
                 var copyStrategy = new CopyStrategy();
@@ -99,8 +101,8 @@ namespace MySynch.Core.Subscriber
 
         public virtual void Initialize(IBrokerProxy brokerClient, LocalComponentConfig localComponentConfig, string hostUrl)
         {
-            if (string.IsNullOrEmpty(localComponentConfig.RootFolder))
-                throw new ArgumentNullException("localRootFolder");
+            if (localComponentConfig==null || string.IsNullOrEmpty(localComponentConfig.RootFolder) || !Directory.Exists(localComponentConfig.RootFolder))
+                throw new ArgumentException("localRootFolder");
             _targetRootFolder = localComponentConfig.RootFolder;
             _brokerClient = brokerClient;
         }

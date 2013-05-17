@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Moq;
 using MySynch.Contracts.Messages;
@@ -92,5 +93,119 @@ namespace MySynch.Tests
             Assert.False(File.Exists(@"Data\Output\Test\F1\F12\F12.xml"));
         }
 
+        [Test]
+        [ExpectedException(typeof(ArgumentException))]
+        public void Initialize_NonExistentFolder()
+        {
+            MySynchComponentResolver componentResolver= new MySynchComponentResolver();
+            Subscriber subscriber= new Subscriber(componentResolver);
+            LocalComponentConfig localComponentConfig= new LocalComponentConfig
+                                                           {
+                                                               BrokerName="",
+                                                               RootFolder = @"c:\mewrongdata\mewrongfoldero"
+                                                           };
+            subscriber.Initialize(null,localComponentConfig, string.Empty);
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void ReceiveMessage_NoMessgaeSent()
+        {
+            MySynchComponentResolver mySynchComponentResolver = new MySynchComponentResolver();
+            mySynchComponentResolver.RegisterAll(new TestInstaller());
+
+            Subscriber subscriber = new Subscriber(mySynchComponentResolver);
+
+            LocalComponentConfig localComponentConfig = new LocalComponentConfig { BrokerName = "", RootFolder = @"Data\Output\Test\" };
+            string hostUrl = string.Empty;
+            subscriber.Initialize(null, localComponentConfig, hostUrl);
+
+            subscriber.ReceiveMessage(null);
+        }
+
+        [Test]
+        public void ReceiveMessage_NoAbsolutePath()
+        {
+            MySynchComponentResolver mySynchComponentResolver = new MySynchComponentResolver();
+            mySynchComponentResolver.RegisterAll(new TestInstaller());
+
+            Subscriber subscriber = new Subscriber(mySynchComponentResolver);
+
+            LocalComponentConfig localComponentConfig = new LocalComponentConfig { BrokerName = "", RootFolder = @"Data\Output\Test\" };
+            string hostUrl = string.Empty;
+            subscriber.Initialize(null, localComponentConfig, hostUrl);
+
+            ReceiveMessageRequest request = new ReceiveMessageRequest
+            {
+                PublisherMessage = new PublisherMessage()
+                {
+                    AbsolutePath = "",
+                    OperationType = OperationType.Insert,
+                    SourceOfMessageUrl = "publisher url",
+                    SourcePathRootName = @"Data\Test\"
+                }
+            };
+            var response = subscriber.ReceiveMessage(request);
+            Assert.IsFalse(response.Success);
+        }
+
+        [Test]
+        public void GetOrCreateCopyStrategy_CreateOk()
+        {
+            MySynchComponentResolver mySynchComponentResolver = new MySynchComponentResolver();
+            mySynchComponentResolver.RegisterAll(new TestInstaller());
+
+            Subscriber subscriber = new Subscriber(mySynchComponentResolver);
+
+            LocalComponentConfig localComponentConfig = new LocalComponentConfig { BrokerName = "", RootFolder = @"Data\Output\Test\" };
+            string hostUrl = string.Empty;
+            subscriber.Initialize(null, localComponentConfig, hostUrl);
+            subscriber.InitiatedCopyStrategies = new SortedList<string, ICopyStrategy> ();
+
+            var copyStrategy = subscriber.GetOrCreateCopyStrategy("new publisher url");
+
+            Assert.IsNotNull(copyStrategy);
+            Assert.IsNotNull(subscriber.InitiatedCopyStrategies["new publisher url"]);
+            Assert.AreEqual(1,subscriber.InitiatedCopyStrategies.Count);
+        }
+
+        [Test]
+        public void GetOrCreateCopyStrategy_GetOk()
+        {
+            MySynchComponentResolver mySynchComponentResolver = new MySynchComponentResolver();
+            mySynchComponentResolver.RegisterAll(new TestInstaller());
+
+            Subscriber subscriber = new Subscriber(mySynchComponentResolver);
+
+            LocalComponentConfig localComponentConfig = new LocalComponentConfig { BrokerName = "", RootFolder = @"Data\Output\Test\" };
+            string hostUrl = string.Empty;
+            subscriber.Initialize(null, localComponentConfig, hostUrl);
+            var mockCopyStrategy = MockCopyStrategy();
+            subscriber.InitiatedCopyStrategies = new SortedList<string, ICopyStrategy> { { "old publisher url", mockCopyStrategy } };
+
+            var copyStrategy = subscriber.GetOrCreateCopyStrategy("old publisher url");
+
+            Assert.IsNotNull(copyStrategy);
+            Assert.False(subscriber.InitiatedCopyStrategies.ContainsKey("new publisher url"));
+            Assert.AreEqual(1, subscriber.InitiatedCopyStrategies.Count);
+            Assert.IsNotNull(subscriber.InitiatedCopyStrategies["old publisher url"]);
+        }
+
+        [Test]
+        public void GetHeartbeat_Ok()
+        {
+            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            Subscriber subscriber = new Subscriber(componentResolver);
+            LocalComponentConfig localComponentConfig = new LocalComponentConfig
+            {
+                BrokerName = "",
+                RootFolder = @"."
+            };
+            subscriber.Initialize(null, localComponentConfig, string.Empty);
+            var heartbeatResponse = subscriber.GetHeartbeat();
+            Assert.True(heartbeatResponse.Status);
+            Assert.AreEqual(".",heartbeatResponse.RootPath);
+
+        }
     }
 }

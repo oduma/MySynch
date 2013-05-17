@@ -72,6 +72,7 @@
   <ItemGroup>
     <Compile Include="BaseClientTests.cs" />
     <Compile Include="BrokerTests.cs" />
+    <Compile Include="CopyStrategyTests.cs" />
     <Compile Include="SubscriberTests.cs" />
     <Compile Include="OfflineChangesDetectorTests.cs" />
     <Compile Include="ComponentResolverTests.cs" />
@@ -126,6 +127,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\items.xml" />
+    <Content Include="Data\Output\existingtarget.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Data\Output\Test\F1\F12\F12.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
