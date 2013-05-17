@@ -25,7 +25,7 @@ namespace MySynch.Core.Broker
 
         public GetHeartbeatResponse GetHeartbeat()
         {
-            return new GetHeartbeatResponse {Status = true};
+            return new GetHeartbeatResponse {Status = true,RootPath=""};
         }
 
         public Broker(StoreType storeType, MySynchComponentResolver componentResolver)
@@ -108,7 +108,7 @@ namespace MySynch.Core.Broker
             DistributeMessageToAllAvailableSubscribers(brokerMessage);
         }
 
-        private void DistributeMessageToAllAvailableSubscribers(BrokerMessage brokerMessage)
+        internal void DistributeMessageToAllAvailableSubscribers(BrokerMessage brokerMessage)
         {
             var availableSubscribers =
                 _registrations.Where(
@@ -122,31 +122,56 @@ namespace MySynch.Core.Broker
             List<Task> tasks= new List<Task>();
             foreach (var destination in brokerMessage.Destinations)
             {
-                Task task = new Task(()=>DistributeMessageToSubscriber(destination));
+                Destination destination1 = destination;
+                Task task = new Task(()=>DistributeMessageToSubscriber(destination1));
                 tasks.Add(task);
                 task.Start();
             }
         }
 
-        private void DistributeMessageToSubscriber(object destination)
+        internal void DistributeMessageToSubscriber(object destination)
         {
-            var subscriberRemote = GetOrCreateAProxy(((Destination) destination).DestinationUrl);
-            ReceiveMessageRequest request=new ReceiveMessageRequest{PublisherMessage = ((Destination)destination).ParentMessage};
-            var response = subscriberRemote.ReceiveMessage(request);
-            ((Destination) destination).ProcessedByDestination = response.Success;
+            Destination subscriberDestination = ((Destination) destination);
+            var subscriberRemote = GetOrCreateAProxy(subscriberDestination.DestinationUrl);
+            if (subscriberRemote == null)
+            {
+                LoggingManager.Debug("Did not distribute to subscriber: " + subscriberDestination.DestinationUrl +
+                                     ". Subscriber dead or unreachable at the moment.");
+                subscriberDestination.ProcessedByDestination = false;
+                return;
+            }
+            try
+            {
+                ReceiveMessageRequest request = new ReceiveMessageRequest { PublisherMessage = subscriberDestination.ParentMessage };
+                var response = subscriberRemote.ReceiveMessage(request);
+                subscriberDestination.ProcessedByDestination = response.Success;
+            }
+            catch (Exception ex)
+            {
+                LoggingManager.LogMySynchSystemError(ex);
+                subscriberDestination.ProcessedByDestination = false;
+            }
         }
 
-        private ISubscriberProxy GetOrCreateAProxy(string destinationUrl)
+        internal ISubscriberProxy GetOrCreateAProxy(string destinationUrl)
         {
             lock (_lock)
             {
-                if (InitiatedSubScriberProxies.ContainsKey(destinationUrl))
-                    return InitiatedSubScriberProxies[destinationUrl];
+                try
+                {
+                    if (InitiatedSubScriberProxies.ContainsKey(destinationUrl))
+                        return InitiatedSubScriberProxies[destinationUrl];
 
-                var subscriberRemote = _componentResolver.Resolve<ISubscriberProxy>("ISubscriber.Remote");
-                subscriberRemote.InitiateUsingServerAddress(destinationUrl);
-                InitiatedSubScriberProxies.Add(destinationUrl, subscriberRemote);
-                return subscriberRemote;
+                    var subscriberRemote = _componentResolver.Resolve<ISubscriberProxy>("ISubscriber.Remote");
+                    subscriberRemote.InitiateUsingServerAddress(destinationUrl);
+                    InitiatedSubScriberProxies.Add(destinationUrl, subscriberRemote);
+                    return subscriberRemote;
+                }
+                catch (Exception ex)
+                {
+                    LoggingManager.LogMySynchSystemError(ex);
+                    return null;
+                }
             }
         }
 

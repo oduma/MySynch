@@ -10,7 +10,7 @@ namespace MySynch.Tests.Stubs
 
         public GetHeartbeatResponse GetHeartbeat()
         {
-            return new GetHeartbeatResponse {Status = true};
+            return new GetHeartbeatResponse { Status = true, RootPath = "It'smy party" };
         }
         public ReceiveMessageResponse ReceiveMessage(ReceiveMessageRequest request)
         {
@@ -30,7 +30,7 @@ namespace MySynch.Tests.Stubs
 
         public void InitiateUsingServerAddress(string serverAddress)
         {
-            throw new NotImplementedException();
+            ;
         }
     }
 }

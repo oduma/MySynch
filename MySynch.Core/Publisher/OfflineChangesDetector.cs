@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using MySynch.Common.Logging;
 using MySynch.Common.Serialization;
 using MySynch.Contracts.Messages;
@@ -17,7 +16,7 @@ namespace MySynch.Core.Publisher
             LoggingManager.Debug("Getting the offline changes based on file: " + oldRepositoryFileName);
             if (newRepository == null)
                 throw new ArgumentNullException("currentRepository");
-            if(string.IsNullOrEmpty(oldRepositoryFileName) || File.Exists(oldRepositoryFileName))
+            if(string.IsNullOrEmpty(oldRepositoryFileName) || !File.Exists(oldRepositoryFileName))
                 return new SortedList<string, OperationType>();
 
             var oldRepository = Serializer.DeserializeFromFile<SynchItem>(oldRepositoryFileName);
