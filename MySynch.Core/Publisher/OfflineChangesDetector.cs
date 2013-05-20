@@ -69,25 +69,31 @@ namespace MySynch.Core.Publisher
 
         internal static void ForcePublishAllOfflineChanges(PushPublisher publisher,string oldRepositoryFileName, string rootFolder)
         {
-            publisher.CurrentRepository = ItemDiscoverer.DiscoverFromFolder(rootFolder);
-            var changesToSend = OfflineChangesDetector.GetOfflineChanges(publisher.CurrentRepository,
-                                                     oldRepositoryFileName);
-            foreach (var changeToSend in changesToSend)
+            try
             {
-                switch (changeToSend.Value)
+                publisher.CurrentRepository = ItemDiscoverer.DiscoverFromFolder(rootFolder);
+                var changesToSend = OfflineChangesDetector.GetOfflineChanges(publisher.CurrentRepository,
+                                                         oldRepositoryFileName);
+                foreach (var changeToSend in changesToSend)
                 {
-                    case OperationType.Insert:
-                        publisher.QueueInsert(changeToSend.Key);
-                        break;
-                    case OperationType.Update:
-                        publisher.QueueUpdate(changeToSend.Key);
-                        break;
-                    case OperationType.Delete:
-                        publisher.QueueDelete(changeToSend.Key);
-                        break;
+                    switch (changeToSend.Value)
+                    {
+                        case OperationType.Insert:
+                            publisher.QueueInsert(changeToSend.Key);
+                            break;
+                        case OperationType.Update:
+                            publisher.QueueUpdate(changeToSend.Key);
+                            break;
+                        case OperationType.Delete:
+                            publisher.QueueDelete(changeToSend.Key);
+                            break;
+                    }
                 }
             }
-
+            catch (Exception ex)
+            {
+                LoggingManager.LogMySynchSystemError(ex);  
+            }
         }
 
     }

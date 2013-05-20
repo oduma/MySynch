@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using Moq;
 using MySynch.Contracts.Messages;
 using MySynch.Core;
@@ -15,9 +16,38 @@ namespace MySynch.Tests
     [TestFixture]
     public class SubscriberTests
     {
+        private bool IsFileLocked(FileInfo file)
+        {
+            FileStream stream = null;
+
+            try
+            {
+                stream = file.Open(FileMode.Open,
+                         FileAccess.ReadWrite, FileShare.None);
+            }
+            catch (IOException)
+            {
+                //the file is unavailable because it is:
+                //still being written to
+                //or being processed by another thread
+                //or does not exist (has already been processed)
+                return true;
+            }
+            finally
+            {
+                if (stream != null)
+                    stream.Close();
+            }
+
+            //file is not locked
+            return false;
+        }
+
         [SetUp]
         public void SetUp()
         {
+            if (IsFileLocked(new FileInfo(@"Data\Output\Test\F1\F12\F12.xml")))
+                Thread.Sleep(500);
             File.Copy(@"..\..\Data\Output\Test\F1\F12\F12.xml", @"Data\Output\Test\F1\F12\F12.xml", true);
         }
 

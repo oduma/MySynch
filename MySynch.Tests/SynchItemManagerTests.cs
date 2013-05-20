@@ -80,11 +80,6 @@ namespace MySynch.Tests
         }
         #region static methods tests
         [Test]
-        public void GetItem_Ok()
-        {
-            Assert.AreEqual(@"root\300\330\331", SynchItemManager.GetItemLowestAvailableParrent(_initialLoad[0], @"root\300\330\331").SynchItemData.Identifier);
-        }
-        [Test]
         public void GetItem_Parent_Found_Ok()
         {
             Assert.AreEqual(@"root\300\330\331", SynchItemManager.GetItemLowestAvailableParrent(_initialLoad[0], @"root\300\330\331\332").SynchItemData.Identifier);

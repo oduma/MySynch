@@ -267,6 +267,5 @@ namespace MySynch.Tests
             Assert.AreEqual(newTree.Items.Count,actual[0].Items.Count);
 
         }
-
     }
 }

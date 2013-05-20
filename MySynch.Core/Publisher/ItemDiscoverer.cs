@@ -26,11 +26,6 @@ namespace MySynch.Core.Publisher
                                              };
         }
 
-        public static long GetSize(string filePath)
-        {
-            return new FileInfo(filePath).Length;
-        }
-
         private static List<SynchItem> GetSubFoldersOrFiles(string path)
         {
             LoggingManager.Debug("Getting sub folders or files "+path);

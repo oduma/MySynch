@@ -18,7 +18,7 @@ namespace MySynch.Core.Publisher
     {
         private IBrokerProxy _brokerClient;
         private FSWatcher _fsWatcher;
-        private string _hostUrl;
+        internal string HostUrl;
         private object _lock= new object();
         private bool operationInProgress = false;
 
@@ -29,29 +29,59 @@ namespace MySynch.Core.Publisher
         public void Initialize(IBrokerProxy brokerClient, LocalComponentConfig localComponentConfiguration, string hostUrl)
         {
             operationInProgress = true;
-            LoggingManager.Debug("Initializing publisher with rootfolder: " + localComponentConfiguration.RootFolder);
+            if(brokerClient==null)
+                throw new ArgumentNullException("brokerClient");
             if (string.IsNullOrEmpty(localComponentConfiguration.RootFolder))
-                LoggingManager.LogMySynchSystemError(new ArgumentNullException("localComponentConfiguration.RootFolder"));
-            LoggingManager.Debug("Publisher initialized");
-            _hostUrl = hostUrl;
+                throw new ArgumentNullException("localComponentConfiguration.RootFolder");
+            if(string.IsNullOrEmpty(hostUrl))
+                throw new ArgumentNullException("hostUrl");
+            LoggingManager.Debug("Initializing publisher with rootfolder: " + localComponentConfiguration.RootFolder);
+            HostUrl = hostUrl;
             _brokerClient = brokerClient;
-            _fsWatcher = new FSWatcher(localComponentConfiguration.RootFolder, QueueInsert, QueueUpdate, QueueDelete);
-            operationInProgress = false;
+            try
+            {
+                _fsWatcher = new FSWatcher(localComponentConfiguration.RootFolder, QueueInsert, QueueUpdate, QueueDelete);
+                LoggingManager.Debug("Publisher initialized");
+
+            }
+            catch (Exception ex)
+            {
+                LoggingManager.LogMySynchSystemError(ex);
+            }
+            finally
+            {
+                operationInProgress = false;
+            }
         }
         #endregion
 
         #region Push Logic
         internal void QueueInsert(string absolutePath)
         {
-            operationInProgress = true;
-            if (string.IsNullOrEmpty(absolutePath))
-                return;
             LoggingManager.Debug("Will queue an insert for: " + absolutePath);
-            PublishMessage(absolutePath, OperationType.Insert);
-            lock (_lock)
-                UpdateCurrentRepository(absolutePath, OperationType.Insert);
-            operationInProgress = false;
+            ProcessOperation(absolutePath, OperationType.Insert);
+        }
 
+        private void ProcessOperation(string absolutePath, OperationType operationType)
+        {
+            operationInProgress = true;
+            try
+            {
+                if (string.IsNullOrEmpty(absolutePath))
+                    return;
+                lock (_lock)
+                    UpdateCurrentRepository(absolutePath, operationType);
+                PublishMessage(absolutePath, operationType);
+            }
+            catch (Exception ex)
+            {
+                LoggingManager.LogMySynchSystemError(ex);
+                throw;
+            }
+            finally
+            {
+                operationInProgress = false;
+            }
         }
 
         private void PublishMessage(string absolutePath, OperationType operationType)
@@ -63,7 +93,7 @@ namespace MySynch.Core.Publisher
                                                                          {
                                                                              AbsolutePath = absolutePath,
                                                                              OperationType = operationType,
-                                                                             SourceOfMessageUrl=_hostUrl,
+                                                                             SourceOfMessageUrl=HostUrl,
                                                                              SourcePathRootName=_fsWatcher.Path 
                                                                          }
                                                              };
@@ -72,26 +102,14 @@ namespace MySynch.Core.Publisher
 
         internal void QueueUpdate(string absolutePath)
         {
-            operationInProgress = true;
-            if (string.IsNullOrEmpty(absolutePath))
-                return;
             LoggingManager.Debug("Will queue an update for: " + absolutePath);
-            PublishMessage(absolutePath, OperationType.Update);
-            lock (_lock)
-                UpdateCurrentRepository(absolutePath, OperationType.Update);
-            operationInProgress = false;
+            ProcessOperation(absolutePath,OperationType.Update);
         }
 
         internal void QueueDelete(string absolutePath)
         {
-            operationInProgress = true;
-            if (string.IsNullOrEmpty(absolutePath))
-                return;
             LoggingManager.Debug("Will queue a delete for: " + absolutePath);
-            PublishMessage(absolutePath, OperationType.Delete);
-            lock (_lock)
-                UpdateCurrentRepository(absolutePath, OperationType.Delete);
-            operationInProgress = false;
+            ProcessOperation(absolutePath,OperationType.Delete);
         }
         #endregion
 
@@ -132,16 +150,22 @@ namespace MySynch.Core.Publisher
 
         #region Persist traces for offline changes logic
 
-        private void UpdateCurrentRepository(string absolutePath, OperationType operationType)
+        internal void UpdateCurrentRepository(string absolutePath, OperationType operationType)
         {
             LoggingManager.Debug("Updating CurrentRepository with " + absolutePath);
+            if(_fsWatcher==null || string.IsNullOrEmpty(_fsWatcher.Path))
+                throw new PublisherSetupException(null,"Publisher not initialized");
+            if(CurrentRepository==null)
+                CurrentRepository=new SynchItem{SynchItemData = new SynchItemData{Identifier=_fsWatcher.Path,Name=_fsWatcher.Path,Size=0}};
+            if (CurrentRepository.Items == null)
+                CurrentRepository.Items=new List<SynchItem>();
             switch (operationType)
             {
                 case OperationType.Insert:
-                    SynchItemManager.AddItem(CurrentRepository, absolutePath, ItemDiscoverer.GetSize(absolutePath));
+                    SynchItemManager.AddItem(CurrentRepository, absolutePath, new FileInfo(absolutePath).Length);
                     return;
                 case OperationType.Update:
-                    SynchItemManager.UpdateExistingItem(CurrentRepository, absolutePath, ItemDiscoverer.GetSize(absolutePath));
+                    SynchItemManager.UpdateExistingItem(CurrentRepository, absolutePath, new FileInfo(absolutePath).Length);
                     return;
                 case OperationType.Delete:
                     SynchItemManager.DeleteItem(CurrentRepository, absolutePath);

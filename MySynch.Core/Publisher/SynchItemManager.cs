@@ -45,9 +45,9 @@ namespace MySynch.Core.Publisher
             if (topSynchItem == null || topSynchItem.Items==null)
                 return;
             var parrent=GetItemLowestAvailableParrent(topSynchItem, absolutePathtoNewItem);
-            if (parrent.SynchItemData.Identifier == absolutePathtoNewItem)
+            if (parrent.Items[0].SynchItemData.Identifier == absolutePathtoNewItem)
             {
-                parrent.SynchItemData.Size = size;
+                parrent.Items[0].SynchItemData.Size = size;
                 return;
             }
             AddNewItemTree(parrent,absolutePathtoNewItem, size);
@@ -59,13 +59,10 @@ namespace MySynch.Core.Publisher
                 return;
             if (topSynchItem == null || topSynchItem.Items==null)
                 return;
-            var currentItem = GetItemLowestAvailableParrent(topSynchItem, absolutePathtoNewItem);
-            if (currentItem.SynchItemData.Identifier == absolutePathtoNewItem)
-            {
-                var parenttem = GetParentItem(new List<SynchItem> {topSynchItem}, absolutePathtoNewItem);
-                parenttem.Items.Remove(currentItem);
-                return;
-            }
+            var parentItem = GetItemLowestAvailableParrent(topSynchItem, absolutePathtoNewItem);
+            var currentItem = parentItem.Items.FirstOrDefault(i => i.SynchItemData.Identifier == absolutePathtoNewItem);
+            if(currentItem!=null)
+                parentItem.Items.Remove(currentItem);
         }
 
         internal static SynchItem GetItemLowestAvailableParrent(SynchItem topSynchItem, string itemId)
@@ -80,7 +77,7 @@ namespace MySynch.Core.Publisher
             {
                 currentLevel = (string.IsNullOrEmpty(currentLevel)) ? level : string.Format("{0}\\{1}", currentLevel, level);
                 currentItem = list.FirstOrDefault(i => i.SynchItemData.Identifier == currentLevel);
-                if (currentItem == null)
+                if (currentItem == null ||currentItem.SynchItemData.Identifier==itemId)
                     return parentItem;
                 parentItem = currentItem;
                 list = parentItem.Items;
@@ -100,39 +97,6 @@ namespace MySynch.Core.Publisher
                 synchItems.AddRange(FlattenTree(synchItem));
             return synchItems;
         }
-
-        private static SynchItem GetParentItem(List<SynchItem> list, string Identifier)
-        {
-            string[] levels = Identifier.Split(new char[] { '\\' });
-            if (levels.Count() <= 1)
-                return null;
-            string parentIdentifier = string.Empty;
-            for (int i = 0; i < levels.Count() - 1; i++)
-                parentIdentifier = (string.IsNullOrEmpty(parentIdentifier)) ? levels[i] : string.Format("{0}\\{1}", parentIdentifier, levels[i]);
-
-            return GetItem(list, parentIdentifier);
-        }
-
-
-        private static SynchItem GetItem(List<SynchItem> list, string itemId)
-        {
-            string[] levels = itemId.Split(new char[] { '\\' });
-
-            SynchItem parentItem = null;
-            string currentLevel = string.Empty;
-            foreach (string level in levels)
-            {
-                if (list == null)
-                    return null;
-                currentLevel = (string.IsNullOrEmpty(currentLevel)) ? level : string.Format("{0}\\{1}", currentLevel, level);
-                parentItem = list.FirstOrDefault(i => i.SynchItemData.Identifier == currentLevel);
-                if (parentItem == null)
-                    return null;
-                list = parentItem.Items;
-            }
-            return parentItem;
-        }
-
 
     }
 }

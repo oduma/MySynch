@@ -18,6 +18,15 @@ namespace MySynch.Core.Publisher
             LoggingManager.Debug("Initializing the FS Watcher with publisher: " +localRootFolder);
             if(string.IsNullOrEmpty(localRootFolder))
                 throw new ArgumentNullException("localRootFolder");
+            if(!Directory.Exists(localRootFolder))
+                throw new ArgumentException("localRootFolder does not exist");
+            if(queueInsert==null)
+                throw new ArgumentNullException("queueInsert");
+            if (queueUpdate == null)
+                throw new ArgumentNullException("queueUpdate");
+            if (queueDelete == null)
+                throw new ArgumentNullException("queueDelete");
+
             _queueInsert = queueInsert;
             _queueUpdate = queueUpdate;
             _queueDelete = queueDelete;
