@@ -49,10 +49,14 @@ namespace MySynch.Core
                 if (TryToOpenBroker(brokerName))
                 {
                     LoggingManager.Debug("Trying to attach to the broker: " + brokerName);
-                    BrokerClient.Attach(CurrentAttachRequest);
-                    LoggingManager.Debug("Attached to broker: " + brokerName);
-                    LocalComponent.Initialize(BrokerClient,LocalComponentConfig, HostUrl);
-                    return true;
+                    if (BrokerClient.Attach(CurrentAttachRequest).RegisteredOk)
+                    {
+                        LoggingManager.Debug("Attached to broker: " + brokerName);
+                        LocalComponent.Initialize(BrokerClient, LocalComponentConfig, HostUrl);
+                        return true;
+                    }
+                    LoggingManager.Debug("Not attached to broker: " + brokerName);
+                    return false;
                 }
                 LoggingManager.Debug("Not attached to broker: " + brokerName);
                 return false;

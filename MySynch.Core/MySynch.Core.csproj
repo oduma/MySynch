@@ -119,7 +119,6 @@
     <Compile Include="Publisher\SynchItemDataEqualityComparer.cs" />
     <Compile Include="Publisher\SynchItemManager.cs" />
     <Compile Include="Publisher\SourceOfDataSetupException.cs" />
-    <Compile Include="Interfaces\ICopyStrategy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MySynchInstaller.cs" />
     <Compile Include="Subscriber\CopyStrategy.cs" />
@@ -175,7 +174,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" />
+      <UserProperties BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -75,11 +75,7 @@
     <Compile Include="BrokerTests.cs" />
     <Compile Include="CopyStrategyTests.cs" />
     <Compile Include="FSWatcherTests.cs" />
-    <Compile Include="MySynchServiceBaseTests.cs" />
     <Compile Include="PublisherPushLogicTests.cs" />
-    <Compile Include="Stubs\ServiceMock.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="SubscriberTests.cs" />
     <Compile Include="OfflineChangesDetectorTests.cs" />
     <Compile Include="ComponentResolverTests.cs" />

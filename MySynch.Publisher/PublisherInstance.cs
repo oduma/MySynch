@@ -19,6 +19,9 @@ namespace MySynch.Publisher
         public PublisherInstance()
         {
             LoggingManager.Debug("Initializing service");
+            HostUrl = string.Format("http://{0}/publisher/",
+                        System.Net.Dns.
+                            GetHostName().ToLower());
             CurrentAttachRequest = new AttachRequest
                                          {
                                              RegistrationRequest =
@@ -38,9 +41,6 @@ namespace MySynch.Publisher
                                          };
             LocalComponent = new PushPublisher();
             InitializeComponent();
-            HostUrl = string.Format("http://{0}/publisher/",
-                                    System.Net.Dns.
-                                        GetHostName().ToLower());
             LoggingManager.Debug("Will Initialize publishing changes from folder: " + LocalComponentConfig.RootFolder);
         }
 

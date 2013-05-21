@@ -64,7 +64,7 @@ namespace MySynch.Tests
             string hostUrl=string.Empty;
             subscriber.Initialize(null,localComponentConfig,hostUrl);
             var mockCopyStrategy = MockCopyStrategy();
-            subscriber.InitiatedCopyStrategies = new SortedList<string, ICopyStrategy>
+            subscriber.InitiatedCopyStrategies = new SortedList<string, CopyStrategy>
                                                      {{"publisher url", mockCopyStrategy}};
 
             ReceiveMessageRequest request = new ReceiveMessageRequest
@@ -81,9 +81,9 @@ namespace MySynch.Tests
             Assert.IsTrue(response.Success);
         }
 
-        private ICopyStrategy MockCopyStrategy()
+        private CopyStrategy MockCopyStrategy()
         {
-            var mockCopyStrategy = new Mock<ICopyStrategy>();
+            var mockCopyStrategy = new Mock<CopyStrategy>();
             mockCopyStrategy.Setup(m => m.Copy(@"Data\Test\F1\F12\F12.xml", @"Data\Output\Test\F1\F12\F12.xml")).Returns(true);
             mockCopyStrategy.Setup(m => m.Copy(@"Data\Test\F1\F13\F13.xml", @"Data\Output\Test\F1\F13\F13.xml")).Returns(true);
             mockCopyStrategy.Setup(m => m.Copy(@"Data\Test\F1\F13\F12.xml", @"Data\Output\Test\F1\F13\F12.xml")).Returns(false);
@@ -107,7 +107,7 @@ namespace MySynch.Tests
 
             Assert.True(File.Exists(@"Data\Output\Test\F1\F12\F12.xml"));
             var mockCopyStrategy = MockCopyStrategy();
-            subscriber.InitiatedCopyStrategies = new SortedList<string, ICopyStrategy> { { "publisher url", mockCopyStrategy } };
+            subscriber.InitiatedCopyStrategies = new SortedList<string, CopyStrategy> { { "publisher url", mockCopyStrategy } };
             ReceiveMessageRequest request = new ReceiveMessageRequest
             {
                 PublisherMessage = new PublisherMessage()
@@ -190,7 +190,7 @@ namespace MySynch.Tests
             LocalComponentConfig localComponentConfig = new LocalComponentConfig { BrokerName = "", RootFolder = @"Data\Output\Test\" };
             string hostUrl = string.Empty;
             subscriber.Initialize(null, localComponentConfig, hostUrl);
-            subscriber.InitiatedCopyStrategies = new SortedList<string, ICopyStrategy> ();
+            subscriber.InitiatedCopyStrategies = new SortedList<string, CopyStrategy> ();
 
             var copyStrategy = subscriber.GetOrCreateCopyStrategy("new publisher url");
 
@@ -211,7 +211,7 @@ namespace MySynch.Tests
             string hostUrl = string.Empty;
             subscriber.Initialize(null, localComponentConfig, hostUrl);
             var mockCopyStrategy = MockCopyStrategy();
-            subscriber.InitiatedCopyStrategies = new SortedList<string, ICopyStrategy> { { "old publisher url", mockCopyStrategy } };
+            subscriber.InitiatedCopyStrategies = new SortedList<string, CopyStrategy> { { "old publisher url", mockCopyStrategy } };
 
             var copyStrategy = subscriber.GetOrCreateCopyStrategy("old publisher url");
 

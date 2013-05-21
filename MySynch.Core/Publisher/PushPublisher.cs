@@ -37,10 +37,12 @@ namespace MySynch.Core.Publisher
                 throw new ArgumentNullException("hostUrl");
             LoggingManager.Debug("Initializing publisher with rootfolder: " + localComponentConfiguration.RootFolder);
             HostUrl = hostUrl;
-            _brokerClient = brokerClient;
+            if(_brokerClient==null)
+                _brokerClient = brokerClient;
             try
             {
-                _fsWatcher = new FSWatcher(localComponentConfiguration.RootFolder, QueueInsert, QueueUpdate, QueueDelete);
+                if (_fsWatcher == null)
+                    _fsWatcher = new FSWatcher(localComponentConfiguration.RootFolder, QueueInsert, QueueUpdate, QueueDelete);
                 LoggingManager.Debug("Publisher initialized");
 
             }
@@ -97,7 +99,16 @@ namespace MySynch.Core.Publisher
                                                                              SourcePathRootName=_fsWatcher.Path 
                                                                          }
                                                              };
-            _brokerClient.ReceiveAndDistributeMessage(request);
+            try
+            {
+                LoggingManager.Debug("Sending request to broker.");
+                _brokerClient.ReceiveAndDistributeMessage(request);
+                LoggingManager.Debug("Request to broker sent.");
+            }
+            catch (Exception ex)
+            {
+                LoggingManager.LogMySynchSystemError(ex);                
+            }
         }
 
         internal void QueueUpdate(string absolutePath)

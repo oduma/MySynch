@@ -54,45 +54,71 @@ namespace MySynch.Core.Broker
 
         public AttachResponse Attach(AttachRequest request)
         {
+            LoggingManager.Debug("Attaching attempt to the Broker...");
             using (LoggingManager.LogMySynchPerformance())
             {
                 if (request == null || request.RegistrationRequest == null ||
                     string.IsNullOrEmpty(request.RegistrationRequest.ServiceUrl))
+                {
+                    LoggingManager.Debug("Not attached due to empty request.");
                     return new AttachResponse {RegisteredOk = false};
+                }
                 try
                 {
                     if (_registrations.Any(r => r.ServiceUrl == request.RegistrationRequest.ServiceUrl))
+                    {
+                        LoggingManager.Debug("Attached to old " + request.RegistrationRequest.ServiceUrl);
                         return new AttachResponse {RegisteredOk = true};
+                    }
                     _registrations =
                         _registrations.ToList().AddRegistration(request.RegistrationRequest).SaveAndReturn(
                             _store.StoreName, _storeHandler.StoreMethod);
+                    LoggingManager.Debug("Attached to new " + request.RegistrationRequest.ServiceUrl);
                     return new AttachResponse {RegisteredOk = true};
                 }
                 catch (Exception ex)
                 {
                     LoggingManager.LogMySynchSystemError(ex);
+                    LoggingManager.Debug("Not attached " + request.RegistrationRequest.ServiceUrl);
                     return new AttachResponse {RegisteredOk = false};
+                }
+                finally
+                {
+                    LoggingManager.Debug("Attached services: " + string.Join(", ",_registrations.Select(r=>r.ServiceUrl)));
                 }
             }
         }
 
         public DetachResponse Detach(DetachRequest request)
         {
-            if(request==null || string.IsNullOrEmpty(request.ServiceUrl))
-                return new DetachResponse{Status = false};
+            LoggingManager.Debug("Detaching attempt to the Broker...");
+            if (request == null || string.IsNullOrEmpty(request.ServiceUrl))
+            {
+                LoggingManager.Debug("Not detached ");
+                return new DetachResponse { Status = false };
+            }
             try
             {
                 if (!_registrations.Any(r => r.ServiceUrl == request.ServiceUrl))
+                {
+                    LoggingManager.Debug("Not detached " + request.ServiceUrl);
                     return new DetachResponse { Status = false };
+                }
                 _registrations =
                     _registrations.ToList().RemoveRegistration(request.ServiceUrl).SaveAndReturn(
                         _store.StoreName,_storeHandler.StoreMethod);
+                LoggingManager.Debug("Detached :" + request.ServiceUrl);
                 return new DetachResponse { Status = true };
             }
             catch (Exception ex)
             {
                 LoggingManager.LogMySynchSystemError(ex);
+                LoggingManager.Debug("Not detached " + request.ServiceUrl);
                 return new DetachResponse { Status = false };
+            }
+            finally
+            {
+                LoggingManager.Debug("Attached services: " + string.Join(", ", _registrations.Select(r => r.ServiceUrl)));
             }
         }
 
@@ -103,9 +129,11 @@ namespace MySynch.Core.Broker
 
         public void ReceiveAndDistributeMessage(ReceiveAndDistributeMessageRequest request)
         {
+            LoggingManager.Debug("Received request from publisher.");
             var brokerMessage = request.PublisherMessage.ConvertToBrokerMessage();
             _receivedMessages.Add(brokerMessage);
             DistributeMessageToAllAvailableSubscribers(brokerMessage);
+            LoggingManager.Debug("Request forwarded to all subscribers.");
         }
 
         internal void DistributeMessageToAllAvailableSubscribers(BrokerMessage brokerMessage)
@@ -120,6 +148,7 @@ namespace MySynch.Core.Broker
                 availableSubscribers.Select(
                     s => new Destination {DestinationUrl = s.ServiceUrl, ProcessedByDestination = false,ParentMessage=brokerMessage as PublisherMessage}).ToList();
             List<Task> tasks= new List<Task>();
+            LoggingManager.Debug("Trying to distribute to: " + string.Join(", ",brokerMessage.Destinations.Select(d=>d.DestinationUrl)));
             foreach (var destination in brokerMessage.Destinations)
             {
                 Destination destination1 = destination;
@@ -145,6 +174,8 @@ namespace MySynch.Core.Broker
                 ReceiveMessageRequest request = new ReceiveMessageRequest { PublisherMessage = subscriberDestination.ParentMessage };
                 var response = subscriberRemote.ReceiveMessage(request);
                 subscriberDestination.ProcessedByDestination = response.Success;
+                LoggingManager.Debug("Distributed to subscriber: " + subscriberDestination.DestinationUrl);
+
             }
             catch (Exception ex)
             {

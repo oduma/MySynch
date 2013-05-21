@@ -19,11 +19,11 @@ namespace MySynch.Core.Subscriber
         private object _lock= new object();
         private MySynchComponentResolver _componentResolver;
 
-        internal SortedList<string, ICopyStrategy> InitiatedCopyStrategies { get; set; }
+        internal SortedList<string, CopyStrategy> InitiatedCopyStrategies { get; set; }
 
         public Subscriber( MySynchComponentResolver componentResolver)
         {
-            InitiatedCopyStrategies=new SortedList<string, ICopyStrategy>();
+            InitiatedCopyStrategies=new SortedList<string, CopyStrategy>();
             _componentResolver = componentResolver;
         }
 
@@ -75,12 +75,12 @@ namespace MySynch.Core.Subscriber
                        };
         }
 
-        internal ICopyStrategy GetOrCreateCopyStrategy(string sourceOfMessageUrl)
+        internal CopyStrategy GetOrCreateCopyStrategy(string sourceOfMessageUrl)
         {
             lock (_lock)
             {
                 if(InitiatedCopyStrategies==null)
-                    InitiatedCopyStrategies= new SortedList<string, ICopyStrategy>();
+                    InitiatedCopyStrategies= new SortedList<string, CopyStrategy>();
                 if (InitiatedCopyStrategies.ContainsKey(sourceOfMessageUrl))
                     return InitiatedCopyStrategies[sourceOfMessageUrl];
                 var copyStrategy = new CopyStrategy();

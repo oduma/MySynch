@@ -3,15 +3,14 @@ using System.IO;
 using MySynch.Common.Logging;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
-using MySynch.Core.Interfaces;
 
 namespace MySynch.Core.Subscriber
 {
-    public class CopyStrategy:ICopyStrategy
+    public class CopyStrategy
     {
         private IPublisher _publisher;
 
-        public bool Copy(string source, string target)
+        public virtual bool Copy(string source, string target)
         {
             if (string.IsNullOrEmpty(source))
                 throw new ArgumentNullException("source");
