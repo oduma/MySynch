@@ -13,6 +13,9 @@ namespace MySynch.Subscriber
         public SubscriberInstance()
         {
             LoggingManager.Debug("Initializing service");
+            HostUrl = string.Format("http://{0}/subscriber/",
+            System.Net.Dns.
+                GetHostName().ToLower());
             CurrentAttachRequest = new AttachRequest
             {
                 RegistrationRequest =
@@ -30,9 +33,6 @@ namespace MySynch.Subscriber
                         ServiceUrl = HostUrl
                     }
             };
-            HostUrl = string.Format("http://{0}/subscriber/",
-                        System.Net.Dns.
-                            GetHostName().ToLower());
 
             InitializeComponent();
             LoggingManager.Debug("Will Initialize subscribing changes to folder: " + LocalComponentConfig.RootFolder);
