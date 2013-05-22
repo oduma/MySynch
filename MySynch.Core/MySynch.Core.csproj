@@ -103,6 +103,7 @@
     <Compile Include="Broker\Broker.cs" />
     <Compile Include="Broker\ExtensionMethods.cs" />
     <Compile Include="ConfigurationHelper.cs" />
+    <Compile Include="DataTypes\AddresedMessage.cs" />
     <Compile Include="DataTypes\LocalComponentConfig.cs" />
     <Compile Include="Interfaces\ILocalComponent.cs" />
     <Compile Include="MySynchComponentResolver.cs" />
@@ -174,7 +175,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

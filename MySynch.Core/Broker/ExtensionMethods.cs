@@ -44,16 +44,5 @@ namespace MySynch.Core.Broker
                 throw;
             }
         }
-
-        internal static BrokerMessage ConvertToBrokerMessage (this PublisherMessage publisherMessage)
-        {
-            return new BrokerMessage
-                                    {
-                                        AbsolutePath = publisherMessage.AbsolutePath,
-                                        OperationType = publisherMessage.OperationType,
-                                        SourceOfMessageUrl = publisherMessage.SourceOfMessageUrl,
-                                        SourcePathRootName = publisherMessage.SourcePathRootName
-                                    };
-        }
     }
 }

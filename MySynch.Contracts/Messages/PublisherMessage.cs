@@ -1,9 +1,10 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace MySynch.Contracts.Messages
 {
     [DataContract]
-    [KnownType(typeof(BrokerMessage))]
     public class PublisherMessage
     {
         [DataMember]
@@ -18,5 +19,7 @@ namespace MySynch.Contracts.Messages
         [DataMember]
         public string SourcePathRootName { get; set; }
 
+        [DataMember]
+        public Guid MessageId { get; set; }
     }
 }

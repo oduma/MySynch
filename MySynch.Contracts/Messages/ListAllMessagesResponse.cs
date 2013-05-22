@@ -7,6 +7,6 @@ namespace MySynch.Contracts.Messages
     public class ListAllMessagesResponse
     {
         [DataMember]
-        public List<BrokerMessage> AvailableMessages { get; set; }
+        public List<MessageWithDestinations> AvailableMessages { get; set; }
     }
 }

@@ -96,7 +96,8 @@ namespace MySynch.Core.Publisher
                                                                              AbsolutePath = absolutePath,
                                                                              OperationType = operationType,
                                                                              SourceOfMessageUrl=HostUrl,
-                                                                             SourcePathRootName=_fsWatcher.Path 
+                                                                             SourcePathRootName=_fsWatcher.Path,
+                                                                             MessageId=Guid.NewGuid()
                                                                          }
                                                              };
             try

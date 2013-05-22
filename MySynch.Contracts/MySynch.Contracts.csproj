@@ -58,8 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplyCustomClientBehavior.cs" />
-    <Compile Include="Messages\BrokerMessage.cs" />
-    <Compile Include="Messages\Destination.cs" />
+    <Compile Include="Messages\DestinationWithResult.cs" />
     <Compile Include="Messages\ListAllMessagesResponse.cs" />
     <Compile Include="Messages\ListAllRegistrationsResponse.cs" />
     <Compile Include="Messages\DetachRequest.cs" />
@@ -70,6 +69,7 @@
     <Compile Include="ISubscriber.cs" />
     <Compile Include="ICommunicationComponent.cs" />
     <Compile Include="IPublisher.cs" />
+    <Compile Include="Messages\MessageWithDestinations.cs" />
     <Compile Include="Messages\ReceiveMessageRequest.cs" />
     <Compile Include="Messages\ReceiveMessageResponse.cs" />
     <Compile Include="Messages\PublisherMessage.cs" />
@@ -108,7 +108,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.None" BuildVersion_UseGlobalSettings="True" BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" />
+      <UserProperties BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" BuildVersion_UseGlobalSettings="True" BuildVersion_BuildVersioningStyle="None.None.None.None" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
