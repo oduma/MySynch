@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace MySynch.Contracts.Messages
 {
     [DataContract]
+    [KnownType(typeof(MessageWithDestinations))]
     public class PublisherMessage
     {
         [DataMember]
