@@ -29,6 +29,7 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <CodeContractsAssemblyMode>0</CodeContractsAssemblyMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -44,10 +45,45 @@
     <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>Assemblies\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeContractsEnableRuntimeChecking>False</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsRunCodeAnalysis>False</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>False</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>False</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
+    <CodeContractsEnumObligations>False</CodeContractsEnumObligations>
+    <CodeContractsRedundantAssumptions>False</CodeContractsRedundantAssumptions>
+    <CodeContractsInferRequires>False</CodeContractsInferRequires>
+    <CodeContractsInferEnsures>False</CodeContractsInferEnsures>
+    <CodeContractsInferObjectInvariants>False</CodeContractsInferObjectInvariants>
+    <CodeContractsSuggestAssumptions>False</CodeContractsSuggestAssumptions>
+    <CodeContractsSuggestRequires>True</CodeContractsSuggestRequires>
+    <CodeContractsSuggestEnsures>False</CodeContractsSuggestEnsures>
+    <CodeContractsSuggestObjectInvariants>False</CodeContractsSuggestObjectInvariants>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>True</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>False</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsBaseLineFile />
+    <CodeContractsCacheAnalysisResults>True</CodeContractsCacheAnalysisResults>
+    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>DoNotBuild</CodeContractsReferenceAssembly>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SlowCheetahTargets Condition=" '$(SlowCheetahTargets)'=='' ">$(LOCALAPPDATA)\Microsoft\MSBuild\SlowCheetah\v1\SlowCheetah.Transforms.targets</SlowCheetahTargets>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Castle.Windsor">
@@ -59,6 +95,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Management" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -97,7 +134,30 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+      <TransformOnBuild>true</TransformOnBuild>
+    </None>
+    <None Include="App.Debug.config">
+      <DependentUpon>App.config</DependentUpon>
+      <IsTransformFile>True</IsTransformFile>
+    </None>
+    <None Include="App.Release.config">
+      <DependentUpon>App.config</DependentUpon>
+      <IsTransformFile>True</IsTransformFile>
+    </None>
+    <None Include="log4net.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TransformOnBuild>true</TransformOnBuild>
+    </None>
+    <None Include="log4net.Debug.config">
+      <DependentUpon>log4net.config</DependentUpon>
+      <IsTransformFile>True</IsTransformFile>
+    </None>
+    <None Include="log4net.Release.config">
+      <DependentUpon>log4net.config</DependentUpon>
+      <IsTransformFile>True</IsTransformFile>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
@@ -124,9 +184,10 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" />
+      <UserProperties BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
+  <Import Project="$(SlowCheetahTargets)" Condition="Exists('$(SlowCheetahTargets)')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

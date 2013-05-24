@@ -33,7 +33,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="SpecialFiles.wxs" />
-    <Compile Include="DistributorGroup.wxs" />
     <Compile Include="Product.wxs" />
     <Compile Include="PublisherGroup.wxs" />
     <Compile Include="SubscriberGroup.wxs" />

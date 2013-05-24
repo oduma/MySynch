@@ -98,7 +98,6 @@ Global
 		{F8F55F65-CAA1-44C6-96AC-BB7E9A85DFD0}.Debug|x86.Build.0 = Debug|x86
 		{F8F55F65-CAA1-44C6-96AC-BB7E9A85DFD0}.Release|Any CPU.ActiveCfg = Release|x86
 		{F8F55F65-CAA1-44C6-96AC-BB7E9A85DFD0}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{F8F55F65-CAA1-44C6-96AC-BB7E9A85DFD0}.Release|Mixed Platforms.Build.0 = Release|x86
 		{F8F55F65-CAA1-44C6-96AC-BB7E9A85DFD0}.Release|x86.ActiveCfg = Release|x86
 		{F8F55F65-CAA1-44C6-96AC-BB7E9A85DFD0}.Release|x86.Build.0 = Release|x86
 		{9E007CA9-F233-4DF1-8A18-A4E3411FDD32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -147,7 +146,6 @@ Global
 		{36FE7C56-E471-422F-91ED-BE6FCA8BEF03}.Debug|x86.Build.0 = Debug|x86
 		{36FE7C56-E471-422F-91ED-BE6FCA8BEF03}.Release|Any CPU.ActiveCfg = Release|x86
 		{36FE7C56-E471-422F-91ED-BE6FCA8BEF03}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{36FE7C56-E471-422F-91ED-BE6FCA8BEF03}.Release|Mixed Platforms.Build.0 = Release|x86
 		{36FE7C56-E471-422F-91ED-BE6FCA8BEF03}.Release|x86.ActiveCfg = Release|x86
 		{36FE7C56-E471-422F-91ED-BE6FCA8BEF03}.Release|x86.Build.0 = Release|x86
 		{986815A7-C827-4316-B91D-5D178839196F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -157,7 +155,6 @@ Global
 		{986815A7-C827-4316-B91D-5D178839196F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{986815A7-C827-4316-B91D-5D178839196F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{986815A7-C827-4316-B91D-5D178839196F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{986815A7-C827-4316-B91D-5D178839196F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{986815A7-C827-4316-B91D-5D178839196F}.Release|x86.ActiveCfg = Release|Any CPU
 		{AE8A4304-EB54-4E35-9C08-F139E8A88064}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{AE8A4304-EB54-4E35-9C08-F139E8A88064}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
@@ -184,8 +181,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		BuildVersion_BuildVersioningStyle = None.None.None.None
-		BuildVersion_UpdateFileVersion = False
 		BuildVersion_UpdateAssemblyVersion = False
+		BuildVersion_UpdateFileVersion = False
+		BuildVersion_BuildVersioningStyle = None.None.None.None
 	EndGlobalSection
 EndGlobal

@@ -68,6 +68,9 @@
     <PlatformTarget>x64</PlatformTarget>
     <OutputPath>bin\x64\Release\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup>
+    <SlowCheetahTargets Condition=" '$(SlowCheetahTargets)'=='' ">$(LOCALAPPDATA)\Microsoft\MSBuild\SlowCheetah\v1\SlowCheetah.Transforms.targets</SlowCheetahTargets>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net">
       <HintPath>..\Lib\log4net.dll</HintPath>
@@ -122,9 +125,28 @@
   <ItemGroup>
     <None Include="App.config">
       <SubType>Designer</SubType>
+      <TransformOnBuild>true</TransformOnBuild>
+    </None>
+    <None Include="App.Debug.config">
+      <DependentUpon>App.config</DependentUpon>
+      <IsTransformFile>True</IsTransformFile>
+    </None>
+    <None Include="App.Release.config">
+      <DependentUpon>App.config</DependentUpon>
+      <IsTransformFile>True</IsTransformFile>
     </None>
     <None Include="log4net.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TransformOnBuild>true</TransformOnBuild>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="log4net.Debug.config">
+      <DependentUpon>log4net.config</DependentUpon>
+      <IsTransformFile>True</IsTransformFile>
+    </None>
+    <None Include="log4net.Release.config">
+      <DependentUpon>log4net.config</DependentUpon>
+      <IsTransformFile>True</IsTransformFile>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -155,6 +177,7 @@
       <UserProperties BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
+  <Import Project="$(SlowCheetahTargets)" Condition="Exists('$(SlowCheetahTargets)')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

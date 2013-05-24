@@ -58,6 +58,9 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputPath>Assemblies\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup>
+    <SlowCheetahTargets Condition=" '$(SlowCheetahTargets)'=='' ">$(LOCALAPPDATA)\Microsoft\MSBuild\SlowCheetah\v1\SlowCheetah.Transforms.targets</SlowCheetahTargets>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Castle.Windsor">
       <HintPath>..\..\..\CW3.1\net40\Castle.Windsor.dll</HintPath>
@@ -110,9 +113,27 @@
   <ItemGroup>
     <None Include="App.config">
       <SubType>Designer</SubType>
+      <TransformOnBuild>true</TransformOnBuild>
+    </None>
+    <None Include="App.Debug.config">
+      <DependentUpon>App.config</DependentUpon>
+      <IsTransformFile>True</IsTransformFile>
+    </None>
+    <None Include="App.Release.config">
+      <DependentUpon>App.config</DependentUpon>
+      <IsTransformFile>True</IsTransformFile>
     </None>
     <None Include="log4net.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TransformOnBuild>true</TransformOnBuild>
+    </None>
+    <None Include="log4net.Debug.config">
+      <DependentUpon>log4net.config</DependentUpon>
+      <IsTransformFile>True</IsTransformFile>
+    </None>
+    <None Include="log4net.Release.config">
+      <DependentUpon>log4net.config</DependentUpon>
+      <IsTransformFile>True</IsTransformFile>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -143,6 +164,7 @@
       <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" />
     </VisualStudio>
   </ProjectExtensions>
+  <Import Project="$(SlowCheetahTargets)" Condition="Exists('$(SlowCheetahTargets)')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
