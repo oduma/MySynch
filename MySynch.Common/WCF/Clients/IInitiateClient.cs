@@ -3,5 +3,6 @@
     public interface IInitiateClient
     {
         void InitiateUsingServerAddress(string serverAddress);
+        void Reset();
     }
 }

@@ -144,7 +144,6 @@ namespace MySynch.Tests
                 RegistrationRequest =
                     new Registration
                     {
-                        MessageMethod = "Message Method 1",
                         OperationTypes =
                             new List<OperationType>
                                                                 {
@@ -172,7 +171,6 @@ namespace MySynch.Tests
                 RegistrationRequest =
                     new Registration
                     {
-                        MessageMethod = "Message Method 1",
                         OperationTypes =
                             new List<OperationType>
                                                                 {
@@ -185,23 +183,6 @@ namespace MySynch.Tests
                     }
             };
             var resonse = broker.Attach(request);
-            request = new AttachRequest
-            {
-                RegistrationRequest =
-                    new Registration
-                    {
-                        MessageMethod = "Message Method 2",
-                        OperationTypes =
-                            new List<OperationType>
-                                                                {
-                                                                    OperationType.Insert,
-                                                                    OperationType.Update,
-                                                                    OperationType.Delete
-                                                                },
-                        ServiceRole = ServiceRole.Publisher,
-                        ServiceUrl = "Service Url"
-                    }
-            };
             Assert.True(resonse.RegisteredOk);
         }
 
@@ -217,7 +198,6 @@ namespace MySynch.Tests
                 RegistrationRequest =
                     new Registration
                     {
-                        MessageMethod = "Message Method 1",
                         OperationTypes =
                             new List<OperationType>
                                                                 {
@@ -344,7 +324,6 @@ namespace MySynch.Tests
                 RegistrationRequest =
                     new Registration
                     {
-                        MessageMethod = "Message Method 1",
                         OperationTypes =
                             new List<OperationType>
                                                                 {
@@ -410,23 +389,6 @@ namespace MySynch.Tests
             MySynchComponentResolver componentResolver = new MySynchComponentResolver();
             componentResolver.RegisterAll(new AllStoresInstaller());
             Broker broker = new Broker(storeType, componentResolver);
-            AttachRequest request = new AttachRequest
-            {
-                RegistrationRequest =
-                    new Registration
-                    {
-                        MessageMethod = "Message Method 1",
-                        OperationTypes =
-                            new List<OperationType>
-                                                                {
-                                                                    OperationType.Insert,
-                                                                    OperationType.Update,
-                                                                    OperationType.Delete
-                                                                },
-                        ServiceRole = ServiceRole.Publisher,
-                        ServiceUrl = "Service Url"
-                    }
-            };
             ReceiveAndDistributeMessageRequest mRequest = new ReceiveAndDistributeMessageRequest
                                                               {
                                                                   PublisherMessage = 
@@ -450,23 +412,6 @@ namespace MySynch.Tests
             MySynchComponentResolver componentResolver = new MySynchComponentResolver();
             componentResolver.RegisterAll(new AllStoresInstaller());
             Broker broker = new Broker(storeType, componentResolver);
-            AttachRequest request = new AttachRequest
-            {
-                RegistrationRequest =
-                    new Registration
-                    {
-                        MessageMethod = "Message Method 1",
-                        OperationTypes =
-                            new List<OperationType>
-                                                                {
-                                                                    OperationType.Insert,
-                                                                    OperationType.Update,
-                                                                    OperationType.Delete
-                                                                },
-                        ServiceRole = ServiceRole.Publisher,
-                        ServiceUrl = "Service Url"
-                    }
-            };
             ReceiveAndDistributeMessageRequest mRequest = new ReceiveAndDistributeMessageRequest
             {
                 PublisherMessage =

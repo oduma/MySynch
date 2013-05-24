@@ -21,7 +21,6 @@ namespace MySynch.Subscriber
                 RegistrationRequest =
                     new Registration
                     {
-                        MessageMethod = "temp placeholder 1",
                         OperationTypes =
                             new List<OperationType>
                                                                  {
@@ -43,7 +42,7 @@ namespace MySynch.Subscriber
             LoggingManager.Debug("Starting service");
             CloseAllServiceHosts();
             if (InitializeLocalComponent())
-                StartTimer(60000, TimerElapseMethod);
+                StartTimer(500, TimerElapseMethod);
             OpenAllServiceHosts();
             LoggingManager.Debug("Service started.");
 

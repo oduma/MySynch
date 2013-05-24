@@ -27,7 +27,6 @@ namespace MySynch.Publisher
                                              RegistrationRequest =
                                                  new Registration
                                                      {
-                                                         MessageMethod = "temp placeholder",
                                                          OperationTypes =
                                                              new List<OperationType>
                                                                  {
@@ -51,7 +50,7 @@ namespace MySynch.Publisher
             _firstTimeRunningAfterRestart = true;
             CloseAllServiceHosts();
             if(InitializeLocalComponent())
-                StartTimer(60000,TimerElapseMethod);
+                StartTimer(500,TimerElapseMethod);
             OpenAllServiceHosts();
             LoggingManager.Debug("Service started.");
         }

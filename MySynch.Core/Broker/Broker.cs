@@ -209,15 +209,16 @@ namespace MySynch.Core.Broker
                     _receivedMessages.First(m => m.MessageId == subscriberAddresedMessage.OriginalMessage.MessageId);
                 var dest = msg.Destinations.FirstOrDefault(d => d.Url == subscriberAddresedMessage.DestinationUrl);
                 if (dest==null)
-                {
                     msg.Destinations.Add(new DestinationWithResult
                                              {
                                                  Url = subscriberAddresedMessage.DestinationUrl,
                                                  Processed = subscriberAddresedMessage.ProcessedByDestination
                                              });
-                    return;
-                }
-                dest.Processed = subscriberAddresedMessage.ProcessedByDestination;
+                else
+                    dest.Processed = subscriberAddresedMessage.ProcessedByDestination;
+                if (!subscriberAddresedMessage.ProcessedByDestination 
+                    && _registrations.Any(r=>r.ServiceUrl==subscriberAddresedMessage.DestinationUrl))
+                    Detach(new DetachRequest {ServiceUrl = subscriberAddresedMessage.DestinationUrl});
             }
         }
 
@@ -228,7 +229,10 @@ namespace MySynch.Core.Broker
                 try
                 {
                     if (InitiatedSubScriberProxies.ContainsKey(destinationUrl))
+                    {
+                        InitiatedSubScriberProxies[destinationUrl].Reset();
                         return InitiatedSubScriberProxies[destinationUrl];
+                    }
 
                     var subscriberRemote = _componentResolver.Resolve<ISubscriberProxy>("ISubscriber.Remote");
                     subscriberRemote.InitiateUsingServerAddress(destinationUrl);

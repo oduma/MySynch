@@ -1,4 +1,5 @@
-﻿using System.ServiceModel;
+﻿using System;
+using System.ServiceModel;
 using System.ServiceModel.Channels;
 
 namespace MySynch.Common.WCF
@@ -8,8 +9,12 @@ namespace MySynch.Common.WCF
         public static Binding GetBinding(bool isDuplex)
         {
             if (isDuplex)
+            {
                 return new WSDualHttpBinding();
-            return new BasicHttpBinding();
+            }
+            BasicHttpBinding basicHttpBinding= new BasicHttpBinding();
+            basicHttpBinding.SendTimeout = TimeSpan.FromMinutes(25);
+            return basicHttpBinding;
         }
     }
 }

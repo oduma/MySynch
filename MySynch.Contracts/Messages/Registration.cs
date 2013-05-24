@@ -10,13 +10,9 @@ namespace MySynch.Contracts.Messages
         public string ServiceUrl { get; set; }
 
         [DataMember]
-        public string MessageMethod { get; set; }
-
-        [DataMember]
         public List<OperationType> OperationTypes { get; set; }
 
         [DataMember]
         public ServiceRole ServiceRole { get; set; }
-
     }
 }

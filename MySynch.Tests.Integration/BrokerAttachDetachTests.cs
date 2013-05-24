@@ -19,7 +19,6 @@ namespace MySynch.Tests.Integration
                                             RegistrationRequest =
                                                 new Registration
                                                     {
-                                                        MessageMethod = "My Method",
                                                         OperationTypes =
                                                             new List<OperationType>
                                                                 {OperationType.Insert, OperationType.Update},

@@ -20,5 +20,10 @@ namespace MySynch.Tests.Stubs
         {
             throw new NotImplementedException();
         }
+
+        public void Reset()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -12,6 +12,12 @@ namespace MySynch.Common.WCF.Clients
         public T Proxy;
         protected abstract List<IEndpointBehavior> GetEndpointBehaviors();
 
+        public void Reset()
+        {
+            if(_channel.State== CommunicationState.Created || _channel.State==CommunicationState.Closed)
+                _channel.Open();
+        }
+
         public void InitiateUsingServerAddress(string serverAddress)
         {
             LoggingManager.Debug("Initating using serverAddress: " + serverAddress);
@@ -32,6 +38,7 @@ namespace MySynch.Common.WCF.Clients
                 Proxy = channelFactory.CreateChannel();
 
                 _channel = (ICommunicationObject) Proxy;
+
             }
         }
 
