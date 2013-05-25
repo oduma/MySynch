@@ -112,22 +112,10 @@ namespace MySynch.Tests
         }
 
         [Test]
-        public void QueueInsert_NothingSent()
+        public void ProcessOperation_NothingSent()
         {
             PushPublisher pushPublisher = new PushPublisher();
-            pushPublisher.QueueInsert(null);
-        }
-        [Test]
-        public void QueueUpdate_NothingSent()
-        {
-            PushPublisher pushPublisher = new PushPublisher();
-            pushPublisher.QueueUpdate("");
-        }
-        [Test]
-        public void QueueDelete_NothingSent()
-        {
-            PushPublisher pushPublisher = new PushPublisher();
-            pushPublisher.QueueDelete(string.Empty);
+            pushPublisher.ProcessOperation(null,OperationType.None);
         }
     }
 }

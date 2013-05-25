@@ -75,20 +75,7 @@ namespace MySynch.Core.Publisher
                 var changesToSend = OfflineChangesDetector.GetOfflineChanges(publisher.CurrentRepository,
                                                          oldRepositoryFileName);
                 foreach (var changeToSend in changesToSend)
-                {
-                    switch (changeToSend.Value)
-                    {
-                        case OperationType.Insert:
-                            publisher.QueueInsert(changeToSend.Key);
-                            break;
-                        case OperationType.Update:
-                            publisher.QueueUpdate(changeToSend.Key);
-                            break;
-                        case OperationType.Delete:
-                            publisher.QueueDelete(changeToSend.Key);
-                            break;
-                    }
-                }
+                    publisher.ProcessOperation(changeToSend.Key,changeToSend.Value);
             }
             catch (Exception ex)
             {

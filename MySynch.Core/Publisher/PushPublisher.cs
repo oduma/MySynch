@@ -42,7 +42,7 @@ namespace MySynch.Core.Publisher
             try
             {
                 if (_fsWatcher == null)
-                    _fsWatcher = new FSWatcher(localComponentConfiguration.RootFolder, QueueInsert, QueueUpdate, QueueDelete);
+                    _fsWatcher = new FSWatcher(localComponentConfiguration.RootFolder, ProcessOperation);
                 LoggingManager.Debug("Publisher initialized");
 
             }
@@ -58,15 +58,10 @@ namespace MySynch.Core.Publisher
         #endregion
 
         #region Push Logic
-        internal void QueueInsert(string absolutePath)
-        {
-            LoggingManager.Debug("Will queue an insert for: " + absolutePath);
-            ProcessOperation(absolutePath, OperationType.Insert);
-        }
-
-        private void ProcessOperation(string absolutePath, OperationType operationType)
+        internal void ProcessOperation(string absolutePath, OperationType operationType)
         {
             operationInProgress = true;
+            LoggingManager.Debug("Trying to publish an " + operationType + " for path: " + absolutePath);
             try
             {
                 if (string.IsNullOrEmpty(absolutePath))
@@ -76,7 +71,14 @@ namespace MySynch.Core.Publisher
                 {
                     shouldPublish = UpdateCurrentRepository(absolutePath, operationType);
                     if (shouldPublish)
+                    {
                         PublishMessage(absolutePath, operationType);
+                        LoggingManager.Debug("Published Ok.");
+                    }
+                    else
+                    {
+                        LoggingManager.Debug("Not published probably a duplicate.");
+                    }
                 }
             }
             catch (Exception ex)
@@ -114,18 +116,6 @@ namespace MySynch.Core.Publisher
             {
                 LoggingManager.LogMySynchSystemError(ex);                
             }
-        }
-
-        internal void QueueUpdate(string absolutePath)
-        {
-            LoggingManager.Debug("Will queue an update for: " + absolutePath);
-            ProcessOperation(absolutePath,OperationType.Update);
-        }
-
-        internal void QueueDelete(string absolutePath)
-        {
-            LoggingManager.Debug("Will queue a delete for: " + absolutePath);
-            ProcessOperation(absolutePath,OperationType.Delete);
         }
         #endregion
 
