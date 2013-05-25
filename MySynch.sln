@@ -94,6 +94,7 @@ Global
 		{39D279A7-FAF1-4801-A847-F4BD472C5002}.Release|x86.ActiveCfg = Release|Any CPU
 		{F8F55F65-CAA1-44C6-96AC-BB7E9A85DFD0}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{F8F55F65-CAA1-44C6-96AC-BB7E9A85DFD0}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{F8F55F65-CAA1-44C6-96AC-BB7E9A85DFD0}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{F8F55F65-CAA1-44C6-96AC-BB7E9A85DFD0}.Debug|x86.ActiveCfg = Debug|x86
 		{F8F55F65-CAA1-44C6-96AC-BB7E9A85DFD0}.Debug|x86.Build.0 = Debug|x86
 		{F8F55F65-CAA1-44C6-96AC-BB7E9A85DFD0}.Release|Any CPU.ActiveCfg = Release|x86
@@ -181,8 +182,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		BuildVersion_UpdateAssemblyVersion = False
-		BuildVersion_UpdateFileVersion = False
 		BuildVersion_BuildVersioningStyle = None.None.None.None
+		BuildVersion_UpdateFileVersion = False
+		BuildVersion_UpdateAssemblyVersion = False
 	EndGlobalSection
 EndGlobal
