@@ -19,9 +19,9 @@ namespace MySynch.Publisher
         public PublisherInstance()
         {
             LoggingManager.Debug("Initializing service");
-            HostUrl = string.Format("http://{0}/publisher/",
+            HostUrl = string.Format("http://{0}/{1}/",
                         System.Net.Dns.
-                            GetHostName().ToLower());
+                            GetHostName().ToLower(),LocalComponentConfig.InstanceName);
             CurrentAttachRequest = new AttachRequest
                                          {
                                              RegistrationRequest =
@@ -59,7 +59,7 @@ namespace MySynch.Publisher
         {
             LoggingManager.Debug("Timer kicked in again.");
             Timer.Enabled = false;
-            if (TryMakeComponentKnown(LocalComponentConfig.BrokerName))
+            if (TryMakeComponentKnown(LocalComponentConfig.BrokerUrl))
             {
                 if (_firstTimeRunningAfterRestart)
                 {

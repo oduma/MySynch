@@ -30,7 +30,7 @@ namespace MySynch.Core
         {
             LoggingManager.Debug("Timer kicked in again.");
             Timer.Enabled = false;
-            if (TryMakeComponentKnown(LocalComponentConfig.BrokerName))
+            if (TryMakeComponentKnown(LocalComponentConfig.BrokerUrl))
             {
                 Timer.Interval = 120000;
                 Timer.Enabled = true;
@@ -42,29 +42,29 @@ namespace MySynch.Core
 
         }
 
-        protected bool TryMakeComponentKnown(string brokerName)
+        protected bool TryMakeComponentKnown(string brokerUrl)
         {
             try
             {
-                if (TryToOpenBroker(brokerName))
+                if (TryToOpenBroker(brokerUrl))
                 {
-                    LoggingManager.Debug("Trying to attach to the broker: " + brokerName);
+                    LoggingManager.Debug("Trying to attach to the broker: " + brokerUrl);
                     if (BrokerClient.Attach(CurrentAttachRequest).RegisteredOk)
                     {
-                        LoggingManager.Debug("Attached to broker: " + brokerName);
+                        LoggingManager.Debug("Attached to broker: " + brokerUrl);
                         LocalComponent.Initialize(BrokerClient, LocalComponentConfig, HostUrl);
                         return true;
                     }
-                    LoggingManager.Debug("Not attached to broker: " + brokerName);
+                    LoggingManager.Debug("Not attached to broker: " + brokerUrl);
                     return false;
                 }
-                LoggingManager.Debug("Not attached to broker: " + brokerName);
+                LoggingManager.Debug("Not attached to broker: " + brokerUrl);
                 return false;
             }
             catch (Exception ex)
             {
                 LoggingManager.LogMySynchSystemError(ex);
-                LoggingManager.Debug("Not attached to broker: " + brokerName);
+                LoggingManager.Debug("Not attached to broker: " + brokerUrl);
                 return false;
             }
         }
@@ -88,15 +88,15 @@ namespace MySynch.Core
             }
         }
 
-        protected internal bool TryToOpenBroker(string brokerName)
+        protected internal bool TryToOpenBroker(string brokerUrl)
         {
             try
             {
-                LoggingManager.Debug("Trying to open broker: " + brokerName);
+                LoggingManager.Debug("Trying to open broker: " + brokerUrl);
                 if (BrokerClient == null)
                 {
                     BrokerClient = new BrokerClient();
-                    BrokerClient.InitiateUsingServerAddress(string.Format("http://{0}/broker", brokerName));
+                    BrokerClient.InitiateUsingServerAddress(brokerUrl);
                 }
                 return BrokerClient.GetHeartbeat().Status;
 

@@ -66,7 +66,7 @@ namespace MySynch.Monitor
 
         private void DoWork(object sender, DoWorkEventArgs e)
         {
-            var key = ConfigurationManager.AppSettings.AllKeys.FirstOrDefault(k => k == "BrokerName");
+            var key = ConfigurationManager.AppSettings.AllKeys.FirstOrDefault(k => k == "BrokerUrl");
             if (key != null)
                 _brokerName = ConfigurationManager.AppSettings[key].ToString();
             else

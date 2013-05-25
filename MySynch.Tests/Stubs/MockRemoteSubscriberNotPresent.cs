@@ -23,7 +23,7 @@ namespace MySynch.Tests.Stubs
 
         public void Reset()
         {
-            throw new NotImplementedException();
+            return;
         }
     }
 }

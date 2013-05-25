@@ -60,7 +60,7 @@ namespace MySynch.Tests
             Subscriber subscriber = new Subscriber(mySynchComponentResolver);
 
             LocalComponentConfig localComponentConfig = new LocalComponentConfig
-                                                            {BrokerName = "", RootFolder = @"Data\Output\Test\"};
+                                                            {BrokerUrl = "", RootFolder = @"Data\Output\Test\"};
             string hostUrl=string.Empty;
             subscriber.Initialize(null,localComponentConfig,hostUrl);
             var mockCopyStrategy = MockCopyStrategy();
@@ -101,7 +101,7 @@ namespace MySynch.Tests
 
             Subscriber subscriber = new Subscriber(mySynchComponentResolver);
 
-            LocalComponentConfig localComponentConfig = new LocalComponentConfig { BrokerName = "", RootFolder = @"Data\Output\Test\" };
+            LocalComponentConfig localComponentConfig = new LocalComponentConfig { BrokerUrl = "", RootFolder = @"Data\Output\Test\" };
             string hostUrl = string.Empty;
             subscriber.Initialize(null, localComponentConfig, hostUrl);
 
@@ -131,7 +131,7 @@ namespace MySynch.Tests
             Subscriber subscriber= new Subscriber(componentResolver);
             LocalComponentConfig localComponentConfig= new LocalComponentConfig
                                                            {
-                                                               BrokerName="",
+                                                               BrokerUrl="",
                                                                RootFolder = @"c:\mewrongdata\mewrongfoldero"
                                                            };
             subscriber.Initialize(null,localComponentConfig, string.Empty);
@@ -146,7 +146,7 @@ namespace MySynch.Tests
 
             Subscriber subscriber = new Subscriber(mySynchComponentResolver);
 
-            LocalComponentConfig localComponentConfig = new LocalComponentConfig { BrokerName = "", RootFolder = @"Data\Output\Test\" };
+            LocalComponentConfig localComponentConfig = new LocalComponentConfig { BrokerUrl = "", RootFolder = @"Data\Output\Test\" };
             string hostUrl = string.Empty;
             subscriber.Initialize(null, localComponentConfig, hostUrl);
 
@@ -161,7 +161,7 @@ namespace MySynch.Tests
 
             Subscriber subscriber = new Subscriber(mySynchComponentResolver);
 
-            LocalComponentConfig localComponentConfig = new LocalComponentConfig { BrokerName = "", RootFolder = @"Data\Output\Test\" };
+            LocalComponentConfig localComponentConfig = new LocalComponentConfig { BrokerUrl = "", RootFolder = @"Data\Output\Test\" };
             string hostUrl = string.Empty;
             subscriber.Initialize(null, localComponentConfig, hostUrl);
 
@@ -187,7 +187,7 @@ namespace MySynch.Tests
 
             Subscriber subscriber = new Subscriber(mySynchComponentResolver);
 
-            LocalComponentConfig localComponentConfig = new LocalComponentConfig { BrokerName = "", RootFolder = @"Data\Output\Test\" };
+            LocalComponentConfig localComponentConfig = new LocalComponentConfig { BrokerUrl = "", RootFolder = @"Data\Output\Test\" };
             string hostUrl = string.Empty;
             subscriber.Initialize(null, localComponentConfig, hostUrl);
             subscriber.InitiatedCopyStrategies = new SortedList<string, CopyStrategy> ();
@@ -207,7 +207,7 @@ namespace MySynch.Tests
 
             Subscriber subscriber = new Subscriber(mySynchComponentResolver);
 
-            LocalComponentConfig localComponentConfig = new LocalComponentConfig { BrokerName = "", RootFolder = @"Data\Output\Test\" };
+            LocalComponentConfig localComponentConfig = new LocalComponentConfig { BrokerUrl = "", RootFolder = @"Data\Output\Test\" };
             string hostUrl = string.Empty;
             subscriber.Initialize(null, localComponentConfig, hostUrl);
             var mockCopyStrategy = MockCopyStrategy();
@@ -228,7 +228,7 @@ namespace MySynch.Tests
             Subscriber subscriber = new Subscriber(componentResolver);
             LocalComponentConfig localComponentConfig = new LocalComponentConfig
             {
-                BrokerName = "",
+                BrokerUrl = "",
                 RootFolder = @"."
             };
             subscriber.Initialize(null, localComponentConfig, string.Empty);

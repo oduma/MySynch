@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.Linq;
 using MySynch.Common.Serialization;
 using MySynch.Core.DataTypes;
@@ -21,12 +22,20 @@ namespace MySynch.Core
                 storeTypeName = "IStore.Registration.FileSystemStore";
             else
                 storeTypeName = ConfigurationManager.AppSettings[key];
-            return new StoreType { StoreName = storeName, StoreTypeName = storeTypeName };
+            return new StoreType { StoreName = storeName, StoreTypeName = storeTypeName, InstanceName = GetInstanceName("BrokerInstanceName") };
+        }
+
+        private static string GetInstanceName(string instance)
+        {
+            var key = Enumerable.FirstOrDefault<string>(ConfigurationManager.AppSettings.AllKeys, k => k == instance);
+            if (key == null)
+                return "broker";
+            return ConfigurationManager.AppSettings[key];
         }
 
         public static LocalComponentConfig ReadLocalComponentConfiguration()
         {
-            var key = Enumerable.FirstOrDefault<string>(ConfigurationManager.AppSettings.AllKeys, k => k == "BrokerName");
+            var key = Enumerable.FirstOrDefault<string>(ConfigurationManager.AppSettings.AllKeys, k => k == "BrokerUrl");
             string brokerName;
             if (key == null)
                 brokerName = "localhost";
@@ -39,7 +48,7 @@ namespace MySynch.Core
             else
                 rootFolder = ConfigurationManager.AppSettings[key];
 
-            return new LocalComponentConfig {BrokerName = brokerName, RootFolder = rootFolder};
+            return new LocalComponentConfig {BrokerUrl = brokerName, RootFolder = rootFolder,InstanceName=GetInstanceName("InstanceName")};
 
         }
 

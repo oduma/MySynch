@@ -19,7 +19,7 @@ namespace MySynch.Core.Broker
         private IEnumerable<Registration> _registrations;
         private StoreType _store;
         private IStore<Registration> _storeHandler;
-        private List<MessageWithDestinations> _receivedMessages;
+        internal List<MessageWithDestinations> _receivedMessages;
         private MySynchComponentResolver _componentResolver;
         internal virtual SortedList<string, ISubscriberProxy> InitiatedSubScriberProxies { get; set; }
         private object _lock= new object();
@@ -37,7 +37,7 @@ namespace MySynch.Core.Broker
                 _componentResolver = componentResolver;
                 _storeHandler = _componentResolver.Resolve<IStore<Registration>>(storeType.StoreTypeName);
                 _registrations =
-                    _storeHandler.GetMethod(_store.StoreName);
+                    _storeHandler.GetMethod(AppDomain.CurrentDomain.BaseDirectory +"\\"+_store.StoreName);
                 _receivedMessages=new List<MessageWithDestinations>();
                 InitiatedSubScriberProxies= new SortedList<string, ISubscriberProxy>();
             }
@@ -73,7 +73,7 @@ namespace MySynch.Core.Broker
                     }
                     _registrations =
                         _registrations.ToList().AddRegistration(request.RegistrationRequest).SaveAndReturn(
-                            _store.StoreName, _storeHandler.StoreMethod);
+                            AppDomain.CurrentDomain.BaseDirectory + "\\" + _store.StoreName, _storeHandler.StoreMethod);
                     LoggingManager.Debug("Attached to new " + request.RegistrationRequest.ServiceUrl);
                     return new AttachResponse {RegisteredOk = true};
                 }

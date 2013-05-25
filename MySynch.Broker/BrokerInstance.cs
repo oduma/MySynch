@@ -43,9 +43,9 @@ namespace MySynch.Broker
                 _broker = new Core.Broker.Broker(_storeType, componentResolver);
 
                 _serviceHosts.Add(CreateAndConfigureServiceHost<IBroker>(_broker,
-                                                                         new Uri(string.Format("http://{0}/broker/",
+                                                                         new Uri(string.Format("http://{0}/{1}/",
                                                                                                System.Net.Dns.
-                                                                                                   GetHostName().ToLower()))));
+                                                                                                   GetHostName().ToLower(),_storeType.InstanceName))));
                 LoggingManager.Debug("Broker initialized.");
             }
             catch (Exception ex)

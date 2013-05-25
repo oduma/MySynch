@@ -13,9 +13,9 @@ namespace MySynch.Subscriber
         public SubscriberInstance()
         {
             LoggingManager.Debug("Initializing service");
-            HostUrl = string.Format("http://{0}/subscriber/",
+            HostUrl = string.Format("http://{0}/{1}/",
             System.Net.Dns.
-                GetHostName().ToLower());
+                GetHostName().ToLower(),LocalComponentConfig.InstanceName);
             CurrentAttachRequest = new AttachRequest
             {
                 RegistrationRequest =

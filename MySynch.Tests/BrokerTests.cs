@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -485,12 +486,13 @@ namespace MySynch.Tests
             componentResolver.RegisterAll(new TestInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             broker.InitiatedSubScriberProxies = new SortedList<string, ISubscriberProxy> { { "old subscriber", null }, { "new subscriber proxy", new MockRemoteSubscriber() } };
-            var deadEnd=new AddresedMessage
+            Guid myGuid = Guid.NewGuid();
+            broker._receivedMessages = new List<MessageWithDestinations> { new MessageWithDestinations { MessageId = myGuid, Destinations = new List<DestinationWithResult>() } };
+            var deadEnd = new AddresedMessage
                 {
                     DestinationUrl = "old subscriber",
                     ProcessedByDestination = true,
-                    OriginalMessage = new PublisherMessage()
-                    
+                    OriginalMessage = new PublisherMessage { MessageId = myGuid }
                 };
             broker.DistributeMessageToSubscriber(deadEnd);
             Assert.False(deadEnd.ProcessedByDestination);
@@ -503,11 +505,13 @@ namespace MySynch.Tests
             componentResolver.RegisterAll(new TestInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             broker.InitiatedSubScriberProxies = new SortedList<string, ISubscriberProxy> { { "old subscriber", null }, { "new subscriber proxy", new MockRemoteSubscriber() } };
+            Guid myGuid = Guid.NewGuid();
+            broker._receivedMessages = new List<MessageWithDestinations> { new MessageWithDestinations { MessageId = myGuid, Destinations = new List<DestinationWithResult>() } };
             var destination = new AddresedMessage
             {
                 DestinationUrl = "new subscriber proxy",
                 ProcessedByDestination = false,
-                OriginalMessage = new PublisherMessage()
+                OriginalMessage = new PublisherMessage { MessageId = myGuid }
             };
             broker.DistributeMessageToSubscriber(destination);
             Assert.True(destination.ProcessedByDestination);
@@ -520,11 +524,14 @@ namespace MySynch.Tests
             componentResolver.RegisterAll(new TestInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             broker.InitiatedSubScriberProxies = new SortedList<string, ISubscriberProxy> { { "old subscriber", null }, { "new subscriber proxy", new MockRemoteSubscriberNotPresent() } };
+            Guid myGuid = Guid.NewGuid();
+            broker._receivedMessages = new List<MessageWithDestinations>
+                                           {new MessageWithDestinations {MessageId = myGuid,Destinations= new List<DestinationWithResult>()}};
             var destination = new AddresedMessage
             {
                 DestinationUrl = "new subscriber proxy",
                 ProcessedByDestination = false,
-                OriginalMessage = new PublisherMessage()
+                OriginalMessage = new PublisherMessage { MessageId=myGuid}
             };
             broker.DistributeMessageToSubscriber(destination);
             Assert.False(destination.ProcessedByDestination);
@@ -539,8 +546,8 @@ namespace MySynch.Tests
             Broker broker = new Broker(storeType, componentResolver);
             broker.InitiatedSubScriberProxies = new SortedList<string, ISubscriberProxy> { { "old subscriber", new MockRemoteSubscriber() }, { "new subscriber proxy", new MockRemoteSubscriber() } };
 
-            PublisherMessage message=new PublisherMessage{OperationType=OperationType.Insert};
-            broker.DistributeMessageToAllAvailableSubscribers(message);
+            PublisherMessage message=new PublisherMessage{OperationType=OperationType.Insert,MessageId=Guid.NewGuid()};
+            broker.ReceiveAndDistributeMessage(new ReceiveAndDistributeMessageRequest{PublisherMessage=message});
             Thread.Sleep(5000); //wait for both threads to finish before checking it
             
             Assert.False(broker.ListAllMessages().AvailableMessages[0].Destinations.Any(d=>!d.Processed));

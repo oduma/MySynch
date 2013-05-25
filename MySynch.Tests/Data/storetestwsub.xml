@@ -2,7 +2,6 @@
 <ArrayOfRegistration xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Registration>
     <ServiceUrl>old subscriber</ServiceUrl>
-    <MessageMethod>Message Method 1</MessageMethod>
     <OperationTypes>
       <OperationType>Insert</OperationType>
       <OperationType>Update</OperationType>
@@ -12,7 +11,6 @@
   </Registration>
   <Registration>
     <ServiceUrl>new subscriber proxy</ServiceUrl>
-    <MessageMethod>Message Method 1</MessageMethod>
     <OperationTypes>
       <OperationType>Insert</OperationType>
       <OperationType>Update</OperationType>
