@@ -46,7 +46,7 @@ namespace MySynch.Tests
         {
             PushPublisher pushPublisher = new PushPublisher();
             pushPublisher.Initialize(new BrokerClient(),new LocalComponentConfig{RootFolder=@"Data"},"my host url");
-            pushPublisher.UpdateCurrentRepository(@"Data\Test\F1\F11\F12\F12.xml", OperationType.Insert);
+            Assert.True(pushPublisher.UpdateCurrentRepository(@"Data\Test\F1\F11\F12\F12.xml", OperationType.Insert));
             Assert.IsNotNull(pushPublisher.CurrentRepository);
             Assert.AreEqual(1,pushPublisher.CurrentRepository.Items.Count);
             Assert.AreEqual(@"Data", pushPublisher.CurrentRepository.SynchItemData.Identifier);
@@ -57,25 +57,56 @@ namespace MySynch.Tests
             Assert.AreEqual(@"Data\Test\F1\F11\F12\F12.xml", pushPublisher.CurrentRepository.Items[0].Items[0].Items[0].Items[0].Items[0].SynchItemData.Identifier);
         }
         [Test]
+        public void UpdateCurrentRepository_Insert_Duplicated_Ok()
+        {
+            PushPublisher pushPublisher = new PushPublisher();
+            pushPublisher.Initialize(new BrokerClient(), new LocalComponentConfig { RootFolder = @"Data" }, "my host url");
+            pushPublisher.UpdateCurrentRepository(@"Data\Test\F1\F11\F12\F12.xml", OperationType.Insert);
+            Assert.False(pushPublisher.UpdateCurrentRepository(@"Data\Test\F1\F11\F12\F12.xml", OperationType.Insert));
+            Assert.IsNotNull(pushPublisher.CurrentRepository);
+            Assert.AreEqual(1, pushPublisher.CurrentRepository.Items.Count);
+            Assert.AreEqual(@"Data", pushPublisher.CurrentRepository.SynchItemData.Identifier);
+            Assert.AreEqual(@"Data\Test", pushPublisher.CurrentRepository.Items[0].SynchItemData.Identifier);
+            Assert.AreEqual(@"Data\Test\F1", pushPublisher.CurrentRepository.Items[0].Items[0].SynchItemData.Identifier);
+            Assert.AreEqual(@"Data\Test\F1\F11", pushPublisher.CurrentRepository.Items[0].Items[0].Items[0].SynchItemData.Identifier);
+            Assert.AreEqual(@"Data\Test\F1\F11\F12", pushPublisher.CurrentRepository.Items[0].Items[0].Items[0].Items[0].SynchItemData.Identifier);
+            Assert.AreEqual(@"Data\Test\F1\F11\F12\F12.xml", pushPublisher.CurrentRepository.Items[0].Items[0].Items[0].Items[0].Items[0].SynchItemData.Identifier);
+        }
+
+        [Test]
         public void UpdateCurrentRepository_Update_Ok()
         {
             PushPublisher pushPublisher = new PushPublisher();
             pushPublisher.Initialize(new BrokerClient(), new LocalComponentConfig { RootFolder = @"c:\code\Sciendo\MySynch\MySynch.Tests\Data" }, "my host url");
             pushPublisher.UpdateCurrentRepository(@"c:\code\Sciendo\MySynch\MySynch.Tests\Data\items.xml",OperationType.Insert);
             pushPublisher.CurrentRepository.Items[0].SynchItemData.Size = 2;
-            pushPublisher.UpdateCurrentRepository(@"c:\code\Sciendo\MySynch\MySynch.Tests\Data\items.xml", OperationType.Update);
+            Assert.True(pushPublisher.UpdateCurrentRepository(@"c:\code\Sciendo\MySynch\MySynch.Tests\Data\items.xml", OperationType.Update));
             Assert.IsNotNull(pushPublisher.CurrentRepository);
             Assert.AreEqual(1, pushPublisher.CurrentRepository.Items.Count);
             Assert.AreEqual(@"c:\code\Sciendo\MySynch\MySynch.Tests\Data\items.xml", pushPublisher.CurrentRepository.Items[0].SynchItemData.Identifier);
             Assert.Greater(pushPublisher.CurrentRepository.Items[0].SynchItemData.Size,2);
         }
+
+        [Test]
+        public void UpdateCurrentRepository_Update_NoChange_AfterInsertOk()
+        {
+            PushPublisher pushPublisher = new PushPublisher();
+            pushPublisher.Initialize(new BrokerClient(), new LocalComponentConfig { RootFolder = @"c:\code\Sciendo\MySynch\MySynch.Tests\Data" }, "my host url");
+            pushPublisher.UpdateCurrentRepository(@"c:\code\Sciendo\MySynch\MySynch.Tests\Data\items.xml", OperationType.Insert);
+            Assert.False(pushPublisher.UpdateCurrentRepository(@"c:\code\Sciendo\MySynch\MySynch.Tests\Data\items.xml", OperationType.Update));
+            Assert.IsNotNull(pushPublisher.CurrentRepository);
+            Assert.AreEqual(1, pushPublisher.CurrentRepository.Items.Count);
+            Assert.AreEqual(@"c:\code\Sciendo\MySynch\MySynch.Tests\Data\items.xml", pushPublisher.CurrentRepository.Items[0].SynchItemData.Identifier);
+            Assert.Greater(pushPublisher.CurrentRepository.Items[0].SynchItemData.Size, 2);
+        }
+
         [Test]
         public void UpdateCurrentRepository_Delete_Ok()
         {
             PushPublisher pushPublisher = new PushPublisher();
             pushPublisher.Initialize(new BrokerClient(), new LocalComponentConfig { RootFolder = @"c:\code\Sciendo\MySynch\MySynch.Tests\Data" }, "my host url");
-            pushPublisher.UpdateCurrentRepository(@"c:\code\Sciendo\MySynch\MySynch.Tests\Data\items.xml", OperationType.Insert);
-            pushPublisher.UpdateCurrentRepository(@"c:\code\Sciendo\MySynch\MySynch.Tests\Data\items.xml", OperationType.Delete);
+            Assert.True(pushPublisher.UpdateCurrentRepository(@"c:\code\Sciendo\MySynch\MySynch.Tests\Data\items.xml", OperationType.Insert));
+            Assert.True(pushPublisher.UpdateCurrentRepository(@"c:\code\Sciendo\MySynch\MySynch.Tests\Data\items.xml", OperationType.Delete));
             Assert.IsNotNull(pushPublisher.CurrentRepository);
             Assert.AreEqual(0, pushPublisher.CurrentRepository.Items.Count);
         }

@@ -71,9 +71,13 @@ namespace MySynch.Core.Publisher
             {
                 if (string.IsNullOrEmpty(absolutePath))
                     return;
+                bool shouldPublish = false;
                 lock (_lock)
-                    UpdateCurrentRepository(absolutePath, operationType);
-                PublishMessage(absolutePath, operationType);
+                {
+                    shouldPublish = UpdateCurrentRepository(absolutePath, operationType);
+                    if (shouldPublish)
+                        PublishMessage(absolutePath, operationType);
+                }
             }
             catch (Exception ex)
             {
@@ -162,7 +166,7 @@ namespace MySynch.Core.Publisher
 
         #region Persist traces for offline changes logic
 
-        internal void UpdateCurrentRepository(string absolutePath, OperationType operationType)
+        internal bool UpdateCurrentRepository(string absolutePath, OperationType operationType)
         {
             LoggingManager.Debug("Updating CurrentRepository with " + absolutePath);
             if(_fsWatcher==null || string.IsNullOrEmpty(_fsWatcher.Path))
@@ -174,15 +178,16 @@ namespace MySynch.Core.Publisher
             switch (operationType)
             {
                 case OperationType.Insert:
-                    SynchItemManager.AddItem(CurrentRepository, absolutePath, new FileInfo(absolutePath).Length);
-                    return;
+                    return SynchItemManager.AddItem(CurrentRepository, absolutePath, new FileInfo(absolutePath).Length);
+                    
                 case OperationType.Update:
-                    SynchItemManager.UpdateExistingItem(CurrentRepository, absolutePath, new FileInfo(absolutePath).Length);
-                    return;
+                    return SynchItemManager.UpdateExistingItem(CurrentRepository, absolutePath, new FileInfo(absolutePath).Length);
+                    
                 case OperationType.Delete:
-                    SynchItemManager.DeleteItem(CurrentRepository, absolutePath);
-                    return;
-
+                    return SynchItemManager.DeleteItem(CurrentRepository, absolutePath);
+                    
+                default:
+                    return false;
             }
         }
 

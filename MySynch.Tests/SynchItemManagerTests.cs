@@ -101,12 +101,9 @@ namespace MySynch.Tests
         [Test]
         public void UpdateItem_ItemDoesNotExist()
         {
-            SynchItemManager.UpdateExistingItem(_initialLoad[0], @"root\300\340\341\341\342",3);
-            Assert.AreEqual(@"root\300\340", _initialLoad[0].Items[2].Items[3].SynchItemData.Identifier);
-            Assert.AreEqual(@"root\300\340\341", _initialLoad[0].Items[2].Items[3].Items[0].SynchItemData.Identifier);
-            Assert.AreEqual(@"root\300\340\341\341", _initialLoad[0].Items[2].Items[3].Items[0].Items[0].SynchItemData.Identifier);
-            Assert.AreEqual(@"root\300\340\341\341\342", _initialLoad[0].Items[2].Items[3].Items[0].Items[0].Items[0].SynchItemData.Identifier);
+            Assert.False(SynchItemManager.UpdateExistingItem(_initialLoad[0], @"root\300\340\341\341\342",3));
         }
+
         [Test]
         public void UpdateItem_NoItemSent()
         {

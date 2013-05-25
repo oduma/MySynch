@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MySynch.Core.DataTypes;
 
@@ -6,21 +7,23 @@ namespace MySynch.Core.Publisher
 {
     public static class SynchItemManager
     {
-        public static void AddItem(SynchItem topSynchItem, string absolutePathtoNewItem, long size)
+        public static bool AddItem(SynchItem topSynchItem, string absolutePathtoNewItem, long size)
         {
             if (string.IsNullOrEmpty(absolutePathtoNewItem))
-                return;
+                return false;
             if (topSynchItem == null || topSynchItem.Items==null)
-                return;
+                return false;
             var parrent=GetItemLowestAvailableParrent(topSynchItem, absolutePathtoNewItem);
             if (parrent.SynchItemData.Identifier == absolutePathtoNewItem)
-                return;
-            AddNewItemTree(parrent, absolutePathtoNewItem,size);
+                return false;
+            return AddNewItemTree(parrent, absolutePathtoNewItem,size);
         }
 
-        private static void AddNewItemTree(SynchItem parrent, string absolutePathtoNewItem,long size)
+        private static bool AddNewItemTree(SynchItem parrent, string absolutePathtoNewItem,long size)
         {
             string[] restOfLevels = absolutePathtoNewItem.Replace(parrent.SynchItemData.Identifier +"\\", "").Split(new char[] {'\\'});
+            if (parrent.Items.Any(i => i.SynchItemData.Identifier == absolutePathtoNewItem))
+                return false;
             foreach (string level in restOfLevels)
             {
                 var current = new SynchItem
@@ -35,34 +38,42 @@ namespace MySynch.Core.Publisher
                 parrent = current;
             }
             if (parrent.Items==null || parrent.Items.Count == 0)
+            {
                 parrent.SynchItemData.Size = size;
+                parrent.SynchItemData.WriteDate = DateTime.Now;
+            }
+            return true;
         }
 
-        public static void UpdateExistingItem(SynchItem topSynchItem, string absolutePathtoNewItem, long size)
+        public static bool UpdateExistingItem(SynchItem topSynchItem, string absolutePathtoNewItem, long size)
         {
             if (string.IsNullOrEmpty(absolutePathtoNewItem))
-                return;
+                return false;
             if (topSynchItem == null || topSynchItem.Items==null)
-                return;
+                return false;
             var parrent=GetItemLowestAvailableParrent(topSynchItem, absolutePathtoNewItem);
             if (parrent.Items[0].SynchItemData.Identifier == absolutePathtoNewItem)
-            {
-                parrent.Items[0].SynchItemData.Size = size;
-                return;
-            }
-            AddNewItemTree(parrent,absolutePathtoNewItem, size);
+                if (parrent.Items[0].SynchItemData.Size != size
+                    || parrent.Items[0].SynchItemData.WriteDate.AddSeconds(30) < DateTime.Now)
+                {
+                    parrent.Items[0].SynchItemData.Size = size;
+                    parrent.Items[0].SynchItemData.WriteDate = DateTime.Now;
+                    return true;
+                }
+            return false;
         }
 
-        public static void DeleteItem(SynchItem topSynchItem, string absolutePathtoNewItem)
+        public static bool DeleteItem(SynchItem topSynchItem, string absolutePathtoNewItem)
         {
             if (string.IsNullOrEmpty(absolutePathtoNewItem))
-                return;
+                return false;
             if (topSynchItem == null || topSynchItem.Items==null)
-                return;
+                return false;
             var parentItem = GetItemLowestAvailableParrent(topSynchItem, absolutePathtoNewItem);
             var currentItem = parentItem.Items.FirstOrDefault(i => i.SynchItemData.Identifier == absolutePathtoNewItem);
             if(currentItem!=null)
                 parentItem.Items.Remove(currentItem);
+            return true;
         }
 
         internal static SynchItem GetItemLowestAvailableParrent(SynchItem topSynchItem, string itemId)
