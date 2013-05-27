@@ -17,13 +17,22 @@ namespace MySynch.Core.Broker
             return original;
         }
 
-        internal static List<Registration> RemoveRegistration(this List<Registration> original, string serviceUrl)
+        internal static List<Registration> RemoveRegistration(this List<Registration> original, string serviceUrl,out Registration deletedCopy)
         {
             if(original==null)
                 original=new List<Registration>();
             var registration = original.FirstOrDefault(o => o.ServiceUrl == serviceUrl);
             if(registration==null)
+            {
+                deletedCopy = null;
                 return original;
+            }
+            deletedCopy = new Registration
+                              {
+                                  OperationTypes = registration.OperationTypes,
+                                  ServiceRole = registration.ServiceRole,
+                                  ServiceUrl = registration.ServiceUrl
+                              };
             original.Remove(registration);
             return original;
         }

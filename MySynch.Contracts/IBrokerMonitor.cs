@@ -6,6 +6,9 @@ namespace MySynch.Contracts
     public interface IBrokerMonitor:ICommunicationComponent
     {
         [OperationContract(IsOneWay = true)]
-        void ListAllregistrationsForDuplex();
+        void StartMonitoringOfRegistrations();
+
+        [OperationContract(IsOneWay = true)]
+        void StartMonitoringOfMessagesFlow();
     }
 }

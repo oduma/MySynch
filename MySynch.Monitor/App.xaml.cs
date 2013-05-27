@@ -76,7 +76,7 @@ namespace MySynch.Monitor
 
             InstanceContext callbackInstance= new InstanceContext(this);
             _brokerClient = new ClientHelper().ConnectToADuplexBroker(ProgressChanged, _brokerUrl,callbackInstance);
-            _brokerClient.ListAllregistrationsForDuplex();
+            _brokerClient.StartMonitoringOfRegistrations();
             
         }
 
@@ -94,9 +94,14 @@ namespace MySynch.Monitor
             }
         }
 
-        public void ListAllRegistrationsCallback(string somethingback)
+        public void NotifyRegistrationChange(Registration changedRegistration)
         {
-            ProgressChanged(this,new ProgressChangedEventArgs(0,somethingback));
+            ProgressChanged(this, new ProgressChangedEventArgs(0, changedRegistration.ServiceUrl));
+        }
+
+        public void NotifyMessageFlow(MessageWithDestinations messageWithDestinations)
+        {
+            ProgressChanged(this, new ProgressChangedEventArgs(0, messageWithDestinations.MessageId));
         }
     }
 }

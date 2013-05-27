@@ -220,33 +220,42 @@ namespace MySynch.Tests
         public void RemoveRegistration_NotFound()
         {
             List<Registration> registrations = new List<Registration> { new Registration { ServiceUrl = "my reg 1" } };
-            registrations.RemoveRegistration("my reg 2");
+            Registration deletedCopy;
+            registrations.RemoveRegistration("my reg 2",out deletedCopy);
             Assert.AreEqual(1, registrations.Count);
+            Assert.IsNull(deletedCopy);
         }
 
         [Test]
         public void RemoveRegistration_Ok()
         {
             List<Registration> registrations = new List<Registration> { new Registration { ServiceUrl = "my reg 1" }, new Registration { ServiceUrl = "my reg 2" } };
-            registrations.RemoveRegistration("my reg 2");
+            Registration deletedCopy;
+            registrations.RemoveRegistration("my reg 2", out deletedCopy);
             Assert.AreEqual(1, registrations.Count);
+            Assert.IsNotNull(deletedCopy);
+            Assert.AreEqual("my reg 2",deletedCopy.ServiceUrl);
         }
         [Test]
         public void RemoveRegistration_OnNewList()
         {
             List<Registration> registrations = new List<Registration>();
-            registrations.RemoveRegistration("my reg 2");
+            Registration deletedCopy;
+            registrations.RemoveRegistration("my reg 2", out deletedCopy);
             Assert.IsNotNull(registrations);
             Assert.AreEqual(0, registrations.Count);
+            Assert.IsNull(deletedCopy);
         }
 
         [Test]
         public void RemoveRegistration_OnNull()
         {
             List<Registration> registrations = null;
-            var resultRegistrations = registrations.RemoveRegistration("my reg 2");
+            Registration deletedCopy;
+            var resultRegistrations = registrations.RemoveRegistration("my reg 2",out deletedCopy);
             Assert.IsNotNull(resultRegistrations);
             Assert.AreEqual(0, resultRegistrations.Count);
+            Assert.IsNull(deletedCopy);
         }
 
         [Test]

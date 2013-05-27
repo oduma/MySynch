@@ -31,14 +31,18 @@ namespace MySynch.Core.Broker
             return new GetHeartbeatResponse {Status = true,RootPath=""};
         }
 
-        public void ListAllregistrationsForDuplex()
+        public void StartMonitoringOfRegistrations()
         {
-            //Format the input data
-            var somethingToReturn = string.Format("Welcome to {0}", "My Broker");
             //Pass the string to the client through the call back function
             if (_callback == null)
                 _callback = OperationContext.Current.GetCallbackChannel<IBrokerMonitorCallback>();
-            _callback.ListAllRegistrationsCallback(somethingToReturn);
+        }
+
+        public void StartMonitoringOfMessagesFlow()
+        {
+            //Pass the string to the client through the call back function
+            if (_callback == null)
+                _callback = OperationContext.Current.GetCallbackChannel<IBrokerMonitorCallback>();
         }
 
         public Broker(StoreType storeType, ComponentResolver componentResolver)
@@ -52,7 +56,8 @@ namespace MySynch.Core.Broker
                     _storeHandler.GetMethod(AppDomain.CurrentDomain.BaseDirectory +"\\"+_store.StoreName);
                 _receivedMessages=new List<MessageWithDestinations>();
                 InitiatedSubScriberProxies= new SortedList<string, ISubscriberProxy>();
-                _callback = OperationContext.Current.GetCallbackChannel<IBrokerMonitorCallback>();    
+                if(OperationContext.Current!=null)
+                    _callback = OperationContext.Current.GetCallbackChannel<IBrokerMonitorCallback>();    
 
             }
             catch (ComponentNotRegieteredException ex)
@@ -89,7 +94,7 @@ namespace MySynch.Core.Broker
                         _registrations.ToList().AddRegistration(request.RegistrationRequest).SaveAndReturn(
                             AppDomain.CurrentDomain.BaseDirectory + "\\" + _store.StoreName, _storeHandler.StoreMethod);
                     if(_callback!=null)
-                        _callback.ListAllRegistrationsCallback(string.Format("Attached a component with Url: {0}",request.RegistrationRequest.ServiceUrl));
+                        _callback.NotifyRegistrationChange(request.RegistrationRequest);
                     LoggingManager.Debug("Attached to new " + request.RegistrationRequest.ServiceUrl);
                     return new AttachResponse {RegisteredOk = true};
                 }
@@ -121,12 +126,13 @@ namespace MySynch.Core.Broker
                     LoggingManager.Debug("Not detached " + request.ServiceUrl);
                     return new DetachResponse { Status = false };
                 }
+                Registration deletedCopy;
                 _registrations =
-                    _registrations.ToList().RemoveRegistration(request.ServiceUrl).SaveAndReturn(
+                    _registrations.ToList().RemoveRegistration(request.ServiceUrl,out deletedCopy).SaveAndReturn(
                         _store.StoreName,_storeHandler.StoreMethod);
                 LoggingManager.Debug("Detached :" + request.ServiceUrl);
-                if (_callback != null)
-                    _callback.ListAllRegistrationsCallback(string.Format("Detached a component with Url: {0}", request.ServiceUrl));
+                if (_callback != null && deletedCopy!=null)
+                    _callback.NotifyRegistrationChange(deletedCopy);
                 return new DetachResponse { Status = true };
             }
             catch (Exception ex)
