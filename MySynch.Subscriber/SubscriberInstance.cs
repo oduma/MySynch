@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using MySynch.Common.IOC;
 using MySynch.Common.Logging;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
@@ -52,7 +53,7 @@ namespace MySynch.Subscriber
         {
             if (string.IsNullOrEmpty(LocalComponentConfig.RootFolder) || !Directory.Exists(LocalComponentConfig.RootFolder))
                 return false;
-            MySynchComponentResolver componentResolver=new MySynchComponentResolver();
+            ComponentResolver componentResolver=new ComponentResolver();
             componentResolver.RegisterAll(new MySynchInstaller());
             LocalComponent = new Core.Subscriber.Subscriber(componentResolver);
 

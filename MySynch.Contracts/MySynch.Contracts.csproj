@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="ApplyCustomClientBehavior.cs" />
     <Compile Include="IBrokerMonitor.cs" />
+    <Compile Include="IBrokerMonitorCallback.cs" />
     <Compile Include="Messages\DestinationWithResult.cs" />
     <Compile Include="Messages\ListAllMessagesResponse.cs" />
     <Compile Include="Messages\ListAllRegistrationsResponse.cs" />

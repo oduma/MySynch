@@ -60,6 +60,9 @@
     <Compile Include="Implementations\BrokerClient.cs">
       <DependentUpon>Client.tt</DependentUpon>
     </Compile>
+    <Compile Include="Implementations\BrokerMonitorClient.cs">
+      <DependentUpon>Client.tt</DependentUpon>
+    </Compile>
     <Compile Include="Implementations\Client.cs">
       <DependentUpon>Client.tt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -70,6 +73,9 @@
     </Compile>
     <Compile Include="Implementations\SubscriberClient.cs">
       <DependentUpon>Client.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Interfaces\IBrokerMonitorProxy.cs">
+      <DependentUpon>ProxyInterfaces.tt</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\IBrokerProxy.cs">
       <DependentUpon>ProxyInterfaces.tt</DependentUpon>

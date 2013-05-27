@@ -2,10 +2,10 @@
 
 namespace MySynch.Contracts
 {
-    //[ServiceContract(SessionMode = SessionMode.Required, CallbackContract = typeof(IDuplexCallback))]
+    [ServiceContract(SessionMode = SessionMode.Required, CallbackContract = typeof(IBrokerMonitorCallback))]
     public interface IBrokerMonitor:ICommunicationComponent
     {
         [OperationContract(IsOneWay = true)]
-        void ListAllregistrations();
+        void ListAllregistrationsForDuplex();
     }
 }

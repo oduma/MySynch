@@ -37,10 +37,10 @@ namespace MySynch.Common
             serviceHost.Close();
         }
 
-        protected virtual ServiceHost CreateAndConfigureServiceHost<T>(T serviceInstance, Uri baseAddress)
+        protected virtual ServiceHost CreateAndConfigureServiceHost<T>(T serviceInstance, Uri baseAddress, bool isDuplex=false)
         {
             var serviceHost = new ServiceHost(serviceInstance, baseAddress);
-            var serviceEndPoint = serviceHost.AddServiceEndpoint(typeof(T), ClientServerBindingHelper.GetBinding(false), string.Empty);
+            var serviceEndPoint = serviceHost.AddServiceEndpoint(typeof(T), ClientServerBindingHelper.GetBinding(isDuplex), string.Empty);
 
             serviceEndPoint.Behaviors.Add(new MySynchAuditBehavior());
 

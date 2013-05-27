@@ -13,11 +13,20 @@ namespace MySynch.Common.WCF.Clients
         /// </summary>
         /// <param name="basicHttpBinding"></param>
         /// <returns></returns>
-        public static BasicHttpBinding ApplyClientBinding(this Binding basicHttpBinding)
+        public static BasicHttpBinding ApplyClientBasicHttpBinding(this Binding basicHttpBinding)
         {
             ((BasicHttpBinding)basicHttpBinding).MaxReceivedMessageSize = 650000000;
             ((BasicHttpBinding)basicHttpBinding).ReaderQuotas.MaxArrayLength = 650000000;
-            return (BasicHttpBinding)basicHttpBinding;
+            return ((BasicHttpBinding)basicHttpBinding);
         }
+
+        public static WSDualHttpBinding ApplyClientWsDualHttpBinding(this Binding wsDualHttpBinding)
+        {
+            ((WSDualHttpBinding)wsDualHttpBinding).MaxReceivedMessageSize = 650000000;
+            ((WSDualHttpBinding)wsDualHttpBinding).ReaderQuotas.MaxArrayLength = 650000000;
+            return ((WSDualHttpBinding)wsDualHttpBinding);
+        }
+
+        
     }
 }

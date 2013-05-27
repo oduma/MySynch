@@ -2,7 +2,6 @@
 using System.ServiceModel.Description;
 using MySynch.Common.WCF;
 using MySynch.Common.WCF.Clients;
-using MySynch.Core.WCF.Clients;
 using MySynch.Tests.Stubs;
 using NUnit.Framework;
 

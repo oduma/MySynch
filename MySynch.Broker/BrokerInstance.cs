@@ -1,5 +1,6 @@
 ﻿using System;
 using MySynch.Common;
+using MySynch.Common.IOC;
 using MySynch.Common.Logging;
 using MySynch.Common.Serialization;
 using MySynch.Contracts;
@@ -35,7 +36,7 @@ namespace MySynch.Broker
         {
             LoggingManager.Debug("Initializing broker with Store Name:" + _storeType.StoreName + " of type: " +
                                  _storeType.StoreTypeName);
-            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            ComponentResolver componentResolver = new ComponentResolver();
             componentResolver.RegisterAll(new MySynchInstaller());
 
             try
@@ -46,6 +47,9 @@ namespace MySynch.Broker
                                                                          new Uri(string.Format("http://{0}/{1}/",
                                                                                                System.Net.Dns.
                                                                                                    GetHostName().ToLower(),_storeType.InstanceName))));
+                _serviceHosts.Add(CreateAndConfigureServiceHost<IBrokerMonitor>(_broker,new Uri(string.Format("http://{0}/{1}/",
+                                                                                               System.Net.Dns.
+                                                                                                   GetHostName().ToLower(),_storeType.MonitorInstanceName)),true));
                 LoggingManager.Debug("Broker initialized.");
             }
             catch (Exception ex)

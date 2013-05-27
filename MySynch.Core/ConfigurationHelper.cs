@@ -22,7 +22,7 @@ namespace MySynch.Core
                 storeTypeName = "IStore.Registration.FileSystemStore";
             else
                 storeTypeName = ConfigurationManager.AppSettings[key];
-            return new StoreType { StoreName = storeName, StoreTypeName = storeTypeName, InstanceName = GetInstanceName("BrokerInstanceName") };
+            return new StoreType { StoreName = storeName, StoreTypeName = storeTypeName, InstanceName = GetInstanceName("BrokerInstanceName"),MonitorInstanceName = GetInstanceName("BrokerMonitorInstanceName")};
         }
 
         private static string GetInstanceName(string instance)

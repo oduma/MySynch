@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using Moq;
+using MySynch.Common.IOC;
 using MySynch.Contracts.Messages;
 using MySynch.Core;
 using MySynch.Core.DataTypes;
@@ -54,7 +55,7 @@ namespace MySynch.Tests
         [Test]
         public void ApplyChanges_Upserts_Ok()
         {
-            MySynchComponentResolver mySynchComponentResolver= new MySynchComponentResolver();
+            ComponentResolver mySynchComponentResolver= new ComponentResolver();
             mySynchComponentResolver.RegisterAll(new TestInstaller());
 
             Subscriber subscriber = new Subscriber(mySynchComponentResolver);
@@ -96,7 +97,7 @@ namespace MySynch.Tests
         [Test]
         public void ApplyChanges_Deletes_Ok()
         {
-            MySynchComponentResolver mySynchComponentResolver = new MySynchComponentResolver();
+            ComponentResolver mySynchComponentResolver = new ComponentResolver();
             mySynchComponentResolver.RegisterAll(new TestInstaller());
 
             Subscriber subscriber = new Subscriber(mySynchComponentResolver);
@@ -127,7 +128,7 @@ namespace MySynch.Tests
         [ExpectedException(typeof(ArgumentException))]
         public void Initialize_NonExistentFolder()
         {
-            MySynchComponentResolver componentResolver= new MySynchComponentResolver();
+            ComponentResolver componentResolver= new ComponentResolver();
             Subscriber subscriber= new Subscriber(componentResolver);
             LocalComponentConfig localComponentConfig= new LocalComponentConfig
                                                            {
@@ -141,7 +142,7 @@ namespace MySynch.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public void ReceiveMessage_NoMessgaeSent()
         {
-            MySynchComponentResolver mySynchComponentResolver = new MySynchComponentResolver();
+            ComponentResolver mySynchComponentResolver = new ComponentResolver();
             mySynchComponentResolver.RegisterAll(new TestInstaller());
 
             Subscriber subscriber = new Subscriber(mySynchComponentResolver);
@@ -156,7 +157,7 @@ namespace MySynch.Tests
         [Test]
         public void ReceiveMessage_NoAbsolutePath()
         {
-            MySynchComponentResolver mySynchComponentResolver = new MySynchComponentResolver();
+            ComponentResolver mySynchComponentResolver = new ComponentResolver();
             mySynchComponentResolver.RegisterAll(new TestInstaller());
 
             Subscriber subscriber = new Subscriber(mySynchComponentResolver);
@@ -182,7 +183,7 @@ namespace MySynch.Tests
         [Test]
         public void GetOrCreateCopyStrategy_CreateOk()
         {
-            MySynchComponentResolver mySynchComponentResolver = new MySynchComponentResolver();
+            ComponentResolver mySynchComponentResolver = new ComponentResolver();
             mySynchComponentResolver.RegisterAll(new TestInstaller());
 
             Subscriber subscriber = new Subscriber(mySynchComponentResolver);
@@ -202,7 +203,7 @@ namespace MySynch.Tests
         [Test]
         public void GetOrCreateCopyStrategy_GetOk()
         {
-            MySynchComponentResolver mySynchComponentResolver = new MySynchComponentResolver();
+            ComponentResolver mySynchComponentResolver = new ComponentResolver();
             mySynchComponentResolver.RegisterAll(new TestInstaller());
 
             Subscriber subscriber = new Subscriber(mySynchComponentResolver);
@@ -224,7 +225,7 @@ namespace MySynch.Tests
         [Test]
         public void GetHeartbeat_Ok()
         {
-            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            ComponentResolver componentResolver = new ComponentResolver();
             Subscriber subscriber = new Subscriber(componentResolver);
             LocalComponentConfig localComponentConfig = new LocalComponentConfig
             {

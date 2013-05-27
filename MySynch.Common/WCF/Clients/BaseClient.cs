@@ -12,6 +12,30 @@ namespace MySynch.Common.WCF.Clients
         public T Proxy;
         protected abstract List<IEndpointBehavior> GetEndpointBehaviors();
 
+        public void InitiateDuplexUsingServerAddress(string serverAddress, InstanceContext callbackInstance)
+        {
+            LoggingManager.Debug("Initating duplex using serverAddress: " + serverAddress);
+            using (LoggingManager.LogMySynchPerformance())
+            {
+
+                DuplexChannelFactory<T> channelFactory;
+                try
+                {
+                    channelFactory =DuplexChannelFactoryPool<T>.Instance.GetChannelFactory(serverAddress, GetEndpointBehaviors(),callbackInstance);
+                }
+                catch (Exception ex)
+                {
+
+                    throw ex;
+                }
+
+                Proxy = channelFactory.CreateChannel();
+
+                _channel = (ICommunicationObject)Proxy;
+
+            }
+        }
+
         public void Reset()
         {
             if(_channel.State== CommunicationState.Created || _channel.State==CommunicationState.Closed)

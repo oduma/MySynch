@@ -2,11 +2,13 @@
 using System.ComponentModel;
 using System.Configuration;
 using System.Linq;
+using System.ServiceModel;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using Hardcodet.Wpf.TaskbarNotification;
 using MySynch.Common.Logging;
+using MySynch.Contracts;
 using MySynch.Contracts.Messages;
 using MySynch.Monitor.MVVM.ViewModels;
 using MySynch.Monitor.Utils;
@@ -17,11 +19,11 @@ namespace MySynch.Monitor
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App : Application,IBrokerMonitorCallback
     {
         private TaskbarIcon tb;
-        private string _brokerName;
-        private IBrokerProxy _brokerClient;
+        private string _brokerUrl;
+        private IBrokerMonitorProxy _brokerClient;
         private ListAllRegistrationsResponse _registeredComponents;
 
         private void InitApplication()
@@ -68,11 +70,14 @@ namespace MySynch.Monitor
         {
             var key = ConfigurationManager.AppSettings.AllKeys.FirstOrDefault(k => k == "BrokerUrl");
             if (key != null)
-                _brokerName = ConfigurationManager.AppSettings[key].ToString();
+                _brokerUrl = ConfigurationManager.AppSettings[key].ToString();
             else
-                _brokerName = string.Empty;
+                _brokerUrl = string.Empty;
 
-            new ClientHelper().ConnectToABroker(ProgressChanged,_brokerName, out _brokerClient, out _registeredComponents);
+            InstanceContext callbackInstance= new InstanceContext(this);
+            _brokerClient = new ClientHelper().ConnectToADuplexBroker(ProgressChanged, _brokerUrl,callbackInstance);
+            _brokerClient.ListAllregistrationsForDuplex();
+            
         }
 
         protected override void OnStartup(StartupEventArgs e)
@@ -87,6 +92,11 @@ namespace MySynch.Monitor
                 LoggingManager.LogMySynchSystemError(ex);
                 InitApplication();
             }
+        }
+
+        public void ListAllRegistrationsCallback(string somethingback)
+        {
+            ProgressChanged(this,new ProgressChangedEventArgs(0,somethingback));
         }
     }
 }

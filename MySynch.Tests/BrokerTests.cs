@@ -125,7 +125,7 @@ namespace MySynch.Tests
         public void Attach_No_ValidRegistration()
         {
             StoreType storeType = new StoreType { StoreName = "store1.xml", StoreTypeName = "IStore.Registration.FileSystemStore" };
-            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            ComponentResolver componentResolver = new ComponentResolver();
             componentResolver.RegisterAll(new AllStoresInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             AttachRequest request = new AttachRequest();
@@ -137,7 +137,7 @@ namespace MySynch.Tests
         public void Attach_Ok()
         {
             StoreType storeType = new StoreType { StoreName = "store1.xml", StoreTypeName = "IStore.Registration.FileSystemStore" };
-            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            ComponentResolver componentResolver = new ComponentResolver();
             componentResolver.RegisterAll(new AllStoresInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             AttachRequest request = new AttachRequest
@@ -164,7 +164,7 @@ namespace MySynch.Tests
         public void Attach_AlreadyAttached()
         {
             StoreType storeType = new StoreType { StoreName = "store1.xml", StoreTypeName = "IStore.Registration.FileSystemStore" };
-            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            ComponentResolver componentResolver = new ComponentResolver();
             componentResolver.RegisterAll(new AllStoresInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             AttachRequest request = new AttachRequest
@@ -191,7 +191,7 @@ namespace MySynch.Tests
         public void Attach_Error()
         {
             StoreType storeType = new StoreType { StoreName = "store1.xml", StoreTypeName = "IStore.Registration.DeffectiveStore" };
-            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            ComponentResolver componentResolver = new ComponentResolver();
             componentResolver.RegisterAll(new AllStoresInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             AttachRequest request = new AttachRequest
@@ -253,7 +253,7 @@ namespace MySynch.Tests
         public void Detach_No_ValidRegistration()
         {
             StoreType storeType = new StoreType { StoreName = "store1.xml", StoreTypeName = "IStore.Registration.FileSystemStore" };
-            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            ComponentResolver componentResolver = new ComponentResolver();
             componentResolver.RegisterAll(new AllStoresInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             DetachRequest request = new DetachRequest();
@@ -265,7 +265,7 @@ namespace MySynch.Tests
         public void Detach_Ok()
         {
             StoreType storeType = new StoreType { StoreName = @"Data\storetest.xml", StoreTypeName = "IStore.Registration.FileSystemStore" };
-            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            ComponentResolver componentResolver = new ComponentResolver();
             componentResolver.RegisterAll(new AllStoresInstaller());
             Broker broker = new Broker(storeType, componentResolver);
 
@@ -279,7 +279,7 @@ namespace MySynch.Tests
         public void Detach_NotFound()
         {
             StoreType storeType = new StoreType { StoreName = @"Data\storetest.xml", StoreTypeName = "IStore.Registration.FileSystemStore" };
-            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            ComponentResolver componentResolver = new ComponentResolver();
             componentResolver.RegisterAll(new AllStoresInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             DetachRequest request = new DetachRequest { ServiceUrl = "Non existent url" };
@@ -291,7 +291,7 @@ namespace MySynch.Tests
         public void Detach_Error()
         {
             StoreType storeType = new StoreType { StoreName = @"Data\storetest.xml", StoreTypeName = "IStore.Registration.DeffectiveStore" };
-            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            ComponentResolver componentResolver = new ComponentResolver();
             componentResolver.RegisterAll(new AllStoresInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             DetachRequest request = new DetachRequest { ServiceUrl = "Service Url2" };
@@ -305,7 +305,7 @@ namespace MySynch.Tests
         public void ListAllRegistrations_Ok()
         {
             StoreType storeType = new StoreType { StoreName = @"Data\storetestget.xml", StoreTypeName = "IStore.Registration.FileSystemStore" };
-            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            ComponentResolver componentResolver = new ComponentResolver();
             componentResolver.RegisterAll(new AllStoresInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             var response = broker.ListAllRegistrations();
@@ -317,7 +317,7 @@ namespace MySynch.Tests
         public void ListAllRegistrations_After_AnInsert()
         {
             StoreType storeType = new StoreType { StoreName = @"Data\storetestget.xml", StoreTypeName = "IStore.Registration.FileSystemStore" };
-            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            ComponentResolver componentResolver = new ComponentResolver();
             componentResolver.RegisterAll(new AllStoresInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             AttachRequest request = new AttachRequest
@@ -347,7 +347,7 @@ namespace MySynch.Tests
         public void ListAllRegistrations_AfterADelete()
         {
             StoreType storeType = new StoreType { StoreName = @"Data\storetestget.xml", StoreTypeName = "IStore.Registration.FileSystemStore" };
-            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            ComponentResolver componentResolver = new ComponentResolver();
             componentResolver.RegisterAll(new AllStoresInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             DetachRequest detachRequest = new DetachRequest { ServiceUrl = "Service Url1" };
@@ -361,7 +361,7 @@ namespace MySynch.Tests
         public void ListAllRegistrations_Error()
         {
             StoreType storeType = new StoreType { StoreName = @"Data\storetestget.xml", StoreTypeName = "IStore.Registration.DeffectiveGetStore" };
-            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            ComponentResolver componentResolver = new ComponentResolver();
             componentResolver.RegisterAll(new AllStoresInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             var response = broker.ListAllRegistrations();
@@ -372,7 +372,7 @@ namespace MySynch.Tests
         public void ListAllRegistrations_WrongFile()
         {
             StoreType storeType = new StoreType { StoreName = @"Data\wrongfile.xml", StoreTypeName = "IStore.Registration.FileSystemStore" };
-            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            ComponentResolver componentResolver = new ComponentResolver();
             componentResolver.RegisterAll(new AllStoresInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             var response = broker.ListAllRegistrations();
@@ -387,7 +387,7 @@ namespace MySynch.Tests
         public void ReceiveAndDistributeMessage_Ok()
         {
             StoreType storeType = new StoreType { StoreName = "store1.xml", StoreTypeName = "IStore.Registration.FileSystemStore" };
-            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            ComponentResolver componentResolver = new ComponentResolver();
             componentResolver.RegisterAll(new AllStoresInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             ReceiveAndDistributeMessageRequest mRequest = new ReceiveAndDistributeMessageRequest
@@ -410,7 +410,7 @@ namespace MySynch.Tests
         public void ListAllMessages_Ok()
         {
             StoreType storeType = new StoreType { StoreName = "store1.xml", StoreTypeName = "IStore.Registration.FileSystemStore" };
-            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            ComponentResolver componentResolver = new ComponentResolver();
             componentResolver.RegisterAll(new AllStoresInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             ReceiveAndDistributeMessageRequest mRequest = new ReceiveAndDistributeMessageRequest
@@ -433,7 +433,7 @@ namespace MySynch.Tests
         public void GetOrCreateAProxy_NothingRegistered()
         {
             StoreType storeType = new StoreType { StoreName = "store1.xml", StoreTypeName = "IStore.Registration.FileSystemStore" };
-            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            ComponentResolver componentResolver = new ComponentResolver();
             componentResolver.RegisterAll(new AllStoresInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             Assert.IsNull(broker.GetOrCreateAProxy("new subscriber url"));
@@ -443,7 +443,7 @@ namespace MySynch.Tests
         public void GetOrCreateAProxy_Create_Ok()
         {
             StoreType storeType = new StoreType { StoreName = "store1.xml", StoreTypeName = "IStore.Registration.FileSystemStore" };
-            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            ComponentResolver componentResolver = new ComponentResolver();
             componentResolver.RegisterAll(new TestInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             broker.InitiatedSubScriberProxies = new SortedList<string, ISubscriberProxy> {{"old subscriber", null}};
@@ -457,7 +457,7 @@ namespace MySynch.Tests
         public void GetOrCreateAProxy_Get_Ok()
         {
             StoreType storeType = new StoreType { StoreName = "store1.xml", StoreTypeName = "IStore.Registration.FileSystemStore" };
-            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            ComponentResolver componentResolver = new ComponentResolver();
             componentResolver.RegisterAll(new TestInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             broker.InitiatedSubScriberProxies = new SortedList<string, ISubscriberProxy> { { "old subscriber", null },{"new subscriber proxy",new MockRemoteSubscriber()} };
@@ -471,7 +471,7 @@ namespace MySynch.Tests
         public void GetOrCreateAProxy_RegisteredButDead()
         {
             StoreType storeType = new StoreType { StoreName = "store1.xml", StoreTypeName = "IStore.Registration.FileSystemStore" };
-            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            ComponentResolver componentResolver = new ComponentResolver();
             componentResolver.RegisterAll(new TestInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             broker.InitiatedSubScriberProxies = new SortedList<string, ISubscriberProxy> { { "old subscriber", null }, { "new subscriber proxy", new MockRemoteSubscriber() } };
@@ -482,7 +482,7 @@ namespace MySynch.Tests
         public void DistributeMessageToSubscriber_SubscrberDead()
         {
             StoreType storeType = new StoreType { StoreName = "store1.xml", StoreTypeName = "IStore.Registration.FileSystemStore" };
-            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            ComponentResolver componentResolver = new ComponentResolver();
             componentResolver.RegisterAll(new TestInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             broker.InitiatedSubScriberProxies = new SortedList<string, ISubscriberProxy> { { "old subscriber", null }, { "new subscriber proxy", new MockRemoteSubscriber() } };
@@ -501,7 +501,7 @@ namespace MySynch.Tests
         public void DistributeMessageToSubscriber_Ok()
         {
             StoreType storeType = new StoreType { StoreName = "store1.xml", StoreTypeName = "IStore.Registration.FileSystemStore" };
-            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            ComponentResolver componentResolver = new ComponentResolver();
             componentResolver.RegisterAll(new TestInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             broker.InitiatedSubScriberProxies = new SortedList<string, ISubscriberProxy> { { "old subscriber", null }, { "new subscriber proxy", new MockRemoteSubscriber() } };
@@ -520,7 +520,7 @@ namespace MySynch.Tests
         public void DistributeMessageToSubscriber_Exception()
         {
             StoreType storeType = new StoreType { StoreName = "store1.xml", StoreTypeName = "IStore.Registration.FileSystemStore" };
-            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            ComponentResolver componentResolver = new ComponentResolver();
             componentResolver.RegisterAll(new TestInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             broker.InitiatedSubScriberProxies = new SortedList<string, ISubscriberProxy> { { "old subscriber", null }, { "new subscriber proxy", new MockRemoteSubscriberNotPresent() } };
@@ -541,7 +541,7 @@ namespace MySynch.Tests
         public void DistributeMessageToAllAvailableSubscribers_TwoThreads_Ok()
         {
             StoreType storeType = new StoreType { StoreName = @"Data\storetestwsub.xml", StoreTypeName = "IStore.Registration.FileSystemStore" };
-            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            ComponentResolver componentResolver = new ComponentResolver();
             componentResolver.RegisterAll(new TestInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             broker.InitiatedSubScriberProxies = new SortedList<string, ISubscriberProxy> { { "old subscriber", new MockRemoteSubscriber() }, { "new subscriber proxy", new MockRemoteSubscriber() } };
@@ -560,18 +560,18 @@ namespace MySynch.Tests
         [ExpectedException(typeof(ComponentNotRegieteredException))]
         public void Broker_ComponentNotRegistered()
         {
-            MySynchComponentResolver mySynchComponentResolver= new MySynchComponentResolver();
-            mySynchComponentResolver.RegisterAll(new TestInstaller());
+            ComponentResolver ComponentResolver= new ComponentResolver();
+            ComponentResolver.RegisterAll(new TestInstaller());
             Broker broker =
                 new Broker(new StoreType {StoreName = "store.xml", StoreTypeName = "IStore.Registration.Wrong"},
-                           mySynchComponentResolver);
+                           ComponentResolver);
         }
 
         [Test]
         public void GetHeartBeat_ok()
         {
             StoreType storeType = new StoreType { StoreName = "store1.xml", StoreTypeName = "IStore.Registration.FileSystemStore" };
-            MySynchComponentResolver componentResolver = new MySynchComponentResolver();
+            ComponentResolver componentResolver = new ComponentResolver();
             componentResolver.RegisterAll(new AllStoresInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             Assert.True(broker.GetHeartbeat().Status);

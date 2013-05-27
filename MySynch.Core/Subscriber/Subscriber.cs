@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.ServiceModel;
+using MySynch.Common.IOC;
 using MySynch.Common.Logging;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
@@ -17,11 +18,11 @@ namespace MySynch.Core.Subscriber
         private string _targetRootFolder;
         private IBrokerProxy _brokerClient;
         private object _lock= new object();
-        private MySynchComponentResolver _componentResolver;
+        private ComponentResolver _componentResolver;
 
         internal SortedList<string, CopyStrategy> InitiatedCopyStrategies { get; set; }
 
-        public Subscriber( MySynchComponentResolver componentResolver)
+        public Subscriber( ComponentResolver componentResolver)
         {
             InitiatedCopyStrategies=new SortedList<string, CopyStrategy>();
             _componentResolver = componentResolver;

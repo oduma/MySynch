@@ -6,22 +6,22 @@ using MySynch.Common.Logging;
 
 namespace MySynch.Common.WCF.Clients
 {
-    public class ChannelFactoryPool
+    class DuplexChannelFactoryPool<T>
     {
         private readonly ReaderWriterLock _readerWriterLock = new ReaderWriterLock();
-        internal readonly Dictionary<string, ClientEndpoint> ClientEndpoints;
+        internal readonly Dictionary<string, DuplexClientEndpoint<T>> ClientEndpoints;
 
         #region SINGLETON
 
         private static readonly object _singletonSyncRoot = new object();
-        private static volatile ChannelFactoryPool _instance;
+        private static volatile DuplexChannelFactoryPool<T> _instance;
 
-        private ChannelFactoryPool()
+        private DuplexChannelFactoryPool()
         {
-            ClientEndpoints = new Dictionary<string, ClientEndpoint>();
+            ClientEndpoints = new Dictionary<string, DuplexClientEndpoint<T>>();
         }
 
-        public static ChannelFactoryPool Instance
+        public static DuplexChannelFactoryPool<T> Instance
         {
             get
             {
@@ -30,7 +30,7 @@ namespace MySynch.Common.WCF.Clients
                     lock (_singletonSyncRoot)
                     {
                         if (_instance == null)
-                            _instance = new ChannelFactoryPool();
+                            _instance = new DuplexChannelFactoryPool<T>();
                     }
                 }
 
@@ -46,14 +46,14 @@ namespace MySynch.Common.WCF.Clients
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public ChannelFactory<T> GetChannelFactory<T>(string serverAddress,List<IEndpointBehavior> endpointBehaviors)
+        public DuplexChannelFactory<T> GetChannelFactory(string serverAddress,List<IEndpointBehavior> endpointBehaviors, InstanceContext callbackInstance)
         {
             LoggingManager.Debug("Trying to get channelfactory for endpoint: " + serverAddress);
 
-            ChannelFactory<T> channelFactory;
+            DuplexChannelFactory<T> channelFactory;
 
             if (!TryGetChannelFactory(serverAddress, out channelFactory))
-                channelFactory = CreateAndCache<T>(serverAddress,endpointBehaviors);
+                channelFactory = CreateAndCache(serverAddress,endpointBehaviors,callbackInstance);
             LoggingManager.Debug("Got channel factory for:" + channelFactory.Endpoint.Address);
 
             return channelFactory;
@@ -69,18 +69,18 @@ namespace MySynch.Common.WCF.Clients
         /// <typeparam name="T"></typeparam>
         /// <param name="channelFactory"></param>
         /// <returns></returns>
-        private bool TryGetChannelFactory<T>(string serverAddress, out ChannelFactory<T> channelFactory)
+        private bool TryGetChannelFactory(string serverAddress, out DuplexChannelFactory<T> channelFactory)
         {
             _readerWriterLock.AcquireReaderLock(1000);
             try
             {
-                ClientEndpoint clientEndpoint;
+                DuplexClientEndpoint<T> clientEndpoint;
 
                 if (ClientEndpoints.TryGetValue(typeof(T).Name + serverAddress, out clientEndpoint))
                 {
-                    EndpointChannelFactory endpointChannelFactory = clientEndpoint.Endpoint;
+                    DuplexEndpointChannelFactory<T> endpointChannelFactory = clientEndpoint.Endpoint;
 
-                    channelFactory = endpointChannelFactory.ChannelFactory as ChannelFactory<T>;
+                    channelFactory = endpointChannelFactory.ChannelFactory as DuplexChannelFactory<T>;
 
                     return true;
                 }
@@ -101,7 +101,7 @@ namespace MySynch.Common.WCF.Clients
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        private ChannelFactory<T> CreateAndCache<T>(string serverAddress,List<IEndpointBehavior> endpointBehaviors)
+        private DuplexChannelFactory<T> CreateAndCache(string serverAddress,List<IEndpointBehavior> endpointBehaviors, InstanceContext callbackInstance)
         {
             //Only one thread at a time can enter the upgradeable lock, 
             //and he has the right to upgrade to write
@@ -111,15 +111,15 @@ namespace MySynch.Common.WCF.Clients
 
             try
             {
-                ClientEndpoint clientEndpoint;
-                EndpointChannelFactory endpointChannelFactory;
+                DuplexClientEndpoint<T> clientEndpoint;
+                DuplexEndpointChannelFactory<T> endpointChannelFactory;
 
                 if (ClientEndpoints.TryGetValue(typeof(T).Name + serverAddress, out clientEndpoint))
                 {
                     //already there so no need to create it
                     endpointChannelFactory = clientEndpoint.Endpoint;
 
-                    return endpointChannelFactory.ChannelFactory as ChannelFactory<T>;
+                    return endpointChannelFactory.ChannelFactory as DuplexChannelFactory<T>;
                 }
                 else
                 {
@@ -127,13 +127,13 @@ namespace MySynch.Common.WCF.Clients
                     _readerWriterLock.UpgradeToWriterLock(1000);
                     try
                     {
-                        clientEndpoint = GetClientEndpoint<T>(serverAddress,endpointBehaviors);
+                        clientEndpoint = GetClientEndpoint<T>(serverAddress,endpointBehaviors,callbackInstance);
 
                         ClientEndpoints.Add(typeof(T).Name + serverAddress, clientEndpoint);
 
                         endpointChannelFactory = clientEndpoint.Endpoint;
 
-                        return endpointChannelFactory.ChannelFactory as ChannelFactory<T>;
+                        return endpointChannelFactory.ChannelFactory as DuplexChannelFactory<T>;
                     }
                     finally
                     {
@@ -152,17 +152,17 @@ namespace MySynch.Common.WCF.Clients
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        private static ClientEndpoint GetClientEndpoint<T>(string serverAddress,List<IEndpointBehavior> endpointBehaviors)
+        private static DuplexClientEndpoint<T> GetClientEndpoint<T>(string serverAddress,List<IEndpointBehavior> endpointBehaviors, InstanceContext callbackInstance)
         {
             EndpointAddress baseAddress= new EndpointAddress(serverAddress);
 
-            var clientEndpoint = new ClientEndpoint(typeof(T), serverAddress);
+            var clientEndpoint = new DuplexClientEndpoint<T>(typeof(T), serverAddress);
 
-            var endpointChannelFactory = new EndpointChannelFactory
+            var endpointChannelFactory = new DuplexEndpointChannelFactory<T>
             {
                 EndpointAddress = baseAddress
             };
-            endpointChannelFactory.ChannelFactory = new ChannelFactory<T>(ClientServerBindingHelper.GetBinding(false).ApplyClientBasicHttpBinding(),
+            endpointChannelFactory.ChannelFactory = new DuplexChannelFactory<T>(callbackInstance,ClientServerBindingHelper.GetBinding(true).ApplyClientWsDualHttpBinding(),
                                                                           endpointChannelFactory.EndpointAddress);
             foreach(var endpointBehavior in endpointBehaviors)
                 endpointChannelFactory.ChannelFactory.Endpoint.Behaviors.Add(endpointBehavior);
@@ -173,6 +173,7 @@ namespace MySynch.Common.WCF.Clients
 
             return clientEndpoint;
         }
+
 
     }
 }
