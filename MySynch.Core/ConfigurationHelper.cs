@@ -52,5 +52,12 @@ namespace MySynch.Core
 
         }
 
+        public static bool ReadOfflineFlag()
+        {
+            var key = Enumerable.FirstOrDefault<string>(ConfigurationManager.AppSettings.AllKeys, k => k == "ConsiderOfflineChanges");
+            if (key == null)
+                return false;
+            return (ConfigurationManager.AppSettings[key].ToLower()=="yes")?true:false;
+        }
     }
 }

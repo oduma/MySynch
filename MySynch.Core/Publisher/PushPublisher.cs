@@ -181,8 +181,6 @@ namespace MySynch.Core.Publisher
             }
         }
 
-
-
         #endregion
     }
 }

@@ -14,6 +14,7 @@ namespace MySynch.Publisher
     {
         private bool _firstTimeRunningAfterRestart;
         private readonly string _backupFileName = AppDomain.CurrentDomain.BaseDirectory + "backup.xml";
+        private bool _considerOfflineChanges;
 
 
         public PublisherInstance()
@@ -39,6 +40,7 @@ namespace MySynch.Publisher
                                                      }
                                          };
             LocalComponent = new PushPublisher();
+            _considerOfflineChanges = ConfigurationHelper.ReadOfflineFlag();
             InitializeComponent();
             LoggingManager.Debug("Will Initialize publishing changes from folder: " + LocalComponentConfig.RootFolder);
         }
@@ -61,7 +63,7 @@ namespace MySynch.Publisher
             Timer.Enabled = false;
             if (TryMakeComponentKnown(LocalComponentConfig.BrokerUrl))
             {
-                if (_firstTimeRunningAfterRestart)
+                if (_firstTimeRunningAfterRestart && _considerOfflineChanges)
                 {
                     OfflineChangesDetector.ForcePublishAllOfflineChanges((PushPublisher) LocalComponent,_backupFileName,
                                                                          LocalComponentConfig.RootFolder);
