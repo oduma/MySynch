@@ -1,52 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension" xmlns:fire="http://schemas.microsoft.com/wix/FirewallExtension">
   <Fragment>
-    <ComponentGroup Id="DistributorGroupConf">
-      <Component Id="MySynch.Distributor.exe.config" Directory="DISTRIBUTOR" Guid="{72408884-A477-43D0-93A5-3930CBA9EC4C}">
-        <File Id="MySynch.Distributor.exe.config" KeyPath="yes" Source="$(var.DistributorConfigSource)\MySynch.Distributor.exe.config" />
-        <util:XmlFile Id="SetDistributorInstancePort"
-                      Action="setValue"
-                      ElementPath="//appSettings/add[\[]@key='InstancePort'[\]]/@value"
-                      Value="[DSTPORTVAL]"
-                      File="[#MySynch.Distributor.exe.config]" />
+    <ComponentGroup Id="BrokerGroupConf">
+      <Component Id="MySynch.Broker.exe.config" Directory="BROKER" Guid="{72408884-A477-43D0-93A5-3930CBA9EC4C}">
+        <File Id="MySynch.Broker.exe.config" KeyPath="yes" Source="$(var.BrokerConfigSource)\MySynch.Broker.exe.config" />
       </Component>
-      <Component Id="MySynch.Distributor.Service" Directory="DISTRIBUTOR" Guid="{94CFA246-036F-4114-9348-FBCD42B0A400}">
-        <File Id="MySynch.Distributor.exe" Name="MySynch.Distributor.exe" Source="$(var.DistributorExeSource)\MySynch.Distributor.exe" Vital="yes" KeyPath="yes"/>
+      <Component Id="MySynch.Broker.Service" Directory="BROKER" Guid="{94CFA246-036F-4114-9348-FBCD42B0A400}">
+        <File Id="MySynch.Broker.exe" Name="MySynch.Broker.exe" Source="$(var.BrokerExeSource)\MySynch.Broker.exe" Vital="yes" KeyPath="yes"/>
         <ServiceInstall
-          Id="DistributorServiceInstaller"
+          Id="BrokerServiceInstaller"
           Type="ownProcess"
           Vital="yes"
-          Name="MySynch.Distributor"
-          DisplayName="MySynch Distributor"
-          Description="Monitoring the MySynch channels"
+          Name="MySynch.Broker"
+          DisplayName="MySynch Broker"
+          Description="Distributing messages from a MySynch Publisher to a number of subscribers"
           Start="auto"
           Account="LocalSystem"
           ErrorControl="ignore"
           Interactive="no">
         </ServiceInstall>
-        <ServiceControl Id="StartDistributorService" Start="install" Stop="both" Remove="uninstall" Name="MySynch.Distributor" Wait="yes" />
-        <fire:FirewallException Id="DistributorFWRuleTCP" Name="My Synch Distributor TCP Port [DSTPORTVAL]" Port="[DSTPORTVAL]" Protocol="tcp" Scope="any"/>
-        <fire:FirewallException Id="DistributorFWRuleUDP" Name="My Synch Distributor All Access" Program="[#MySynch.Distributor.exe]" Scope="any"/>
+        <ServiceControl Id="StartBrokerService" Start="install" Stop="both" Remove="uninstall" Name="MySynch.Broker" Wait="yes" />
       </Component>
-      <Component Id="MySynch.Monitor.exe.config" Directory="DISTRIBUTOR" Guid="{3CDED0A3-ACF6-4FF0-8952-1A9BAE9A9D21}">
-        <File Id="MySynch.Monitor.exe.config" KeyPath="yes" Source="$(var.DistributorConfigSource)\MySynch.Monitor.exe.config" />
-        <util:XmlFile Id="SetMonitorInstancePort"
+      <Component Id="MySynch.Monitor.exe.config" Directory="BROKER" Guid="{3CDED0A3-ACF6-4FF0-8952-1A9BAE9A9D21}">
+        <File Id="MySynch.Monitor.exe.config" KeyPath="yes" Source="$(var.BrokerConfigSource)\MySynch.Monitor.exe.config" />
+        <util:XmlFile Id="SetBrokerMonitorUrl"
                       Action="setValue"
-                      ElementPath="//appSettings/add[\[]@key='LocalDistributorPort'[\]]/@value"
-                      Value="[DSTPORTVAL]"
+                      ElementPath="//appSettings/add[\[]@key='BrokerUrl'[\]]/@value"
+                      Value="[BRKMURLVAL]"
                       File="[#MySynch.Monitor.exe.config]" />
       </Component>
-      <Component Id="MySynch.Monitor" Directory="DISTRIBUTOR" Guid="{BB26C907-F32D-41F9-9B94-B706C28E3213}">
-        <File Id="MySynch.Monitor.exe" Name="MySynch.Monitor.exe" Source="$(var.DistributorExeSource)\MySynch.Monitor.exe" Vital="yes" KeyPath="yes"/>
+      <Component Id="MySynch.Monitor" Directory="BROKER" Guid="{BB26C907-F32D-41F9-9B94-B706C28E3213}">
+        <File Id="MySynch.Monitor.exe" Name="MySynch.Monitor.exe" Source="$(var.BrokerExeSource)\MySynch.Monitor.exe" Vital="yes" KeyPath="yes"/>
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="PublisherGroupConf">
       <Component Id="MySynch.Publisher.exe.config" Directory="PUBLISHER" Guid="{7C74FEB9-2A53-4E73-86A9-C1D001FEAAF5}">
         <File Id="MySynch.Publisher.exe.config" KeyPath="yes" Source="$(var.PublisherConfigSource)\MySynch.Publisher.exe.config" />
-        <util:XmlFile Id="SetPublisherInstancePort"
+        <util:XmlFile Id="SetBrokerUrl"
                       Action="setValue"
-                      ElementPath="//appSettings/add[\[]@key='InstancePort'[\]]/@value"
-                      Value="[PUBPORTVAL]"
+                      ElementPath="//appSettings/add[\[]@key='BrokerUrl'[\]]/@value"
+                      Value="[BRKURLVAL]"
                       File="[#MySynch.Publisher.exe.config]" />
         <util:XmlFile Id="SetPublisherRootFolder"
                       Action="setValue"
@@ -70,8 +63,6 @@
           Interactive="no">
         </ServiceInstall>
         <ServiceControl Id="StartPublisherService" Start="install" Stop="both" Remove="uninstall" Name="MySynch.Publisher" Wait="yes" />
-        <fire:FirewallException Id="PublisherFWRuleTCP" Name="My Synch Publisher TCP Port [PUBPORTVAL]" Port="[PUBPORTVAL]" Protocol="tcp" Scope="any"/>
-        <fire:FirewallException Id="PublisherFWRuleUDP" Name="My Synch Publisher All Access" Program="[#MySynch.Publisher.exe]" Scope="any"/>
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="SubscriberGroupConf">
@@ -79,16 +70,14 @@
         <File Id="MySynch.Subscriber.exe.config" KeyPath="yes" Source="$(var.SubscriberConfigSource)\MySynch.Subscriber.exe.config" />
         <util:XmlFile Id="SetSubscriberInstancePort"
                       Action="setValue"
-                      ElementPath="//appSettings/add[\[]@key='InstancePort'[\]]/@value"
-                      Value="[SUBPORTVAL]"
+                      ElementPath="//appSettings/add[\[]@key='BrokerUrl'[\]]/@value"
+                      Value="[BRKURLVAL]"
                       File="[#MySynch.Subscriber.exe.config]" />
         <util:XmlFile Id="SetSubscriberRootFolder"
                       Action="setValue"
                       ElementPath="//appSettings/add[\[]@key='LocalRootFolder'[\]]/@value"
                       Value="[DSTROOTDIRVAL]"
                       File="[#MySynch.Subscriber.exe.config]" />
-
-
       </Component>
       <Component Id="MySynch.Subscriber.Service" Directory="SUBSCRIBER" Guid="{749716C2-B818-4127-B31D-ACEFB95C6B7B}">
         <File Id="MySynch.Subscriber.exe" Name="MySynch.Subscriber.exe" Source="$(var.SubscriberExeSource)\MySynch.Subscriber.exe" Vital="yes" KeyPath="yes"/>
@@ -105,8 +94,6 @@
           Interactive="no">
         </ServiceInstall>
         <ServiceControl Id="StartSuscriberService" Start="install" Stop="both" Remove="uninstall" Name="MySynch.Subscriber" Wait="yes" />
-        <fire:FirewallException Id="SubscriberFWRuleTCP" Name="My Synch Subscriber TCP Port [SUBPORTVAL]" Port="[SUBPORTVAL]" Protocol="tcp" Scope="any"/>
-        <fire:FirewallException Id="SubscriberFWRuleUDP" Name="My Synch Subscriber All Access" Program="[#MySynch.Subscriber.exe]" Scope="any"/>
       </Component>
     </ComponentGroup>
   </Fragment>

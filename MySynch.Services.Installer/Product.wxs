@@ -19,7 +19,7 @@
 					<Directory Id="INSTALLLOCATION" Name="MySynch">
 						<Directory Id ="PUBLISHER" Name="Publisher"/>
 						<Directory Id ="SUBSCRIBER" Name="Subscriber"/>
-						<Directory Id ="DISTRIBUTOR" Name="Distributor"/>
+						<Directory Id ="BROKER" Name="Broker"/>
 					</Directory>
 				</Directory>
 			</Directory>
@@ -33,17 +33,10 @@
 				<ComponentGroupRef Id="SubscriberGroup"/>
         <ComponentGroupRef Id="SubscriberGroupConf"/>
       </Feature>
-			<Feature Id="Distributor" Title="MySynch Distributor" Level="1" ConfigurableDirectory="DISTRIBUTOR">
-				<ComponentGroupRef Id="DistributorGroup"/>
-        <ComponentGroupRef Id="DistributorGroupConf"/>
+			<Feature Id="Broker" Title="MySynch Broker" Level="1" ConfigurableDirectory="BROKER">
+				<ComponentGroupRef Id="BrokerGroup"/>
+        <ComponentGroupRef Id="BrokerGroupConf"/>
       </Feature>
 		</Feature>
-    <!--<Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Edit the distributor map" />
-    <Property Id="WixShellExecTarget" Value="[#MySynch.Monitor.exe]" />-->
-    <CustomAction Id="LaunchApplication" FileKey="MySynch.Monitor.exe"
-	ExeCommand="mapEditorOnly" Execute="immediate" Return="asyncNoWait" />
-    <InstallExecuteSequence>
-      <Custom Action='LaunchApplication' After='InstallFinalize' />
-    </InstallExecuteSequence>
   </Product>
 </Wix>

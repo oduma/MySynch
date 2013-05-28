@@ -21,7 +21,7 @@
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <WixVariables>
     </WixVariables>
-    <DefineConstants>PublisherSource=..\MySynch.Publisher\Assemblies;SubscriberSource=..\MySynch.Subscriber\Assemblies;DistributorSource=..\MySynch.Distributor\Assemblies;PublisherConfigSource=..\MySynch.Publisher\Config;SubscriberConfigSource=..\MySynch.Subscriber\Config;DistributorConfigSource=..\MySynch.Distributor\Config;PublisherExeSource=..\MySynch.Publisher\Exe;SubscriberExeSource=..\MySynch.Subscriber\Exe;DistributorExeSource=..\MySynch.Distributor\Exe;</DefineConstants>
+    <DefineConstants>PublisherSource=..\MySynch.Publisher\Assemblies;SubscriberSource=..\MySynch.Subscriber\Assemblies;BrokerSource=..\MySynch.Broker\Assemblies;PublisherConfigSource=..\MySynch.Publisher\Config;SubscriberConfigSource=..\MySynch.Subscriber\Config;BrokerConfigSource=..\MySynch.Broker\Config;PublisherExeSource=..\MySynch.Publisher\Exe;SubscriberExeSource=..\MySynch.Subscriber\Exe;BrokerExeSource=..\MySynch.Broker\Exe;</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
@@ -32,6 +32,7 @@
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="BrokerGroup.wxs" />
     <Compile Include="SpecialFiles.wxs" />
     <Compile Include="Product.wxs" />
     <Compile Include="PublisherGroup.wxs" />

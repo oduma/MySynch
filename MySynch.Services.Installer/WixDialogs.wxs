@@ -3,6 +3,8 @@
   <Fragment>
     <Property Id="SRCROOTDIRVAL" Value="C:\"/>
     <Property Id="DSTROOTDIRVAL" Value="C:\"/>
+    <Property Id="BRKURLVAL" Value="http://sciendo-laptop/broker/"/>
+    <Property Id="BRKMURLVAL" Value="http://sciendo-laptop/brokermonitor/"/>
     <UI>
       <Dialog Id="MySynchPublisherSetupDlg" Width="370" Height="270"
                Title="Settings - [ProductName]" NoMinimize="yes">
@@ -13,10 +15,6 @@
           <Publish Property="VALTEMP" Value="[SRCROOTDIRVAL]" Order="1">1</Publish>
           <Publish Event="SpawnDialog" Value="SrcDirDlg" Order="2">1</Publish>
         </Control>
-        <!-- Publisher Port prompt -->
-        <Control Id="PublisherPortLabel" Type="Text" X="45" Y="103" Width="100" Height="15" TabSkip="no" Text="&amp;Publisher Port:" />
-        <Control Id="PublisherPortEdit" Type="Edit" X="45"  Y="115" Width="220" Height="18" Property="PUBPORTVAL" Text="{80}" >
-        </Control>
         <!-- Dest Dir prompt -->
         <Control Id="DestDirLabel" Type="Text" X="45" Y="133" Width="100" Height="15" TabSkip="no" Text="&amp;Destination Directory:" />
         <Control Id="DestRootDirPathValue" Type="PathEdit" X="45" Y="145" Width="215" Height="18" Property="DSTROOTDIRVAL"/>
@@ -25,13 +23,13 @@
           <Publish Event="SpawnDialog" Value="DstDirDlg" Order="2">1</Publish>
         </Control>
 
-        <!-- Subscriber Port prompt -->
-        <Control Id="SubscriberPortLabel" Type="Text" X="45" Y="163" Width="100" Height="15" TabSkip="no" Text="&amp;Subscriber Port:" />
-        <Control Id="SubscriberPortEdit" Type="Edit" X="45"  Y="175" Width="220" Height="18" Property="SUBPORTVAL" Text="{80}" >
+        <!-- Broker Url prompt -->
+        <Control Id="BrokerUrlLabel" Type="Text" X="45" Y="163" Width="100" Height="15" TabSkip="no" Text="&amp;Broker url:" />
+        <Control Id="BrokerUrlEdit" Type="Edit" X="45"  Y="175" Width="220" Height="18" Property="BRKURLVAL" Text="{100}" >
         </Control>
-        <!-- Distributor Port prompt -->
-        <Control Id="DistributorPortLabel" Type="Text" X="45" Y="193" Width="100" Height="15" TabSkip="no" Text="&amp;Distributor Port:" />
-        <Control Id="DistributorPortEdit" Type="Edit" X="45"  Y="205" Width="220" Height="18" Property="DSTPORTVAL" Text="{80}" >
+        <!-- Broker Monitor Url prompt -->
+        <Control Id="BrokerMonitorUrlLabel" Type="Text" X="45" Y="193" Width="100" Height="15" TabSkip="no" Text="&amp;Broker monitor url:" />
+        <Control Id="BrokerMonitorUrlEdit" Type="Edit" X="45"  Y="205" Width="220" Height="18" Property="BRKMURLVAL" Text="{100}" >
         </Control>
         <!-- Back button -->
         <Control Id="Back" Type="PushButton" X="180" Y="243"
@@ -45,10 +43,9 @@
             <![CDATA[SRCROOTDIRVAL <> ""]]>
           </Publish>
           <Publish Property="SRCROOTDIRVAL" Value="[SRCROOTDIRVAL]"></Publish>
-          <Publish Property="PUBPORTVAL" Value="[PUBPORTVAL]"></Publish>
           <Publish Property="DSTROOTDIRVAL" Value="[DSTROOTDIRVAL]"></Publish>
-          <Publish Property="SUBPORTVAL" Value="[SUBPORTVAL]"></Publish>
-          <Publish Property="DSTPORTVAL" Value="[DSTPORTVAL]"></Publish>
+          <Publish Property="BRKURLVAL" Value="[BRKURLVAL]"></Publish>
+          <Publish Property="BRKMURLVAL" Value="[BRKMURLVAL]"></Publish>
         </Control>
         <Control Id="Cancel" Type="PushButton" X="304" Y="243"
                    Width="56" Height="17" Cancel="yes" Text="Cancel">
