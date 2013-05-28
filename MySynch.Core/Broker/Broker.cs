@@ -164,8 +164,6 @@ namespace MySynch.Core.Broker
                 });
 
             DistributeMessageToAllAvailableSubscribers(request.PublisherMessage);
-            if(_callback!=null)
-                _callback.NotifyMessageFlow(_receivedMessages.FirstOrDefault(m => m.MessageId == request.PublisherMessage.MessageId));
             LoggingManager.Debug("Request forwarded to all subscribers.");
         }
 
@@ -200,7 +198,7 @@ namespace MySynch.Core.Broker
                 LoggingManager.Debug("Did not distribute to subscriber: " + subscriberAddresedMessage.DestinationUrl +
                                      ". Subscriber dead or unreachable at the moment.");
                 subscriberAddresedMessage.ProcessedByDestination = false;
-                MarkAsProcessed(subscriberAddresedMessage);
+                MarkAsProcessedByDestination(subscriberAddresedMessage);
                 return;
             }
             try
@@ -208,7 +206,7 @@ namespace MySynch.Core.Broker
                 ReceiveMessageRequest request = new ReceiveMessageRequest { PublisherMessage = subscriberAddresedMessage.OriginalMessage };
                 var response = subscriberRemote.ReceiveMessage(request);
                 subscriberAddresedMessage.ProcessedByDestination = response.Success;
-                MarkAsProcessed(subscriberAddresedMessage);
+                MarkAsProcessedByDestination(subscriberAddresedMessage);
                 LoggingManager.Debug("Distributed to subscriber: " + subscriberAddresedMessage.DestinationUrl);
 
             }
@@ -216,11 +214,11 @@ namespace MySynch.Core.Broker
             {
                 LoggingManager.LogMySynchSystemError(ex);
                 subscriberAddresedMessage.ProcessedByDestination = false;
-                MarkAsProcessed(subscriberAddresedMessage);
+                MarkAsProcessedByDestination(subscriberAddresedMessage);
             }
         }
 
-        private void MarkAsProcessed(AddresedMessage subscriberAddresedMessage)
+        private void MarkAsProcessedByDestination(AddresedMessage subscriberAddresedMessage)
         {
             lock (_lock)
             {
@@ -235,6 +233,8 @@ namespace MySynch.Core.Broker
                                              });
                 else
                     dest.Processed = subscriberAddresedMessage.ProcessedByDestination;
+                if (_callback != null)
+                    _callback.NotifyMessageFlow(msg);
                 if (!subscriberAddresedMessage.ProcessedByDestination 
                     && _registrations.Any(r=>r.ServiceUrl==subscriberAddresedMessage.DestinationUrl))
                     Detach(new DetachRequest {ServiceUrl = subscriberAddresedMessage.DestinationUrl});
