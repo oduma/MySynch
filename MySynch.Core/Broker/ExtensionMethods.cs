@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using MySynch.Common.Logging;
 using MySynch.Contracts.Messages;
-using MySynch.Core.DataTypes;
 
 namespace MySynch.Core.Broker
 {

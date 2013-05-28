@@ -98,12 +98,10 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Client.cs</LastGenOutput>
     </None>
-    <None Include="Implementations\ClientTemplate.tt" />
     <None Include="Interfaces\ProxyInterfaces.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ProxyInterfaces.cs</LastGenOutput>
     </None>
-    <None Include="Interfaces\ProxyInterfaceTemplate.tt" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
