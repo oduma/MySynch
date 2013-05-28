@@ -31,14 +31,7 @@ namespace MySynch.Core.Broker
             return new GetHeartbeatResponse {Status = true,RootPath=""};
         }
 
-        public void StartMonitoringOfRegistrations()
-        {
-            //Pass the string to the client through the call back function
-            if (_callback == null)
-                _callback = OperationContext.Current.GetCallbackChannel<IBrokerMonitorCallback>();
-        }
-
-        public void StartMonitoringOfMessagesFlow()
+        public void StartMonitoring()
         {
             //Pass the string to the client through the call back function
             if (_callback == null)
@@ -94,7 +87,7 @@ namespace MySynch.Core.Broker
                         _registrations.ToList().AddRegistration(request.RegistrationRequest).SaveAndReturn(
                             AppDomain.CurrentDomain.BaseDirectory + "\\" + _store.StoreName, _storeHandler.StoreMethod);
                     if(_callback!=null)
-                        _callback.NotifyRegistrationChange(request.RegistrationRequest);
+                        _callback.NotifyNewRegistration(request.RegistrationRequest);
                     LoggingManager.Debug("Attached to new " + request.RegistrationRequest.ServiceUrl);
                     return new AttachResponse {RegisteredOk = true};
                 }
@@ -132,7 +125,7 @@ namespace MySynch.Core.Broker
                         _store.StoreName,_storeHandler.StoreMethod);
                 LoggingManager.Debug("Detached :" + request.ServiceUrl);
                 if (_callback != null && deletedCopy!=null)
-                    _callback.NotifyRegistrationChange(deletedCopy);
+                    _callback.NotifyRemoveRegistration(deletedCopy);
                 return new DetachResponse { Status = true };
             }
             catch (Exception ex)
@@ -171,6 +164,8 @@ namespace MySynch.Core.Broker
                 });
 
             DistributeMessageToAllAvailableSubscribers(request.PublisherMessage);
+            if(_callback!=null)
+                _callback.NotifyMessageFlow(_receivedMessages.FirstOrDefault(m => m.MessageId == request.PublisherMessage.MessageId));
             LoggingManager.Debug("Request forwarded to all subscribers.");
         }
 

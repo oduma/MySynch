@@ -76,7 +76,7 @@ namespace MySynch.Monitor
 
             InstanceContext callbackInstance= new InstanceContext(this);
             _brokerClient = new ClientHelper().ConnectToADuplexBroker(ProgressChanged, _brokerUrl,callbackInstance);
-            _brokerClient.StartMonitoringOfRegistrations();
+            _brokerClient.StartMonitoring();
             
         }
 
@@ -94,14 +94,37 @@ namespace MySynch.Monitor
             }
         }
 
-        public void NotifyRegistrationChange(Registration changedRegistration)
+        public void NotifyNewRegistration(Registration changedRegistration)
         {
-            ProgressChanged(this, new ProgressChangedEventArgs(0, changedRegistration.ServiceUrl));
+
+            ProgressChanged(this, new ProgressChangedEventArgs(0, RecordRegistrationAndBuildMessage(changedRegistration, true)));
+        }
+
+        private string RecordRegistrationAndBuildMessage(Registration changedRegistration, bool added)
+        {
+            return string.Format("{0} {1} identified by url: {2}", (added) ? "Attached" : "Detached",
+                                 changedRegistration.ServiceRole, changedRegistration.ServiceUrl);
+        }
+
+        public void NotifyRemoveRegistration(Registration changedRegistration)
+        {
+            ProgressChanged(this, new ProgressChangedEventArgs(0, RecordRegistrationAndBuildMessage(changedRegistration,false)));
         }
 
         public void NotifyMessageFlow(MessageWithDestinations messageWithDestinations)
         {
-            ProgressChanged(this, new ProgressChangedEventArgs(0, messageWithDestinations.MessageId));
+            ProgressChanged(this, new ProgressChangedEventArgs(0, RecordMessageFlowAndBuildMessage(messageWithDestinations)));
+        }
+
+        private string RecordMessageFlowAndBuildMessage(MessageWithDestinations messageWithDestinations)
+        {
+            return string.Format("{0} of file {1} from source {2} distributed to: {3}", messageWithDestinations.OperationType, messageWithDestinations.AbsolutePath,
+                                 messageWithDestinations.SourceOfMessageUrl,
+                                 string.Join("\r\n",
+                                             messageWithDestinations.Destinations.Select(
+                                                 d =>
+                                                 string.Format("{0} by subscriber:{1}",
+                                                               (d.Processed) ? "processed" : "not processed", d.Url))));
         }
     }
 }
