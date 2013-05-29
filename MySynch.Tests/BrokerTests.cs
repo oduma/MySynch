@@ -319,9 +319,9 @@ namespace MySynch.Tests
             componentResolver.RegisterAll(new AllStoresInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             var response = broker.ListAllRegistrations();
-            Assert.IsNotNull(response.Registrations);
-            Assert.AreEqual(3, response.Registrations.Count);
-            Assert.False(response.Registrations.Any(r => r.ServiceRole == ServiceRole.Subscriber));
+            Assert.IsNotNull(response);
+            Assert.AreEqual(3, response.Count);
+            Assert.False(response.Any(r => r.ServiceRole == ServiceRole.Subscriber));
         }
         [Test]
         public void ListAllRegistrations_After_AnInsert()
@@ -350,9 +350,9 @@ namespace MySynch.Tests
             broker.Attach(request);
 
             var response = broker.ListAllRegistrations();
-            Assert.IsNotNull(response.Registrations);
-            Assert.AreEqual(4, response.Registrations.Count);
-            Assert.True(response.Registrations.Any(r => r.ServiceRole == ServiceRole.Subscriber));
+            Assert.IsNotNull(response);
+            Assert.AreEqual(4, response.Count);
+            Assert.True(response.Any(r => r.ServiceRole == ServiceRole.Subscriber));
         }
         [Test]
         public void ListAllRegistrations_AfterADelete()
@@ -366,8 +366,8 @@ namespace MySynch.Tests
             broker.Detach(detachRequest);
 
             var response = broker.ListAllRegistrations();
-            Assert.IsNotNull(response.Registrations);
-            Assert.AreEqual(2, response.Registrations.Count(r => r.ServiceRole == ServiceRole.Publisher));
+            Assert.IsNotNull(response);
+            Assert.AreEqual(2, response.Count(r => r.ServiceRole == ServiceRole.Publisher));
         }
         [Test]
         public void ListAllRegistrations_Error()
@@ -378,8 +378,8 @@ namespace MySynch.Tests
             componentResolver.RegisterAll(new AllStoresInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             var response = broker.ListAllRegistrations();
-            Assert.IsNotNull(response.Registrations);
-            Assert.AreEqual(0, response.Registrations.Count);
+            Assert.IsNotNull(response);
+            Assert.AreEqual(0, response.Count);
         }
         [Test]
         public void ListAllRegistrations_WrongFile()
@@ -389,8 +389,8 @@ namespace MySynch.Tests
             componentResolver.RegisterAll(new AllStoresInstaller());
             Broker broker = new Broker(storeType, componentResolver);
             var response = broker.ListAllRegistrations();
-            Assert.IsNotNull(response.Registrations);
-            Assert.AreEqual(0, response.Registrations.Count);
+            Assert.IsNotNull(response);
+            Assert.AreEqual(0, response.Count);
         }
 
         #endregion
@@ -415,8 +415,8 @@ namespace MySynch.Tests
             broker.ReceiveAndDistributeMessage(mRequest);
             var mResponse = broker.ListAllMessages();
             Assert.IsNotNull(mResponse);
-            Assert.IsNotNull(mResponse.AvailableMessages);
-            Assert.AreEqual(1,mResponse.AvailableMessages.Count);
+            Assert.IsNotNull(mResponse);
+            Assert.AreEqual(1,mResponse.Count);
         }
 
         [Test]
@@ -438,8 +438,8 @@ namespace MySynch.Tests
             broker.ReceiveAndDistributeMessage(mRequest);
             var mResponse = broker.ListAllMessages();
             Assert.IsNotNull(mResponse);
-            Assert.IsNotNull(mResponse.AvailableMessages);
-            Assert.AreEqual(1, mResponse.AvailableMessages.Count);
+            Assert.IsNotNull(mResponse);
+            Assert.AreEqual(1, mResponse.Count);
         }
 
         [Test]
@@ -564,7 +564,7 @@ namespace MySynch.Tests
             broker.ReceiveAndDistributeMessage(new ReceiveAndDistributeMessageRequest{PublisherMessage=message});
             Thread.Sleep(5000); //wait for both threads to finish before checking it
             
-            Assert.False(broker.ListAllMessages().AvailableMessages[0].Destinations.Any(d=>!d.Processed));
+            Assert.False(broker.ListAllMessages()[0].Destinations.Any(d=>!d.Processed));
             
         }
         #endregion

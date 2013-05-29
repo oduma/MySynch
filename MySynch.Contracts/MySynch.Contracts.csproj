@@ -61,8 +61,6 @@
     <Compile Include="IBrokerMonitor.cs" />
     <Compile Include="IBrokerMonitorCallback.cs" />
     <Compile Include="Messages\DestinationWithResult.cs" />
-    <Compile Include="Messages\ListAllMessagesResponse.cs" />
-    <Compile Include="Messages\ListAllRegistrationsResponse.cs" />
     <Compile Include="Messages\DetachRequest.cs" />
     <Compile Include="Messages\DetachResponse.cs" />
     <Compile Include="Messages\AttachResponse.cs" />
@@ -71,6 +69,7 @@
     <Compile Include="ISubscriber.cs" />
     <Compile Include="ICommunicationComponent.cs" />
     <Compile Include="IPublisher.cs" />
+    <Compile Include="Messages\MessageReceivedFeedbackRequest.cs" />
     <Compile Include="Messages\MessageWithDestinations.cs" />
     <Compile Include="Messages\ReceiveMessageRequest.cs" />
     <Compile Include="Messages\ReceiveMessageResponse.cs" />

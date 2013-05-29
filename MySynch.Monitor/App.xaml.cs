@@ -24,7 +24,6 @@ namespace MySynch.Monitor
         private TaskbarIcon tb;
         private string _brokerUrl;
         private IBrokerMonitorProxy _brokerClient;
-        private ListAllRegistrationsResponse _registeredComponents;
 
         private void InitApplication()
         {

@@ -13,14 +13,11 @@ namespace MySynch.Contracts
         [OperationContract]
         DetachResponse Detach(DetachRequest request);
 
-        [OperationContract]
-        ListAllRegistrationsResponse ListAllRegistrations();
-
         [OperationContract(IsOneWay=true)]
         void ReceiveAndDistributeMessage(ReceiveAndDistributeMessageRequest request);
 
         [OperationContract]
-        ListAllMessagesResponse ListAllMessages();
+        void MessageReceivedFeedback(MessageReceivedFeedbackRequest request);
 
     }
 }

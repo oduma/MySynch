@@ -140,9 +140,9 @@ namespace MySynch.Core.Broker
             }
         }
 
-        public ListAllRegistrationsResponse ListAllRegistrations()
+        internal List<Registration> ListAllRegistrations()
         {
-            return new ListAllRegistrationsResponse {Registrations = _registrations.ToList()};
+            return _registrations.ToList();
         }
 
         public void ReceiveAndDistributeMessage(ReceiveAndDistributeMessageRequest request)
@@ -165,6 +165,11 @@ namespace MySynch.Core.Broker
 
             DistributeMessageToAllAvailableSubscribers(request.PublisherMessage);
             LoggingManager.Debug("Request forwarded to all subscribers.");
+        }
+
+        public void MessageReceivedFeedback(MessageReceivedFeedbackRequest request)
+        {
+            throw new NotImplementedException();
         }
 
         internal void DistributeMessageToAllAvailableSubscribers(PublisherMessage publisherMessage)
@@ -266,9 +271,9 @@ namespace MySynch.Core.Broker
             }
         }
 
-        public ListAllMessagesResponse ListAllMessages()
+        internal List<MessageWithDestinations> ListAllMessages()
         {
-            return new ListAllMessagesResponse {AvailableMessages = _receivedMessages};
+            return _receivedMessages;
         }
     }
 }
