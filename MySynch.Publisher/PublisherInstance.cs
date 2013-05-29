@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Timers;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
 using MySynch.Core;
+using MySynch.Core.Configuration;
 using MySynch.Core.Publisher;
 using Sciendo.Common.Logging;
 
@@ -14,11 +16,12 @@ namespace MySynch.Publisher
     {
         private bool _firstTimeRunningAfterRestart;
         private readonly string _backupFileName = AppDomain.CurrentDomain.BaseDirectory + "backup.xml";
-        private bool _considerOfflineChanges;
 
 
         public PublisherInstance()
         {
+            LocalComponentConfig = ConfigurationManager.GetSection("mySynchPublisherConfiguration") as MySynchPublisherConfigurationSection;
+
             LoggingManager.Debug("Initializing service");
             HostUrl = string.Format("http://{0}/{1}/",
                         System.Net.Dns.
@@ -40,9 +43,8 @@ namespace MySynch.Publisher
                                                      }
                                          };
             LocalComponent = new PushPublisher();
-            _considerOfflineChanges = ConfigurationHelper.ReadOfflineFlag();
             InitializeComponent();
-            LoggingManager.Debug("Will Initialize publishing changes from folder: " + LocalComponentConfig.RootFolder);
+            LoggingManager.Debug("Will Initialize publishing changes from folder: " + LocalComponentConfig.LocalRootFolder);
         }
 
 
@@ -63,10 +65,10 @@ namespace MySynch.Publisher
             Timer.Enabled = false;
             if (TryMakeComponentKnown(LocalComponentConfig.BrokerUrl))
             {
-                if (_firstTimeRunningAfterRestart && _considerOfflineChanges)
+                if (_firstTimeRunningAfterRestart && ((MySynchPublisherConfigurationSection)LocalComponentConfig).ConsiderOfflineChanges.ToLower()=="yes")
                 {
                     OfflineChangesDetector.ForcePublishAllOfflineChanges((PushPublisher) LocalComponent,_backupFileName,
-                                                                         LocalComponentConfig.RootFolder);
+                                                                         LocalComponentConfig.LocalRootFolder);
                     _firstTimeRunningAfterRestart = false;
                 }
                 Timer.Interval = 120000;
@@ -81,7 +83,7 @@ namespace MySynch.Publisher
 
         public override bool InitializeLocalComponent()
         {
-            if (string.IsNullOrEmpty(LocalComponentConfig.RootFolder) || !Directory.Exists(LocalComponentConfig.RootFolder))
+            if (string.IsNullOrEmpty(LocalComponentConfig.LocalRootFolder) || !Directory.Exists(LocalComponentConfig.LocalRootFolder))
                 return false;
             _serviceHosts.Add(CreateAndConfigureServiceHost<IPublisher>((IPublisher)LocalComponent,
                                                                      new Uri(HostUrl)));

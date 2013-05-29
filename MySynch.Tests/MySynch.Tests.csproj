@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BrokerTests.cs" />
+    <Compile Include="ConfigurationTests.cs" />
     <Compile Include="CopyStrategyTests.cs" />
     <Compile Include="FSWatcherTests.cs" />
     <Compile Include="PublisherPushLogicTests.cs" />

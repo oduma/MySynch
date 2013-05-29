@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
 using MySynch.Core;
+using MySynch.Core.Configuration;
 using Sciendo.Common.IOC;
 using Sciendo.Common.Logging;
 
@@ -14,6 +16,7 @@ namespace MySynch.Subscriber
         public SubscriberInstance()
         {
             LoggingManager.Debug("Initializing service");
+            LocalComponentConfig = ConfigurationManager.GetSection("mySynchSubscriberConfiguration") as MySynchLocalComponentConfigurationSection;
             HostUrl = string.Format("http://{0}/{1}/",
             System.Net.Dns.
                 GetHostName().ToLower(),LocalComponentConfig.InstanceName);
@@ -35,7 +38,7 @@ namespace MySynch.Subscriber
             };
 
             InitializeComponent();
-            LoggingManager.Debug("Will Initialize subscribing changes to folder: " + LocalComponentConfig.RootFolder);
+            LoggingManager.Debug("Will Initialize subscribing changes to folder: " + LocalComponentConfig.LocalRootFolder);
         }
 
         protected override void OnStart(string[] args)
@@ -51,7 +54,7 @@ namespace MySynch.Subscriber
 
         public override bool InitializeLocalComponent()
         {
-            if (string.IsNullOrEmpty(LocalComponentConfig.RootFolder) || !Directory.Exists(LocalComponentConfig.RootFolder))
+            if (string.IsNullOrEmpty(LocalComponentConfig.LocalRootFolder) || !Directory.Exists(LocalComponentConfig.LocalRootFolder))
                 return false;
             ComponentResolver componentResolver=new ComponentResolver();
             componentResolver.RegisterAll(new MySynchInstaller());
