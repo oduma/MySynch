@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MySynch.Common.Serialization;
 using MySynch.Contracts.Messages;
 using MySynch.Core.DataTypes;
 using MySynch.Core.Publisher;
 using NUnit.Framework;
+using Sciendo.Common.Serialization;
 
 namespace MySynch.Tests
 {

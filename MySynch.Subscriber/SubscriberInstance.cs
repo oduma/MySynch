@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using MySynch.Common.IOC;
-using MySynch.Common.Logging;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
 using MySynch.Core;
+using Sciendo.Common.IOC;
+using Sciendo.Common.Logging;
 
 namespace MySynch.Subscriber
 {

@@ -75,6 +75,9 @@
     <Reference Include="log4net">
       <HintPath>..\Lib\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Sciendo.Common">
+      <HintPath>..\Lib\Sciendo.Common.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Configuration.Install" />
@@ -105,10 +108,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MySynch.Common\MySynch.Common.csproj">
-      <Project>{9E007CA9-F233-4DF1-8A18-A4E3411FDD32}</Project>
-      <Name>MySynch.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MySynch.Contracts\MySynch.Contracts.csproj">
       <Project>{EE4C1C53-0F1E-40D1-ACAB-0BF493593424}</Project>
       <Name>MySynch.Contracts</Name>
@@ -174,7 +173,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" />
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="$(SlowCheetahTargets)" Condition="Exists('$(SlowCheetahTargets)')" />

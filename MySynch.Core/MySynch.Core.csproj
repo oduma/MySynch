@@ -112,13 +112,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Castle.Core">
-      <HintPath>..\..\..\CW3.1\net40\Castle.Core.dll</HintPath>
+      <HintPath>..\packages\Castle.Core.3.2.0\lib\net40-client\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Windsor">
-      <HintPath>..\..\..\CW3.1\net40\Castle.Windsor.dll</HintPath>
+      <HintPath>..\packages\Castle.Windsor.3.2.0\lib\net40\Castle.Windsor.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
       <HintPath>..\Lib\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Sciendo.Common">
+      <HintPath>..\Lib\Sciendo.Common.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -137,9 +140,13 @@
     <Compile Include="ConfigurationHelper.cs" />
     <Compile Include="DataTypes\AddresedMessage.cs" />
     <Compile Include="DataTypes\LocalComponentConfig.cs" />
+    <Compile Include="DataTypes\StoreType.cs" />
+    <Compile Include="FileSystemStore.cs" />
     <Compile Include="Interfaces\ILocalComponent.cs" />
     <Compile Include="DataTypes\SynchItem.cs" />
     <Compile Include="DataTypes\SynchItemData.cs" />
+    <Compile Include="Interfaces\IStore.cs" />
+    <Compile Include="MemoryStore.cs" />
     <Compile Include="MySynchServiceBase.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -156,10 +163,6 @@
     <Compile Include="Subscriber\Subscriber.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MySynch.Common\MySynch.Common.csproj">
-      <Project>{9E007CA9-F233-4DF1-8A18-A4E3411FDD32}</Project>
-      <Name>MySynch.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MySynch.Contracts\MySynch.Contracts.csproj">
       <Project>{EE4C1C53-0F1E-40D1-ACAB-0BF493593424}</Project>
       <Name>MySynch.Contracts</Name>
@@ -191,7 +194,9 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>

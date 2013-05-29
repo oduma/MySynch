@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using MySynch.Common.Logging;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
+using Sciendo.Common.Logging;
 
 namespace MySynch.Core.Subscriber
 {
@@ -36,7 +36,7 @@ namespace MySynch.Core.Subscriber
             }
             catch (Exception ex)
             {
-                LoggingManager.LogMySynchSystemError(ex);
+                LoggingManager.LogSciendoSystemError(ex);
                 if(File.Exists(backupFileName))
                     File.Copy(backupFileName, target,true);
                 return false;

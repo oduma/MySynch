@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
-using MySynch.Common.Logging;
 using MySynch.Contracts.Messages;
+using Sciendo.Common.Logging;
 
 namespace MySynch.Core.Publisher
 {

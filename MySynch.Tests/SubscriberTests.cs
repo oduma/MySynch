@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using Moq;
-using MySynch.Common.IOC;
 using MySynch.Contracts.Messages;
-using MySynch.Core;
 using MySynch.Core.DataTypes;
-using MySynch.Core.Interfaces;
 using MySynch.Core.Subscriber;
 using MySynch.Tests.Stubs;
 using NUnit.Framework;
+using Sciendo.Common.IOC;
 
 namespace MySynch.Tests
 {

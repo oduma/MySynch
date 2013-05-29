@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Configuration;
 using System.Linq;
-using MySynch.Common.Serialization;
 using MySynch.Core.DataTypes;
 
 namespace MySynch.Core

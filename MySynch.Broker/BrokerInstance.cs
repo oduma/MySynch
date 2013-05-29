@@ -1,10 +1,10 @@
 ﻿using System;
-using MySynch.Common;
-using MySynch.Common.IOC;
-using MySynch.Common.Logging;
-using MySynch.Common.Serialization;
 using MySynch.Contracts;
 using MySynch.Core;
+using MySynch.Core.DataTypes;
+using Sciendo.Common.IOC;
+using Sciendo.Common.Logging;
+using Sciendo.Common.WCF;
 
 namespace MySynch.Broker
 {
@@ -54,7 +54,7 @@ namespace MySynch.Broker
             }
             catch (Exception ex)
             {
-                LoggingManager.LogMySynchSystemError(ex);
+                LoggingManager.LogSciendoSystemError(ex);
                 LoggingManager.Debug("Broker not initialized.");
             }
         }

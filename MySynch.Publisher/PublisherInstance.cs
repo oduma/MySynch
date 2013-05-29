@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Timers;
-using MySynch.Common.Logging;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
 using MySynch.Core;
 using MySynch.Core.Publisher;
+using Sciendo.Common.Logging;
 
 namespace MySynch.Publisher
 {

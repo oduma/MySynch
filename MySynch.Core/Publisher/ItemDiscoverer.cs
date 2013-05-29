@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using MySynch.Common.Logging;
 using MySynch.Core.DataTypes;
+using Sciendo.Common.Logging;
 
 namespace MySynch.Core.Publisher
 {

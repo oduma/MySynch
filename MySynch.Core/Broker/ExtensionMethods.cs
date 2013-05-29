@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MySynch.Common.Logging;
 using MySynch.Contracts.Messages;
+using Sciendo.Common.Logging;
 
 namespace MySynch.Core.Broker
 {
@@ -48,7 +48,7 @@ namespace MySynch.Core.Broker
             }
             catch (Exception ex)
             {
-                LoggingManager.LogMySynchSystemError(ex);
+                LoggingManager.LogSciendoSystemError(ex);
                 throw;
             }
         }

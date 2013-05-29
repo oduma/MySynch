@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using MySynch.Common.Logging;
-using MySynch.Common.Serialization;
 using MySynch.Contracts.Messages;
 using MySynch.Core.DataTypes;
+using Sciendo.Common.Logging;
+using Sciendo.Common.Serialization;
 
 namespace MySynch.Core.Publisher
 {
@@ -79,7 +79,7 @@ namespace MySynch.Core.Publisher
             }
             catch (Exception ex)
             {
-                LoggingManager.LogMySynchSystemError(ex);  
+                LoggingManager.LogSciendoSystemError(ex);  
             }
         }
 

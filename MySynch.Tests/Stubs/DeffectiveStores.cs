@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using MySynch.Common.Serialization;
+using MySynch.Core.Interfaces;
 
 namespace MySynch.Tests.Stubs
 {

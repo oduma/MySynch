@@ -82,7 +82,6 @@
     <Compile Include="Messages\ServiceRole.cs" />
     <Compile Include="Messages\GetDataRequest.cs" />
     <Compile Include="Messages\GetDataResponse.cs" />
-    <Compile Include="Messages\State.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
