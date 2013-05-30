@@ -567,6 +567,123 @@ namespace MySynch.Tests
             Assert.False(broker.ListAllMessages()[0].Destinations.Any(d=>!d.Processed));
             
         }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void MessageReceivedFeedback_EmptyRequest()
+        {
+            MySynchBrokerConfigurationSection storeType = new MySynchBrokerConfigurationSection { StoreName = @"store1.xml", StoreType = "IStore.Registration.FileSystemStore" };
+            ComponentResolver componentResolver = new ComponentResolver();
+            componentResolver.RegisterAll(new TestInstaller());
+            Broker broker = new Broker(storeType, componentResolver);
+            broker.InitiatedSubScriberProxies = new SortedList<string, ISubscriberProxy> { { "old subscriber", null }, { "new subscriber proxy", new MockRemoteSubscriber() } };
+            Guid myGuid = Guid.NewGuid();
+            broker._receivedMessages = new List<MessageWithDestinations> { new MessageWithDestinations { MessageId = myGuid, Destinations = new List<DestinationWithResult>() } };
+            broker.MessageReceivedFeedback(null);
+        }
+
+        [Test]
+        public void MessageReceivedFeedback_MessageNotFound()
+        {
+            MySynchBrokerConfigurationSection storeType = new MySynchBrokerConfigurationSection { StoreName = @"store1.xml", StoreType = "IStore.Registration.FileSystemStore" };
+            ComponentResolver componentResolver = new ComponentResolver();
+            componentResolver.RegisterAll(new TestInstaller());
+            Broker broker = new Broker(storeType, componentResolver);
+            broker.InitiatedSubScriberProxies = new SortedList<string, ISubscriberProxy> { { "old subscriber", null }, { "new subscriber proxy", new MockRemoteSubscriber() } };
+            Guid myGuid = Guid.NewGuid();
+            broker._receivedMessages = new List<MessageWithDestinations> { new MessageWithDestinations { MessageId = Guid.NewGuid(), Destinations = new List<DestinationWithResult>() } };
+            MessageReceivedFeedbackRequest request = new MessageReceivedFeedbackRequest{DestinationUrl="some subscriber",PackageId=myGuid};
+            broker.MessageReceivedFeedback(request);
+            Assert.AreEqual(1,broker._receivedMessages.Count());
+        }
+
+        [Test]
+        public void MessageReceivedFeedback_MessageNotMarkedAsSend()
+        {
+            MySynchBrokerConfigurationSection storeType = new MySynchBrokerConfigurationSection { StoreName = @"store1.xml", StoreType = "IStore.Registration.FileSystemStore" };
+            ComponentResolver componentResolver = new ComponentResolver();
+            componentResolver.RegisterAll(new TestInstaller());
+            Broker broker = new Broker(storeType, componentResolver);
+            broker.InitiatedSubScriberProxies = new SortedList<string, ISubscriberProxy> { { "old subscriber", null }, { "new subscriber proxy", new MockRemoteSubscriber() } };
+            Guid myGuid = Guid.NewGuid();
+            broker._receivedMessages = new List<MessageWithDestinations> { new MessageWithDestinations { MessageId = myGuid, Destinations = new List<DestinationWithResult>() } };
+            MessageReceivedFeedbackRequest request = new MessageReceivedFeedbackRequest { DestinationUrl = "some subscriber", PackageId = myGuid };
+            broker.MessageReceivedFeedback(request);
+            Assert.AreEqual(1, broker._receivedMessages.Count());
+        }
+
+        [Test]
+        public void MessageReceivedFeedback_MessageMarkedAsSendToADifferentDestination()
+        {
+            MySynchBrokerConfigurationSection storeType = new MySynchBrokerConfigurationSection { StoreName = @"store1.xml", StoreType = "IStore.Registration.FileSystemStore" };
+            ComponentResolver componentResolver = new ComponentResolver();
+            componentResolver.RegisterAll(new TestInstaller());
+            Broker broker = new Broker(storeType, componentResolver);
+            broker.InitiatedSubScriberProxies = new SortedList<string, ISubscriberProxy> { { "old subscriber", null }, { "new subscriber proxy", new MockRemoteSubscriber() } };
+            Guid myGuid = Guid.NewGuid();
+            broker._receivedMessages = new List<MessageWithDestinations> { new MessageWithDestinations { MessageId = myGuid, Destinations = new List<DestinationWithResult>{new DestinationWithResult{Processed=false,Url = "some subscriber"}} } };
+            MessageReceivedFeedbackRequest request = new MessageReceivedFeedbackRequest { DestinationUrl = "some other subscriber", PackageId = myGuid };
+            broker.MessageReceivedFeedback(request);
+            Assert.AreEqual(1, broker._receivedMessages.Count());
+        }
+
+        [Test]
+        public void MessageReceivedFeedback_DeleteADestination()
+        {
+            MySynchBrokerConfigurationSection storeType = new MySynchBrokerConfigurationSection { StoreName = @"store1.xml", StoreType = "IStore.Registration.FileSystemStore" };
+            ComponentResolver componentResolver = new ComponentResolver();
+            componentResolver.RegisterAll(new TestInstaller());
+            Broker broker = new Broker(storeType, componentResolver);
+            broker.InitiatedSubScriberProxies = new SortedList<string, ISubscriberProxy> { { "old subscriber", null }, { "new subscriber proxy", new MockRemoteSubscriber() } };
+            Guid myGuid = Guid.NewGuid();
+            broker._receivedMessages = new List<MessageWithDestinations>
+                                           {
+                                               new MessageWithDestinations
+                                                   {
+                                                       MessageId = myGuid,
+                                                       Destinations =
+                                                           new List<DestinationWithResult>
+                                                               {
+                                                                   new DestinationWithResult
+                                                                       {Processed = false, Url = "some subscriber"},
+                                                                   new DestinationWithResult
+                                                                       {Url = "some other subscriber"}
+                                                               }
+                                                   }
+                                           };
+            MessageReceivedFeedbackRequest request = new MessageReceivedFeedbackRequest { DestinationUrl = "some subscriber", PackageId = myGuid };
+            broker.MessageReceivedFeedback(request);
+            Assert.AreEqual(1, broker._receivedMessages.Count());
+            Assert.AreEqual(1,broker._receivedMessages[0].Destinations.Count);
+        }
+
+        [Test]
+        public void MessageReceivedFeedback_DeleteMessage()
+        {
+            MySynchBrokerConfigurationSection storeType = new MySynchBrokerConfigurationSection { StoreName = @"store1.xml", StoreType = "IStore.Registration.FileSystemStore" };
+            ComponentResolver componentResolver = new ComponentResolver();
+            componentResolver.RegisterAll(new TestInstaller());
+            Broker broker = new Broker(storeType, componentResolver);
+            broker.InitiatedSubScriberProxies = new SortedList<string, ISubscriberProxy> { { "old subscriber", null }, { "new subscriber proxy", new MockRemoteSubscriber() } };
+            Guid myGuid = Guid.NewGuid();
+            broker._receivedMessages = new List<MessageWithDestinations>
+                                           {
+                                               new MessageWithDestinations
+                                                   {
+                                                       MessageId = myGuid,
+                                                       Destinations =
+                                                           new List<DestinationWithResult>
+                                                               {
+                                                                   new DestinationWithResult
+                                                                       {Processed = false, Url = "some subscriber"}
+                                                               }
+                                                   }
+                                           };
+            MessageReceivedFeedbackRequest request = new MessageReceivedFeedbackRequest { DestinationUrl = "some subscriber", PackageId = myGuid };
+            broker.MessageReceivedFeedback(request);
+            Assert.AreEqual(0, broker._receivedMessages.Count());
+        }
+
         #endregion
 
         #region Constructor and Initialization Related

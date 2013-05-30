@@ -169,7 +169,27 @@ namespace MySynch.Core.Broker
 
         public void MessageReceivedFeedback(MessageReceivedFeedbackRequest request)
         {
-            throw new NotImplementedException();
+            if(request==null|| string.IsNullOrEmpty(request.DestinationUrl) || request.PackageId==Guid.Empty)
+                throw new ArgumentNullException("request");
+            lock (_lock)
+            {
+                var msg = _receivedMessages.FirstOrDefault(m => m.MessageId == request.PackageId);
+                if (msg != null)
+                {
+                    if (msg.Destinations == null || msg.Destinations.Count() == 0)
+                        return;
+                    if (msg.Destinations.Any(d => d.Url != request.DestinationUrl))
+                    {
+                        var dst = msg.Destinations.FirstOrDefault(d => d.Url == request.DestinationUrl);
+                        if (dst != null)
+                            msg.Destinations.Remove(dst);
+                    }
+                    else
+                    {
+                        _receivedMessages.Remove(msg);
+                    }
+                }
+            }
         }
 
         internal void DistributeMessageToAllAvailableSubscribers(PublisherMessage publisherMessage)
