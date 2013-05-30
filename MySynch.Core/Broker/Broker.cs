@@ -182,11 +182,19 @@ namespace MySynch.Core.Broker
                     {
                         var dst = msg.Destinations.FirstOrDefault(d => d.Url == request.DestinationUrl);
                         if (dst != null)
+                        {
                             msg.Destinations.Remove(dst);
+                            if (_callback != null)
+                                _callback.NotifyMessageUpdate(msg);
+                        }
                     }
                     else
                     {
+                        var deletedMessage = new MessageWithDestinations();
+                        deletedMessage = msg;
                         _receivedMessages.Remove(msg);
+                        if (_callback != null)
+                            _callback.NotifyMessageDelete(deletedMessage);
                     }
                 }
             }
@@ -259,7 +267,7 @@ namespace MySynch.Core.Broker
                 else
                     dest.Processed = subscriberAddresedMessage.ProcessedByDestination;
                 if (_callback != null)
-                    _callback.NotifyMessageFlow(msg);
+                    _callback.NotifyNewMessage(msg);
                 if (!subscriberAddresedMessage.ProcessedByDestination 
                     && _registrations.Any(r=>r.ServiceUrl==subscriberAddresedMessage.DestinationUrl))
                     Detach(new DetachRequest {ServiceUrl = subscriberAddresedMessage.DestinationUrl});

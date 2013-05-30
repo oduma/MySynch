@@ -110,20 +110,31 @@ namespace MySynch.Monitor
             ProgressChanged(this, new ProgressChangedEventArgs(0, RecordRegistrationAndBuildMessage(changedRegistration,false)));
         }
 
-        public void NotifyMessageFlow(MessageWithDestinations messageWithDestinations)
+        public void NotifyNewMessage(MessageWithDestinations msg)
         {
-            ProgressChanged(this, new ProgressChangedEventArgs(0, RecordMessageFlowAndBuildMessage(messageWithDestinations)));
+            ProgressChanged(this, new ProgressChangedEventArgs(0, RecordMessageFlowAndBuildMessage(msg, false)));
         }
 
-        private string RecordMessageFlowAndBuildMessage(MessageWithDestinations messageWithDestinations)
+        public void NotifyMessageUpdate(MessageWithDestinations msg)
         {
-            return string.Format("{0} of file {1} from source {2} distributed to: {3}", messageWithDestinations.OperationType, messageWithDestinations.AbsolutePath,
+            ProgressChanged(this, new ProgressChangedEventArgs(0, RecordMessageFlowAndBuildMessage(msg, false)));
+        }
+
+        public void NotifyMessageDelete(MessageWithDestinations deletedMessage)
+        {
+            ProgressChanged(this, new ProgressChangedEventArgs(0, RecordMessageFlowAndBuildMessage(deletedMessage,true)));
+        }
+
+        private string RecordMessageFlowAndBuildMessage(MessageWithDestinations messageWithDestinations, bool deleteMessage)
+        {
+
+            return string.Format("{0} of file {1} from source {2} distributed to: {3}.\r\n {4}", messageWithDestinations.OperationType, messageWithDestinations.AbsolutePath,
                                  messageWithDestinations.SourceOfMessageUrl,
                                  string.Join("\r\n",
                                              messageWithDestinations.Destinations.Select(
                                                  d =>
                                                  string.Format("{0} by subscriber:{1}",
-                                                               (d.Processed) ? "processed" : "not processed", d.Url))));
+                                                               (d.Processed) ? "processed" : "not processed", d.Url))),(deleteMessage)?"Completed for all.":"");
         }
     }
 }
