@@ -12,6 +12,8 @@ namespace MySynch.Contracts.Messages
         [EnumMember]
         Update=2,
         [EnumMember]
-        Delete=3
+        Delete=3,
+        [EnumMember]
+        Rename=4
     }
 }

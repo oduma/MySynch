@@ -113,10 +113,33 @@ namespace MySynch.Tests
         }
 
         [Test]
+        public void UpdateCurrentRepository_Rename_Ok()
+        {
+            PushPublisher pushPublisher = new PushPublisher();
+            pushPublisher.Initialize(new BrokerClient(), new MySynchPublisherConfigurationSection { LocalRootFolder = @"c:\code\Sciendo\MySynch\MySynch.Tests\Data" }, "my host url");
+            Assert.True(pushPublisher.UpdateCurrentRepository(@"c:\code\Sciendo\MySynch\MySynch.Tests\Data\items.xml", OperationType.Insert));
+            Assert.True(pushPublisher.UpdateCurrentRepository(@"c:\code\Sciendo\MySynch\MySynch.Tests\Data\items.xml",
+                                                              OperationType.Rename,
+                                                              @"c:\code\Sciendo\MySynch\MySynch.Tests\Data\test.xml"));
+            Assert.IsNotNull(pushPublisher.CurrentRepository);
+            Assert.AreEqual(1, pushPublisher.CurrentRepository.Items.Count);
+            Assert.AreEqual(@"c:\code\Sciendo\MySynch\MySynch.Tests\Data\test.xml", pushPublisher.CurrentRepository.Items[0].SynchItemData.Identifier);
+
+        }
+
+
+        [Test]
         public void ProcessOperation_NothingSent()
         {
             PushPublisher pushPublisher = new PushPublisher();
             pushPublisher.ProcessOperation(null,OperationType.None);
+        }
+
+        [Test]
+        public void ProcessRenameOperation_NothingSent()
+        {
+            PushPublisher pushPublisher= new PushPublisher();
+            pushPublisher.ProcessRenameOperation(null,null);
         }
     }
 }

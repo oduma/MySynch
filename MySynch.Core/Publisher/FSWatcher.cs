@@ -12,7 +12,9 @@ namespace MySynch.Core.Publisher
 
         private Action<string,OperationType> _queueOperation;
 
-        public FSWatcher(string localRootFolder,Action<string,OperationType> queueOperation)
+        private Action<string, string> _queueRenameOperation;
+
+        public FSWatcher(string localRootFolder,Action<string,OperationType> queueOperation,Action<string,string> queueRenameOperation)
         {
             LoggingManager.Debug("Initializing the FS Watcher with publisher: " +localRootFolder);
             if(string.IsNullOrEmpty(localRootFolder))
@@ -22,6 +24,9 @@ namespace MySynch.Core.Publisher
             if(queueOperation==null)
                 throw new ArgumentNullException("queueOperation");
             _queueOperation = queueOperation;
+            if (queueRenameOperation == null)
+                throw new ArgumentNullException("queueRenameOperation");
+            _queueRenameOperation = queueRenameOperation;
 
             FileSystemWatcher fsWatcher = new FileSystemWatcher(localRootFolder);
             fsWatcher.IncludeSubdirectories = true;
@@ -52,10 +57,7 @@ namespace MySynch.Core.Publisher
                 Thread.Sleep(500);
             }
 
-            //queue a delete
-            //queue an insert
-            _queueOperation(e.OldFullPath,OperationType.Delete);
-            _queueOperation(e.FullPath,OperationType.Insert);
+            _queueRenameOperation(e.OldFullPath,e.FullPath);
 
         }
 

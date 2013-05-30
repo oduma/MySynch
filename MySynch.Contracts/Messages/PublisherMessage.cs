@@ -21,5 +21,8 @@ namespace MySynch.Contracts.Messages
 
         [DataMember]
         public Guid MessageId { get; set; }
+
+        [DataMember]
+        public string RenameToAbsolutePath { get; set; }
     }
 }

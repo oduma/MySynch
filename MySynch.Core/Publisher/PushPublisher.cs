@@ -43,7 +43,7 @@ namespace MySynch.Core.Publisher
             try
             {
                 if (_fsWatcher == null)
-                    _fsWatcher = new FSWatcher(localComponentConfiguration.LocalRootFolder, ProcessOperation);
+                    _fsWatcher = new FSWatcher(localComponentConfiguration.LocalRootFolder, ProcessOperation, ProcessRenameOperation);
                 LoggingManager.Debug("Publisher initialized");
 
             }
@@ -59,6 +59,42 @@ namespace MySynch.Core.Publisher
         #endregion
 
         #region Push Logic
+
+        internal void ProcessRenameOperation(string fromName, string toName)
+        {
+            operationInProgress = true;
+            LoggingManager.Debug("Trying to publish a rename from " + fromName + " to: " + toName);
+            try
+            {
+                if (string.IsNullOrEmpty(fromName) || string.IsNullOrEmpty(toName))
+                    return;
+                bool shouldPublish = false;
+                lock (_lock)
+                {
+                    shouldPublish = UpdateCurrentRepository(fromName, OperationType.Rename,toName);
+                    if (shouldPublish)
+                    {
+                        PublishMessage(fromName, OperationType.Rename,toName);
+                        LoggingManager.Debug("Published Ok.");
+                    }
+                    else
+                    {
+                        LoggingManager.Debug("Not published probably a duplicate.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LoggingManager.LogSciendoSystemError(ex);
+                throw;
+            }
+            finally
+            {
+                operationInProgress = false;
+            }
+        }
+
+
         internal void ProcessOperation(string absolutePath, OperationType operationType)
         {
             operationInProgress = true;
@@ -93,7 +129,7 @@ namespace MySynch.Core.Publisher
             }
         }
 
-        private void PublishMessage(string absolutePath, OperationType operationType)
+        private void PublishMessage(string absolutePath, OperationType operationType, string renameToAbsolutePath = null)
         {
             ReceiveAndDistributeMessageRequest request = new ReceiveAndDistributeMessageRequest
                                                              {
@@ -101,6 +137,7 @@ namespace MySynch.Core.Publisher
                                                                      new PublisherMessage
                                                                          {
                                                                              AbsolutePath = absolutePath,
+                                                                             RenameToAbsolutePath=renameToAbsolutePath,
                                                                              OperationType = operationType,
                                                                              SourceOfMessageUrl=HostUrl,
                                                                              SourcePathRootName=_fsWatcher.Path,
@@ -157,7 +194,7 @@ namespace MySynch.Core.Publisher
 
         #region Persist traces for offline changes logic
 
-        internal bool UpdateCurrentRepository(string absolutePath, OperationType operationType)
+        internal bool UpdateCurrentRepository(string absolutePath, OperationType operationType, string renameToAbsolutePath=null)
         {
             LoggingManager.Debug("Updating CurrentRepository with " + absolutePath);
             if(_fsWatcher==null || string.IsNullOrEmpty(_fsWatcher.Path))
@@ -170,13 +207,21 @@ namespace MySynch.Core.Publisher
             {
                 case OperationType.Insert:
                     return SynchItemManager.AddItem(CurrentRepository, absolutePath, new FileInfo(absolutePath).Length);
-                    
+
                 case OperationType.Update:
                     return SynchItemManager.UpdateExistingItem(CurrentRepository, absolutePath, new FileInfo(absolutePath).Length);
-                    
+
                 case OperationType.Delete:
                     return SynchItemManager.DeleteItem(CurrentRepository, absolutePath);
-                    
+                case OperationType.Rename:
+                    {
+                        var retValue = false;
+                        retValue = SynchItemManager.DeleteItem(CurrentRepository, absolutePath);
+                        var retValue1 = SynchItemManager.AddItem(CurrentRepository, renameToAbsolutePath,
+                                                                 new FileInfo(renameToAbsolutePath).Length);
+                        return retValue || retValue1;
+                    }
+
                 default:
                     return false;
             }
