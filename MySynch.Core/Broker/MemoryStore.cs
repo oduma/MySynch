@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using MySynch.Core.Interfaces;
 
-namespace MySynch.Core
+namespace MySynch.Core.Broker
 {
     public class MemoryStore<T>:IStore<T> where T:class
     {

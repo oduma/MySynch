@@ -3,6 +3,7 @@ using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using MySynch.Contracts.Messages;
 using MySynch.Core;
+using MySynch.Core.Broker;
 using MySynch.Core.Interfaces;
 
 namespace MySynch.Tests.Stubs

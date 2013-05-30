@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using MySynch.Core.Interfaces;
 using Sciendo.Common.Serialization;
 
-namespace MySynch.Core
+namespace MySynch.Core.Broker
 {
     public class FileSystemStore<T>:IStore<T> where T:class
     {

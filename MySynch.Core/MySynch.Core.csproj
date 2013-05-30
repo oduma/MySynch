@@ -137,17 +137,17 @@
   <ItemGroup>
     <Compile Include="Broker\Broker.cs" />
     <Compile Include="Broker\ExtensionMethods.cs" />
+    <Compile Include="Broker\FileSystemStore.cs" />
+    <Compile Include="Broker\MemoryStore.cs" />
     <Compile Include="Configuration\MySynchBrokerConfigurationSection.cs" />
     <Compile Include="Configuration\MySynchConfigurationSection.cs" />
     <Compile Include="Configuration\MySynchLocalComponentConfigurationSection.cs" />
     <Compile Include="Configuration\MySynchPublisherConfigurationSection.cs" />
     <Compile Include="DataTypes\AddresedMessage.cs" />
-    <Compile Include="FileSystemStore.cs" />
     <Compile Include="Interfaces\ILocalComponent.cs" />
     <Compile Include="DataTypes\SynchItem.cs" />
     <Compile Include="DataTypes\SynchItemData.cs" />
     <Compile Include="Interfaces\IStore.cs" />
-    <Compile Include="MemoryStore.cs" />
     <Compile Include="MySynchServiceBase.cs">
       <SubType>Component</SubType>
     </Compile>

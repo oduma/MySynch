@@ -4,6 +4,7 @@ using Castle.Windsor;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
 using MySynch.Core;
+using MySynch.Core.Broker;
 using MySynch.Core.Interfaces;
 using MySynch.Core.Publisher;
 using MySynch.Core.Subscriber;
@@ -26,7 +27,8 @@ namespace MySynch.Tests.Stubs
                                Component.For<IPublisherProxy>().ImplementedBy<MockRemotePublisher>().Named("IPublisher.Remote"),
                                Component.For<ISubscriberProxy>().ImplementedBy<MockRemoteSubscriber>().Named("ISubscriber.Remote"),
                                Component.For<IPublisherProxy>().ImplementedBy<MockRemotePublisherNotPresent>().Named("IPublisher.Remote.NotPresent"),
-                               Component.For<ISubscriberProxy>().ImplementedBy<MockRemoteSubscriberNotPresent>().Named("ISubscriber.Remote.NotPresent"));
+                               Component.For<ISubscriberProxy>().ImplementedBy<MockRemoteSubscriberNotPresent>().Named("ISubscriber.Remote.NotPresent"),
+                               Component.For<IBrokerProxy>().ImplementedBy<MockRemoteBroker>().Named("IBroker.Remote"));
         }
     }
 }

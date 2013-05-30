@@ -79,6 +79,7 @@
     <Compile Include="CopyStrategyTests.cs" />
     <Compile Include="FSWatcherTests.cs" />
     <Compile Include="PublisherPushLogicTests.cs" />
+    <Compile Include="Stubs\MockRemoteBroker.cs" />
     <Compile Include="SubscriberTests.cs" />
     <Compile Include="OfflineChangesDetectorTests.cs" />
     <Compile Include="ComponentResolverTests.cs" />
