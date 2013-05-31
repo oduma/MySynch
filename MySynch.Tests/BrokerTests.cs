@@ -320,8 +320,8 @@ namespace MySynch.Tests
             Broker broker = new Broker(storeType, componentResolver);
             var response = broker.ListAllRegistrations();
             Assert.IsNotNull(response);
-            Assert.AreEqual(3, response.Count);
-            Assert.False(response.Any(r => r.ServiceRole == ServiceRole.Subscriber));
+            Assert.AreEqual(3, response.Registrations.Count);
+            Assert.False(response.Registrations.Any(r => r.ServiceRole == ServiceRole.Subscriber));
         }
         [Test]
         public void ListAllRegistrations_After_AnInsert()
@@ -351,8 +351,8 @@ namespace MySynch.Tests
 
             var response = broker.ListAllRegistrations();
             Assert.IsNotNull(response);
-            Assert.AreEqual(4, response.Count);
-            Assert.True(response.Any(r => r.ServiceRole == ServiceRole.Subscriber));
+            Assert.AreEqual(4, response.Registrations.Count);
+            Assert.True(response.Registrations.Any(r => r.ServiceRole == ServiceRole.Subscriber));
         }
         [Test]
         public void ListAllRegistrations_AfterADelete()
@@ -367,7 +367,7 @@ namespace MySynch.Tests
 
             var response = broker.ListAllRegistrations();
             Assert.IsNotNull(response);
-            Assert.AreEqual(2, response.Count(r => r.ServiceRole == ServiceRole.Publisher));
+            Assert.AreEqual(2, response.Registrations.Count(r => r.ServiceRole == ServiceRole.Publisher));
         }
         [Test]
         public void ListAllRegistrations_Error()
@@ -379,7 +379,7 @@ namespace MySynch.Tests
             Broker broker = new Broker(storeType, componentResolver);
             var response = broker.ListAllRegistrations();
             Assert.IsNotNull(response);
-            Assert.AreEqual(0, response.Count);
+            Assert.AreEqual(0, response.Registrations.Count);
         }
         [Test]
         public void ListAllRegistrations_WrongFile()
@@ -390,7 +390,7 @@ namespace MySynch.Tests
             Broker broker = new Broker(storeType, componentResolver);
             var response = broker.ListAllRegistrations();
             Assert.IsNotNull(response);
-            Assert.AreEqual(0, response.Count);
+            Assert.AreEqual(0, response.Registrations.Count);
         }
 
         #endregion
@@ -416,7 +416,7 @@ namespace MySynch.Tests
             var mResponse = broker.ListAllMessages();
             Assert.IsNotNull(mResponse);
             Assert.IsNotNull(mResponse);
-            Assert.AreEqual(1,mResponse.Count);
+            Assert.AreEqual(1,mResponse.AvailableMessages.Count);
         }
 
         [Test]
@@ -439,7 +439,7 @@ namespace MySynch.Tests
             var mResponse = broker.ListAllMessages();
             Assert.IsNotNull(mResponse);
             Assert.IsNotNull(mResponse);
-            Assert.AreEqual(1, mResponse.Count);
+            Assert.AreEqual(1, mResponse.AvailableMessages.Count);
         }
 
         [Test]
@@ -564,7 +564,7 @@ namespace MySynch.Tests
             broker.ReceiveAndDistributeMessage(new ReceiveAndDistributeMessageRequest{PublisherMessage=message});
             Thread.Sleep(5000); //wait for both threads to finish before checking it
             
-            Assert.False(broker.ListAllMessages()[0].Destinations.Any(d=>!d.Processed));
+            Assert.False(broker.ListAllMessages().AvailableMessages[0].Destinations.Any(d=>!d.Processed));
             
         }
 

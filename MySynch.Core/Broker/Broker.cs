@@ -140,11 +140,6 @@ namespace MySynch.Core.Broker
             }
         }
 
-        internal List<Registration> ListAllRegistrations()
-        {
-            return _registrations.ToList();
-        }
-
         public void ReceiveAndDistributeMessage(ReceiveAndDistributeMessageRequest request)
         {
             LoggingManager.Debug("Received request from publisher.");
@@ -299,9 +294,14 @@ namespace MySynch.Core.Broker
             }
         }
 
-        internal List<MessageWithDestinations> ListAllMessages()
+        public ListAllRegistrationsResponse ListAllRegistrations()
         {
-            return _receivedMessages;
+            return new ListAllRegistrationsResponse {Registrations = _registrations.ToList()};
+        }
+
+        public ListAllMessagesResponse ListAllMessages()
+        {
+            return new ListAllMessagesResponse {AvailableMessages = _receivedMessages};
         }
     }
 }

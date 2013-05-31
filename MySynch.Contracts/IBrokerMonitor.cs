@@ -1,4 +1,5 @@
 ﻿using System.ServiceModel;
+using MySynch.Contracts.Messages;
 
 namespace MySynch.Contracts
 {
@@ -7,5 +8,14 @@ namespace MySynch.Contracts
     {
         [OperationContract(IsOneWay = true)]
         void StartMonitoring();
+
+
+        [OperationContract]
+        ListAllRegistrationsResponse ListAllRegistrations();
+
+        [OperationContract]
+        ListAllMessagesResponse ListAllMessages();
+
+
     }
 }

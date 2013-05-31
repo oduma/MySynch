@@ -69,6 +69,8 @@
     <Compile Include="ISubscriber.cs" />
     <Compile Include="ICommunicationComponent.cs" />
     <Compile Include="IPublisher.cs" />
+    <Compile Include="Messages\ListAllMessagesResponse.cs" />
+    <Compile Include="Messages\ListAllRegistrationsResponse.cs" />
     <Compile Include="Messages\MessageReceivedFeedbackRequest.cs" />
     <Compile Include="Messages\MessageWithDestinations.cs" />
     <Compile Include="Messages\ReceiveMessageRequest.cs" />
