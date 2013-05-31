@@ -13,27 +13,76 @@ using Sciendo.Common.Logging;
 namespace MySynch.Core.Subscriber
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
-    public class Subscriber:ILocalComponent,ISubscriber
+    public class Subscriber : ILocalComponent, ISubscriber
     {
         private string _targetRootFolder;
         private IBrokerProxy _brokerClient;
-        private object _lock= new object();
+        private object _lock = new object();
         private ComponentResolver _componentResolver;
         private string _runningHostUrl;
 
         internal SortedList<string, CopyStrategy> InitiatedCopyStrategies { get; set; }
 
-        public Subscriber( ComponentResolver componentResolver)
+        public Subscriber(ComponentResolver componentResolver)
         {
-            InitiatedCopyStrategies=new SortedList<string, CopyStrategy>();
+            InitiatedCopyStrategies = new SortedList<string, CopyStrategy>();
             _componentResolver = componentResolver;
         }
 
         internal ReceiveMessageResponse TryApplyChange(PublisherMessage message)
         {
-            return (message.OperationType != OperationType.Delete)
-                ? ApplyUpsert(message, _targetRootFolder)
-                : ApplyDelete(message, _targetRootFolder);
+            switch (message.OperationType)
+            {
+                case OperationType.Insert:
+                case OperationType.Update:
+                    return ApplyUpsert(message, _targetRootFolder);
+                case OperationType.Delete:
+                    return ApplyDelete(message, _targetRootFolder);
+                case OperationType.Rename:
+                    return ApplyRename(message, _targetRootFolder);
+                default:
+                    return null;
+            }
+        }
+
+        private ReceiveMessageResponse ApplyRename(PublisherMessage message, string targetRootFolder)
+        {
+            LoggingManager.Debug("Applying rename to " + targetRootFolder);
+            var localfromFileName = message.AbsolutePath.Replace(
+                message.SourcePathRootName, targetRootFolder);
+            var localToFileName = message.RenameToAbsolutePath.Replace(message.SourcePathRootName, targetRootFolder);
+            var response = new ReceiveMessageResponse
+            {
+                Success = false
+            };
+
+            try
+            {
+                if (!File.Exists(localfromFileName) && !File.Exists(localToFileName))
+                {
+                    message.OperationType = OperationType.Insert;
+                    message.AbsolutePath = message.RenameToAbsolutePath;
+                    return ApplyUpsert(message, targetRootFolder);
+                }
+                if (!File.Exists(localfromFileName) && File.Exists(localToFileName))
+                {
+                    message.OperationType = OperationType.Update;
+                    message.AbsolutePath = message.RenameToAbsolutePath;
+                    return ApplyUpsert(message, targetRootFolder);
+                }
+                File.Copy(localfromFileName,localToFileName,true);
+                File.Delete(localfromFileName);
+                response.Success = true;
+            }
+            catch (Exception ex)
+            {
+                LoggingManager.LogSciendoSystemError(ex);
+                response.Success = false;
+            }
+            LoggingManager.Debug("Apply rename returns " + response.Success);
+
+            return response;
+
         }
 
         private ReceiveMessageResponse ApplyDelete(PublisherMessage message, string targetRootFolder)
@@ -67,13 +116,13 @@ namespace MySynch.Core.Subscriber
             LoggingManager.Debug("Applying upsert from " + message.SourcePathRootName + " to " + targetRootFolder);
             var localFileName = Path.Combine(targetRootFolder,
                                              message.AbsolutePath.Replace(
-                                                     message.SourcePathRootName, ""));
+                                                 message.SourcePathRootName, ""));
             var copyStrategy = GetOrCreateCopyStrategy(message.SourceOfMessageUrl);
             return new ReceiveMessageResponse
                        {
                            Success =
                                copyStrategy.Copy(message.AbsolutePath,
-                                                  localFileName)
+                                                 localFileName)
                        };
         }
 
@@ -81,8 +130,8 @@ namespace MySynch.Core.Subscriber
         {
             lock (_lock)
             {
-                if(InitiatedCopyStrategies==null)
-                    InitiatedCopyStrategies= new SortedList<string, CopyStrategy>();
+                if (InitiatedCopyStrategies == null)
+                    InitiatedCopyStrategies = new SortedList<string, CopyStrategy>();
                 if (InitiatedCopyStrategies.ContainsKey(sourceOfMessageUrl))
                     return InitiatedCopyStrategies[sourceOfMessageUrl];
                 var copyStrategy = new CopyStrategy();
@@ -101,16 +150,18 @@ namespace MySynch.Core.Subscriber
             return publisherProxy;
         }
 
-        public virtual void Initialize(IBrokerProxy brokerClient, MySynchLocalComponentConfigurationSection localComponentConfig, string hostUrl)
+        public virtual void Initialize(IBrokerProxy brokerClient,
+                                       MySynchLocalComponentConfigurationSection localComponentConfig, string hostUrl)
         {
-            if (localComponentConfig==null || string.IsNullOrEmpty(localComponentConfig.LocalRootFolder) || !Directory.Exists(localComponentConfig.LocalRootFolder))
+            if (localComponentConfig == null || string.IsNullOrEmpty(localComponentConfig.LocalRootFolder) ||
+                !Directory.Exists(localComponentConfig.LocalRootFolder))
                 throw new ArgumentException("localRootFolder");
             _targetRootFolder = localComponentConfig.LocalRootFolder;
             _brokerClient = brokerClient;
             _runningHostUrl = hostUrl;
         }
 
-        public void Close(object objectState=null)
+        public void Close(object objectState = null)
         {
             return;
         }
@@ -118,7 +169,7 @@ namespace MySynch.Core.Subscriber
         public virtual GetHeartbeatResponse GetHeartbeat()
         {
             LoggingManager.Debug("GetHeartbeat will return true.");
-            return new GetHeartbeatResponse {Status = true,RootPath=_targetRootFolder};
+            return new GetHeartbeatResponse {Status = true, RootPath = _targetRootFolder};
         }
 
         public ReceiveMessageResponse ReceiveMessage(ReceiveMessageRequest request)
@@ -130,19 +181,18 @@ namespace MySynch.Core.Subscriber
                 throw new ArgumentNullException("PublisherMessage");
             }
             if (string.IsNullOrEmpty(request.PublisherMessage.AbsolutePath))
-                return new ReceiveMessageResponse { Success = false };
+                return new ReceiveMessageResponse {Success = false};
             var result = TryApplyChange(request.PublisherMessage);
             if (!result.Success)
                 return result;
             try
             {
                 MessageReceivedFeedbackRequest feedbackRequest = new MessageReceivedFeedbackRequest
-                {
-                    PackageId = request.PublisherMessage.MessageId,
-                    DestinationUrl = _runningHostUrl
-                };
+                                                                     {
+                                                                         PackageId = request.PublisherMessage.MessageId,
+                                                                         DestinationUrl = _runningHostUrl
+                                                                     };
                 _brokerClient.MessageReceivedFeedback(feedbackRequest);
-
             }
             catch (Exception ex)
             {

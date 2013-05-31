@@ -49,6 +49,9 @@ namespace MySynch.Tests
             if (IsFileLocked(new FileInfo(@"Data\Output\Test\F1\F12\F12.xml")))
                 Thread.Sleep(500);
             File.Copy(@"..\..\Data\Output\Test\F1\F12\F12.xml", @"Data\Output\Test\F1\F12\F12.xml", true);
+            if(File.Exists(@"Data\Output\Test\F1\F12\F1222.xml"))
+                File.Delete(@"Data\Output\Test\F1\F12\F1222.xml");
+            
         }
 
         [Test]
@@ -90,6 +93,8 @@ namespace MySynch.Tests
             mockCopyStrategy.Setup(m => m.Copy(@"Data\Test\F1\F12\F11.xml", @"Data\Output\Test\F1\F12\F11.xml")).Returns(true);
             mockCopyStrategy.Setup(m => m.Copy(@"root folder\Item One", @"destination root folder\Item One")).Returns(true);
             mockCopyStrategy.Setup(m => m.Copy(@"root folder\ItemTwo", @"destination root folder\ItemTwo")).Returns(true);
+            mockCopyStrategy.Setup(m => m.Copy(@"Data\Test\F1\F12\newFile.xml", @"Data\Output\Test\F1\F12\newFile.xml")).Returns(true);
+            
             return mockCopyStrategy.Object;
         }
 
@@ -264,5 +269,103 @@ namespace MySynch.Tests
             Assert.AreEqual(".",heartbeatResponse.RootPath);
 
         }
+
+
+        [Test]
+        public void ApplyChanges_Rename_TransformInsert()
+        {
+            ComponentResolver mySynchComponentResolver = new ComponentResolver();
+            mySynchComponentResolver.RegisterAll(new TestInstaller());
+
+            Subscriber subscriber = new Subscriber(mySynchComponentResolver);
+
+            MySynchLocalComponentConfigurationSection localComponentConfig =
+                new MySynchLocalComponentConfigurationSection { BrokerUrl = "", LocalRootFolder = @"Data\Output\Test\" };
+            string hostUrl = string.Empty;
+            subscriber.Initialize(null, localComponentConfig, hostUrl);
+
+            Assert.False(File.Exists(@"Data\Output\Test\F1\F12\newFile.xml"));
+            var mockCopyStrategy = MockCopyStrategy();
+            subscriber.InitiatedCopyStrategies = new SortedList<string, CopyStrategy> { { "publisher url", mockCopyStrategy } };
+            ReceiveMessageRequest request = new ReceiveMessageRequest
+            {
+                PublisherMessage = new PublisherMessage()
+                {
+                    AbsolutePath = @"Data\Test\F1\F12\wrongfile.xml",
+                    RenameToAbsolutePath=@"Data\Test\F1\F12\newFile.xml",
+                    OperationType = OperationType.Rename,
+                    SourceOfMessageUrl = "publisher url",
+                    SourcePathRootName = @"Data\Test\"
+                }
+            };
+            var response = subscriber.ReceiveMessage(request);
+            Assert.True(response.Success);
+        }
+
+        [Test]
+        public void ApplyChanges_Rename_TransformUpdate()
+        {
+            ComponentResolver mySynchComponentResolver = new ComponentResolver();
+            mySynchComponentResolver.RegisterAll(new TestInstaller());
+
+            Subscriber subscriber = new Subscriber(mySynchComponentResolver);
+
+            MySynchLocalComponentConfigurationSection localComponentConfig =
+                new MySynchLocalComponentConfigurationSection { BrokerUrl = "", LocalRootFolder = @"Data\Output\Test\" };
+            string hostUrl = string.Empty;
+            subscriber.Initialize(null, localComponentConfig, hostUrl);
+
+            Assert.True(File.Exists(@"Data\Output\Test\F1\F12\F12.xml"));
+            var mockCopyStrategy = MockCopyStrategy();
+            subscriber.InitiatedCopyStrategies = new SortedList<string, CopyStrategy> { { "publisher url", mockCopyStrategy } };
+            ReceiveMessageRequest request = new ReceiveMessageRequest
+            {
+                PublisherMessage = new PublisherMessage()
+                {
+                    AbsolutePath = @"Data\Test\F1\F12\wrongfile.xml",
+                    RenameToAbsolutePath = @"Data\Test\F1\F12\F12.xml",
+                    OperationType = OperationType.Rename,
+                    SourceOfMessageUrl = "publisher url",
+                    SourcePathRootName = @"Data\Test\"
+                }
+            };
+            var response = subscriber.ReceiveMessage(request);
+            Assert.True(response.Success);
+        }
+        [Test]
+        public void ApplyChanges_Rename_Ok()
+        {
+            ComponentResolver mySynchComponentResolver = new ComponentResolver();
+            mySynchComponentResolver.RegisterAll(new TestInstaller());
+
+            Subscriber subscriber = new Subscriber(mySynchComponentResolver);
+
+            MySynchLocalComponentConfigurationSection localComponentConfig =
+                new MySynchLocalComponentConfigurationSection { BrokerUrl = "", LocalRootFolder = @"Data\Output\Test\" };
+            string hostUrl = string.Empty;
+            subscriber.Initialize(null, localComponentConfig, hostUrl);
+
+            Assert.True(File.Exists(@"Data\Output\Test\F1\F12\F12.xml"));
+            Assert.False(File.Exists(@"Data\Output\Test\F1\F12\F1222.xml"));
+            var mockCopyStrategy = MockCopyStrategy();
+            subscriber.InitiatedCopyStrategies = new SortedList<string, CopyStrategy> { { "publisher url", mockCopyStrategy } };
+            ReceiveMessageRequest request = new ReceiveMessageRequest
+            {
+                PublisherMessage = new PublisherMessage()
+                {
+                    AbsolutePath = @"Data\Test\F1\F12\F12.xml",
+                    RenameToAbsolutePath = @"Data\Test\F1\F12\F1222.xml",
+                    OperationType = OperationType.Rename,
+                    SourceOfMessageUrl = "publisher url",
+                    SourcePathRootName = @"Data\Test\"
+                }
+            };
+            var response = subscriber.ReceiveMessage(request);
+            Assert.True(response.Success);
+            Assert.False(File.Exists(@"Data\Output\Test\F1\F12\F12.xml"));
+            Assert.True(File.Exists(@"Data\Output\Test\F1\F12\F1222.xml"));
+
+        }
+
     }
 }
