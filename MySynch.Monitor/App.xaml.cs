@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Configuration;
 using System.Linq;
 using System.ServiceModel;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using Hardcodet.Wpf.TaskbarNotification;
@@ -24,18 +25,23 @@ namespace MySynch.Monitor
         private TaskbarIcon tb;
         private string _brokerUrl;
         private IBrokerMonitorProxy _brokerClient;
+        private BackgroundWorker backgroundWorker;
 
         private void InitApplication()
         {
             //initialize NotifyIcon
             tb = (TaskbarIcon)FindResource("MyNotifyIcon");
-            tb.ToolTipText = "MySynch Monitor";
-            tb.ShowBalloonTip("MySynch Monitor", "Starting the monitor", BalloonIcon.Info);
+            tb.ToolTipText = "MySynch Monitor. Hover over to check latest activity.";
+            tb.ShowBalloonTip("MySynch Monitor", "Starting Monitor", BalloonIcon.Info);
+            var popupControl = new NotifyPopupControl();
+            var model = new NotifyViewModel();
+            model.ListAllMessages=new ObservableCollection<GenericMessageModel>();
+            model.ListAllMessages.Add(new GenericMessageModel{Message="Start Monitoring", Source=ComponentType.None});
+            popupControl.DataContext = model;
+            tb.TrayPopup = popupControl;
             StartTheMonitor();
             ((MenuItem)tb.ContextMenu.Items[0]).Command = new RelayCommand(CloseAll);
             Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-
-
         }
 
         private void CloseAll()
@@ -45,10 +51,11 @@ namespace MySynch.Monitor
 
         private void StartTheMonitor()
         {
-            BackgroundWorker backgroundWorker= new BackgroundWorker();
+            backgroundWorker= new BackgroundWorker();
             backgroundWorker.DoWork += DoWork;
             backgroundWorker.RunWorkerCompleted += RunWorkerCompleted;
             backgroundWorker.ProgressChanged += ProgressChanged;
+            backgroundWorker.WorkerSupportsCancellation = true;
             backgroundWorker.RunWorkerAsync();
 
         }
@@ -56,12 +63,16 @@ namespace MySynch.Monitor
         private void ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             tb.HideBalloonTip();
-            tb.ShowBalloonTip("Synch Monitor", e.UserState.ToString(), BalloonIcon.Info);
+            tb.ShowBalloonTip("Synch Monitor", ((GenericMessageModel)e.UserState).Message, BalloonIcon.Info);
+            Dispatcher.Invoke((Action) (() =>
+                                            {
+                                                ((NotifyViewModel) ((NotifyPopupControl) tb.TrayPopup).DataContext).ListAllMessages.Add((GenericMessageModel)e.UserState);
+                                            }));
+
         }
 
         private void RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            Thread.Sleep(5000);
             tb.HideBalloonTip();
         }
 
@@ -74,9 +85,21 @@ namespace MySynch.Monitor
                 _brokerUrl = string.Empty;
 
             InstanceContext callbackInstance= new InstanceContext(this);
-            _brokerClient = new ClientHelper().ConnectToADuplexBroker(ProgressChanged, _brokerUrl,callbackInstance);
+            _brokerClient = new ClientHelper().ConnectToADuplexBroker(ProgressChanged, _brokerUrl, callbackInstance);
+            var message = "Retrieving registrations active at: " + _brokerUrl;
+            ProgressChanged(this, new ProgressChangedEventArgs(0, new GenericMessageModel { Message = message, Source = ComponentType.Broker }));
+
             _brokerClient.StartMonitoring();
-            
+                        Dispatcher.Invoke((Action)(() =>
+                                           {
+                                               ((NotifyViewModel) ((NotifyPopupControl) tb.TrayPopup).DataContext).
+                                                   ListActiveRegistrations =
+                                                   _brokerClient.ListAllRegistrations().Registrations.
+                                                       ConvertToObservableCollection();
+                                           }));
+            message = "Registrations retrieved.";
+            ProgressChanged(this, new ProgressChangedEventArgs(0, new GenericMessageModel { Message = message, Source = ComponentType.Broker }));
+
         }
 
         protected override void OnStartup(StartupEventArgs e)
@@ -95,14 +118,26 @@ namespace MySynch.Monitor
 
         public void NotifyNewRegistration(Registration changedRegistration)
         {
-
             ProgressChanged(this, new ProgressChangedEventArgs(0, RecordRegistrationAndBuildMessage(changedRegistration, true)));
         }
 
-        private string RecordRegistrationAndBuildMessage(Registration changedRegistration, bool added)
+        private GenericMessageModel RecordRegistrationAndBuildMessage(Registration changedRegistration, bool added)
         {
-            return string.Format("{0} {1} identified by url: {2}", (added) ? "Attached" : "Detached",
+            var message=string.Format("{0} {1} identified by url: {2}", (added) ? "Attached" : "Detached",
                                  changedRegistration.ServiceRole, changedRegistration.ServiceUrl);
+            Dispatcher.Invoke((Action)(() =>
+                                           {
+                                               ((NotifyViewModel) ((NotifyPopupControl) tb.TrayPopup).DataContext).
+                                                   ListActiveRegistrations =
+                                                   _brokerClient.ListAllRegistrations().Registrations.
+                                                       ConvertToObservableCollection();
+                                           }));
+
+            return new GenericMessageModel
+                       {
+                           Message = message,
+                           Source = ClientHelper.ConvertToComponentType(changedRegistration.ServiceRole)
+                       };
         }
 
         public void NotifyRemoveRegistration(Registration changedRegistration)
@@ -125,16 +160,17 @@ namespace MySynch.Monitor
             ProgressChanged(this, new ProgressChangedEventArgs(0, RecordMessageFlowAndBuildMessage(deletedMessage,true)));
         }
 
-        private string RecordMessageFlowAndBuildMessage(MessageWithDestinations messageWithDestinations, bool deleteMessage)
+        private GenericMessageModel RecordMessageFlowAndBuildMessage(MessageWithDestinations messageWithDestinations, bool deleteMessage)
         {
-
-            return string.Format("{0} of file {1} from source {2} distributed to: {3}.\r\n {4}", messageWithDestinations.OperationType, messageWithDestinations.AbsolutePath,
+            var message= string.Format("{0} of file {1} from source {2} distributed to: {3}.\r\n {4}", messageWithDestinations.OperationType, messageWithDestinations.AbsolutePath,
                                  messageWithDestinations.SourceOfMessageUrl,
                                  string.Join("\r\n",
                                              messageWithDestinations.Destinations.Select(
                                                  d =>
                                                  string.Format("{0} by subscriber:{1}",
                                                                (d.Processed) ? "processed" : "not processed", d.Url))),(deleteMessage)?"Completed for all.":"");
+
+            return new GenericMessageModel {Message = message, Source = ComponentType.Broker};
         }
     }
 }

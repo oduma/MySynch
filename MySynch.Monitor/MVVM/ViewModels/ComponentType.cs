@@ -3,10 +3,10 @@
     public enum ComponentType
     {
         None=0,
-        Distributor,
+        Broker,
         Publisher,
-        PublisherPackage,
+//        PublisherPackage,
         Subscriber,
-        SubscriberPackage
+//        SubscriberPackage
     }
 }

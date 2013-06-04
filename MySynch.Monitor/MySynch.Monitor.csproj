@@ -95,14 +95,24 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MVVM\ViewModels\AsynchViewModelBase.cs" />
+    <Compile Include="MonitorDetail.xaml.cs">
+      <DependentUpon>MonitorDetail.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MVVM\ViewModels\ComponentType.cs" />
     <Compile Include="MVVM\ViewModels\ComponentTypeToIconFileNameConverter.cs" />
+    <Compile Include="MVVM\ViewModels\GenericMessageModel.cs" />
     <Compile Include="MVVM\ViewModels\MapChannelViewModel.cs" />
     <Compile Include="MVVM\ViewModels\MessageViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\MonitorDetailViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\NotifyViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\RegistrationModel.cs" />
     <Compile Include="MVVM\ViewModels\RelayCommand.cs" />
     <Compile Include="MVVM\ViewModels\ViewModelBase.cs" />
+    <Compile Include="NotifyPopupControl.xaml.cs">
+      <DependentUpon>NotifyPopupControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utils\ClientHelper.cs" />
+    <Compile Include="Utils\ExtensionMethods.cs" />
     <Compile Include="Utils\MessageViewModelEqualityComparer.cs" />
     <Compile Include="Utils\WPFControlThreadingExtensions.cs" />
   </ItemGroup>
@@ -129,6 +139,14 @@
     <Resource Include="Icons\refresh.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="MonitorDetail.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NotifyPopupControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

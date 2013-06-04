@@ -1,0 +1,61 @@
+﻿<UserControl x:Class="MySynch.Monitor.NotifyPopupControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <DockPanel>
+        <TabControl DockPanel.Dock="Top">
+            <TabItem Header="All Messages">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <ListView Grid.Row="0"  
+                  VerticalAlignment="Stretch" 
+                  VerticalContentAlignment="Stretch"
+                  HorizontalAlignment="Stretch" 
+                  HorizontalContentAlignment="Stretch"
+                  Margin="0,0,0,4" Name="listViewAllMessages" 
+                  ItemsSource="{Binding ListAllMessages}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Source" DisplayMemberBinding="{Binding Source}"/>
+                                <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+
+            </TabItem>
+            <TabItem Header="Active Registrations">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="170" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <ListView VerticalAlignment="Stretch" 
+                  VerticalContentAlignment="Stretch"
+                  HorizontalAlignment="Stretch" 
+                  HorizontalContentAlignment="Stretch"
+                  Margin="0,0,0,4" Name="listViewAactiveRegistrations" 
+                  ItemsSource="{Binding ListActiveRegistrations}" Grid.ColumnSpan="2">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Type" DisplayMemberBinding="{Binding ServiceRole}"/>
+                                <GridViewColumn Header="Url" DisplayMemberBinding="{Binding ServiceUrl}"/>
+                                <GridViewColumn Header="Operations" DisplayMemberBinding="{Binding Operations}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+
+
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</UserControl>

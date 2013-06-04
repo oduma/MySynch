@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using MySynch.Contracts.Messages;
-using MySynch.Core;
 using MySynch.Core.Broker;
 using MySynch.Core.Configuration;
 using MySynch.Core.DataTypes;
