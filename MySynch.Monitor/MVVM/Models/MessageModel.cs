@@ -1,7 +1,7 @@
 ﻿using System;
 using MySynch.Contracts.Messages;
 
-namespace MySynch.Monitor.MVVM.ViewModels
+namespace MySynch.Monitor.MVVM.Models
 {
     public class MessageModel
     {

@@ -1,6 +1,7 @@
 ﻿using System;
+using MySynch.Monitor.MVVM.ViewModels;
 
-namespace MySynch.Monitor.MVVM.ViewModels
+namespace MySynch.Monitor.MVVM.Models
 {
     internal class NotificationModel
     {

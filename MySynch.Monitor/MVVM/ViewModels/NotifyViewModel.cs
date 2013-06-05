@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using MySynch.Monitor.MVVM.Models;
 using MySynch.Monitor.Utils;
 
 namespace MySynch.Monitor.MVVM.ViewModels

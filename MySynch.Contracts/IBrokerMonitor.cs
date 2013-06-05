@@ -9,7 +9,6 @@ namespace MySynch.Contracts
         [OperationContract(IsOneWay = true)]
         void StartMonitoring();
 
-
         [OperationContract]
         ListAllRegistrationsResponse ListAllRegistrations();
 

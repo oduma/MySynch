@@ -95,14 +95,14 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MVVM\Models\MessageModel.cs" />
+    <Compile Include="MVVM\Models\NotificationModel.cs" />
+    <Compile Include="MVVM\Models\RegistrationModel.cs" />
     <Compile Include="MVVM\ViewModels\ComponentType.cs" />
     <Compile Include="MVVM\ViewModels\ComponentTypeToIconFileNameConverter.cs" />
-    <Compile Include="MVVM\ViewModels\NotificationModel.cs" />
     <Compile Include="MVVM\ViewModels\MapChannelViewModel.cs" />
-    <Compile Include="MVVM\ViewModels\MessageModel.cs" />
     <Compile Include="MVVM\ViewModels\MessageViewModel.cs" />
     <Compile Include="MVVM\ViewModels\NotifyViewModel.cs" />
-    <Compile Include="MVVM\ViewModels\RegistrationModel.cs" />
     <Compile Include="MVVM\ViewModels\RelayCommand.cs" />
     <Compile Include="MVVM\ViewModels\ViewModelBase.cs" />
     <Compile Include="NotifyPopupControl.xaml.cs">

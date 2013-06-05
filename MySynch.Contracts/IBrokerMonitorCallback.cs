@@ -14,12 +14,12 @@ namespace MySynch.Contracts
         void NotifyRemoveRegistration(Registration changedRegistration, List<Registration> registrations);
 
         [OperationContract(IsOneWay = true)]
-        void NotifyNewMessage(MessageWithDestinations msg);
+        void NotifyNewMessage(MessageWithDestinations msg, List<MessageWithDestinations> messages);
 
         [OperationContract(IsOneWay = true)]
-        void NotifyMessageUpdate(MessageWithDestinations msg);
+        void NotifyMessageUpdate(MessageWithDestinations msg, List<MessageWithDestinations> messages);
 
         [OperationContract(IsOneWay = true)]
-        void NotifyMessageDelete(MessageWithDestinations deletedMessage);
+        void NotifyMessageDelete(MessageWithDestinations deletedMessage, List<MessageWithDestinations> messages);
     }
 }
