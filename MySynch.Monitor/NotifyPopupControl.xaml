@@ -6,56 +6,70 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <DockPanel>
-        <TabControl DockPanel.Dock="Top">
-            <TabItem Header="All Messages">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <ListView Grid.Row="0"  
+        <Expander DockPanel.Dock="Top" Header="All Notifications" Background="CadetBlue">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <ListView Grid.Row="0"  
                   VerticalAlignment="Stretch" 
                   VerticalContentAlignment="Stretch"
                   HorizontalAlignment="Stretch" 
                   HorizontalContentAlignment="Stretch"
                   Margin="0,0,0,4" Name="listViewAllMessages" 
                   ItemsSource="{Binding ListAllMessages}">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="Source" DisplayMemberBinding="{Binding Source}"/>
-                                <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}"/>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
-                </Grid>
-
-            </TabItem>
-            <TabItem Header="Active Registrations">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="120" />
-                        <ColumnDefinition Width="170" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <ListView VerticalAlignment="Stretch" 
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Source" DisplayMemberBinding="{Binding Source}"/>
+                            <GridViewColumn Header="Notification" DisplayMemberBinding="{Binding Message}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Grid>
+        </Expander>
+        <Expander Header="Active Registrations" DockPanel.Dock="Top" Background="Teal">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <ListView VerticalAlignment="Stretch" 
                   VerticalContentAlignment="Stretch"
                   HorizontalAlignment="Stretch" 
                   HorizontalContentAlignment="Stretch"
                   Margin="0,0,0,4" Name="listViewAactiveRegistrations" 
                   ItemsSource="{Binding ListActiveRegistrations}" Grid.ColumnSpan="2">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="Type" DisplayMemberBinding="{Binding ServiceRole}"/>
-                                <GridViewColumn Header="Url" DisplayMemberBinding="{Binding ServiceUrl}"/>
-                                <GridViewColumn Header="Operations" DisplayMemberBinding="{Binding Operations}"/>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
-                </Grid>
-
-
-            </TabItem>
-        </TabControl>
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Type" DisplayMemberBinding="{Binding ServiceRole}"/>
+                            <GridViewColumn Header="Url" DisplayMemberBinding="{Binding ServiceUrl}"/>
+                            <GridViewColumn Header="Operations" DisplayMemberBinding="{Binding Operations}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Grid>
+        </Expander>
+        <Expander Header="Active Messages" DockPanel.Dock="Bottom" Background="SlateGray">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <ListView VerticalAlignment="Stretch" 
+                  VerticalContentAlignment="Stretch"
+                  HorizontalAlignment="Stretch" 
+                  HorizontalContentAlignment="Stretch"
+                  Margin="0,0,0,4" Name="listViewAactiveMessages" 
+                  ItemsSource="{Binding ListActiveMessages}">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="From" DisplayMemberBinding="{Binding FromUrl}"/>
+                            <GridViewColumn Header="Operation" DisplayMemberBinding="{Binding Operation}"/>
+                            <GridViewColumn Header="File" DisplayMemberBinding="{Binding File}"/>
+                            <GridViewColumn Header="To" DisplayMemberBinding="{Binding ToUrl}"/>
+                            <GridViewColumn Header="Processed" DisplayMemberBinding="{Binding Processed}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Grid>
+        </Expander>
     </DockPanel>
 </UserControl>

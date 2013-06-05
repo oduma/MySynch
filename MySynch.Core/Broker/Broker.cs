@@ -33,9 +33,8 @@ namespace MySynch.Core.Broker
 
         public void StartMonitoring()
         {
-            //Pass the string to the client through the call back function
-            if (_callback == null)
-                _callback = OperationContext.Current.GetCallbackChannel<IBrokerMonitorCallback>();
+            //Only one callback at a time
+            _callback = OperationContext.Current.GetCallbackChannel<IBrokerMonitorCallback>();
         }
 
         public Broker(MySynchBrokerConfigurationSection storeType, ComponentResolver componentResolver)

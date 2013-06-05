@@ -95,15 +95,12 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MonitorDetail.xaml.cs">
-      <DependentUpon>MonitorDetail.xaml</DependentUpon>
-    </Compile>
     <Compile Include="MVVM\ViewModels\ComponentType.cs" />
     <Compile Include="MVVM\ViewModels\ComponentTypeToIconFileNameConverter.cs" />
     <Compile Include="MVVM\ViewModels\GenericMessageModel.cs" />
     <Compile Include="MVVM\ViewModels\MapChannelViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\MessageModel.cs" />
     <Compile Include="MVVM\ViewModels\MessageViewModel.cs" />
-    <Compile Include="MVVM\ViewModels\MonitorDetailViewModel.cs" />
     <Compile Include="MVVM\ViewModels\NotifyViewModel.cs" />
     <Compile Include="MVVM\ViewModels\RegistrationModel.cs" />
     <Compile Include="MVVM\ViewModels\RelayCommand.cs" />
@@ -139,10 +136,6 @@
     <Resource Include="Icons\refresh.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="MonitorDetail.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="NotifyPopupControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

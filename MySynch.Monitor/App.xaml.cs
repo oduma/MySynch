@@ -36,6 +36,7 @@ namespace MySynch.Monitor
             var popupControl = new NotifyPopupControl();
             var model = new NotifyViewModel();
             model.ListAllMessages=new ObservableCollection<GenericMessageModel>();
+            model.ListActiveRegistrations= new ObservableCollection<RegistrationModel>();
             model.ListAllMessages.Add(new GenericMessageModel{Message="Start Monitoring", Source=ComponentType.None});
             popupControl.DataContext = model;
             tb.TrayPopup = popupControl;
@@ -90,16 +91,29 @@ namespace MySynch.Monitor
             ProgressChanged(this, new ProgressChangedEventArgs(0, new GenericMessageModel { Message = message, Source = ComponentType.Broker }));
 
             _brokerClient.StartMonitoring();
-                        Dispatcher.Invoke((Action)(() =>
-                                           {
-                                               ((NotifyViewModel) ((NotifyPopupControl) tb.TrayPopup).DataContext).
-                                                   ListActiveRegistrations =
-                                                   _brokerClient.ListAllRegistrations().Registrations.
-                                                       ConvertToObservableCollection();
-                                           }));
+            RecordRegistrations();
             message = "Registrations retrieved.";
             ProgressChanged(this, new ProgressChangedEventArgs(0, new GenericMessageModel { Message = message, Source = ComponentType.Broker }));
+            message = "Retrieveing messages already at: " + _brokerUrl;
+            ProgressChanged(this, new ProgressChangedEventArgs(0, new GenericMessageModel { Message = message, Source = ComponentType.Broker }));
 
+            RecordMessages();
+            message = "Messages retrieved.";
+            ProgressChanged(this, new ProgressChangedEventArgs(0, new GenericMessageModel { Message = message, Source = ComponentType.Broker }));
+            while (true) ;
+
+        }
+
+        private void RecordMessages()
+        {
+            Dispatcher.Invoke((Action)(() =>
+                                           {
+                                               var msgs =
+                                                   ClientHelper.ConvertToObservableCollection(
+                                                       _brokerClient.ListAllMessages().AvailableMessages);
+                                               ((NotifyViewModel)((NotifyPopupControl)tb.TrayPopup).DataContext).
+                                                   ListActiveMessages =msgs;
+                                           }));
         }
 
         protected override void OnStartup(StartupEventArgs e)
@@ -125,19 +139,30 @@ namespace MySynch.Monitor
         {
             var message=string.Format("{0} {1} identified by url: {2}", (added) ? "Attached" : "Detached",
                                  changedRegistration.ServiceRole, changedRegistration.ServiceUrl);
-            Dispatcher.Invoke((Action)(() =>
-                                           {
-                                               ((NotifyViewModel) ((NotifyPopupControl) tb.TrayPopup).DataContext).
-                                                   ListActiveRegistrations =
-                                                   _brokerClient.ListAllRegistrations().Registrations.
-                                                       ConvertToObservableCollection();
-                                           }));
+            RecordRegistrations();
 
             return new GenericMessageModel
                        {
                            Message = message,
                            Source = ClientHelper.ConvertToComponentType(changedRegistration.ServiceRole)
                        };
+        }
+
+        private void RecordRegistrations()
+        {
+            Dispatcher.Invoke((Action)(() =>
+                                           {
+                                               var regs = ClientHelper.ConvertToObservableCollection(_brokerClient.ListAllRegistrations().Registrations);
+                                               ((NotifyViewModel) ((NotifyPopupControl) tb.TrayPopup).DataContext).
+                                                       ListActiveRegistrations.Clear();
+                                               if (regs != null || regs.Count() > 0)
+                                               {
+                                                   foreach (var reg in regs)
+                                                       ((NotifyViewModel)
+                                                        ((NotifyPopupControl) tb.TrayPopup).DataContext).
+                                                           ListActiveRegistrations.Add(reg);
+                                               }
+                                           }));
         }
 
         public void NotifyRemoveRegistration(Registration changedRegistration)
@@ -169,7 +194,7 @@ namespace MySynch.Monitor
                                                  d =>
                                                  string.Format("{0} by subscriber:{1}",
                                                                (d.Processed) ? "processed" : "not processed", d.Url))),(deleteMessage)?"Completed for all.":"");
-
+            RecordMessages();
             return new GenericMessageModel {Message = message, Source = ComponentType.Broker};
         }
     }

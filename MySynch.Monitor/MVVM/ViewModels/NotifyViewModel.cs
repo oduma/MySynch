@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using MySynch.Monitor.Utils;
 
 namespace MySynch.Monitor.MVVM.ViewModels
 {
@@ -16,5 +17,6 @@ namespace MySynch.Monitor.MVVM.ViewModels
             set;
         }
 
+        public ObservableCollection<MessageModel> ListActiveMessages { get; set; }
     }
 }
