@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace MySynch.Monitor.MVVM.ViewModels
 {
-    internal class GenericMessageModel
+    internal class NotificationModel
     {
         public string Message { get; set; }
 
         public ComponentType Source { get; set; }
+
+        public DateTime DateOfEvent { get; set; }
     }
 }

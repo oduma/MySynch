@@ -97,7 +97,7 @@
     </Compile>
     <Compile Include="MVVM\ViewModels\ComponentType.cs" />
     <Compile Include="MVVM\ViewModels\ComponentTypeToIconFileNameConverter.cs" />
-    <Compile Include="MVVM\ViewModels\GenericMessageModel.cs" />
+    <Compile Include="MVVM\ViewModels\NotificationModel.cs" />
     <Compile Include="MVVM\ViewModels\MapChannelViewModel.cs" />
     <Compile Include="MVVM\ViewModels\MessageModel.cs" />
     <Compile Include="MVVM\ViewModels\MessageViewModel.cs" />

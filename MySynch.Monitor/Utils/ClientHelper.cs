@@ -17,11 +17,11 @@ namespace MySynch.Monitor.Utils
         internal IBrokerMonitorProxy ConnectToADuplexBroker(EventHandler<ProgressChangedEventArgs> progressChanged, string brokerMonitorUrl, InstanceContext callbackInstance)
         {
             var message = "Connecting to Broker monitor: " + brokerMonitorUrl;
-            progressChanged(this, new ProgressChangedEventArgs(0, new GenericMessageModel{Message=message, Source=ComponentType.Broker}));
+            progressChanged(this, new ProgressChangedEventArgs(0, new NotificationModel{DateOfEvent = DateTime.Now, Message=message, Source=ComponentType.Broker}));
             IBrokerMonitorProxy brokerClient = new BrokerMonitorClient();
             brokerClient.InitiateDuplexUsingServerAddress(brokerMonitorUrl,callbackInstance);
             message = "Connected to Broker monitor: " + brokerMonitorUrl;
-            progressChanged(this, new ProgressChangedEventArgs(0, new GenericMessageModel{Message=message,Source=ComponentType.Broker}));
+            progressChanged(this, new ProgressChangedEventArgs(0, new NotificationModel { DateOfEvent = DateTime.Now, Message = message, Source = ComponentType.Broker }));
             return brokerClient;
         }
 
@@ -30,7 +30,7 @@ namespace MySynch.Monitor.Utils
             return (serviceRole == ServiceRole.Subscriber) ? ComponentType.Subscriber : ComponentType.Publisher;
         }
 
-        internal static IEnumerable<RegistrationModel> ConvertToObservableCollection(List<Registration> registrations)
+        internal static IEnumerable<RegistrationModel> ConvertToObservableCollection(IEnumerable<Registration> registrations)
         {
             if (registrations == null)
                 return new List<RegistrationModel>();

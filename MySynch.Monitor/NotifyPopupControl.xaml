@@ -20,6 +20,7 @@
                   ItemsSource="{Binding ListAllMessages}">
                     <ListView.View>
                         <GridView>
+                            <GridViewColumn Header="At" DisplayMemberBinding="{Binding DateOfEvent, StringFormat=T}"/>
                             <GridViewColumn Header="Source" DisplayMemberBinding="{Binding Source}"/>
                             <GridViewColumn Header="Notification" DisplayMemberBinding="{Binding Message}"/>
                         </GridView>

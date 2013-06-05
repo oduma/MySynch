@@ -5,7 +5,7 @@ namespace MySynch.Monitor.MVVM.ViewModels
 {
     internal class NotifyViewModel:ViewModelBase
     {
-        public ObservableCollection<GenericMessageModel> ListAllMessages
+        public ObservableCollection<NotificationModel> ListAllMessages
         {
             get;
             set;

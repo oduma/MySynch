@@ -86,7 +86,7 @@ namespace MySynch.Core.Broker
                         _registrations.ToList().AddRegistration(request.RegistrationRequest).SaveAndReturn(
                             AppDomain.CurrentDomain.BaseDirectory + "\\" + _brokerConfiguration.StoreName, _storeHandler.StoreMethod);
                     if(_callback!=null)
-                        _callback.NotifyNewRegistration(request.RegistrationRequest);
+                        _callback.NotifyNewRegistration(request.RegistrationRequest,_registrations.ToList());
                     LoggingManager.Debug("Attached to new " + request.RegistrationRequest.ServiceUrl);
                     return new AttachResponse {RegisteredOk = true};
                 }
@@ -124,7 +124,7 @@ namespace MySynch.Core.Broker
                         _brokerConfiguration.StoreName,_storeHandler.StoreMethod);
                 LoggingManager.Debug("Detached :" + request.ServiceUrl);
                 if (_callback != null && deletedCopy!=null)
-                    _callback.NotifyRemoveRegistration(deletedCopy);
+                    _callback.NotifyRemoveRegistration(deletedCopy,_registrations.ToList());
                 return new DetachResponse { Status = true };
             }
             catch (Exception ex)
