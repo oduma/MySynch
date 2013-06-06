@@ -100,7 +100,6 @@
     <Compile Include="MVVM\Models\RegistrationModel.cs" />
     <Compile Include="MVVM\ViewModels\ComponentType.cs" />
     <Compile Include="MVVM\ViewModels\ComponentTypeToIconFileNameConverter.cs" />
-    <Compile Include="MVVM\ViewModels\MapChannelViewModel.cs" />
     <Compile Include="MVVM\ViewModels\MessageViewModel.cs" />
     <Compile Include="MVVM\ViewModels\NotifyViewModel.cs" />
     <Compile Include="MVVM\ViewModels\RelayCommand.cs" />

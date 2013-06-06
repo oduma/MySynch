@@ -63,7 +63,7 @@
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="From" DisplayMemberBinding="{Binding FromUrl}"/>
-                            <GridViewColumn Header="Operation" DisplayMemberBinding="{Binding Operation}"/>
+                            <GridViewColumn Header="Operation" DisplayMemberBinding="{Binding OperationType}"/>
                             <GridViewColumn Header="File" DisplayMemberBinding="{Binding File}"/>
                             <GridViewColumn Header="To" DisplayMemberBinding="{Binding ToUrl}"/>
                             <GridViewColumn Header="Processed" DisplayMemberBinding="{Binding Processed}"/>

@@ -143,21 +143,26 @@ namespace MySynch.Core.Broker
         {
             LoggingManager.Debug("Received request from publisher.");
 
-            if (!_receivedMessages.Any(m => m.MessageId == request.PublisherMessage.MessageId))
-                _receivedMessages.Add(new MessageWithDestinations
-                                          {
-                                              AbsolutePath = request.PublisherMessage.AbsolutePath,
-                                              MessageId = request.PublisherMessage.MessageId,
-                                              OperationType = request.PublisherMessage.OperationType,
-                                              SourceOfMessageUrl =
-                                                  request.PublisherMessage.SourceOfMessageUrl,
-                                              SourcePathRootName =
-                                                  request.PublisherMessage.SourcePathRootName,
-                                              Destinations =
-                                                  new List<DestinationWithResult>()
-                });
+            MessageWithDestinations messageToBeProcessed =
+                _receivedMessages.FirstOrDefault(m => m.MessageId == request.PublisherMessage.MessageId);
+            if (messageToBeProcessed==null)
+            {
+                messageToBeProcessed = new MessageWithDestinations
+                                                     {
+                                                         AbsolutePath = request.PublisherMessage.AbsolutePath,
+                                                         MessageId = request.PublisherMessage.MessageId,
+                                                         OperationType = request.PublisherMessage.OperationType,
+                                                         SourceOfMessageUrl =
+                                                             request.PublisherMessage.SourceOfMessageUrl,
+                                                         SourcePathRootName =
+                                                             request.PublisherMessage.SourcePathRootName,
+                                                         Destinations =
+                                                             new List<DestinationWithResult>()
+                                                     };
+                _receivedMessages.Add(messageToBeProcessed);
+            }
 
-            DistributeMessageToAllAvailableSubscribers(request.PublisherMessage);
+            DistributeMessageToAllAvailableSubscribers(messageToBeProcessed);
             LoggingManager.Debug("Request forwarded to all subscribers.");
         }
 
@@ -194,7 +199,7 @@ namespace MySynch.Core.Broker
             }
         }
 
-        internal void DistributeMessageToAllAvailableSubscribers(PublisherMessage publisherMessage)
+        internal void DistributeMessageToAllAvailableSubscribers(MessageWithDestinations publisherMessage)
         {
             var availableSubscribers =
                 _registrations.Where(
@@ -202,6 +207,10 @@ namespace MySynch.Core.Broker
                     r.ServiceRole == ServiceRole.Subscriber && r.OperationTypes.Contains(publisherMessage.OperationType));
             if (!availableSubscribers.Any())
                 return;
+
+            publisherMessage.Destinations =
+                availableSubscribers.Select(s => new DestinationWithResult {Processed = false, Url = s.ServiceUrl}).
+                    ToList();
             var destinations =
                 availableSubscribers.Select(
                     s => new AddresedMessage {DestinationUrl = s.ServiceUrl, ProcessedByDestination = false,OriginalMessage=publisherMessage}).ToList();
@@ -233,7 +242,6 @@ namespace MySynch.Core.Broker
                 ReceiveMessageRequest request = new ReceiveMessageRequest { PublisherMessage = subscriberAddresedMessage.OriginalMessage };
                 var response = subscriberRemote.ReceiveMessage(request);
                 subscriberAddresedMessage.ProcessedByDestination = response.Success;
-                MarkAsProcessedByDestination(subscriberAddresedMessage);
                 LoggingManager.Debug("Distributed to subscriber: " + subscriberAddresedMessage.DestinationUrl);
 
             }
