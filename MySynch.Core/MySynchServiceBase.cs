@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Timers;
+using MySynch.Contracts;
 using MySynch.Contracts.Messages;
 using MySynch.Core.Configuration;
 using MySynch.Core.DataTypes;

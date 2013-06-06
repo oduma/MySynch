@@ -22,6 +22,7 @@ namespace MySynch.Core.Publisher
         internal string HostUrl;
         private object _lock= new object();
         private bool operationInProgress = false;
+        private IComponentMonitorCallback _callback;
 
         #region Initialization Logic
 
@@ -148,6 +149,8 @@ namespace MySynch.Core.Publisher
             {
                 LoggingManager.Debug("Sending request to broker.");
                 _brokerClient.ReceiveAndDistributeMessage(request);
+                if(_callback!=null)
+                    _callback.NotifyActivity(request.PublisherMessage);
                 LoggingManager.Debug("Request to broker sent.");
             }
             catch (Exception ex)
@@ -190,6 +193,12 @@ namespace MySynch.Core.Publisher
         {
             return new GetHeartbeatResponse {RootPath = _fsWatcher.Path, Status = true};
         }
+
+        public void StartMonitoring()
+        {
+            _callback = OperationContext.Current.GetCallbackChannel<IComponentMonitorCallback>();
+        }
+
         #endregion
 
         #region Persist traces for offline changes logic

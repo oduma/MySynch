@@ -60,6 +60,8 @@
     <Compile Include="ApplyCustomClientBehavior.cs" />
     <Compile Include="IBrokerMonitor.cs" />
     <Compile Include="IBrokerMonitorCallback.cs" />
+    <Compile Include="IComponentMonitorCallback.cs" />
+    <Compile Include="IComponentMonitor.cs" />
     <Compile Include="Messages\DestinationWithResult.cs" />
     <Compile Include="Messages\DetachRequest.cs" />
     <Compile Include="Messages\DetachResponse.cs" />
@@ -110,7 +112,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" BuildVersion_UseGlobalSettings="True" BuildVersion_BuildVersioningStyle="None.None.None.None" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.None" BuildVersion_UseGlobalSettings="True" BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

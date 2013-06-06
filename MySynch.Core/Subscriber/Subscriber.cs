@@ -20,6 +20,7 @@ namespace MySynch.Core.Subscriber
         private object _lock = new object();
         private ComponentResolver _componentResolver;
         private string _runningHostUrl;
+        private IComponentMonitorCallback _callback;
 
         internal SortedList<string, CopyStrategy> InitiatedCopyStrategies { get; set; }
 
@@ -172,6 +173,11 @@ namespace MySynch.Core.Subscriber
             return new GetHeartbeatResponse {Status = true, RootPath = _targetRootFolder};
         }
 
+        public void StartMonitoring()
+        {
+            _callback = OperationContext.Current.GetCallbackChannel<IComponentMonitorCallback>();
+        }
+
         public ReceiveMessageResponse ReceiveMessage(ReceiveMessageRequest request)
         {
             LoggingManager.Debug("Trying to apply a change to: " + _targetRootFolder);
@@ -183,6 +189,8 @@ namespace MySynch.Core.Subscriber
             if (string.IsNullOrEmpty(request.PublisherMessage.AbsolutePath))
                 return new ReceiveMessageResponse {Success = false};
             var result = TryApplyChange(request.PublisherMessage);
+            if(_callback!=null)
+                _callback.NotifyActivity(request.PublisherMessage);
             if (!result.Success)
                 return result;
             try

@@ -71,6 +71,9 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Implementations\ComponentMonitorClient.cs">
+      <DependentUpon>Client.tt</DependentUpon>
+    </Compile>
     <Compile Include="Implementations\PublisherClient.cs">
       <DependentUpon>Client.tt</DependentUpon>
     </Compile>
@@ -81,6 +84,9 @@
       <DependentUpon>ProxyInterfaces.tt</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\IBrokerProxy.cs">
+      <DependentUpon>ProxyInterfaces.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Interfaces\IComponentMonitorProxy.cs">
       <DependentUpon>ProxyInterfaces.tt</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\IPublisherProxy.cs">
@@ -140,7 +146,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
