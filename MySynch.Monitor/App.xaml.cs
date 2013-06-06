@@ -32,7 +32,7 @@ namespace MySynch.Monitor
         {
             //initialize NotifyIcon
             tb = (TaskbarIcon)FindResource("MyNotifyIcon");
-            tb.ToolTipText = "MySynch Monitor. Hover over to check latest activity.";
+            tb.ToolTipText = "MySynch Monitor. Click to check latest activity.";
             tb.ShowBalloonTip("MySynch Monitor", "Starting Monitor", BalloonIcon.Info);
             var popupControl = new NotifyPopupControl();
             var model = new NotifyViewModel();

@@ -1,4 +1,4 @@
-﻿namespace MySynch.Monitor.MVVM.ViewModels
+﻿namespace MySynch.Monitor.MVVM.Models
 {
     public enum ComponentType
     {

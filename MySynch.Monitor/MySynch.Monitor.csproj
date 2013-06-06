@@ -95,12 +95,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MVVM\Models\ComponentType.cs" />
     <Compile Include="MVVM\Models\MessageModel.cs" />
     <Compile Include="MVVM\Models\NotificationModel.cs" />
     <Compile Include="MVVM\Models\RegistrationModel.cs" />
-    <Compile Include="MVVM\ViewModels\ComponentType.cs" />
     <Compile Include="MVVM\ViewModels\ComponentTypeToIconFileNameConverter.cs" />
-    <Compile Include="MVVM\ViewModels\MessageViewModel.cs" />
     <Compile Include="MVVM\ViewModels\NotifyViewModel.cs" />
     <Compile Include="MVVM\ViewModels\RelayCommand.cs" />
     <Compile Include="MVVM\ViewModels\ViewModelBase.cs" />
@@ -108,8 +107,6 @@
       <DependentUpon>NotifyPopupControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils\ClientHelper.cs" />
-    <Compile Include="Utils\ExtensionMethods.cs" />
-    <Compile Include="Utils\MessageViewModelEqualityComparer.cs" />
     <Compile Include="Utils\WPFControlThreadingExtensions.cs" />
   </ItemGroup>
   <ItemGroup>

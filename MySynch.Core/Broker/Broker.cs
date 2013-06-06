@@ -242,6 +242,7 @@ namespace MySynch.Core.Broker
                 ReceiveMessageRequest request = new ReceiveMessageRequest { PublisherMessage = subscriberAddresedMessage.OriginalMessage };
                 var response = subscriberRemote.ReceiveMessage(request);
                 subscriberAddresedMessage.ProcessedByDestination = response.Success;
+                MarkAsProcessedByDestination(subscriberAddresedMessage);
                 LoggingManager.Debug("Distributed to subscriber: " + subscriberAddresedMessage.DestinationUrl);
 
             }
@@ -259,6 +260,8 @@ namespace MySynch.Core.Broker
             {
                 var msg =
                     _receivedMessages.First(m => m.MessageId == subscriberAddresedMessage.OriginalMessage.MessageId);
+                if (msg == null)
+                    return;
                 var dest = msg.Destinations.FirstOrDefault(d => d.Url == subscriberAddresedMessage.DestinationUrl);
                 if (dest==null)
                     msg.Destinations.Add(new DestinationWithResult
