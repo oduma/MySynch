@@ -10,16 +10,18 @@ using System.Linq;
 
 namespace MySynch.Monitor.Utils
 {
-    public class ClientHelper
+    public static class ClientHelper
     {
-        internal IBrokerMonitorProxy ConnectToADuplexBroker(EventHandler<ProgressChangedEventArgs> progressChanged, string brokerMonitorUrl, InstanceContext callbackInstance)
+        internal static IBrokerMonitorProxy ConnectToADuplexBroker(EventHandler<ProgressChangedEventArgs> progressChanged, string brokerMonitorUrl, InstanceContext callbackInstance)
         {
+            if (string.IsNullOrEmpty(brokerMonitorUrl))
+                return null;
             var message = "Connecting to Broker monitor: " + brokerMonitorUrl;
-            progressChanged(this, new ProgressChangedEventArgs(0, new NotificationModel{DateOfEvent = DateTime.Now, Message=message, Source=ComponentType.Broker}));
+            progressChanged(callbackInstance, new ProgressChangedEventArgs(0, new NotificationModel{DateOfEvent = DateTime.Now, Message=message, Source=ComponentType.Broker}));
             IBrokerMonitorProxy brokerClient = new BrokerMonitorClient();
             brokerClient.InitiateDuplexUsingServerAddress(brokerMonitorUrl,callbackInstance);
             message = "Connected to Broker monitor: " + brokerMonitorUrl;
-            progressChanged(this, new ProgressChangedEventArgs(0, new NotificationModel { DateOfEvent = DateTime.Now, Message = message, Source = ComponentType.Broker }));
+            progressChanged(callbackInstance, new ProgressChangedEventArgs(0, new NotificationModel { DateOfEvent = DateTime.Now, Message = message, Source = ComponentType.Broker }));
             return brokerClient;
         }
 
@@ -58,6 +60,58 @@ namespace MySynch.Monitor.Utils
                                         ToUrl = d.Url
                                     });
         }
+
+        private static IComponentMonitorProxy ConnectToDuplexComponent(EventHandler<ProgressChangedEventArgs> progressChanged, string componentUrl, InstanceContext callbackInstance, ServiceRole componentRole)
+        {
+            if (string.IsNullOrEmpty(componentUrl))
+                return null;
+            var message = "Connecting to " + componentRole + " monitor: " + componentUrl;
+            progressChanged(callbackInstance, new ProgressChangedEventArgs(0, new NotificationModel { DateOfEvent = DateTime.Now, Message = message, Source = ConvertToComponentType(componentRole) }));
+            IComponentMonitorProxy componentMonitorClient = new ComponentMonitorClient();
+            componentMonitorClient.InitiateDuplexUsingServerAddress(componentUrl, callbackInstance);
+            return componentMonitorClient;
+        }
+
+
+        public static IComponentMonitorProxy ConnectToADuplexComponentAndStartMonitoring(EventHandler<ProgressChangedEventArgs> progressChanged, string componentUrl, InstanceContext callbackInstance, ServiceRole componentRole)
+        {
+            var componentMonitorProxy = ClientHelper.ConnectToDuplexComponent(progressChanged, componentUrl,
+                                                                 callbackInstance, componentRole);
+            var message = string.Empty;
+            try
+            {
+                if (componentMonitorProxy != null)
+                {
+                    componentMonitorProxy.StartMonitoring();
+                    message = "Connected to " + componentRole + " monitor: " + componentUrl;
+                    progressChanged(callbackInstance,
+                                    new ProgressChangedEventArgs(0,
+                                                                 new NotificationModel
+                                                                 {
+                                                                     DateOfEvent = DateTime.Now,
+                                                                     Message = message,
+                                                                     Source = ClientHelper.ConvertToComponentType(componentRole)
+                                                                 }));
+                    return componentMonitorProxy;
+                }
+                return null;
+            }
+            catch
+            {
+                message = "Not Connected to " + componentRole + " monitor: " + componentUrl;
+                progressChanged(callbackInstance,
+                                new ProgressChangedEventArgs(0,
+                                                             new NotificationModel
+                                                             {
+                                                                 DateOfEvent = DateTime.Now,
+                                                                 Message = message,
+                                                                 Source = ClientHelper.ConvertToComponentType(componentRole)
+                                                             }));
+                return null;
+            }
+
+        }
+
 
     }
 }

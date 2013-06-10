@@ -29,7 +29,7 @@ namespace MySynch.Tests
             Assert.AreEqual(configSection.StoreType, "IStore.Registration.FileSystemStore");
             Assert.AreEqual(configSection.CommunicationLogging, "notverbose");
             Assert.AreEqual(configSection.InstanceName, "mybroker");
-            Assert.AreEqual(configSection.BrokerMonitorInstanceName, "mybrokermonitor");
+            Assert.AreEqual(configSection.MonitorInstanceName, "mybrokermonitor");
         }
 
         [Test]
@@ -44,7 +44,7 @@ namespace MySynch.Tests
             Assert.AreEqual(configSection.StoreType, "mystoretype");
             Assert.AreEqual(configSection.CommunicationLogging, "verbose");
             Assert.AreEqual(configSection.InstanceName, "mybroker");
-            Assert.AreEqual(configSection.BrokerMonitorInstanceName, "mybrokermonitor");
+            Assert.AreEqual(configSection.MonitorInstanceName, "mybrokermonitor");
 
         }
         [Test]
@@ -69,6 +69,7 @@ namespace MySynch.Tests
             Assert.AreEqual(configSection.BrokerUrl, "myBrokerUrl");
             Assert.AreEqual(configSection.CommunicationLogging, "notverbose");
             Assert.AreEqual(configSection.InstanceName, "myLC");
+            Assert.AreEqual(configSection.MonitorInstanceName,"myLCmonitor");
         }
 
         [Test]
@@ -83,6 +84,7 @@ namespace MySynch.Tests
             Assert.AreEqual(configSection.BrokerUrl, "myBrokerUrl");
             Assert.AreEqual(configSection.CommunicationLogging, "verbose");
             Assert.AreEqual(configSection.InstanceName, "myLC");
+            Assert.AreEqual(configSection.MonitorInstanceName,"myLCmonitor");
         }
     }
 }

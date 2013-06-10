@@ -190,7 +190,7 @@ namespace MySynch.Core.Subscriber
                 return new ReceiveMessageResponse {Success = false};
             var result = TryApplyChange(request.PublisherMessage);
             if(_callback!=null)
-                _callback.NotifyActivity(request.PublisherMessage);
+                _callback.NotifyActivity(request.PublisherMessage,ServiceRole.Subscriber);
             if (!result.Success)
                 return result;
             try

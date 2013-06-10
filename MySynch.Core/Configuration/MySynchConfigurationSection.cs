@@ -29,5 +29,20 @@ namespace MySynch.Core.Configuration
                 this["InstanceName"] = value;
             }
         }
+
+
+        [ConfigurationProperty("MonitorInstanceName", DefaultValue = "", IsRequired = true)]
+        public string MonitorInstanceName
+        {
+            get
+            {
+                return (string)this["MonitorInstanceName"];
+            }
+            set
+            {
+                this["MonitorInstanceName"] = value;
+            }
+        }
+
     }
 }

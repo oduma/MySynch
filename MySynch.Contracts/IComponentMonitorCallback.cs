@@ -6,7 +6,7 @@ namespace MySynch.Contracts
     public interface IComponentMonitorCallback
     {
         [OperationContract(IsOneWay = true)]
-        void NotifyActivity(PublisherMessage activityMessage);
+        void NotifyActivity(PublisherMessage activityMessage, ServiceRole source);
 
 
     }

@@ -148,6 +148,7 @@
     <Compile Include="DataTypes\SynchItem.cs" />
     <Compile Include="DataTypes\SynchItemData.cs" />
     <Compile Include="Interfaces\IStore.cs" />
+    <Compile Include="MySynchInstaller.cs" />
     <Compile Include="MySynchServiceBase.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -159,7 +160,6 @@
     <Compile Include="Publisher\SynchItemDataEqualityComparer.cs" />
     <Compile Include="Publisher\SynchItemManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="MySynchInstaller.cs" />
     <Compile Include="Subscriber\CopyStrategy.cs" />
     <Compile Include="Subscriber\Subscriber.cs" />
   </ItemGroup>
@@ -201,7 +201,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

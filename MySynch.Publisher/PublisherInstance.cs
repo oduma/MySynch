@@ -26,6 +26,9 @@ namespace MySynch.Publisher
             HostUrl = string.Format("http://{0}/{1}/",
                         System.Net.Dns.
                             GetHostName().ToLower(),LocalComponentConfig.InstanceName);
+            MonitorHostUrl = string.Format("http://{0}/{1}/",
+                System.Net.Dns.GetHostName().ToLower(), LocalComponentConfig.MonitorInstanceName);
+
             CurrentAttachRequest = new AttachRequest
                                          {
                                              RegistrationRequest =
@@ -87,6 +90,8 @@ namespace MySynch.Publisher
                 return false;
             _serviceHosts.Add(CreateAndConfigureServiceHost<IPublisher>((IPublisher)LocalComponent,
                                                                      new Uri(HostUrl)));
+            _serviceHosts.Add(CreateAndConfigureServiceHost<IComponentMonitor>(LocalComponent, new Uri(MonitorHostUrl), true));
+
             return true;
         }
 

@@ -29,19 +29,5 @@ namespace MySynch.Core.Configuration
                 this["StoreType"] = value;
             }
         }
-
-        [ConfigurationProperty("BrokerMonitorInstanceName", DefaultValue = "", IsRequired = true)]
-        public string BrokerMonitorInstanceName
-        {
-            get
-            {
-                return (string)this["BrokerMonitorInstanceName"];
-            }
-            set
-            {
-                this["BrokerMonitorInstanceName"] = value;
-            }
-        }
-
     }
 }

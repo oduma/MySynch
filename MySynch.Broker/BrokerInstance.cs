@@ -50,7 +50,7 @@ namespace MySynch.Broker
                                                                                                    GetHostName().ToLower(),_brokerConfiguration.InstanceName))));
                 _serviceHosts.Add(CreateAndConfigureServiceHost<IBrokerMonitor>(_broker,new Uri(string.Format("http://{0}/{1}/",
                                                                                                System.Net.Dns.
-                                                                                                   GetHostName().ToLower(),_brokerConfiguration.BrokerMonitorInstanceName)),true));
+                                                                                                   GetHostName().ToLower(),_brokerConfiguration.MonitorInstanceName)),true));
                 LoggingManager.Debug("Broker initialized.");
             }
             catch (Exception ex)

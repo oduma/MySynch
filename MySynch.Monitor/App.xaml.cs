@@ -21,15 +21,23 @@ namespace MySynch.Monitor
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application,IBrokerMonitorCallback
+    public partial class App : Application,IBrokerMonitorCallback,IComponentMonitorCallback
     {
         private TaskbarIcon tb;
         private string _brokerUrl;
-        private IBrokerMonitorProxy _brokerClient;
+        private IBrokerMonitorProxy _brokerMonitorClient;
         private BackgroundWorker backgroundWorker;
+        private IComponentMonitorProxy _subscriberMonitorClient;
+        private IComponentMonitorProxy _publisherMonitorClient;
+        private string _subscriberUrl;
+        private string _publisherUrl;
 
         private void InitApplication()
         {
+            _brokerUrl = GetConfigurationValue("BrokerUrl");
+            _subscriberUrl = GetConfigurationValue("SubscriberUrl");
+            _publisherUrl = GetConfigurationValue("PublisherUrl");
+
             //initialize NotifyIcon
             tb = (TaskbarIcon)FindResource("MyNotifyIcon");
             tb.ToolTipText = "MySynch Monitor. Click to check latest activity.";
@@ -37,9 +45,20 @@ namespace MySynch.Monitor
             var popupControl = new NotifyPopupControl();
             var model = new NotifyViewModel();
             model.ListAllMessages=new ObservableCollection<NotificationModel>();
-            model.ListActiveRegistrations= new ObservableCollection<RegistrationModel>();
-            model.ListActiveMessages= new ObservableCollection<MessageModel>();
-            model.ListAllMessages.Add(new NotificationModel { DateOfEvent = DateTime.Now, Message = "Start Monitoring", Source = ComponentType.None });
+            var monitoringTargetMessage = string.Format("{0}{1}{2}", (!string.IsNullOrEmpty(_brokerUrl)) ? "Broker, " : "",
+                                                        (!string.IsNullOrEmpty(_subscriberUrl)) ? "Subscriber, " : "",
+                                                        (!string.IsNullOrEmpty(_publisherUrl)) ? "Publisher" : "");
+            monitoringTargetMessage = (string.IsNullOrEmpty(monitoringTargetMessage))
+                                          ? "Nothing to monitor"
+                                          : ((monitoringTargetMessage.EndsWith(", "))
+                                                 ? monitoringTargetMessage.Substring(0,
+                                                                                     monitoringTargetMessage.Length - 2)
+                                                 : monitoringTargetMessage);
+            model.ListAllMessages.Add(new NotificationModel { DateOfEvent = DateTime.Now, Message = "Start Monitoring " + monitoringTargetMessage, Source = ComponentType.None });
+            if(string.IsNullOrEmpty(_brokerUrl))
+                model.BrokerVisible = Visibility.Hidden;
+            model.ListActiveRegistrations = new ObservableCollection<RegistrationModel>();
+            model.ListActiveMessages = new ObservableCollection<MessageModel>();
             popupControl.DataContext = model;
             tb.TrayPopup = popupControl;
             StartTheMonitor();
@@ -81,29 +100,42 @@ namespace MySynch.Monitor
 
         private void DoWork(object sender, DoWorkEventArgs e)
         {
-            var key = ConfigurationManager.AppSettings.AllKeys.FirstOrDefault(k => k == "BrokerUrl");
-            if (key != null)
-                _brokerUrl = ConfigurationManager.AppSettings[key].ToString();
-            else
-                _brokerUrl = string.Empty;
 
             InstanceContext callbackInstance= new InstanceContext(this);
-            _brokerClient = new ClientHelper().ConnectToADuplexBroker(ProgressChanged, _brokerUrl, callbackInstance);
-            var message = "Retrieving registrations active at: " + _brokerUrl;
-            ProgressChanged(this, new ProgressChangedEventArgs(0, new NotificationModel { DateOfEvent = DateTime.Now, Message = message, Source = ComponentType.Broker }));
+            _brokerMonitorClient = ClientHelper.ConnectToADuplexBroker(ProgressChanged, _brokerUrl, callbackInstance);
+            if(_brokerMonitorClient!=null)
+                _brokerMonitorClient.StartMonitoring();
 
-            _brokerClient.StartMonitoring();
-            RecordRegistrations(_brokerClient.ListAllRegistrations().Registrations);
-            message = "Registrations retrieved.";
-            ProgressChanged(this, new ProgressChangedEventArgs(0, new NotificationModel { DateOfEvent = DateTime.Now, Message = message, Source = ComponentType.Broker }));
-            message = "Retrieveing messages already at: " + _brokerUrl;
-            ProgressChanged(this, new ProgressChangedEventArgs(0, new NotificationModel { DateOfEvent = DateTime.Now, Message = message, Source = ComponentType.Broker }));
+            _subscriberMonitorClient = ClientHelper.ConnectToADuplexComponentAndStartMonitoring(ProgressChanged, _subscriberUrl,
+                                                                                   callbackInstance,
+                                                                                   ServiceRole.Subscriber);
+            _publisherMonitorClient = ClientHelper.ConnectToADuplexComponentAndStartMonitoring(ProgressChanged, _publisherUrl,
+                                                                 callbackInstance,ServiceRole.Publisher);
+            if (_brokerMonitorClient != null)
+            {
+                var message = "Retrieving registrations active at: " + _brokerUrl;
+                ProgressChanged(this, new ProgressChangedEventArgs(0, new NotificationModel { DateOfEvent = DateTime.Now, Message = message, Source = ComponentType.Broker }));
 
-            RecordMessages(_brokerClient.ListAllMessages().AvailableMessages);
-            message = "Messages retrieved.";
-            ProgressChanged(this, new ProgressChangedEventArgs(0, new NotificationModel { DateOfEvent = DateTime.Now, Message = message, Source = ComponentType.Broker }));
-            while (true) ;
+                RecordRegistrations(_brokerMonitorClient.ListAllRegistrations().Registrations);
+                message = "Registrations retrieved.";
+                ProgressChanged(this, new ProgressChangedEventArgs(0, new NotificationModel { DateOfEvent = DateTime.Now, Message = message, Source = ComponentType.Broker }));
+                message = "Retrieveing messages already at: " + _brokerUrl;
+                ProgressChanged(this, new ProgressChangedEventArgs(0, new NotificationModel { DateOfEvent = DateTime.Now, Message = message, Source = ComponentType.Broker }));
 
+                RecordMessages(_brokerMonitorClient.ListAllMessages().AvailableMessages);
+                message = "Messages retrieved.";
+                ProgressChanged(this, new ProgressChangedEventArgs(0, new NotificationModel { DateOfEvent = DateTime.Now, Message = message, Source = ComponentType.Broker }));
+            }
+//            while (true) ;
+        }
+
+        private string GetConfigurationValue(string configKey)
+        {
+
+            var key = ConfigurationManager.AppSettings.AllKeys.FirstOrDefault(k => k == configKey);
+            if (key != null)
+                return ConfigurationManager.AppSettings[key].ToString();
+            return string.Empty;
         }
 
         protected override void OnStartup(StartupEventArgs e)
@@ -172,6 +204,16 @@ namespace MySynch.Monitor
             }));
         }
 
+
+        private void RecordMessage(NotificationModel message)
+        {
+            Dispatcher.Invoke((Action)(() =>
+            {
+                ((NotifyViewModel)((NotifyPopupControl)tb.TrayPopup).DataContext).
+                    ListAllMessages.Add(message);
+            }));
+        }
+
         public void NotifyRemoveRegistration(Registration changedRegistration, List<Registration> registrations)
         {
             ProgressChanged(this, new ProgressChangedEventArgs(0, RecordRegistrationAndBuildMessage(changedRegistration,false, registrations)));
@@ -203,6 +245,21 @@ namespace MySynch.Monitor
                                                                (d.Processed) ? "processed" : "not processed", d.Url))),(deleteMessage)?"Completed for all.":"");
             RecordMessages(messages);
             return new NotificationModel { DateOfEvent = DateTime.Now, Message = message, Source = ComponentType.Broker };
+        }
+
+        public void NotifyActivity(PublisherMessage activityMessage, ServiceRole serverRole)
+        {
+            ProgressChanged(this, new ProgressChangedEventArgs(0, RecordActivityMessageAndBuildMessage(activityMessage, serverRole)));
+        }
+
+        private NotificationModel RecordActivityMessageAndBuildMessage(PublisherMessage activityMessage,ServiceRole serverRole)
+        {
+            var message = string.Format("{0} of file {1} {2}", activityMessage.OperationType, activityMessage.AbsolutePath,
+    (serverRole == ServiceRole.Publisher) ? "sent by " + _publisherUrl : "received by " + _subscriberUrl);
+            var notificationMessage=new NotificationModel { DateOfEvent = DateTime.Now, Message = message, Source = ComponentType.Broker };
+            RecordMessage(notificationMessage);
+            return notificationMessage;
+
         }
     }
 }

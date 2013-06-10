@@ -150,7 +150,7 @@ namespace MySynch.Core.Publisher
                 LoggingManager.Debug("Sending request to broker.");
                 _brokerClient.ReceiveAndDistributeMessage(request);
                 if(_callback!=null)
-                    _callback.NotifyActivity(request.PublisherMessage);
+                    _callback.NotifyActivity(request.PublisherMessage,ServiceRole.Publisher);
                 LoggingManager.Debug("Request to broker sent.");
             }
             catch (Exception ex)

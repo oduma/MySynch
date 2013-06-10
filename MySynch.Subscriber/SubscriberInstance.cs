@@ -20,6 +20,9 @@ namespace MySynch.Subscriber
             HostUrl = string.Format("http://{0}/{1}/",
             System.Net.Dns.
                 GetHostName().ToLower(),LocalComponentConfig.InstanceName);
+            MonitorHostUrl = string.Format("http://{0}/{1}/",
+            System.Net.Dns.
+                GetHostName().ToLower(), LocalComponentConfig.MonitorInstanceName);
             CurrentAttachRequest = new AttachRequest
             {
                 RegistrationRequest =
@@ -54,7 +57,8 @@ namespace MySynch.Subscriber
 
         public override bool InitializeLocalComponent()
         {
-            if (string.IsNullOrEmpty(LocalComponentConfig.LocalRootFolder) || !Directory.Exists(LocalComponentConfig.LocalRootFolder))
+            if (string.IsNullOrEmpty(LocalComponentConfig.LocalRootFolder) 
+                || !Directory.Exists(LocalComponentConfig.LocalRootFolder))
                 return false;
             ComponentResolver componentResolver=new ComponentResolver();
             componentResolver.RegisterAll(new MySynchInstaller());
@@ -62,6 +66,9 @@ namespace MySynch.Subscriber
 
             _serviceHosts.Add(CreateAndConfigureServiceHost<ISubscriber>((ISubscriber)LocalComponent,
                                                                      new Uri(HostUrl)));
+
+            _serviceHosts.Add(CreateAndConfigureServiceHost<IComponentMonitor>(LocalComponent, new Uri(MonitorHostUrl), true));
+
             LoggingManager.Debug("Subscriber Initialized.");
             
             return true;
