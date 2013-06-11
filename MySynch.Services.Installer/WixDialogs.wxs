@@ -1,70 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
-    <Property Id="SRCROOTDIRVAL" Value="C:\"/>
-    <Property Id="DSTROOTDIRVAL" Value="C:\"/>
-    <Property Id="BRKURLVAL" Value="http://sciendo-laptop/broker/"/>
-    <Property Id="BRKMURLVAL" Value="http://sciendo-laptop/brokermonitor/"/>
     <UI>
-      <Dialog Id="MySynchPublisherSetupDlg" Width="370" Height="270"
-               Title="Settings - [ProductName]" NoMinimize="yes">
-        <!-- Virtual Dir prompt -->
-        <Control Id="RootDirLabel" Type="Text" X="45" Y="73" Width="100" Height="15" TabSkip="no" Text="&amp;Publisher Root Directory:" />
-        <Control Id="RootDirPathValue" Type="PathEdit" X="45" Y="85" Width="215" Height="18" Property="SRCROOTDIRVAL"/>
-        <Control Id="RootDirPathButton" Type="PushButton" X="270" Y="85" Width="50" Height="17" Text="Browse">
-          <Publish Property="VALTEMP" Value="[SRCROOTDIRVAL]" Order="1">1</Publish>
-          <Publish Event="SpawnDialog" Value="SrcDirDlg" Order="2">1</Publish>
-        </Control>
-        <!-- Dest Dir prompt -->
-        <Control Id="DestDirLabel" Type="Text" X="45" Y="133" Width="100" Height="15" TabSkip="no" Text="&amp;Destination Directory:" />
-        <Control Id="DestRootDirPathValue" Type="PathEdit" X="45" Y="145" Width="215" Height="18" Property="DSTROOTDIRVAL"/>
-        <Control Id="DestRootDirPathButton" Type="PushButton" X="270" Y="145" Width="50" Height="17" Text="Browse">
-          <Publish Property="VALTEMP" Value="[DSTROOTDIRVAL]" Order="1">1</Publish>
-          <Publish Event="SpawnDialog" Value="DstDirDlg" Order="2">1</Publish>
-        </Control>
-
-        <!-- Broker Url prompt -->
-        <Control Id="BrokerUrlLabel" Type="Text" X="45" Y="163" Width="100" Height="15" TabSkip="no" Text="&amp;Broker url:" />
-        <Control Id="BrokerUrlEdit" Type="Edit" X="45"  Y="175" Width="220" Height="18" Property="BRKURLVAL" Text="{100}" >
-        </Control>
-        <!-- Broker Monitor Url prompt -->
-        <Control Id="BrokerMonitorUrlLabel" Type="Text" X="45" Y="193" Width="100" Height="15" TabSkip="no" Text="&amp;Broker monitor url:" />
-        <Control Id="BrokerMonitorUrlEdit" Type="Edit" X="45"  Y="205" Width="220" Height="18" Property="BRKMURLVAL" Text="{100}" >
-        </Control>
-        <!-- Back button -->
-        <Control Id="Back" Type="PushButton" X="180" Y="243"
-                Width="56" Height="17" Text="&amp;Back">
-          <Publish Event="NewDialog" Value="CustomizeDlg">1</Publish>
-        </Control>
-        <Control Id="Next" Type="PushButton" X="236" Y="243"
-               Width="56" Height="17" Default="yes" Text="&amp;Next">
-          <Publish Event="NewDialog" Value="VerifyReadyDlg">
-            <!--if settings are correct, allow next dialog-->
-            <![CDATA[SRCROOTDIRVAL <> ""]]>
-          </Publish>
-          <Publish Property="SRCROOTDIRVAL" Value="[SRCROOTDIRVAL]"></Publish>
-          <Publish Property="DSTROOTDIRVAL" Value="[DSTROOTDIRVAL]"></Publish>
-          <Publish Property="BRKURLVAL" Value="[BRKURLVAL]"></Publish>
-          <Publish Property="BRKMURLVAL" Value="[BRKMURLVAL]"></Publish>
-        </Control>
-        <Control Id="Cancel" Type="PushButton" X="304" Y="243"
-                   Width="56" Height="17" Cancel="yes" Text="Cancel">
-          <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
-        </Control>
-        <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0"
-             Width="370" Height="44" TabSkip="no" Text="WixUI_Bmp_Banner" />
-        <Control Id="Description" Type="Text" X="25" Y="23"
-               Width="280" Height="15" Transparent="yes" NoPrefix="yes">
-          <Text>Please enter Source Root Configuration</Text>
-        </Control>
-        <Control Id="BottomLine" Type="Line" X="0" Y="234"
-              Width="370" Height="0" />
-        <Control Id="Title" Type="Text" X="15" Y="6"
-                Width="200" Height="15" Transparent="yes" NoPrefix="yes">
-          <Text>{\WixUI_Font_Title}MySynch Configuration</Text>
-        </Control>
-        <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
-      </Dialog>
       <Dialog Id="SrcDirDlg" Width="370" Height="270" Title="Source Root Folder selection">
         <Control Id="PathEdit" Type="PathEdit" X="25" Y="202" Width="320" Height="18" Property="VALTEMP" />
         <Control Id="OK" Type="PushButton" X="240" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUIOK)">
@@ -119,6 +56,73 @@
         <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="This is going to be used by subscriber" />
         <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="Select a folder" />
       </Dialog>
+      <Dialog Id="MySynchDlg" Width="370" Height="270"
+               Title="Settings - [ProductName]" NoMinimize="yes">
+        
+        <!-- Virtual Dir prompt -->
+        <Control Id="RootDirLabel" Type="Text" X="45" Y="73" Width="100" Height="15" TabSkip="no" Text="&amp;Publisher Root Directory:" Hidden="yes">
+          <Condition Action="show"><![CDATA[&PUBLISHER = 3]]></Condition>
+        </Control>
+        <Control Id="RootDirPathValue" Type="PathEdit" X="45" Y="85" Width="215" Height="18" Property="SRCROOTDIRVAL" Hidden="yes">
+          <Condition Action="show"><![CDATA[&PUBLISHER = 3]]></Condition>
+        </Control>
+        <Control Id="RootDirPathButton" Type="PushButton" X="270" Y="85" Width="50" Height="17" Text="Browse" Hidden="yes">
+          <Condition Action="show"><![CDATA[&PUBLISHER = 3]]></Condition>
+          <Publish Property="VALTEMP" Value="[SRCROOTDIRVAL]" Order="1">1</Publish>
+          <Publish Event="SpawnDialog" Value="SrcDirDlg" Order="2">1</Publish>
+        </Control>
+        <!-- Dest Dir prompt -->
+        <Control Id="DestDirLabel" Type="Text" X="45" Y="113" Width="100" Height="15" TabSkip="no" Text="&amp;Destination Directory:" Hidden="yes">
+          <Condition Action="show"><![CDATA[&Subscriber = 3]]></Condition>
+        </Control>
+        <Control Id="DestRootDirPathValue" Type="PathEdit" X="45" Y="125" Width="215" Height="18" Property="DSTROOTDIRVAL" Hidden="yes">
+          <Condition Action="show"><![CDATA[&Subscriber = 3]]></Condition>
+        </Control>
+        <Control Id="DestRootDirPathButton" Type="PushButton" X="270" Y="125" Width="50" Height="17" Text="Browse" Hidden="yes">
+          <Condition Action="show"><![CDATA[&Subscriber = 3]]></Condition>
+          <Publish Property="VALTEMP" Value="[DSTROOTDIRVAL]" Order="1">1</Publish>
+          <Publish Event="SpawnDialog" Value="DstDirDlg" Order="2">1</Publish>
+        </Control>
+
+        <!-- Broker Url prompt -->
+        <Control Id="BrokerUrlLabel" Type="Text" X="45" Y="153" Width="100" Height="15" TabSkip="no" Text="&amp;Broker url:" />
+        <Control Id="BrokerUrlEdit" Type="Edit" X="45"  Y="165" Width="220" Height="18" Property="BRKURLVAL" Text="{100}" >
+        </Control>
+        <!-- Back button -->
+        <Control Id="Back" Type="PushButton" X="180" Y="243"
+                Width="56" Height="17" Text="&amp;Back">
+          <Publish Event="NewDialog" Value="CustomizeDlg">1</Publish>
+        </Control>
+        <Control Id="Next" Type="PushButton" X="236" Y="243"
+               Width="56" Height="17" Default="yes" Text="&amp;Next">
+          <Publish Event="NewDialog" Value="VerifyReadyDlg">
+            <!--if settings are correct, allow next dialog-->
+            <![CDATA[SRCROOTDIRVAL <> ""]]>
+          </Publish>
+          <Publish Property="SRCROOTDIRVAL" Value="[SRCROOTDIRVAL]"></Publish>
+          <Publish Property="DSTROOTDIRVAL" Value="[DSTROOTDIRVAL]"></Publish>
+          <Publish Property="BRKURLVAL" Value="[BRKURLVAL]"></Publish>
+          <Publish Property="BRKMURLVAL" Value="[BRKMURLVAL]"></Publish>
+        </Control>
+        <Control Id="Cancel" Type="PushButton" X="304" Y="243"
+                   Width="56" Height="17" Cancel="yes" Text="Cancel">
+          <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+        </Control>
+        <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0"
+             Width="370" Height="44" TabSkip="no" Text="WixUI_Bmp_Banner" />
+        <Control Id="Description" Type="Text" X="25" Y="23"
+               Width="280" Height="15" Transparent="yes" NoPrefix="yes">
+          <Text>Please enter Source Root Configuration</Text>
+        </Control>
+        <Control Id="BottomLine" Type="Line" X="0" Y="234"
+              Width="370" Height="0" />
+        <Control Id="Title" Type="Text" X="15" Y="6"
+                Width="200" Height="15" Transparent="yes" NoPrefix="yes">
+          <Text>{\WixUI_Font_Title}MySynch Configuration</Text>
+        </Control>
+        <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+      </Dialog>
+
     </UI>
   </Fragment>
 </Wix>

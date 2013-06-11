@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension" xmlns:fire="http://schemas.microsoft.com/wix/FirewallExtension">
   <Fragment>
+    <ComponentGroup Id="MonitorGroupConf">
+      <Component Id="MySynch.Monitor" Directory="MONITOR" Guid="{BB26C907-F32D-41F9-9B94-B706C28E3213}">
+        <File Id="MySynch.Monitor.exe" Name="MySynch.Monitor.exe" Source="$(var.MonitorExeSource)\MySynch.Monitor.exe" Vital="yes" KeyPath="yes">
+          <Shortcut Id="startmenu" Directory="ProgramMenuDir" Name="MySynch" WorkingDirectory='MONITOR' Advertise="yes" Icon="MySynch.Monitor.exe" IconIndex="0">
+            <Icon Id="MySynch.Monitor.exe" SourceFile="$(var.MonitorExeSource)\MySynch.Monitor.exe" />
+          </Shortcut>
+          <Shortcut Id="desktopApp" Directory="DesktopFolder" Name="MySynch" WorkingDirectory='MONITOR' Advertise="yes"  Icon="MySynch.Monitor.exe" IconIndex="0">
+          </Shortcut>
+        </File>
+      </Component>
+      <Component Id="MySynchAutostart" Guid="{F4897930-B94D-4B53-B4C1-2C3D638EDE03}" Directory="MONITOR">
+        <RegistryValue Id="MySynch.rst" Root="HKMU" Action="write"
+                       Key="Software\Microsoft\Windows\CurrentVersion\Run"
+                       Name="MySynch Autostart"
+                       Value="[MONITOR]MySynch.Monitor.exe"
+                       Type="string"/>
+      </Component>
+    </ComponentGroup>
     <ComponentGroup Id="BrokerGroupConf">
       <Component Id="MySynch.Broker.exe.config" Directory="BROKER" Guid="{72408884-A477-43D0-93A5-3930CBA9EC4C}">
         <File Id="MySynch.Broker.exe.config" KeyPath="yes" Source="$(var.BrokerConfigSource)\MySynch.Broker.exe.config" />
@@ -21,29 +39,18 @@
         </ServiceInstall>
         <ServiceControl Id="StartBrokerService" Start="install" Stop="both" Remove="uninstall" Name="MySynch.Broker" Wait="yes" />
       </Component>
-      <Component Id="MySynch.Monitor.exe.config" Directory="BROKER" Guid="{3CDED0A3-ACF6-4FF0-8952-1A9BAE9A9D21}">
-        <File Id="MySynch.Monitor.exe.config" KeyPath="yes" Source="$(var.BrokerConfigSource)\MySynch.Monitor.exe.config" />
-        <util:XmlFile Id="SetBrokerMonitorUrl"
-                      Action="setValue"
-                      ElementPath="//appSettings/add[\[]@key='BrokerUrl'[\]]/@value"
-                      Value="[BRKMURLVAL]"
-                      File="[#MySynch.Monitor.exe.config]" />
-      </Component>
-      <Component Id="MySynch.Monitor" Directory="BROKER" Guid="{BB26C907-F32D-41F9-9B94-B706C28E3213}">
-        <File Id="MySynch.Monitor.exe" Name="MySynch.Monitor.exe" Source="$(var.BrokerExeSource)\MySynch.Monitor.exe" Vital="yes" KeyPath="yes"/>
-      </Component>
     </ComponentGroup>
     <ComponentGroup Id="PublisherGroupConf">
       <Component Id="MySynch.Publisher.exe.config" Directory="PUBLISHER" Guid="{7C74FEB9-2A53-4E73-86A9-C1D001FEAAF5}">
         <File Id="MySynch.Publisher.exe.config" KeyPath="yes" Source="$(var.PublisherConfigSource)\MySynch.Publisher.exe.config" />
         <util:XmlFile Id="SetBrokerUrl"
                       Action="setValue"
-                      ElementPath="//appSettings/add[\[]@key='BrokerUrl'[\]]/@value"
+                      ElementPath="//mySynchPublisherConfiguration/@BrokerUrl"
                       Value="[BRKURLVAL]"
                       File="[#MySynch.Publisher.exe.config]" />
         <util:XmlFile Id="SetPublisherRootFolder"
                       Action="setValue"
-                      ElementPath="//appSettings/add[\[]@key='LocalRootFolder'[\]]/@value"
+                      ElementPath="//mySynchPublisherConfiguration/@LocalRootFolder"
                       Value="[SRCROOTDIRVAL]"
                       File="[#MySynch.Publisher.exe.config]" />
 
@@ -68,14 +75,14 @@
     <ComponentGroup Id="SubscriberGroupConf">
       <Component Id="MySynch.Subscriber.exe.config" Directory="SUBSCRIBER" Guid="{D2661E8D-426A-4D56-9050-4BC57AC42F8A}">
         <File Id="MySynch.Subscriber.exe.config" KeyPath="yes" Source="$(var.SubscriberConfigSource)\MySynch.Subscriber.exe.config" />
-        <util:XmlFile Id="SetSubscriberInstancePort"
+        <util:XmlFile Id="SetSubscriberBrokerUrl"
                       Action="setValue"
-                      ElementPath="//appSettings/add[\[]@key='BrokerUrl'[\]]/@value"
+                      ElementPath="//mySynchSubscriberConfiguration/@BrokerUrl"
                       Value="[BRKURLVAL]"
                       File="[#MySynch.Subscriber.exe.config]" />
         <util:XmlFile Id="SetSubscriberRootFolder"
                       Action="setValue"
-                      ElementPath="//appSettings/add[\[]@key='LocalRootFolder'[\]]/@value"
+                      ElementPath="//mySynchSubscriberConfiguration/@LocalRootFolder"
                       Value="[DSTROOTDIRVAL]"
                       File="[#MySynch.Subscriber.exe.config]" />
       </Component>

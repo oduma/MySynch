@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.ServiceProcess;
 using System.Timers;
 using MySynch.Contracts;
 using MySynch.Contracts.Messages;
@@ -95,6 +96,31 @@ namespace MySynch.Publisher
             return true;
         }
 
+        protected override bool OnPowerEvent(PowerBroadcastStatus powerStatus)
+        {
+            if (powerStatus == PowerBroadcastStatus.Suspend)
+            {
+                LoggingManager.Debug("Suspending service");
+                CloseAllServiceHosts();
+                LocalComponent.Close(_backupFileName);
+                DetachFromBroker();
+                LoggingManager.Debug("Service suspended.");
+                return base.OnPowerEvent(powerStatus);
+            }
+            if (powerStatus == PowerBroadcastStatus.ResumeSuspend)
+            {
+                LoggingManager.Debug("Restarting service");
+                _firstTimeRunningAfterRestart = true;
+                CloseAllServiceHosts();
+                if (InitializeLocalComponent())
+                    StartTimer(500, TimerElapseMethod);
+                OpenAllServiceHosts();
+                LoggingManager.Debug("Service restarted.");
+                return base.OnPowerEvent(powerStatus);
+
+           }
+            return base.OnPowerEvent(powerStatus);
+        }
         protected override void OnStop()
         {
             LoggingManager.Debug("Stoping service");

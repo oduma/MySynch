@@ -34,9 +34,9 @@ namespace MySynch.Monitor
 
         private void InitApplication()
         {
-            _brokerUrl = GetConfigurationValue("BrokerUrl");
-            _subscriberUrl = GetConfigurationValue("SubscriberUrl");
-            _publisherUrl = GetConfigurationValue("PublisherUrl");
+            _brokerUrl = GetConfigurationValue("BrokerMonitorInstanceName");
+            _subscriberUrl = GetConfigurationValue("SubscriberMonitorInstanceName");
+            _publisherUrl = GetConfigurationValue("PublisherMonitorInstanceName");
 
             //initialize NotifyIcon
             tb = (TaskbarIcon)FindResource("MyNotifyIcon");
@@ -131,11 +131,13 @@ namespace MySynch.Monitor
 
         private string GetConfigurationValue(string configKey)
         {
-
+            var value = string.Empty;
             var key = ConfigurationManager.AppSettings.AllKeys.FirstOrDefault(k => k == configKey);
             if (key != null)
-                return ConfigurationManager.AppSettings[key].ToString();
-            return string.Empty;
+                value= ConfigurationManager.AppSettings[key].ToString();
+            if(string.IsNullOrEmpty(value))
+                return string.Empty;
+            return string.Format("http://{0}/{1}", System.Net.Dns.GetHostName().ToLower(), value);
         }
 
         protected override void OnStartup(StartupEventArgs e)
