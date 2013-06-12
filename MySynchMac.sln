@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySynch.Subscriber.Mac", "MySynch.Subscriber.Mac\MySynch.Subscriber.Mac.csproj", "{A5F57666-26F0-40CF-903A-8FCBF26DA85A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySynch.Core", "MySynch.Core\MySynch.Core.csproj", "{EB0395B1-04DE-4402-AB45-4AE7693326A8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -13,6 +15,10 @@ Global
 		{A5F57666-26F0-40CF-903A-8FCBF26DA85A}.Debug|x86.Build.0 = Debug|x86
 		{A5F57666-26F0-40CF-903A-8FCBF26DA85A}.Release|x86.ActiveCfg = Release|x86
 		{A5F57666-26F0-40CF-903A-8FCBF26DA85A}.Release|x86.Build.0 = Release|x86
+		{EB0395B1-04DE-4402-AB45-4AE7693326A8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EB0395B1-04DE-4402-AB45-4AE7693326A8}.Debug|x86.Build.0 = Debug|Any CPU
+		{EB0395B1-04DE-4402-AB45-4AE7693326A8}.Release|x86.ActiveCfg = Release|Any CPU
+		{EB0395B1-04DE-4402-AB45-4AE7693326A8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = MySynch.Subscriber.Mac\MySynch.Subscriber.Mac.csproj
