@@ -7,55 +7,58 @@
     </Fragment>
     <Fragment>
         <ComponentGroup Id="BrokerGroup">
-            <Component Id="cmp02D2D31395B33CD09C2D77C5AA3B09E7" Directory="BROKER" Guid="{0CC5D2B5-BD79-4343-9934-DDAA3FFE7AAE}">
+            <Component Id="cmp02D2D31395B33CD09C2D77C5AA3B09E7" Directory="BROKER" Guid="{FBEB8926-7D00-425B-A1E2-72360090BAFF}">
                 <File Id="filB0E7D86EEDD1081A6516CBCE2F2F8AFB" KeyPath="yes" Source="$(var.BrokerSource)\Castle.Core.dll" />
             </Component>
-            <Component Id="cmpE290A2044EB41FBD94D958CB408F460F" Directory="BROKER" Guid="{25C6A14B-2C71-464A-8FF5-C18C3E2AFDD7}">
+            <Component Id="cmpE290A2044EB41FBD94D958CB408F460F" Directory="BROKER" Guid="{6A855FD4-813A-4CF1-8A16-053C864F22E8}">
                 <File Id="filCC61C8FE7D43F06D8760986FEE74E75B" KeyPath="yes" Source="$(var.BrokerSource)\Castle.Core.xml" />
             </Component>
-            <Component Id="cmp1A90EDBDA2F631AA2F90C57CA3082EC3" Directory="BROKER" Guid="{D97BE363-E249-45A8-863B-3A01C079E759}">
+            <Component Id="cmp1A90EDBDA2F631AA2F90C57CA3082EC3" Directory="BROKER" Guid="{CA071322-461A-4A30-8EEA-7A60E66AF5A8}">
                 <File Id="fil289F8B4708F4D65084C2152ED59575C3" KeyPath="yes" Source="$(var.BrokerSource)\Castle.Windsor.dll" />
             </Component>
-            <Component Id="cmp02B99ED331DB1C8664F6E7D77052A6A4" Directory="BROKER" Guid="{23B062D6-C938-4284-92D7-99FECFAA4148}">
+            <Component Id="cmp02B99ED331DB1C8664F6E7D77052A6A4" Directory="BROKER" Guid="{69BDA889-0291-4AD4-80CD-C5008E132F5F}">
                 <File Id="fil60D70C357AFB1A4411EEFC4F158015C2" KeyPath="yes" Source="$(var.BrokerSource)\Castle.Windsor.xml" />
             </Component>
-            <Component Id="cmp179BDCE49CB6D80F2A88561E5D28FC49" Directory="BROKER" Guid="{2CE8F89C-2273-469F-93D8-FCF080B73D24}">
+            <Component Id="cmp179BDCE49CB6D80F2A88561E5D28FC49" Directory="BROKER" Guid="{6708256B-EB76-425A-A263-2213B30A3A6F}">
                 <File Id="fil4FB98ADD92DF2C666B7691CDF35E4F11" KeyPath="yes" Source="$(var.BrokerSource)\Hardcodet.Wpf.TaskbarNotification.dll" />
             </Component>
-            <Component Id="cmp6500D438EAB3D55AAFE199E2DD8E6A78" Directory="BROKER" Guid="{A8705872-1751-46D0-BCEE-05499497C3DD}">
+            <Component Id="cmp6500D438EAB3D55AAFE199E2DD8E6A78" Directory="BROKER" Guid="{B72EB837-2C08-4247-B1A8-E6A64D10D3DA}">
                 <File Id="fil7596787B54006BA5FB2E42042EFD2763" KeyPath="yes" Source="$(var.BrokerSource)\Hardcodet.Wpf.TaskbarNotification.pdb" />
             </Component>
-            <Component Id="cmp077E068ADCCAA13EDE806CF15756CB18" Directory="BROKER" Guid="{6EE7B9B3-4877-4D76-83EB-F75197E37484}">
+            <Component Id="cmp077E068ADCCAA13EDE806CF15756CB18" Directory="BROKER" Guid="{5AC9725E-E8D7-4A26-8B3D-5AB2D9C3BB17}">
                 <File Id="fil189F4280AE6ACEEE0331999B33C23EF7" KeyPath="yes" Source="$(var.BrokerSource)\Hardcodet.Wpf.TaskbarNotification.xml" />
             </Component>
-            <Component Id="cmpB90934FF2417250ECA58D5517D2C0A8F" Directory="BROKER" Guid="{1BFCF07D-C539-48BA-A7DA-9FAC64948AEC}">
+            <Component Id="cmpB90934FF2417250ECA58D5517D2C0A8F" Directory="BROKER" Guid="{0C0839A8-B7CE-4427-94AC-8275630B0601}">
                 <File Id="fil53999E17B525B0E9613EB3D449BC2492" KeyPath="yes" Source="$(var.BrokerSource)\log4net.config" />
             </Component>
-            <Component Id="cmp25E7D1D348B103F94AD0BDC784E4DA42" Directory="BROKER" Guid="{FAB90794-E859-49AD-A7C2-82AD66479B06}">
+            <Component Id="cmp25E7D1D348B103F94AD0BDC784E4DA42" Directory="BROKER" Guid="{E85C1670-0D2B-4957-B1BA-D5FBD3E06EF2}">
                 <File Id="fil52C4F7BCD891046C6C74FE34A7A1C953" KeyPath="yes" Source="$(var.BrokerSource)\log4net.dll" />
             </Component>
-            <Component Id="cmp0AEE413F92920A4D5D3D1B741F212ED4" Directory="BROKER" Guid="{E9831E82-B1B2-4A20-8A92-8E1C903D4FBF}">
+            <Component Id="cmp0AEE413F92920A4D5D3D1B741F212ED4" Directory="BROKER" Guid="{44C41DD6-DD35-4908-ACAC-7D505624F575}">
                 <File Id="filA2B63416AC7544D3B68452F20AE18CDA" KeyPath="yes" Source="$(var.BrokerSource)\log4net.xml" />
             </Component>
-            <Component Id="cmpC753BD81123DA1DA37442DF340602E64" Directory="BROKER" Guid="{0E3D39C2-2F3D-4321-9BEC-0C69B913E65B}">
+            <Component Id="cmp0ABE3E3A2228A10C60D22DD337AC6AA0" Directory="BROKER" Guid="{15E89724-328F-4579-A8E9-8363B23EBC28}">
+                <File Id="fil2B04500EFA8845AFBFFF0E07F7BB5480" KeyPath="yes" Source="$(var.BrokerSource)\MySynch.Broker.exe.config" />
+            </Component>
+            <Component Id="cmpC753BD81123DA1DA37442DF340602E64" Directory="BROKER" Guid="{3902A804-BE00-42C8-9367-C83F95FED038}">
                 <File Id="fil6DF27CB95324EE3CE08EC4AFB83433F0" KeyPath="yes" Source="$(var.BrokerSource)\MySynch.Contracts.dll" />
             </Component>
-            <Component Id="cmpC96B2A7CDDCB63FC0CAD58B144982AC3" Directory="BROKER" Guid="{1B417F33-E42A-421D-99A0-E7D61C722D9C}">
+            <Component Id="cmpC96B2A7CDDCB63FC0CAD58B144982AC3" Directory="BROKER" Guid="{F4A4CEE6-4CAD-4E42-B7A4-6AA11DBAC1EB}">
                 <File Id="fil49848E5A58A3C54388E011AB5D9F55E1" KeyPath="yes" Source="$(var.BrokerSource)\MySynch.Core.dll" />
             </Component>
-            <Component Id="cmpD126C6762D9A5BBEA764B2430D65A1BA" Directory="BROKER" Guid="{AEEE753B-B62E-4AA9-AAC0-926A4971A9D2}">
+            <Component Id="cmpD126C6762D9A5BBEA764B2430D65A1BA" Directory="BROKER" Guid="{E120B4A2-D5DB-4D28-BFA1-B41CF40FF3E0}">
                 <File Id="fil243460029612D1CF64672767536076EC" KeyPath="yes" Source="$(var.BrokerSource)\MySynch.Monitor.pdb" />
             </Component>
-            <Component Id="cmp29B31CFB49C7AB443DFE0D07E8F455F7" Directory="BROKER" Guid="{10D33C04-A06D-4C4B-9491-26ECF3B1B6B2}">
+            <Component Id="cmp29B31CFB49C7AB443DFE0D07E8F455F7" Directory="BROKER" Guid="{B1B0E005-1E57-48D5-84F1-E4DE33617B59}">
                 <File Id="fil9E053695606130840AD31E8FFFF0FE54" KeyPath="yes" Source="$(var.BrokerSource)\MySynch.Proxies.Autogenerated.dll" />
             </Component>
-            <Component Id="cmp05F61BBE655ECC310AC32CF2B88FF5CD" Directory="BROKER" Guid="{ABB17ADA-7461-4368-8404-FB9B80336840}">
+            <Component Id="cmp05F61BBE655ECC310AC32CF2B88FF5CD" Directory="BROKER" Guid="{5F30F896-C222-4AE9-8AE3-322C79EC6EDB}">
                 <File Id="fil33733887023D800A89CB5F9296C0EE18" KeyPath="yes" Source="$(var.BrokerSource)\Sciendo.Common.dll" />
             </Component>
-            <Component Id="cmpE26344FE97ED745C2F3252EBE21E473B" Directory="BROKER" Guid="{1B01E5A9-FEEC-4DB3-81E1-29B810BD5EA4}">
+            <Component Id="cmpE26344FE97ED745C2F3252EBE21E473B" Directory="BROKER" Guid="{B0DAA05D-38C7-4A44-B6C1-F93C4EAB57CA}">
                 <File Id="filE3A834ED3E4F0F8EE502D144E778B876" KeyPath="yes" Source="$(var.BrokerSource)\Sciendo.Common.pdb" />
             </Component>
-            <Component Id="cmpDE212BCFF28BAE7D6DE81696D9FE6E2E" Directory="dir5F8F70BA50BE44B167E03C2340BFFA6A" Guid="{7AB958FF-2103-49DB-BF7C-363BC629132D}">
+            <Component Id="cmpDE212BCFF28BAE7D6DE81696D9FE6E2E" Directory="dir5F8F70BA50BE44B167E03C2340BFFA6A" Guid="{CD3661C8-5B0D-49C0-A652-86AAB5AF1E0D}">
                 <File Id="fil4B4DC515EDAF3C7EBE77F40FF6CA4432" KeyPath="yes" Source="$(var.BrokerSource)\CodeContracts\MySynch.Broker.noReferenceAssembly" />
             </Component>
         </ComponentGroup>

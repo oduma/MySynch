@@ -258,24 +258,35 @@ namespace MySynch.Core.Broker
         {
             lock (_lock)
             {
-                var msg =
-                    _receivedMessages.First(m => m.MessageId == subscriberAddresedMessage.OriginalMessage.MessageId);
-                if (msg == null)
+                try
+                {
+                    if (subscriberAddresedMessage == null || subscriberAddresedMessage.OriginalMessage == null)
+                        return;
+                    var msg =
+                        _receivedMessages.First(m => m.MessageId == subscriberAddresedMessage.OriginalMessage.MessageId);
+                    if (msg == null)
+                        return;
+                    var dest = msg.Destinations.FirstOrDefault(d => d.Url == subscriberAddresedMessage.DestinationUrl);
+                    if (dest == null)
+                        msg.Destinations.Add(new DestinationWithResult
+                        {
+                            Url = subscriberAddresedMessage.DestinationUrl,
+                            Processed = subscriberAddresedMessage.ProcessedByDestination
+                        });
+                    else
+                        dest.Processed = subscriberAddresedMessage.ProcessedByDestination;
+                    if (_callback != null)
+                        _callback.NotifyNewMessage(msg, _receivedMessages);
+                    if (!subscriberAddresedMessage.ProcessedByDestination
+                        && _registrations.Any(r => r.ServiceUrl == subscriberAddresedMessage.DestinationUrl))
+                        Detach(new DetachRequest { ServiceUrl = subscriberAddresedMessage.DestinationUrl });
+
+                }
+                catch (Exception ex)
+                {
+                    LoggingManager.LogSciendoSystemError(ex);
                     return;
-                var dest = msg.Destinations.FirstOrDefault(d => d.Url == subscriberAddresedMessage.DestinationUrl);
-                if (dest==null)
-                    msg.Destinations.Add(new DestinationWithResult
-                                             {
-                                                 Url = subscriberAddresedMessage.DestinationUrl,
-                                                 Processed = subscriberAddresedMessage.ProcessedByDestination
-                                             });
-                else
-                    dest.Processed = subscriberAddresedMessage.ProcessedByDestination;
-                if (_callback != null)
-                    _callback.NotifyNewMessage(msg,_receivedMessages);
-                if (!subscriberAddresedMessage.ProcessedByDestination 
-                    && _registrations.Any(r=>r.ServiceUrl==subscriberAddresedMessage.DestinationUrl))
-                    Detach(new DetachRequest {ServiceUrl = subscriberAddresedMessage.DestinationUrl});
+                }
             }
         }
 
