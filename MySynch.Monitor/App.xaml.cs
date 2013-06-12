@@ -45,18 +45,6 @@ namespace MySynch.Monitor
             var popupControl = new NotifyPopupControl();
             var model = new NotifyViewModel();
             model.ListAllMessages=new ObservableCollection<NotificationModel>();
-            var monitoringTargetMessage = string.Format("{0}{1}{2}", (!string.IsNullOrEmpty(_brokerUrl)) ? "Broker, " : "",
-                                                        (!string.IsNullOrEmpty(_subscriberUrl)) ? "Subscriber, " : "",
-                                                        (!string.IsNullOrEmpty(_publisherUrl)) ? "Publisher" : "");
-            monitoringTargetMessage = (string.IsNullOrEmpty(monitoringTargetMessage))
-                                          ? "Nothing to monitor"
-                                          : ((monitoringTargetMessage.EndsWith(", "))
-                                                 ? monitoringTargetMessage.Substring(0,
-                                                                                     monitoringTargetMessage.Length - 2)
-                                                 : monitoringTargetMessage);
-            model.ListAllMessages.Add(new NotificationModel { DateOfEvent = DateTime.Now, Message = "Start Monitoring " + monitoringTargetMessage, Source = ComponentType.None });
-            if(string.IsNullOrEmpty(_brokerUrl))
-                model.BrokerVisible = Visibility.Hidden;
             model.ListActiveRegistrations = new ObservableCollection<RegistrationModel>();
             model.ListActiveMessages = new ObservableCollection<MessageModel>();
             popupControl.DataContext = model;
@@ -105,12 +93,37 @@ namespace MySynch.Monitor
             _brokerMonitorClient = ClientHelper.ConnectToADuplexBroker(ProgressChanged, _brokerUrl, callbackInstance);
             if(_brokerMonitorClient!=null)
                 _brokerMonitorClient.StartMonitoring();
+            else
+                Dispatcher.Invoke((Action)(() =>
+                {
+                    ((NotifyViewModel)((NotifyPopupControl)tb.TrayPopup).DataContext).BrokerVisible=Visibility.Hidden;
+                }));
 
             _subscriberMonitorClient = ClientHelper.ConnectToADuplexComponentAndStartMonitoring(ProgressChanged, _subscriberUrl,
                                                                                    callbackInstance,
                                                                                    ServiceRole.Subscriber);
             _publisherMonitorClient = ClientHelper.ConnectToADuplexComponentAndStartMonitoring(ProgressChanged, _publisherUrl,
                                                                  callbackInstance,ServiceRole.Publisher);
+
+            var monitoringTargetMessage = string.Format("{0}{1}{2}", (_brokerMonitorClient!=null) ? "Broker, " : "",
+                                            (_subscriberMonitorClient!=null) ? "Subscriber, " : "",
+                                            (_publisherMonitorClient!=null) ? "Publisher" : "");
+            monitoringTargetMessage = (string.IsNullOrEmpty(monitoringTargetMessage))
+                                          ? "Nothing to monitor"
+                                          : ((monitoringTargetMessage.EndsWith(", "))
+                                                 ? monitoringTargetMessage.Substring(0,
+                                                                                     monitoringTargetMessage.Length - 2)
+                                                 : monitoringTargetMessage);
+
+            ProgressChanged(this,
+                            new ProgressChangedEventArgs(0,
+                                                         new NotificationModel
+                                                             {
+                                                                 DateOfEvent = DateTime.Now,
+                                                                 Message = "Start Monitoring " + monitoringTargetMessage,
+                                                                 Source = ComponentType.None
+                                                             }));
+            
             if (_brokerMonitorClient != null)
             {
                 var message = "Retrieving registrations active at: " + _brokerUrl;

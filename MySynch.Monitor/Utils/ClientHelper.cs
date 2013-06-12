@@ -20,9 +20,24 @@ namespace MySynch.Monitor.Utils
             progressChanged(callbackInstance, new ProgressChangedEventArgs(0, new NotificationModel{DateOfEvent = DateTime.Now, Message=message, Source=ComponentType.Broker}));
             IBrokerMonitorProxy brokerClient = new BrokerMonitorClient();
             brokerClient.InitiateDuplexUsingServerAddress(brokerMonitorUrl,callbackInstance);
-            message = "Connected to Broker monitor: " + brokerMonitorUrl;
-            progressChanged(callbackInstance, new ProgressChangedEventArgs(0, new NotificationModel { DateOfEvent = DateTime.Now, Message = message, Source = ComponentType.Broker }));
-            return brokerClient;
+            try
+            {
+                if (brokerClient.GetHeartbeat().Status)
+                {
+                    message = "Connected to Broker monitor: " + brokerMonitorUrl;
+                    progressChanged(callbackInstance, new ProgressChangedEventArgs(0, new NotificationModel { DateOfEvent = DateTime.Now, Message = message, Source = ComponentType.Broker }));
+                    return brokerClient;
+                }
+                message = "Not connected to Broker monitor: " + brokerMonitorUrl;
+                progressChanged(callbackInstance, new ProgressChangedEventArgs(0, new NotificationModel { DateOfEvent = DateTime.Now, Message = message, Source = ComponentType.Broker }));
+                return null;
+            }
+            catch (Exception ex)
+            {
+                message = "Not connected to Broker monitor: " + brokerMonitorUrl;
+                progressChanged(callbackInstance, new ProgressChangedEventArgs(0, new NotificationModel { DateOfEvent = DateTime.Now, Message = message, Source = ComponentType.Broker }));
+                return null;
+            }
         }
 
         public static ComponentType ConvertToComponentType(ServiceRole serviceRole)
@@ -69,7 +84,16 @@ namespace MySynch.Monitor.Utils
             progressChanged(callbackInstance, new ProgressChangedEventArgs(0, new NotificationModel { DateOfEvent = DateTime.Now, Message = message, Source = ConvertToComponentType(componentRole) }));
             IComponentMonitorProxy componentMonitorClient = new ComponentMonitorClient();
             componentMonitorClient.InitiateDuplexUsingServerAddress(componentUrl, callbackInstance);
-            return componentMonitorClient;
+            try
+            {
+                if(componentMonitorClient.GetHeartbeat().Status)
+                    return componentMonitorClient;
+                return null;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
 
@@ -94,6 +118,15 @@ namespace MySynch.Monitor.Utils
                                                                  }));
                     return componentMonitorProxy;
                 }
+                message = "Not Connected to " + componentRole + " monitor: " + componentUrl;
+                progressChanged(callbackInstance,
+                                new ProgressChangedEventArgs(0,
+                                                             new NotificationModel
+                                                             {
+                                                                 DateOfEvent = DateTime.Now,
+                                                                 Message = message,
+                                                                 Source = ClientHelper.ConvertToComponentType(componentRole)
+                                                             }));
                 return null;
             }
             catch

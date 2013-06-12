@@ -20,9 +20,6 @@
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="BrokerGroupConf">
-      <Component Id="MySynch.Broker.exe.config" Directory="BROKER" Guid="{72408884-A477-43D0-93A5-3930CBA9EC4C}">
-        <File Id="MySynch.Broker.exe.config" KeyPath="yes" Source="$(var.BrokerConfigSource)\MySynch.Broker.exe.config" />
-      </Component>
       <Component Id="MySynch.Broker.Service" Directory="BROKER" Guid="{94CFA246-036F-4114-9348-FBCD42B0A400}">
         <File Id="MySynch.Broker.exe" Name="MySynch.Broker.exe" Source="$(var.BrokerExeSource)\MySynch.Broker.exe" Vital="yes" KeyPath="yes"/>
         <ServiceInstall

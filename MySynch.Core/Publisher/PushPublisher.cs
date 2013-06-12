@@ -191,6 +191,8 @@ namespace MySynch.Core.Publisher
 
         public GetHeartbeatResponse GetHeartbeat()
         {
+            if (_fsWatcher == null || string.IsNullOrEmpty(_fsWatcher.Path) || !Directory.Exists(_fsWatcher.Path))
+                return new GetHeartbeatResponse {RootPath = "", Status = false};
             return new GetHeartbeatResponse {RootPath = _fsWatcher.Path, Status = true};
         }
 
