@@ -16,8 +16,8 @@ namespace MySynch.Core.Subscriber
                 throw new ArgumentNullException("source");
             if (string.IsNullOrEmpty(target))
                 throw new ArgumentNullException("target");
-            string backupFileName = Path.GetDirectoryName(target) + @"\" + "cpsb" + Guid.NewGuid().ToString();
-            string temporaryTarget = Path.GetDirectoryName(target) + @"\" + "cpst" + Guid.NewGuid().ToString();
+            string backupFileName = Path.GetDirectoryName(target) + Path.PathSeparator + "cpsb" + Guid.NewGuid().ToString();
+            string temporaryTarget = Path.GetDirectoryName(target) + Path.PathSeparator + "cpst" + Guid.NewGuid().ToString();
             if (File.Exists(target))
             {
                 File.Copy(target, backupFileName);
